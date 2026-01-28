@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>People's Doctor - Klinik Intelligence Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../Peoples Clinic/Design System/platform.css">
+  <style>
+    /* Override for pitch page */
+    html, body {
+      height: auto;
+      overflow: auto;
+    }
+
+    .pitch-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 50px;
+    }
+
+    /* Header */
+    .pitch-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .pitch-header .logo {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 32px;
+    }
+
+    .pitch-header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--color-navy-900);
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .pitch-header h1 span {
+      color: var(--color-navy-500);
+    }
+
+    .pitch-header p {
+      font-size: var(--font-size-lg);
+      color: var(--color-navy-600);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* Section */
+    .section {
+      margin-bottom: 80px;
+    }
+
+    .section-label {
+      font-size: var(--font-size-xs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-navy-400);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--color-navy-900);
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .section-subtitle {
+      font-size: var(--font-size-md);
+      color: var(--color-navy-500);
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+
+    /* Pricing Grid */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .pricing-card {
+      background: var(--color-white);
+      border-radius: var(--radius-2xl);
+      padding: 32px 28px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      border: 2px solid transparent;
+      transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(38, 48, 79, 0.1);
+    }
+
+    .pricing-card--highlight {
+      border-color: var(--color-navy-400);
+      background: linear-gradient(180deg, var(--color-gray-100) 0%, var(--color-white) 100%);
+    }
+
+    .pricing-card--premium {
+      background: linear-gradient(135deg, var(--color-navy-600) 0%, var(--color-navy-500) 100%);
+      color: var(--color-white);
+    }
+
+    .pricing-card__title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--color-text);
+    }
+
+    .pricing-card--premium .pricing-card__title {
+      color: var(--color-white);
+    }
+
+    .pricing-card__price {
+      font-size: var(--font-size-md);
+      color: var(--color-navy-500);
+      margin-bottom: 24px;
+    }
+
+    .pricing-card--premium .pricing-card__price {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .pricing-card__features {
+      list-style: none;
+      margin-bottom: 28px;
+      flex: 1;
+    }
+
+    .pricing-card__features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: var(--font-size-md);
+      margin-bottom: 12px;
+      color: var(--color-navy-700);
+    }
+
+    .pricing-card--premium .pricing-card__features li {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .pricing-card__features li::before {
+      content: "✓";
+      color: var(--color-navy-500);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .pricing-card--premium .pricing-card__features li::before {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .pricing-card__cta {
+      display: block;
+      width: 100%;
+      padding: 14px 24px;
+      text-align: center;
+      font-size: var(--font-size-md);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      border-radius: var(--radius-full);
+      text-decoration: none;
+      transition: all var(--transition-smooth);
+    }
+
+    .pricing-card__cta--outline {
+      background: var(--color-white);
+      color: var(--color-navy-700);
+      border: 1px solid var(--color-gray-200);
+      box-shadow: var(--shadow-nav-secondary);
+    }
+
+    .pricing-card__cta--primary {
+      background: var(--gradient-button-primary);
+      color: var(--color-white);
+      border: none;
+      box-shadow: var(--shadow-button);
+    }
+
+    .pricing-card__cta--white {
+      background: var(--color-white);
+      color: var(--color-navy-700);
+      border: none;
+      box-shadow: var(--shadow-button);
+    }
+
+    .pricing-card__note {
+      font-size: var(--font-size-xs);
+      color: var(--color-navy-400);
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    .pricing-card--premium .pricing-card__note {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* Data Flywheel */
+    .flywheel {
+      background: var(--color-white);
+      border-radius: var(--radius-2xl);
+      padding: 48px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .flywheel-visual {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .flywheel-step {
+      flex: 1;
+      text-align: center;
+      padding: 24px 16px;
+      background: var(--color-gray-100);
+      border-radius: var(--radius-lg);
+      position: relative;
+    }
+
+    .flywheel-step--active {
+      background: var(--gradient-button-primary);
+      box-shadow: var(--shadow-button);
+    }
+
+    .flywheel-step__icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 12px;
+      background: var(--color-white);
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .flywheel-step--active .flywheel-step__icon {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .flywheel-step__title {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--color-navy-900);
+      margin-bottom: 4px;
+    }
+
+    .flywheel-step--active .flywheel-step__title {
+      color: var(--color-white);
+    }
+
+    .flywheel-step__desc {
+      font-size: var(--font-size-sm);
+      color: var(--color-navy-500);
+    }
+
+    .flywheel-step--active .flywheel-step__desc {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .flywheel-arrow {
+      font-size: 1.5rem;
+      color: var(--color-navy-400);
+      flex-shrink: 0;
+    }
+
+    .flywheel-data {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .flywheel-data__card {
+      background: var(--color-gray-100);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+    }
+
+    .flywheel-data__title {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-navy-900);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .flywheel-data__list {
+      list-style: none;
+    }
+
+    .flywheel-data__list li {
+      font-size: var(--font-size-sm);
+      color: var(--color-navy-600);
+      padding: 6px 0;
+      border-bottom: 1px solid var(--color-gray-200);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .flywheel-data__list li:last-child {
+      border-bottom: none;
+    }
+
+    .flywheel-data__list li::before {
+      content: "•";
+      color: var(--color-navy-400);
+    }
+
+    /* Dashboard Mockup */
+    .dashboard-wrapper {
+      background: var(--color-white);
+      border-radius: var(--radius-2xl);
+      padding: 32px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .dashboard-mockup {
+      background: linear-gradient(135deg, #0f1a2e 0%, #1a2a4a 100%);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(19, 16, 44, 0.3);
+    }
+
+    .dashboard-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .dashboard-topbar__left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .dashboard-topbar__logo {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .dashboard-topbar__logo span:first-child {
+      font-size: var(--font-size-md);
+      font-weight: 700;
+      color: var(--color-white);
+      text-transform: uppercase;
+    }
+
+    .dashboard-topbar__logo span:last-child {
+      font-size: var(--font-size-md);
+      font-weight: 700;
+      color: var(--color-navy-400);
+      text-transform: uppercase;
+    }
+
+    .dashboard-topbar__clinic {
+      font-size: var(--font-size-sm);
+      color: rgba(255, 255, 255, 0.6);
+      padding-left: 16px;
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .dashboard-topbar__right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-xs);
+      color: #81c784;
+      font-weight: 600;
+    }
+
+    .live-badge::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: #81c784;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: var(--font-size-sm);
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .user-pill__avatar {
+      width: 28px;
+      height: 28px;
+      background: var(--color-navy-500);
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-white);
+    }
+
+    /* Dashboard Tabs */
+    .dashboard-tabs {
+      display: flex;
+      gap: 4px;
+      padding: 0 24px;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .dashboard-tab {
+      padding: 14px 20px;
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all var(--transition-fast);
+    }
+
+    .dashboard-tab:hover {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .dashboard-tab--active {
+      color: var(--color-white);
+      border-bottom-color: var(--color-navy-400);
+    }
+
+    /* Dashboard Content */
+    .dashboard-content {
+      padding: 24px;
+    }
+
+    /* Hero Stats */
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .hero-stat {
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .hero-stat--highlight {
+      background: rgba(34, 197, 94, 0.1);
+      border-color: rgba(34, 197, 94, 0.2);
+    }
+
+    .hero-stat--warning {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.2);
+    }
+
+    .hero-stat__value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--color-white);
+      margin-bottom: 4px;
+    }
+
+    .hero-stat__value--green { color: #81c784; }
+    .hero-stat__value--orange { color: #ffcc80; }
+
+    .hero-stat__label {
+      font-size: var(--font-size-xs);
+      color: rgba(255, 255, 255, 0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .hero-stat__trend {
+      font-size: var(--font-size-xs);
+      margin-top: 6px;
+      color: #81c784;
+    }
+
+    .hero-stat__trend--down {
+      color: #ef5350;
+    }
+
+    /* Dashboard Grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+
+    .dashboard-panel {
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .dashboard-panel__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .dashboard-panel__title {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--color-white);
+    }
+
+    .dashboard-panel__badge {
+      font-size: var(--font-size-xs);
+      color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.08);
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+    }
+
+    /* Chart Placeholder */
+    .chart-area {
+      height: 180px;
+      background: linear-gradient(180deg, rgba(86, 105, 164, 0.2) 0%, rgba(86, 105, 164, 0.05) 100%);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: flex-end;
+      padding: 16px;
+      gap: 8px;
+    }
+
+    .chart-bar {
+      flex: 1;
+      background: linear-gradient(180deg, var(--color-navy-400) 0%, var(--color-navy-500) 100%);
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      position: relative;
+    }
+
+    .chart-bar::after {
+      content: attr(data-label);
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.4);
+      white-space: nowrap;
+    }
+
+    /* Insight List */
+    .insight-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .insight-item {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      border-left: 3px solid var(--color-navy-400);
+    }
+
+    .insight-item--warning {
+      border-left-color: #ffcc80;
+    }
+
+    .insight-item--success {
+      border-left-color: #81c784;
+    }
+
+    .insight-item__title {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 4px;
+    }
+
+    .insight-item__text {
+      font-size: var(--font-size-xs);
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.5;
+    }
+
+    .insight-item__text strong {
+      color: #81c784;
+    }
+
+    .insight-item__action {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 8px;
+      font-size: var(--font-size-xs);
+      color: var(--color-navy-400);
+      cursor: pointer;
+    }
+
+    .insight-item__action:hover {
+      color: var(--color-white);
+    }
+
+    /* AI Assistant Panel */
+    .ai-panel {
+      background: linear-gradient(135deg, rgba(86, 105, 164, 0.15) 0%, rgba(56, 69, 109, 0.2) 100%);
+      border: 1px solid rgba(86, 105, 164, 0.3);
+    }
+
+    .ai-panel__header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .ai-panel__icon {
+      width: 32px;
+      height: 32px;
+      background: var(--gradient-button-primary);
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .ai-panel__title {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--color-white);
+    }
+
+    .ai-recommendation {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .ai-recommendation:last-child {
+      margin-bottom: 0;
+    }
+
+    .ai-recommendation__priority {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      margin-bottom: 8px;
+    }
+
+    .ai-recommendation__priority--high {
+      background: rgba(239, 83, 80, 0.2);
+      color: #ef5350;
+    }
+
+    .ai-recommendation__priority--medium {
+      background: rgba(255, 204, 128, 0.2);
+      color: #ffcc80;
+    }
+
+    .ai-recommendation__priority--low {
+      background: rgba(129, 199, 132, 0.2);
+      color: #81c784;
+    }
+
+    .ai-recommendation__text {
+      font-size: var(--font-size-sm);
+      color: var(--color-white);
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .ai-recommendation__impact {
+      font-size: var(--font-size-xs);
+      color: #81c784;
+      font-weight: 600;
+    }
+
+    /* Data Table */
+    .data-table {
+      width: 100%;
+    }
+
+    .data-table th {
+      text-align: left;
+      padding: 10px 12px;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: rgba(255, 255, 255, 0.5);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .data-table td {
+      padding: 12px;
+      font-size: var(--font-size-sm);
+      color: var(--color-white);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table__highlight {
+      color: #81c784 !important;
+      font-weight: 600;
+    }
+
+    .data-table__warning {
+      color: #ffcc80 !important;
+    }
+
+    .data-table__bar {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      width: 100px;
+    }
+
+    .data-table__bar-fill {
+      height: 100%;
+      background: var(--color-navy-400);
+      border-radius: 3px;
+    }
+
+    .data-table__bar-fill--high {
+      background: #81c784;
+    }
+
+    .data-table__bar-fill--medium {
+      background: #ffcc80;
+    }
+
+    .data-table__bar-fill--low {
+      background: #ef5350;
+    }
+
+    /* Business Case */
+    .business-case {
+      background: linear-gradient(135deg, var(--color-navy-600) 0%, var(--color-navy-500) 100%);
+      border-radius: var(--radius-2xl);
+      padding: 48px;
+      color: var(--color-white);
+      box-shadow: var(--shadow-button);
+    }
+
+    .business-case__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .business-case__content h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .business-case__content p {
+      font-size: var(--font-size-md);
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .value-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .value-item {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+    }
+
+    .value-item__value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .value-item__value--green {
+      color: #81c784;
+    }
+
+    .value-item__label {
+      font-size: var(--font-size-xs);
+      color: rgba(255, 255, 255, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .roi-breakdown {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+
+    .roi-breakdown__title {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .roi-breakdown__row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: var(--font-size-md);
+    }
+
+    .roi-breakdown__row:last-child {
+      border-bottom: none;
+      padding-top: 16px;
+      font-weight: 600;
+      font-size: var(--font-size-lg);
+    }
+
+    .roi-breakdown__row span:last-child {
+      color: #81c784;
+    }
+
+    /* Footer */
+    .pitch-footer {
+      text-align: center;
+      padding: 40px 0;
+      border-top: 1px solid var(--color-gray-200);
+    }
+
+    .footer-badges {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 16px;
+    }
+
+    .footer-badge {
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-navy-500);
+    }
+
+    .footer-note {
+      font-size: var(--font-size-md);
+      color: var(--color-navy-400);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .pitch-container {
+        padding: 40px 24px;
+      }
+
+      .pricing-grid {
+        grid-template-columns: 1fr;
+        max-width: 420px;
+        margin: 0 auto;
+      }
+
+      .flywheel-visual {
+        flex-direction: column;
+      }
+
+      .flywheel-arrow {
+        transform: rotate(90deg);
+      }
+
+      .flywheel-data {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero-stats > :last-child {
+        grid-column: span 2;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .business-case__grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .pitch-header h1 {
+        font-size: 1.75rem;
+      }
+
+      .dashboard-tabs {
+        overflow-x: auto;
+        padding: 0 16px;
+      }
+
+      .dashboard-tab {
+        white-space: nowrap;
+        padding: 12px 14px;
+      }
+
+      .value-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="pitch-container">
+
+    <!-- Header -->
+    <header class="pitch-header">
+      <div class="logo">
+        <span class="logo-text logo-text--people">People's</span>
+        <span class="logo-text logo-text--doctor">Doctor</span>
+      </div>
+      <h1>Fra notatværktøj til<br><span>Klinik Intelligence Platform</span></h1>
+      <p>Vi indsamler data. Vi analyserer mønstre. Vi gør klinikker smartere.</p>
+    </header>
+
+    <!-- Pricing Section -->
+    <section class="section">
+      <div class="section-label">Vores produkter</div>
+      <div class="pricing-grid">
+
+        <div class="pricing-card">
+          <h3 class="pricing-card__title">AI Notatløsning</h3>
+          <p class="pricing-card__price">Altid gratis</p>
+          <ul class="pricing-card__features">
+            <li>Automatisk transskription</li>
+            <li>Automatiske notater</li>
+            <li>Op til 2 timer sparet dagligt</li>
+            <li>Højeste journaliseringsstandard</li>
+          </ul>
+          <a href="#" class="pricing-card__cta pricing-card__cta--outline">Gratis for alle</a>
+          <p class="pricing-card__note">→ Indsamler: Varighed, type, indhold</p>
+        </div>
+
+        <div class="pricing-card pricing-card--highlight">
+          <h3 class="pricing-card__title">Journalresume</h3>
+          <p class="pricing-card__price">299 kr. / md.</p>
+          <ul class="pricing-card__features">
+            <li>Effektiv oprettelse af nye patienter</li>
+            <li>Noget med A-test</li>
+            <li>Effektiv deling på hele klinikken</li>
+            <li>Spar tid på forberedelse</li>
+          </ul>
+          <a href="#" class="pricing-card__cta pricing-card__cta--primary">Prøv gratis i 2 måneder</a>
+          <p class="pricing-card__note">→ Indsamler: Patienthistorik, diagnoser</p>
+        </div>
+
+        <div class="pricing-card pricing-card--premium">
+          <h3 class="pricing-card__title">Effektiv Klinikdrift</h3>
+          <p class="pricing-card__price">1.999 kr. / md. per klinik</p>
+          <ul class="pricing-card__features">
+            <li>Dashboard med fuld klinik-indsigt</li>
+            <li>AI-drevet anbefalinger</li>
+            <li>Økonomisk optimering</li>
+            <li>Kvalitets- og driftsanalyse</li>
+          </ul>
+          <a href="#" class="pricing-card__cta pricing-card__cta--white">Kontakt os</a>
+          <p class="pricing-card__note">→ Analyserer ALT fra begge produkter</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Data Flywheel -->
+    <section class="section">
+      <div class="section-label">Vores data-flywheel</div>
+      <h2 class="section-title">Sådan bliver vi klinikkens intelligens-lag</h2>
+      <p class="section-subtitle">Hver konsultation gør vores AI klogere. Jo flere brugere, jo bedre indsigter.</p>
+
+      <div class="flywheel">
+        <div class="flywheel-visual">
+          <div class="flywheel-step">
+            <div class="flywheel-step__icon">🎙️</div>
+            <div class="flywheel-step__title">Lægen taler</div>
+            <div class="flywheel-step__desc">AI Notatløsning optager</div>
+          </div>
+          <div class="flywheel-arrow">→</div>
+          <div class="flywheel-step">
+            <div class="flywheel-step__icon">📊</div>
+            <div class="flywheel-step__title">Data indsamles</div>
+            <div class="flywheel-step__desc">Struktureret + ustruktureret</div>
+          </div>
+          <div class="flywheel-arrow">→</div>
+          <div class="flywheel-step">
+            <div class="flywheel-step__icon">🤖</div>
+            <div class="flywheel-step__title">AI analyserer</div>
+            <div class="flywheel-step__desc">Mønstre på tværs af klinik</div>
+          </div>
+          <div class="flywheel-arrow">→</div>
+          <div class="flywheel-step flywheel-step--active">
+            <div class="flywheel-step__icon">💡</div>
+            <div class="flywheel-step__title">Indsigter leveres</div>
+            <div class="flywheel-step__desc">Til klinikejer i dashboard</div>
+          </div>
+        </div>
+
+        <div class="flywheel-data">
+          <div class="flywheel-data__card">
+            <div class="flywheel-data__title">📋 Struktureret data</div>
+            <ul class="flywheel-data__list">
+              <li>Antal konsultationer</li>
+              <li>Varighed per konsultation</li>
+              <li>Tidspunkt og ugedag</li>
+              <li>Konsultationstype (akut/kontrol/årsstatus)</li>
+              <li>Ydelseskoder brugt</li>
+            </ul>
+          </div>
+          <div class="flywheel-data__card">
+            <div class="flywheel-data__title">🔍 Ustruktureret data (fra samtalen)</div>
+            <ul class="flywheel-data__list">
+              <li>Symptomer nævnt</li>
+              <li>Diagnoser diskuteret</li>
+              <li>Behandlingsplaner</li>
+              <li>Patientbekymringer</li>
+              <li>Opfølgningsbehov</li>
+            </ul>
+          </div>
+          <div class="flywheel-data__card">
+            <div class="flywheel-data__title">🎯 Afledte indsigter</div>
+            <ul class="flywheel-data__list">
+              <li>Arbejdsbyrde per læge</li>
+              <li>Kompleksitet per konsultation</li>
+              <li>Opfølgningsrate på kroniske</li>
+              <li>Manglende ydelseskoder</li>
+              <li>"Bounce rate" (gengangere)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard Prototype -->
+    <section class="section">
+      <div class="section-label">Dashboard prototype</div>
+      <h2 class="section-title">Effektiv Klinikdrift - Fuld Platform</h2>
+      <p class="section-subtitle">Det klinikejeren ser. Fire dimensioner: Overblik, Drift, Økonomi, Kvalitet.</p>
+
+      <div class="dashboard-wrapper">
+        <div class="dashboard-mockup">
+
+          <!-- Top Bar -->
+          <div class="dashboard-topbar">
+            <div class="dashboard-topbar__left">
+              <div class="dashboard-topbar__logo">
+                <span>People's</span>
+                <span>Doctor</span>
+              </div>
+              <div class="dashboard-topbar__clinic">Lægehuset Nordvest</div>
+            </div>
+            <div class="dashboard-topbar__right">
+              <div class="live-badge">Live data</div>
+              <div class="user-pill">
+                <div class="user-pill__avatar">ML</div>
+                <span>Marianne Larsen</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabs -->
+          <div class="dashboard-tabs">
+            <div class="dashboard-tab dashboard-tab--active">Overblik</div>
+            <div class="dashboard-tab">Drift & Kapacitet</div>
+            <div class="dashboard-tab">Økonomi</div>
+            <div class="dashboard-tab">Kvalitet</div>
+            <div class="dashboard-tab">Medarbejdere</div>
+          </div>
+
+          <!-- Content -->
+          <div class="dashboard-content">
+
+            <!-- Hero Stats -->
+            <div class="hero-stats">
+              <div class="hero-stat">
+                <div class="hero-stat__value">847</div>
+                <div class="hero-stat__label">Konsultationer</div>
+                <div class="hero-stat__trend">↑ 12% vs. sidste md</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat__value">14:32</div>
+                <div class="hero-stat__label">Gns. varighed</div>
+                <div class="hero-stat__trend">↓ 1:20 vs. sidste md</div>
+              </div>
+              <div class="hero-stat hero-stat--highlight">
+                <div class="hero-stat__value hero-stat__value--green">94%</div>
+                <div class="hero-stat__label">Korrekt faktureret</div>
+                <div class="hero-stat__trend">↑ 3% vs. sidste md</div>
+              </div>
+              <div class="hero-stat hero-stat--warning">
+                <div class="hero-stat__value hero-stat__value--orange">~47.000</div>
+                <div class="hero-stat__label">Estimeret tabt (kr)</div>
+                <div class="hero-stat__trend hero-stat__trend--down">↓ 8.000 vs. sidste md</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat__value">87%</div>
+                <div class="hero-stat__label">Kroniker-opfølgning</div>
+                <div class="hero-stat__trend">↑ 5% vs. sidste md</div>
+              </div>
+            </div>
+
+            <!-- Main Grid -->
+            <div class="dashboard-grid">
+
+              <!-- Left Column: Charts + Tables -->
+              <div style="display: flex; flex-direction: column; gap: 20px;">
+
+                <!-- Konsultationer over tid -->
+                <div class="dashboard-panel">
+                  <div class="dashboard-panel__header">
+                    <div class="dashboard-panel__title">Konsultationer over tid</div>
+                    <div class="dashboard-panel__badge">Denne måned</div>
+                  </div>
+                  <div class="chart-area">
+                    <div class="chart-bar" style="height: 60%;" data-label="Uge 1"></div>
+                    <div class="chart-bar" style="height: 85%;" data-label="Uge 2"></div>
+                    <div class="chart-bar" style="height: 70%;" data-label="Uge 3"></div>
+                    <div class="chart-bar" style="height: 100%;" data-label="Uge 4"></div>
+                  </div>
+                </div>
+
+                <!-- Arbejdsbyrde per læge -->
+                <div class="dashboard-panel">
+                  <div class="dashboard-panel__header">
+                    <div class="dashboard-panel__title">Arbejdsbyrde per behandler</div>
+                    <div class="dashboard-panel__badge">5 aktive</div>
+                  </div>
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Behandler</th>
+                        <th>Konsultationer</th>
+                        <th>Gns. varighed</th>
+                        <th>Belastning</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Dr. Hansen</td>
+                        <td>198</td>
+                        <td class="data-table__warning">18:45</td>
+                        <td>
+                          <div class="data-table__bar">
+                            <div class="data-table__bar-fill data-table__bar-fill--high" style="width: 95%;"></div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Dr. Nielsen</td>
+                        <td>187</td>
+                        <td>14:20</td>
+                        <td>
+                          <div class="data-table__bar">
+                            <div class="data-table__bar-fill" style="width: 78%;"></div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Dr. Pedersen</td>
+                        <td>156</td>
+                        <td>12:10</td>
+                        <td>
+                          <div class="data-table__bar">
+                            <div class="data-table__bar-fill" style="width: 65%;"></div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Dr. Christensen</td>
+                        <td>142</td>
+                        <td>13:55</td>
+                        <td>
+                          <div class="data-table__bar">
+                            <div class="data-table__bar-fill data-table__bar-fill--medium" style="width: 58%;"></div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Dr. Andersen</td>
+                        <td>164</td>
+                        <td>14:30</td>
+                        <td>
+                          <div class="data-table__bar">
+                            <div class="data-table__bar-fill" style="width: 72%;"></div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Quick Insights -->
+                <div class="dashboard-panel">
+                  <div class="dashboard-panel__header">
+                    <div class="dashboard-panel__title">Hurtige indsigter</div>
+                    <div class="dashboard-panel__badge">6 nye</div>
+                  </div>
+                  <div class="insight-list">
+                    <div class="insight-item insight-item--warning">
+                      <div class="insight-item__title">Spidsbelastning tirsdag 9-11</div>
+                      <div class="insight-item__text">
+                        <strong>47%</strong> af ugens akutte konsultationer ligger tirsdag formiddag. Overvej ekstra bemanding.
+                      </div>
+                      <div class="insight-item__action">Se detaljer →</div>
+                    </div>
+                    <div class="insight-item insight-item--success">
+                      <div class="insight-item__title">Diabetes-opfølgning forbedret</div>
+                      <div class="insight-item__text">
+                        <strong>92%</strong> af diabetikere har haft kontrol inden for 3 mdr. Op fra 78% i Q3.
+                      </div>
+                    </div>
+                    <div class="insight-item">
+                      <div class="insight-item__title">23 manglende ydelseskoder</div>
+                      <div class="insight-item__text">
+                        Estimeret værdi: <strong>~12.450 kr</strong> denne uge. Primært tillæg for lang konsultation.
+                      </div>
+                      <div class="insight-item__action">Godkend koder →</div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Right Column: AI Assistant -->
+              <div class="dashboard-panel ai-panel">
+                <div class="ai-panel__header">
+                  <div class="ai-panel__icon">🤖</div>
+                  <div class="ai-panel__title">AI Assistent</div>
+                </div>
+
+                <div class="ai-recommendation">
+                  <div class="ai-recommendation__priority ai-recommendation__priority--high">Høj prioritet</div>
+                  <div class="ai-recommendation__text">
+                    Dr. Hansen har 18% længere konsultationer end gennemsnit og håndterer de mest komplekse cases. Overvej omfordeling af akutte patienter.
+                  </div>
+                  <div class="ai-recommendation__impact">Potentiel effekt: -15% stress, +12 konsultationer/uge</div>
+                </div>
+
+                <div class="ai-recommendation">
+                  <div class="ai-recommendation__priority ai-recommendation__priority--medium">Medium prioritet</div>
+                  <div class="ai-recommendation__text">
+                    34 patienter med KOL mangler årskontrol. Jeg kan generere en liste til proaktiv indkaldelse.
+                  </div>
+                  <div class="ai-recommendation__impact">Potentiel værdi: ~18.700 kr i ydelser</div>
+                </div>
+
+                <div class="ai-recommendation">
+                  <div class="ai-recommendation__priority ai-recommendation__priority--low">Forslag</div>
+                  <div class="ai-recommendation__text">
+                    Baseret på jeres konsultationsmønstre: Åbn 2 ekstra tider onsdag eftermiddag. Efterspørgslen er 23% højere end udbuddet.
+                  </div>
+                  <div class="ai-recommendation__impact">Estimeret ekstra omsætning: ~8.400 kr/md</div>
+                </div>
+
+                <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1);">
+                  <div style="font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 8px;">Spørg AI om noget...</div>
+                  <div style="display: flex; gap: 8px;">
+                    <input type="text" placeholder="F.eks. 'Hvem har flest gengangere?'" style="flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px 12px; color: white; font-size: 13px;">
+                    <button style="background: var(--color-navy-400); border: none; border-radius: 8px; padding: 10px 16px; color: white; font-weight: 600; cursor: pointer;">→</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Business Case -->
+    <section class="section">
+      <div class="section-label">Business case</div>
+      <div class="business-case">
+        <div class="business-case__grid">
+
+          <div class="business-case__content">
+            <h2>Mere end bare faktureringsoptimering</h2>
+            <p>
+              Effektiv Klinikdrift er ikke ét værktøj - det er et intelligens-lag
+              der gør hele klinikken smartere. Vi hjælper med økonomi, drift,
+              kvalitet og medarbejdertrivsel - alt sammen baseret på data I
+              allerede genererer gennem AI Notatløsningen.
+            </p>
+            <div class="value-grid">
+              <div class="value-item">
+                <div class="value-item__value value-item__value--green">~47.000 kr</div>
+                <div class="value-item__label">Tabt omsætning fundet/md</div>
+              </div>
+              <div class="value-item">
+                <div class="value-item__value">+12%</div>
+                <div class="value-item__label">Kapacitetsudnyttelse</div>
+              </div>
+              <div class="value-item">
+                <div class="value-item__value">87%</div>
+                <div class="value-item__label">Kroniker-opfølgning</div>
+              </div>
+              <div class="value-item">
+                <div class="value-item__value value-item__value--green">-15%</div>
+                <div class="value-item__label">Arbejdsbyrde-skævhed</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="roi-breakdown">
+            <div class="roi-breakdown__title">ROI for Lægehuset Nordvest</div>
+            <div class="roi-breakdown__row">
+              <span>Manglende ydelseskoder identificeret</span>
+              <span>+47.000 kr/md</span>
+            </div>
+            <div class="roi-breakdown__row">
+              <span>Bedre kapacitetsudnyttelse</span>
+              <span>+8.400 kr/md</span>
+            </div>
+            <div class="roi-breakdown__row">
+              <span>Proaktiv kroniker-indkaldelse</span>
+              <span>+18.700 kr/md</span>
+            </div>
+            <div class="roi-breakdown__row">
+              <span>Effektiv Klinikdrift pris</span>
+              <span>-1.999 kr/md</span>
+            </div>
+            <div class="roi-breakdown__row">
+              <span>Netto værdi for klinikken</span>
+              <span>+72.101 kr/md</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pitch-footer">
+      <div class="footer-badges">
+        <span class="footer-badge">100% GDPR-Compliant</span>
+        <span class="footer-badge">Hostet i EU</span>
+        <span class="footer-badge">Udviklet til danske klinikker</span>
+      </div>
+      <p class="footer-note">Spørgsmål? Kontakt os</p>
+    </footer>
+
+  </div>
+</body>
+</html>

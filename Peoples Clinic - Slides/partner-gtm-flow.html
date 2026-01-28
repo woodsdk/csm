@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner GTM Flow v2.0 &mdash; People's Doctor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy-900: #13102C;
+            --navy-800: #26304F;
+            --navy-700: #323E63;
+            --navy-600: #38456D;
+            --navy-500: #5669A4;
+            --navy-400: #A3B0D9;
+            --gray-200: #EBEBF3;
+            --gray-100: #F8F8FD;
+            --white: #FFFFFF;
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --accent: #EC4899;
+            --gradient-bg: linear-gradient(135deg, #EBEBF4 0%, #FFFFFF 100%);
+            --gradient-primary: linear-gradient(135deg, #38456D 0%, #5669A4 100%);
+            --shadow-card: 0 0 25px rgba(38, 48, 79, 0.05);
+            --shadow-elevated: 0 4px 20px rgba(38, 48, 79, 0.08);
+            --radius: 20px;
+            --radius-sm: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gradient-bg);
+            min-height: 100vh;
+            padding: 50px 40px;
+            color: var(--navy-900);
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        /* Header */
+        .header { text-align: center; margin-bottom: 48px; }
+        .header .logo {
+            display: flex; align-items: baseline; justify-content: center;
+            gap: 6px; margin-bottom: 20px;
+        }
+        .header .logo-peoples { font-size: 1rem; font-weight: 700; color: var(--navy-900); letter-spacing: 0.05em; text-transform: uppercase; }
+        .header .logo-doctor { font-size: 1rem; font-weight: 700; color: var(--navy-500); letter-spacing: 0.05em; text-transform: uppercase; }
+        .header h1 {
+            font-size: 2.5rem; font-weight: 700; color: var(--navy-900);
+            margin-bottom: 14px; line-height: 1.2;
+        }
+        .header .subtitle {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: var(--white); padding: 10px 28px; border-radius: 9999px;
+            font-size: 0.875rem; font-weight: 600; letter-spacing: 0.02em;
+        }
+
+        /* Section cards */
+        .section {
+            background: var(--white); border-radius: var(--radius); padding: 32px;
+            margin-bottom: 24px; box-shadow: var(--shadow-card);
+        }
+
+        /* Section titles */
+        .section-title {
+            font-size: 1.5rem; font-weight: 600; color: var(--navy-900);
+            margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
+        }
+
+        /* Badges */
+        .badge {
+            background: var(--gradient-primary);
+            color: var(--white); padding: 6px 14px; border-radius: 8px;
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em;
+            text-transform: uppercase; white-space: nowrap;
+        }
+        .badge.strategy { background: var(--gradient-primary); }
+        .badge.decision { background: linear-gradient(135deg, var(--warning), #d97706); color: var(--navy-900); }
+        .badge.tech { background: linear-gradient(135deg, #16a34a, #15803d); }
+        .badge.gate { background: linear-gradient(135deg, var(--danger), #dc2626); }
+        .badge.retention { background: linear-gradient(135deg, var(--navy-500), var(--navy-600)); }
+
+        /* Arrow dividers */
+        .arrow { text-align: center; padding: 12px 0; color: var(--navy-400); font-size: 1.8rem; font-weight: 600; }
+
+        /* Insight boxes */
+        .insight {
+            background: var(--gray-100); border-left: 4px solid var(--navy-500); border-radius: var(--radius-sm);
+            padding: 16px 20px; margin: 20px 0; font-size: 0.875rem; color: var(--navy-700);
+        }
+        .insight strong { color: var(--navy-900); font-weight: 700; }
+        .insight.green { background: #f0fdf4; border-left-color: var(--success); }
+        .insight.orange { background: #fffbeb; border-left-color: var(--warning); }
+
+        /* Decision boxes */
+        .decision-box {
+            background: #fffbeb; border: 2px solid var(--warning); border-radius: var(--radius-sm);
+            padding: 24px; margin: 20px 0;
+        }
+        .decision-box h3 { font-size: 1.05rem; font-weight: 700; color: #92400e; margin-bottom: 14px; }
+        .decision-options { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .decision-options.three-col { grid-template-columns: 1fr 1fr 1fr; }
+        .decision-option {
+            background: var(--white); border-radius: 10px; padding: 16px;
+            border: 2px solid var(--gray-200);
+        }
+        .decision-option.recommended { border-color: var(--success); background: #f0fdf4; }
+        .decision-option h4 { font-size: 0.875rem; font-weight: 600; color: var(--navy-900); margin-bottom: 6px; }
+        .decision-option p { font-size: 0.8125rem; color: var(--navy-500); }
+        .rec-badge {
+            display: inline-block; background: var(--success); color: var(--white);
+            font-size: 0.6875rem; padding: 2px 8px; border-radius: 4px; margin-left: 6px; font-weight: 700;
+        }
+
+        /* Tech flow arrows */
+        .tech-flow {
+            display: flex; align-items: center; justify-content: center;
+            gap: 12px; margin: 20px 0; flex-wrap: wrap;
+        }
+        .tech-step {
+            background: var(--gray-100); border: 2px solid var(--navy-400);
+            border-radius: var(--radius-sm); padding: 12px 16px; text-align: center;
+        }
+        .tech-step .label { font-size: 0.6875rem; color: var(--navy-500); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+        .tech-step .value { font-size: 0.875rem; color: var(--navy-900); font-weight: 600; font-family: 'Monaco', 'Menlo', monospace; }
+        .tech-arrow { color: var(--navy-400); font-size: 1.3rem; font-weight: 600; }
+
+        /* Grids */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+        /* Cards */
+        .card {
+            background: var(--gray-100); border-radius: var(--radius-sm); padding: 18px;
+            border-left: 4px solid var(--navy-400);
+        }
+        .card.navy { border-left-color: var(--navy-500); }
+        .card.orange { border-left-color: var(--warning); }
+        .card.green { border-left-color: var(--success); }
+        .card.red { border-left-color: var(--danger); }
+        .card h4 { font-size: 0.9375rem; font-weight: 700; color: var(--navy-900); margin-bottom: 8px; }
+        .card p, .card li { font-size: 0.8125rem; color: var(--navy-700); line-height: 1.6; }
+        .card ul { list-style: none; }
+        .card li { padding: 3px 0; }
+
+        /* Scenarios */
+        .scenario { padding: 18px; border-radius: var(--radius-sm); }
+        .scenario.success { background: #f0fdf4; border-left: 4px solid var(--success); }
+        .scenario.fail { background: #fef2f2; border-left: 4px solid var(--danger); }
+        .scenario h4 { font-size: 0.9375rem; font-weight: 700; margin-bottom: 10px; }
+        .scenario.success h4 { color: #166534; }
+        .scenario.fail h4 { color: #991b1b; }
+        .scenario li { font-size: 0.8125rem; color: var(--navy-700); padding: 3px 0; list-style: none; }
+
+        /* Partner value banner */
+        .partner-value {
+            background: var(--gradient-primary);
+            border-radius: var(--radius); padding: 24px 32px; color: var(--white);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .partner-value h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 4px; }
+        .partner-value .features { font-size: 0.8125rem; opacity: 0.85; }
+        .partner-value .price { font-size: 2.5rem; font-weight: 700; }
+        .partner-value .period { font-size: 0.8125rem; opacity: 0.8; }
+
+        /* Timelines */
+        .timeline {
+            display: flex; justify-content: space-between; position: relative;
+            margin: 24px 0; padding: 0 10px;
+        }
+        .timeline::before {
+            content: ''; position: absolute; top: 20px; left: 8%; right: 8%;
+            height: 3px; background: linear-gradient(90deg, var(--success) 0%, var(--warning) 50%, var(--danger) 100%);
+            border-radius: 2px;
+        }
+        .tpoint { text-align: center; position: relative; z-index: 1; }
+        .tdot {
+            width: 40px; height: 40px; border-radius: 50%; background: var(--white);
+            border: 3px solid var(--navy-400); display: flex; align-items: center;
+            justify-content: center; font-size: 0.8125rem; font-weight: 700;
+            color: var(--navy-900); margin: 0 auto 8px;
+        }
+        .tdot.green { border-color: var(--success); background: #f0fdf4; }
+        .tdot.orange { border-color: var(--warning); background: #fffbeb; }
+        .tdot.red { border-color: var(--danger); background: #fef2f2; }
+        .tdot.navy { border-color: var(--navy-500); background: var(--gray-100); }
+        .tlabel { font-size: 0.75rem; font-weight: 700; color: var(--navy-900); }
+        .tsub { font-size: 0.6875rem; color: var(--navy-400); font-weight: 500; }
+
+        /* Flow boxes (products) */
+        .flow-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0; }
+        .flow-box {
+            background: var(--gray-100); border-radius: var(--radius-sm); padding: 22px;
+            border-top: 4px solid var(--navy-400);
+        }
+        .flow-box.premium { border-top-color: var(--navy-500); }
+        .flow-box h3 { font-size: 1rem; font-weight: 700; color: var(--navy-900); margin-bottom: 12px; }
+        .flow-box ul { list-style: none; }
+        .flow-box li { font-size: 0.8125rem; color: var(--navy-700); padding: 5px 0; border-bottom: 1px solid var(--gray-200); }
+        .flow-box li:last-child { border-bottom: none; }
+        .flow-box .highlight { color: var(--navy-500); font-weight: 600; }
+
+        /* Mock form */
+        .mock-form {
+            background: var(--gray-100); border-radius: var(--radius-sm); padding: 24px;
+            border: 1px solid var(--gray-200);
+        }
+        .mock-form-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--gray-200);
+        }
+        .mock-form-header h4 { font-size: 1rem; font-weight: 700; color: var(--navy-900); }
+        .form-row {
+            display: grid; grid-template-columns: 170px 1fr; gap: 12px;
+            margin-bottom: 10px; align-items: center;
+        }
+        .form-label { font-size: 0.8125rem; font-weight: 500; color: var(--navy-500); }
+        .form-value {
+            background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px;
+            padding: 8px 12px; font-size: 0.8125rem; color: var(--navy-900); font-weight: 500;
+        }
+        .form-value.generated { background: #f0fdf4; border-color: var(--success); font-family: 'Monaco', 'Menlo', monospace; font-weight: 600; color: #166534; }
+        .form-divider { border: none; border-top: 1px solid var(--gray-200); margin: 14px 0; }
+
+        /* Attention / open items */
+        .attention {
+            background: #fffbeb; border: 2px solid var(--warning); border-radius: var(--radius); padding: 28px;
+        }
+        .attention h3 { font-size: 1.25rem; font-weight: 700; color: var(--navy-900); margin-bottom: 18px; }
+        .att-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .att-item {
+            background: var(--white); border-radius: 10px; padding: 14px;
+            border-left: 4px solid var(--warning);
+        }
+        .att-item.critical { border-left-color: var(--danger); background: #fef2f2; }
+        .att-item h4 { font-size: 0.875rem; font-weight: 700; color: var(--navy-900); margin-bottom: 4px; }
+        .att-item p { font-size: 0.75rem; color: var(--navy-700); }
+
+        /* Footer */
+        .footer { text-align: center; margin-top: 48px; }
+        .footer-badge {
+            display: inline-block; background: var(--gradient-primary);
+            color: var(--white); padding: 12px 28px; border-radius: 9999px;
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;
+        }
+
+        /* Responsive */
+        @media (max-width: 800px) {
+            .flow-compare, .grid-2, .grid-3, .att-grid, .decision-options, .decision-options.three-col {
+                grid-template-columns: 1fr;
+            }
+            .partner-value { flex-direction: column; text-align: center; gap: 16px; }
+            .tech-flow { flex-direction: column; }
+            .form-row { grid-template-columns: 1fr; }
+            .header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <header class="header">
+            <div class="logo">
+                <span class="logo-peoples">People's</span>
+                <span class="logo-doctor">Doctor</span>
+            </div>
+            <h1>Partner GTM Flow</h1>
+            <span class="subtitle">Signup &rarr; Free trial &rarr; Nudge &rarr; Lock &rarr; Convert &rarr; Retain</span>
+        </header>
+
+        <!-- ============================================ -->
+        <!-- 0. STRATEGY                                  -->
+        <!-- ============================================ -->
+        <section class="section" style="border: 2px solid var(--navy-500);">
+            <div class="section-title">
+                <span class="badge strategy">STRATEGY</span>
+                Why we do this
+            </div>
+
+            <div style="background: var(--gradient-primary); border-radius: var(--radius-sm); padding: 28px; color: white;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+                    <div style="background: rgba(255,255,255,0.12); border-radius: 10px; padding: 20px;">
+                        <div style="font-size: 1.25rem; font-weight: 700; margin-bottom: 8px;">1. Premium signal</div>
+                        <div style="font-size: 0.8125rem; opacity: 0.9;">599 DKK/mo = anchor price. No one pays it. Makes the partner price feel like a deal.</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.12); border-radius: 10px; padding: 20px;">
+                        <div style="font-size: 1.25rem; font-weight: 700; margin-bottom: 8px;">2. Exclusivity</div>
+                        <div style="font-size: 0.8125rem; opacity: 0.9;">"50% off because you're a [Partner] member." Not a discount &mdash; an exclusive deal.</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.12); border-radius: 10px; padding: 20px;">
+                        <div style="font-size: 1.25rem; font-weight: 700; margin-bottom: 8px;">3. Dependency</div>
+                        <div style="font-size: 0.8125rem; opacity: 0.9;">2 month free trial &rarr; integrated in workflow &rarr; going back is not an option.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="insight" style="margin-top: 18px;">
+                <strong>Bottom line:</strong> 70-80% of market via partners. 599 DKK exists to make 300 DKK feel like a privilege. Partners get kickback. Users get premium product at exclusive price.
+            </div>
+        </section>
+
+        <div class="arrow">&darr;</div>
+
+        <!-- ============================================ -->
+        <!-- 1. PRODUCTS + PARTNER PAGE                   -->
+        <!-- ============================================ -->
+        <section class="section">
+            <div class="section-title">
+                <span class="badge">STEP 1</span>
+                Products + partner page
+            </div>
+
+            <div class="flow-compare">
+                <div class="flow-box">
+                    <h3>AI Notes &mdash; Free</h3>
+                    <ul>
+                        <li><strong>Always free</strong> &mdash; the hook product</li>
+                        <li>Auto transcription + auto notes</li>
+                        <li>Save up to 2 hours daily</li>
+                    </ul>
+                </div>
+                <div class="flow-box premium">
+                    <h3>Journalresume &mdash; 599 DKK/mo</h3>
+                    <ul>
+                        <li><strong>List price: 599 DKK/user/mo</strong> (anchor)</li>
+                        <li>New patients in minutes, certificates without digging</li>
+                        <li><span class="highlight">Partner price: 300 DKK (50% off)</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="partner-value" style="margin-top: 20px;">
+                <div>
+                    <h3>Partner landing page</h3>
+                    <div class="features">WordPress, co-branded per partner &mdash; promoted via their channels</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 0.9375rem; opacity: 0.65; text-decoration: line-through;">599 DKK/mo</div>
+                    <div class="price">0 DKK</div>
+                    <div class="period">free for 2 months &mdash; then 300 DKK/mo</div>
+                </div>
+            </div>
+
+            <div class="insight" style="margin-top: 18px;">
+                <strong>CTA on page:</strong> "Activate your special offer" &rarr; signup with partner code &rarr; discount + free trial activated
+            </div>
+
+            <!-- Landing page example -->
+            <div style="margin-top: 20px;">
+                <div style="font-size: 0.6875rem; color: var(--navy-400); text-transform: uppercase; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 10px;">Example: Vores Klinik landing page</div>
+                <div style="border: 1px solid var(--gray-200); border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow-card);">
+                    <img src="billeder/vores klinik.png" alt="Vores Klinik partner landing page example" style="width: 100%; display: block;">
+                </div>
+            </div>
+        </section>
+
+        <div class="arrow">&darr;</div>
+
+        <!-- ============================================ -->
+        <!-- 2. SIGNUP FLOW                               -->
+        <!-- ============================================ -->
+        <section class="section">
+            <div class="section-title">
+                <span class="badge">STEP 2</span>
+                Signup flow
+            </div>
+
+            <div class="tech-flow">
+                <div class="tech-step" style="border-color: var(--navy-500); background: var(--gray-100);">
+                    <div class="label" style="color: var(--navy-500);">Partner page</div>
+                    <div class="value">Land + CTA</div>
+                </div>
+                <span class="tech-arrow">&rarr;</span>
+                <div class="tech-step" style="border-color: var(--navy-600); background: var(--gray-100);">
+                    <div class="label" style="color: var(--navy-600);">Signup</div>
+                    <div class="value">Email + code</div>
+                </div>
+                <span class="tech-arrow">&rarr;</span>
+                <div class="tech-step" style="border-color: var(--success); background: #f0fdf4;">
+                    <div class="label" style="color: var(--success);">Validate</div>
+                    <div class="value">Code matched</div>
+                </div>
+                <span class="tech-arrow">&rarr;</span>
+                <div class="tech-step" style="border-color: var(--success); background: #f0fdf4;">
+                    <div class="label" style="color: var(--success);">Active</div>
+                    <div class="value">Free period starts</div>
+                </div>
+            </div>
+
+            <div class="insight">
+                <strong>Stored on user:</strong> Discount deal (e.g. 50% off) + partner kickback % (e.g. 15%) &rarr; linked to contract
+            </div>
+        </section>
+
+        <div class="arrow">&darr;</div>
+
+        <!-- ============================================ -->
+        <!-- 3. TRACKING MODEL                            -->
+        <!-- ============================================ -->
+        <section class="section">
+            <div class="section-title">
+                <span class="badge decision">STEP 3 &mdash; DECISION</span>
+                Tracking model
+            </div>
+
+            <div class="insight green" style="margin-top: 0;">
+                <strong>Decision made: Model A (Partner code).</strong> User MUST enter a partner code at signup to trigger discount / free trial. Code generated in Fresh CRM (Step 4).
+            </div>
+
+            <div class="grid-2">
+                <div class="card green">
+                    <h4>Model A: Partner code &check; CHOSEN</h4>
+                    <ul>
+                        <li>&bull; User enters code manually at signup</li>
+                        <li>&bull; Works without landing page (email, SMS, verbal)</li>
+                        <li>&bull; Code validated live &rarr; "50% discount activated!"</li>
+                        <li>&bull; Format: VORESKLINIK2025</li>
+                    </ul>
+                </div>
+                <div class="card" style="opacity: 0.5;">
+                    <h4>Model B: Auto Partner ID (not chosen)</h4>
+                    <ul>
+                        <li>&bull; URL parameter, frictionless</li>
+                        <li>&bull; But: only works via landing page</li>
+                        <li>&bull; URL param can be lost</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="decision-box" style="margin-top: 18px;">
+                <h3>Code change logic</h3>
+                <div class="decision-options three-col">
+                    <div class="decision-option recommended">
+                        <h4>Only better code accepted <span class="rec-badge">Recommended</span></h4>
+                        <p>Rejects codes with worse discount. Protects user + partner.</p>
+                    </div>
+                    <div class="decision-option">
+                        <h4>New code always works</h4>
+                        <p>Risk: user downgrades accidentally.</p>
+                    </div>
+                    <div class="decision-option">
+                        <h4>Admin approval</h4>
+                        <p>Lars approves manually. Good for edge cases.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="arrow">&darr;</div>
+
+        <!-- ============================================ -->
+        <!-- 4. CONTRACT SYSTEM                           -->
+        <!-- ============================================ -->
+        <section class="section">
+            <div class="section-title">
+                <span class="badge tech">STEP 4</span>
+                Contract system &mdash; Fresh CRM as master
+            </div>
+
+            <p style="font-size: 0.9375rem; color: var(--navy-900); margin-bottom: 18px; font-weight: 700;">
+                All prospects, customers and contracts live in Fresh CRM.
+            </p>
+
+            <!-- Workflow -->
+            <div style="background: linear-gradient(135deg, #16a34a, #15803d); border-radius: var(--radius-sm); padding: 24px; margin-bottom: 20px; color: white;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+                    <div style="background: rgba(255,255,255,0.12); border-radius: 10px; padding: 18px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 700;">1</div>
+                        <div style="font-size: 0.8125rem; font-weight: 600;">Lars creates contract</div>
+                        <div style="font-size: 0.75rem; opacity: 0.85;">Physical contract placed in Fresh CRM</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.12); border-radius: 10px; padding: 18px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 700;">2</div>
+                        <div style="font-size: 0.8125rem; font-weight: 600;">Lars fills in form</div>
+                        <div style="font-size: 0.75rem; opacity: 0.85;">Partner agreement details in Fresh form (built by Umar)</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.12); border-radius: 10px; padding: 18px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 700;">3</div>
+                        <div style="font-size: 0.8125rem; font-weight: 600;">Data syncs</div>
+                        <div style="font-size: 0.75rem; opacity: 0.85;">Fresh CRM &rarr; SynergyHub &rarr; Stripe/e-conomic</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data flow -->
+            <div class="tech-flow">
+                <div class="tech-step" style="border-color: var(--navy-500); background: var(--gray-100);">
+                    <div class="label" style="color: var(--navy-500);">Source</div>
+                    <div class="value">Fresh CRM</div>
+                </div>
+                <span class="tech-arrow">&rarr;</span>
+                <div class="tech-step" style="border-color: var(--navy-600); background: var(--gray-100);">
+                    <div class="label" style="color: var(--navy-600);">Hub</div>
+                    <div class="value">SynergyHub</div>
+                </div>
+                <span class="tech-arrow">&rarr;</span>
+                <div class="tech-step" style="border-color: var(--warning); background: #fffbeb;">
+                    <div class="label" style="color: var(--warning);">Billing</div>
+                    <div class="value">Stripe / e-conomic</div>
+                </div>
+            </div>
+
+            <!-- Roles -->
+            <div class="grid-3" style="margin: 20px 0;">
+                <div class="card navy">
+                    <h4>Lars (Sales)</h4>
+                    <ul>
+                        <li>&bull; Signs physical contract</li>
+                        <li>&bull; Places in Fresh CRM</li>
+                        <li>&bull; Fills in partner form</li>
+                        <li>&bull; Communicates code to partner</li>
+                    </ul>
+                </div>
+                <div class="card green">
+                    <h4>Umar (CRM Manager)</h4>
+                    <ul>
+                        <li>&bull; Builds + maintains Fresh form</li>
+                        <li>&bull; Ensures form matches contract</li>
+                        <li>&bull; Sets up data flow from Fresh</li>
+                        <li>&bull; QA on CRM data</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>Anders Hasle (Tech)</h4>
+                    <ul>
+                        <li>&bull; Receives data from Fresh form</li>
+                        <li>&bull; Pulls into SynergyHub</li>
+                        <li>&bull; Ensures flow to People's Doctor</li>
+                        <li>&bull; Stripe/e-conomic integration</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Form mockup -->
+            <div class="mock-form">
+                <div class="mock-form-header">
+                    <div>
+                        <h4>Fresh CRM: Partner Agreement Form</h4>
+                        <span style="font-size: 0.75rem; color: var(--navy-400); font-weight: 500;">Built by Umar &mdash; filled in by Lars</span>
+                    </div>
+                    <span style="background: var(--gradient-primary); color: white; padding: 5px 12px; border-radius: 6px; font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.05em;">FRESH CRM</span>
+                </div>
+
+                <div class="form-row"><span class="form-label">Partner name</span><span class="form-value">Vores Klinik</span></div>
+                <div class="form-row"><span class="form-label">Contract ID</span><span class="form-value">VK-2025-01</span></div>
+                <div class="form-row"><span class="form-label">Partner code</span><span class="form-value generated">VORESKLINIK2025</span></div>
+                <hr class="form-divider">
+                <div class="form-row"><span class="form-label">Period</span><span class="form-value">01-02-2025 &rarr; 01-02-2026 (auto-renew 12mo)</span></div>
+                <div class="form-row"><span class="form-label">Free trial</span><span class="form-value">2 months</span></div>
+                <div class="form-row"><span class="form-label">User discount</span><span class="form-value">50% on Journalresume</span></div>
+                <div class="form-row"><span class="form-label">Price after discount</span><span class="form-value generated">300 DKK/user/mo</span></div>
+                <hr class="form-divider">
+                <div class="form-row"><span class="form-label">Partner kickback</span><span class="form-value">15% of discounted price</span></div>
+                <div class="form-row"><span class="form-label">Kickback per user/mo</span><span class="form-value generated">45 DKK</span></div>
+                <hr class="form-divider">
+                <div class="form-row"><span class="form-label">Status</span><span class="form-value" style="background: #f0fdf4; border-color: var(--success); color: #166534; font-weight: 600;">&check; Active</span></div>
+                <div class="form-row"><span class="form-label">Stored in</span><span class="form-value" style="background: var(--gray-100); border-color: var(--navy-400); color: var(--navy-500); font-weight: 600;">Fresh CRM + SynergyHub + Stripe/e-conomic</span></div>
+            </div>
+
+            <div class="insight orange" style="margin-top: 18px;">
+                <strong>Action items:</strong>
+                Umar: build the Fresh form &nbsp;|&nbsp; Anders: set up data reception from Fresh &nbsp;|&nbsp; Tech: define API/webhook structure
+            </div>
+        </section>
+
+        <div class="arrow">&darr;</div>
+
+        <!-- ============================================ -->
+        <!-- 5. FREE PERIOD + COUNTDOWN                   -->
+        <!-- ============================================ -->
+        <section class="section">
+            <div class="section-title">
+                <span class="badge gate">STEP 5</span>
+                Free period + countdown
+            </div>
+
+            <div class="timeline" style="margin: 24px 0;">
+                <div class="tpoint"><div class="tdot green">&check;</div><div class="tlabel">Signup</div><div class="tsub">Day 0</div></div>
+                <div class="tpoint"><div class="tdot green">&check;</div><div class="tlabel">Active</div><div class="tsub">Using</div></div>
+                <div class="tpoint"><div class="tdot orange">14</div><div class="tlabel">14 days</div><div class="tsub">Nudge 1</div></div>
+                <div class="tpoint"><div class="tdot orange">7</div><div class="tlabel">7 days</div><div class="tsub">Nudge 2</div></div>
+                <div class="tpoint"><div class="tdot red">3</div><div class="tlabel">3 days</div><div class="tsub">Urgent</div></div>
+                <div class="tpoint"><div class="tdot red">1</div><div class="tlabel">1 day</div><div class="tsub">Last</div></div>
+                <div class="tpoint"><div class="tdot red" style="background: var(--danger); color: white;">&#x1F512;</div><div class="tlabel">Expiry</div><div class="tsub">Lock</div></div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card orange">
+                    <h4>Platform pop-ups</h4>
+                    <ul>
+                        <li>&bull; 14d: "Free period expires soon"</li>
+                        <li>&bull; 7d: "7 days left"</li>
+                        <li>&bull; 3d: "Only 3 days! Upgrade with partner discount"</li>
+                        <li>&bull; 1d: "Tomorrow you lose access"</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>Email sequence (Fresh)</h4>
+                    <ul>
+                        <li>&bull; 14d: What happens at expiry</li>
+                        <li>&bull; 7d: Reminder + upgrade link</li>
+                        <li>&bull; 3d: "Your colleagues are using it"</li>
+                        <li>&bull; 1d: "Last day"</li>
+                        <li>&bull; Day 0: "Access locked &mdash; upgrade here"</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="partner-value" style="margin-top: 18px;">
+                <div>
+                    <h3>Always shown in all nudges</h3>
+                    <div class="features">Partner-specific pricing</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 0.9375rem; opacity: 0.65; text-decoration: line-through;">599 DKK/mo</div>
+                    <div class="price">300 DKK</div>
+                    <div class="period">Your [Partner] member price (50% off)</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="arrow">&darr;</div>
+
+        <!-- ============================================ -->
+        <!-- 6. LOCKOUT + CONVERSION                      -->
+        <!-- ============================================ -->
+        <section class="section">
+            <div class="section-title">
+                <span class="badge gate">STEP 6</span>
+                Lockout + conversion
+            </div>
+
+            <div class="tech-flow">
+                <div class="tech-step"><div class="label">Free expires</div><div class="value">Day 0</div></div>
+                <span class="tech-arrow">&rarr;</span>
+                <div class="tech-step" style="border-color: var(--warning); background: #fffbeb;"><div class="label" style="color: var(--warning);">Grace period</div><div class="value">1-7 days</div></div>
+                <span class="tech-arrow">&rarr;</span>
+                <div class="tech-step" style="border-color: var(--danger); background: #fef2f2;"><div class="label" style="color: var(--danger);">Full lock</div><div class="value">Day 2-8+</div></div>
+                <span class="tech-arrow">&rarr;</span>
+                <div class="tech-step" style="border-color: var(--success); background: #f0fdf4;"><div class="label" style="color: var(--success);">Goal</div><div class="value">Upgrade</div></div>
+            </div>
+
+            <div class="grid-2" style="margin-top: 18px;">
+                <div class="scenario success">
+                    <h4>Grace period (1-7 days)</h4>
+                    <ul>
+                        <li>&rarr; View existing resumes (read-only)</li>
+                        <li>&rarr; Cannot generate new resumes</li>
+                        <li>&rarr; AI Notes stay free</li>
+                        <li>&rarr; Upgrade button everywhere</li>
+                    </ul>
+                </div>
+                <div class="scenario fail">
+                    <h4>Full lock (after grace)</h4>
+                    <ul>
+                        <li>&rarr; Journalresume completely locked</li>
+                        <li>&rarr; AI Notes stay free</li>
+                        <li>&rarr; Upgrade page on any access attempt</li>
+                        <li>&rarr; Retention flow starts</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="insight orange">
+                <strong>Open question:</strong> Existing resumes after lockout &mdash; read-only always or full lock? Clinical concern: doctors may lose access to patient data.
+            </div>
+        </section>
+
+        <div class="arrow">&darr;</div>
+
+        <!-- ============================================ -->
+        <!-- 7. RETENTION FLOW                            -->
+        <!-- ============================================ -->
+        <section class="section">
+            <div class="section-title">
+                <span class="badge retention">STEP 7</span>
+                Retention flow
+            </div>
+
+            <div class="timeline" style="margin: 24px 0;">
+                <div class="tpoint"><div class="tdot red">&#x1F512;</div><div class="tlabel">Lock</div><div class="tsub">Day 0</div></div>
+                <div class="tpoint"><div class="tdot red">1</div><div class="tlabel">Day 1</div><div class="tsub">Lost</div></div>
+                <div class="tpoint"><div class="tdot orange">3</div><div class="tlabel">Day 3</div><div class="tsub">Remind</div></div>
+                <div class="tpoint"><div class="tdot orange">7</div><div class="tlabel">Day 7</div><div class="tsub">Social</div></div>
+                <div class="tpoint"><div class="tdot navy">14</div><div class="tlabel">Day 14</div><div class="tsub">Personal</div></div>
+                <div class="tpoint"><div class="tdot red">30</div><div class="tlabel">Day 30</div><div class="tsub">Final</div></div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card red">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li>&bull; Login banner: "You're missing Journalresume"</li>
+                        <li>&bull; On resume attempt: "Upgrade to continue"</li>
+                        <li>&bull; Partner price always visible</li>
+                    </ul>
+                </div>
+                <div class="card navy">
+                    <h4>Email sequence (Fresh)</h4>
+                    <ul>
+                        <li>&bull; D1: "Access lost &mdash; upgrade with partner price"</li>
+                        <li>&bull; D3: "Your resumes are waiting"</li>
+                        <li>&bull; D7: "X colleagues still using it"</li>
+                        <li>&bull; D14: Personal outreach (manual, high-value)</li>
+                        <li>&bull; D30: "Last chance for [Partner] price"</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Fresh integration -->
+            <div style="background: var(--gray-100); border: 2px solid var(--navy-400); border-radius: var(--radius-sm); padding: 20px; margin-top: 20px;">
+                <h3 style="font-size: 1rem; font-weight: 700; color: var(--navy-800); margin-bottom: 12px;">Fresh integration</h3>
+                <div class="tech-flow" style="margin-bottom: 14px;">
+                    <div class="tech-step" style="border-color: var(--navy-500); background: var(--white);"><div class="label" style="color: var(--navy-500);">Trigger</div><div class="value" style="font-size: 0.8125rem;">Webhook</div></div>
+                    <span class="tech-arrow">&rarr;</span>
+                    <div class="tech-step" style="border-color: var(--navy-500); background: var(--white);"><div class="label" style="color: var(--navy-500);">Fresh</div><div class="value" style="font-size: 0.8125rem;">Automation</div></div>
+                    <span class="tech-arrow">&rarr;</span>
+                    <div class="tech-step" style="border-color: var(--navy-500); background: var(--white);"><div class="label" style="color: var(--navy-500);">Emails</div><div class="value" style="font-size: 0.8125rem;">Time-based</div></div>
+                    <span class="tech-arrow">&rarr;</span>
+                    <div class="tech-step" style="border-color: var(--success); background: #f0fdf4;"><div class="label" style="color: var(--success);">Goal</div><div class="value" style="font-size: 0.8125rem;">Upgrade</div></div>
+                </div>
+                <div class="insight" style="margin: 0; font-size: 0.8125rem;">
+                    <strong>Auto-stop:</strong> User upgrades &rarr; People's Doctor webhook &rarr; Fresh stops retention sequence. No manual action.
+                </div>
+            </div>
+        </section>
+
+        <div class="arrow">&darr;</div>
+
+        <!-- ============================================ -->
+        <!-- 8. PAYMENT + INVOICING                       -->
+        <!-- ============================================ -->
+        <section class="section">
+            <div class="section-title">
+                <span class="badge tech">STEP 8</span>
+                Payment + invoicing
+            </div>
+
+            <div class="tech-flow">
+                <div class="tech-step"><div class="label">User upgrades</div><div class="value">People's Doctor</div></div>
+                <span class="tech-arrow">&rarr;</span>
+                <div class="tech-step"><div class="label">Payment</div><div class="value">Stripe</div></div>
+                <span class="tech-arrow">&rarr;</span>
+                <div class="tech-step"><div class="label">Webhook</div><div class="value">Confirm</div></div>
+                <span class="tech-arrow">&rarr;</span>
+                <div class="tech-step"><div class="label">Invoice</div><div class="value">e-conomic</div></div>
+                <span class="tech-arrow">&rarr;</span>
+                <div class="tech-step" style="border-color: var(--navy-500); background: var(--gray-100);"><div class="label" style="color: var(--navy-500);">Kickback</div><div class="value">Partner</div></div>
+            </div>
+
+            <div class="grid-2" style="margin-top: 18px;">
+                <div class="scenario success">
+                    <h4>&check; Commission triggered</h4>
+                    <ul>
+                        <li>&rarr; User with partner code upgrades to paid</li>
+                        <li>&rarr; Kickback = % of discounted price</li>
+                        <li>&rarr; Ex: 15% of 300 DKK = 45 DKK/user/mo</li>
+                    </ul>
+                </div>
+                <div class="scenario fail">
+                    <h4>&cross; No commission</h4>
+                    <ul>
+                        <li>&rarr; Only free AI Notes</li>
+                        <li>&rarr; No partner code</li>
+                        <li>&rarr; Still in free trial</li>
+                        <li>&rarr; Churned before payment</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <div class="arrow">&darr;</div>
+
+        <!-- ============================================ -->
+        <!-- 9. CONTRACT LIFECYCLE                        -->
+        <!-- ============================================ -->
+        <section class="section">
+            <div class="section-title">
+                <span class="badge decision">STEP 9 &mdash; DECISIONS</span>
+                Contract lifecycle
+            </div>
+
+            <div class="decision-box">
+                <h3>Scenario 1: Contract expires, NOT renewed</h3>
+                <p style="font-size: 0.8125rem; color: var(--navy-700); margin-bottom: 14px;">200 doctors on 300 DKK/mo. Contract not renewed. What happens?</p>
+                <div class="decision-options three-col">
+                    <div class="decision-option">
+                        <h4>Full price immediately</h4>
+                        <p>All &rarr; 599 DKK. Churn bomb risk.</p>
+                    </div>
+                    <div class="decision-option">
+                        <h4>Grandfather</h4>
+                        <p>Existing keep 300. New pay 599. Complex.</p>
+                    </div>
+                    <div class="decision-option recommended">
+                        <h4>Transition period <span class="rec-badge">Rec.</span></h4>
+                        <p>3mo notice &rarr; gradual increase &rarr; full price.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="decision-box">
+                <h3>Scenario 2: Contract renegotiated &mdash; discount changes</h3>
+                <p style="font-size: 0.8125rem; color: var(--navy-700); margin-bottom: 14px;">Discount changes from 50% to 30%. Existing pay 300, new price 419. Apply to all?</p>
+                <div class="decision-options">
+                    <div class="decision-option">
+                        <h4>Grandfather</h4>
+                        <p>Existing keep old price. New get new price. Two tiers per partner.</p>
+                    </div>
+                    <div class="decision-option">
+                        <h4>Everyone follows contract</h4>
+                        <p>All updated. Simple but price increase.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="insight green">
+                <strong>System req:</strong> Contract changes (kickback, discount, expiry) auto-update in system. Stripe charges correct price, kickback adjusts. No manual changes per user.
+            </div>
+        </section>
+
+        <div class="arrow">&darr;</div>
+
+        <!-- ============================================ -->
+        <!-- 10. PARTNER DASHBOARD                        -->
+        <!-- ============================================ -->
+        <section class="section">
+            <div class="section-title">
+                <span class="badge">STEP 10</span>
+                Partner dashboard
+            </div>
+
+            <div class="mock-form">
+                <div class="mock-form-header">
+                    <div>
+                        <div style="font-size: 0.6875rem; color: var(--navy-400); text-transform: uppercase; font-weight: 700; letter-spacing: 0.1em;">Partner Dashboard</div>
+                        <h4 style="font-size: 1.25rem;">Vores Klinik</h4>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.6875rem; color: var(--navy-400); font-weight: 500;">Member discount</div>
+                        <div style="font-size: 1.375rem; font-weight: 700; color: var(--navy-500);">50%</div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 18px;">
+                    <div style="background: var(--white); border-radius: 10px; padding: 18px; text-align: center; box-shadow: 0 0 15px rgba(38,48,79,0.05);">
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--navy-900);">600</div>
+                        <div style="font-size: 0.6875rem; color: var(--navy-400); font-weight: 500;">Total signups</div>
+                    </div>
+                    <div style="background: var(--white); border-radius: 10px; padding: 18px; text-align: center; box-shadow: 0 0 15px rgba(38,48,79,0.05);">
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--success);">382</div>
+                        <div style="font-size: 0.6875rem; color: var(--navy-400); font-weight: 500;">Paying</div>
+                    </div>
+                    <div style="background: var(--white); border-radius: 10px; padding: 18px; text-align: center; box-shadow: 0 0 15px rgba(38,48,79,0.05);">
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--warning);">64%</div>
+                        <div style="font-size: 0.6875rem; color: var(--navy-400); font-weight: 500;">Conversion</div>
+                    </div>
+                    <div style="background: var(--white); border-radius: 10px; padding: 18px; text-align: center; box-shadow: 0 0 15px rgba(38,48,79,0.05);">
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--navy-500);">17,190 DKK</div>
+                        <div style="font-size: 0.6875rem; color: var(--navy-400); font-weight: 500;">Kickback/mo</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="insight">
+                <strong>During free period:</strong> Partner sees signups + activation, no kickback yet. Show: "X users in free period. Estimated kickback: Y DKK/mo."
+            </div>
+        </section>
+
+        <div class="arrow">&darr;</div>
+
+        <!-- ============================================ -->
+        <!-- OPEN ITEMS                                   -->
+        <!-- ============================================ -->
+        <section class="attention">
+            <h3>Open items</h3>
+            <div class="att-grid">
+                <div class="att-item critical">
+                    <h4>1. Resumes after lockout</h4>
+                    <p>Read-only always or full lock? Clinical concern. (Step 6)</p>
+                </div>
+                <div class="att-item critical">
+                    <h4>2. Contract expiry &rarr; users</h4>
+                    <p>Churn bomb risk. Transition period recommended. (Step 9)</p>
+                </div>
+                <div class="att-item">
+                    <h4>3. Contract versioning</h4>
+                    <p>New discount: all or only new signups? (Step 9)</p>
+                </div>
+                <div class="att-item">
+                    <h4>4. User switches clinic/EHR</h4>
+                    <p>Partner affiliation edge case. (Step 2)</p>
+                </div>
+                <div class="att-item">
+                    <h4>5. Code sharing risk</h4>
+                    <p>Codes shared to non-members. Acceptable? Domain validation?</p>
+                </div>
+                <div class="att-item">
+                    <h4>6. Fresh integration details</h4>
+                    <p>Webhooks, contact props, automation rules. (Step 7)</p>
+                </div>
+                <div class="att-item">
+                    <h4>7. Grace period length</h4>
+                    <p>1-7 days. Test and adjust.</p>
+                </div>
+                <div class="att-item">
+                    <h4>8. Individual vs. clinic billing</h4>
+                    <p>Affects Stripe, e-conomic, kickback. (Step 4)</p>
+                </div>
+                <div class="att-item">
+                    <h4>9. Plan B if strategy fails</h4>
+                    <p>Conversion &lt;20%? Extend free? Lower price? Outreach?</p>
+                </div>
+                <div class="att-item">
+                    <h4>10. Kickback during transition</h4>
+                    <p>Contract expires + transition &mdash; does kickback continue?</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <div class="footer-badge">PARTNER GTM FLOW v2.0 &mdash; People's Doctor</div>
+        </footer>
+
+    </div>
+</body>
+</html>

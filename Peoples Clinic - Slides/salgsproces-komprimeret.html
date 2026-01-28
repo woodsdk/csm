@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>People's Doctor - Salgsprocessen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, #e8eef4 0%, #dce4ed 100%);
+            padding: 20px 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: #1a2b4a;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            color: #5a6a7a;
+            font-weight: 500;
+        }
+
+        /* Main Grid */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 40px 1fr 40px 1fr;
+            grid-template-rows: 1fr 30px 1fr 30px 1fr;
+            gap: 0;
+            flex: 1;
+            min-height: 0;
+        }
+
+        /* Card Base */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 14px 16px;
+            box-shadow: 0 2px 8px rgba(26, 43, 74, 0.06);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .card-number {
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .card-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #1a2b4a;
+        }
+
+        .card-badge {
+            font-size: 0.55rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: white;
+            margin-left: auto;
+        }
+
+        .card-content {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .card-content ul {
+            list-style: none;
+            font-size: 0.7rem;
+            color: #5a6a7a;
+        }
+
+        .card-content ul li {
+            padding: 2px 0;
+            padding-left: 12px;
+            position: relative;
+        }
+
+        .card-content ul li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+        }
+
+        .card-subtitle {
+            font-size: 0.65rem;
+            color: #7a8a9a;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        /* Arrow connectors */
+        .arrow-h {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .arrow-h-line {
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #3d5a80, #4a6fa5);
+            position: relative;
+            border-radius: 2px;
+        }
+
+        .arrow-h-line::after {
+            content: '';
+            position: absolute;
+            right: -1px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-left: 10px solid #4a6fa5;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+        }
+
+        .arrow-v {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .arrow-v-line {
+            height: 100%;
+            width: 3px;
+            background: linear-gradient(180deg, #3d5a80, #4a6fa5);
+            position: relative;
+            border-radius: 2px;
+        }
+
+        .arrow-v-line::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-top: 10px solid #4a6fa5;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+        }
+
+        /* Corner arrows */
+        .arrow-corner {
+            position: relative;
+        }
+
+        .arrow-corner-down-right {
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .arrow-corner-down-right .corner-path {
+            width: 50%;
+            height: 50%;
+            border-bottom: 3px solid #4a6fa5;
+            border-left: 3px solid #4a6fa5;
+            border-bottom-left-radius: 12px;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        /* Empty cell */
+        .empty {
+            background: transparent;
+        }
+
+        /* Color themes */
+        .theme-1 { border-left: 3px solid #1a2b4a; }
+        .theme-1 .card-number { background: #1a2b4a; }
+        .theme-1 .card-badge { background: #1a2b4a; }
+        .theme-1 ul li::before { background: #1a2b4a; }
+
+        .theme-2 { border-left: 3px solid #3d5a80; }
+        .theme-2 .card-number { background: #3d5a80; }
+        .theme-2 .card-badge { background: #3d5a80; }
+        .theme-2 ul li::before { background: #3d5a80; }
+
+        .theme-3 { border-left: 3px solid #4a6fa5; }
+        .theme-3 .card-number { background: #4a6fa5; }
+        .theme-3 .card-badge { background: #4a6fa5; }
+        .theme-3 ul li::before { background: #4a6fa5; }
+
+        .theme-4 { border-left: 3px solid #5a7a9a; }
+        .theme-4 .card-number { background: #5a7a9a; }
+        .theme-4 .card-badge { background: #5a7a9a; }
+        .theme-4 ul li::before { background: #5a7a9a; }
+
+        .theme-5 { border-left: 3px solid #7a9aba; }
+        .theme-5 .card-number { background: #7a9aba; }
+        .theme-5 .card-badge { background: #7a9aba; }
+        .theme-5 ul li::before { background: #7a9aba; }
+
+        .theme-6 { border-left: 3px solid #635bff; }
+        .theme-6 .card-number { background: #635bff; }
+        .theme-6 .card-badge { background: #635bff; }
+        .theme-6 ul li::before { background: #635bff; }
+
+        /* Target Groups special styling */
+        .target-groups {
+            display: flex;
+            gap: 8px;
+        }
+
+        .target-group {
+            flex: 1;
+            background: #f4f7fa;
+            border-radius: 8px;
+            padding: 8px;
+        }
+
+        .target-group.primary {
+            background: linear-gradient(135deg, #1a2b4a, #2d4a6f);
+            color: white;
+        }
+
+        .target-group h5 {
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .target-group p {
+            font-size: 0.55rem;
+            opacity: 0.85;
+        }
+
+        /* Two paths styling */
+        .two-paths {
+            display: flex;
+            gap: 8px;
+        }
+
+        .path {
+            flex: 1;
+            background: #f4f7fa;
+            border-radius: 8px;
+            padding: 8px;
+        }
+
+        .path h5 {
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: #1a2b4a;
+            margin-bottom: 4px;
+        }
+
+        .path p {
+            font-size: 0.55rem;
+            color: #5a6a7a;
+        }
+
+        .path.top-down { border-left: 2px solid #1a2b4a; }
+        .path.bottom-up { border-left: 2px solid #7a9aba; }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 12px;
+            flex-shrink: 0;
+        }
+
+        .footer-badge {
+            display: inline-block;
+            background: #1a2b4a;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        /* Grid positioning */
+        .pos-1 { grid-column: 1; grid-row: 1; }
+        .pos-arrow-1-2 { grid-column: 2; grid-row: 1; }
+        .pos-2 { grid-column: 3; grid-row: 1; }
+        .pos-arrow-2-3 { grid-column: 4; grid-row: 1; }
+        .pos-3 { grid-column: 5; grid-row: 1; }
+
+        .pos-arrow-row1-row2-left { grid-column: 1; grid-row: 2; }
+        .pos-arrow-row1-row2-mid { grid-column: 3; grid-row: 2; }
+        .pos-arrow-row1-row2-right { grid-column: 5; grid-row: 2; }
+
+        .pos-4 { grid-column: 1; grid-row: 3; }
+        .pos-arrow-4-5 { grid-column: 2; grid-row: 3; }
+        .pos-5 { grid-column: 3; grid-row: 3; }
+        .pos-arrow-5-6 { grid-column: 4; grid-row: 3; }
+        .pos-6 { grid-column: 5; grid-row: 3; }
+
+        .pos-arrow-row2-row3-left { grid-column: 1; grid-row: 4; }
+        .pos-arrow-row2-row3-mid { grid-column: 3; grid-row: 4; }
+        .pos-arrow-row2-row3-right { grid-column: 5; grid-row: 4; }
+
+        .pos-7 { grid-column: 1; grid-row: 5; }
+        .pos-arrow-7-8 { grid-column: 2; grid-row: 5; }
+        .pos-8 { grid-column: 3; grid-row: 5; }
+        .pos-arrow-8-9 { grid-column: 4; grid-row: 5; }
+        .pos-9 { grid-column: 5; grid-row: 5; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>People's Doctor</h1>
+        <p>From Partnership to Paying Clinics</p>
+    </header>
+
+    <div class="grid-container">
+        <!-- Row 1 -->
+        <div class="card theme-1 pos-1">
+            <div class="card-header">
+                <span class="card-number">1</span>
+                <span class="card-title">Partnerships</span>
+                <span class="card-badge">LARS</span>
+            </div>
+            <div class="card-content">
+                <p class="card-subtitle">Network selling via partners</p>
+                <ul>
+                    <li>CGM, KirCACS, ProTreatment</li>
+                    <li>Vores Klinik, NOVAX, EG</li>
+                    <li>Partner agreements</li>
+                    <li>Technical integration</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="arrow-h pos-arrow-1-2">
+            <div class="arrow-h-line"></div>
+        </div>
+
+        <div class="card theme-2 pos-2">
+            <div class="card-header">
+                <span class="card-number">2</span>
+                <span class="card-title">GTM & Activation</span>
+                <span class="card-badge">MORTEN</span>
+            </div>
+            <div class="card-content">
+                <p class="card-subtitle">Go-to-market activities</p>
+                <ul>
+                    <li>Partner webinars & demos</li>
+                    <li>Email campaigns</li>
+                    <li>Newsletters & content</li>
+                    <li>Activation support</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="arrow-h pos-arrow-2-3">
+            <div class="arrow-h-line"></div>
+        </div>
+
+        <div class="card theme-3 pos-3">
+            <div class="card-header">
+                <span class="card-number">3</span>
+                <span class="card-title">Website & Traffic</span>
+                <span class="card-badge">TRAFFIC</span>
+            </div>
+            <div class="card-content">
+                <p class="card-subtitle">Lead generation & conversion</p>
+                <ul>
+                    <li>Partner referrals</li>
+                    <li>SoMe & content marketing</li>
+                    <li>peoplesDoctor.com</li>
+                    <li>Call-to-action</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Arrow Row 1 to Row 2 -->
+        <div class="arrow-v pos-arrow-row1-row2-left">
+            <div class="arrow-v-line"></div>
+        </div>
+        <div class="empty pos-arrow-row1-row2-mid"></div>
+        <div class="arrow-v pos-arrow-row1-row2-right">
+            <div class="arrow-v-line"></div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="card theme-4 pos-4">
+            <div class="card-header">
+                <span class="card-number">4</span>
+                <span class="card-title">Target Groups</span>
+            </div>
+            <div class="card-content">
+                <div class="target-groups">
+                    <div class="target-group primary">
+                        <h5>Clinic Owner</h5>
+                        <p>High-touch, dedicated contact, weekly calls</p>
+                    </div>
+                    <div class="target-group">
+                        <h5>Clinic Staff</h5>
+                        <p>Self-service, ambassador potential</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arrow-h pos-arrow-4-5">
+            <div class="arrow-h-line"></div>
+        </div>
+
+        <div class="card theme-3 pos-5">
+            <div class="card-header">
+                <span class="card-number">5</span>
+                <span class="card-title">AI Nurturing</span>
+                <span class="card-badge">AI-DRIVEN</span>
+            </div>
+            <div class="card-content">
+                <p class="card-subtitle">Intelligent engagement & upselling</p>
+                <ul>
+                    <li>Behavior tracking & churn risk</li>
+                    <li>On-platform engagement</li>
+                    <li>Email nurturing (Umar)</li>
+                    <li>Intelligent upselling triggers</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="arrow-h pos-arrow-5-6" style="transform: rotate(180deg);">
+            <div class="arrow-h-line"></div>
+        </div>
+
+        <div class="card theme-4 pos-6">
+            <div class="card-header">
+                <span class="card-number">6</span>
+                <span class="card-title">Sign-up & Onboarding</span>
+                <span class="card-badge">ANDERS</span>
+            </div>
+            <div class="card-content">
+                <p class="card-subtitle">Self-service registration</p>
+                <ul>
+                    <li>MitID login</li>
+                    <li>Guided tour</li>
+                    <li>First consultation</li>
+                    <li>Freemium activated</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Arrow Row 2 to Row 3 -->
+        <div class="arrow-v pos-arrow-row2-row3-left">
+            <div class="arrow-v-line"></div>
+        </div>
+        <div class="arrow-v pos-arrow-row2-row3-mid">
+            <div class="arrow-v-line"></div>
+        </div>
+        <div class="empty pos-arrow-row2-row3-right"></div>
+
+        <!-- Row 3 -->
+        <div class="card theme-1 pos-7">
+            <div class="card-header">
+                <span class="card-number">7</span>
+                <span class="card-title">Conversion Paths</span>
+            </div>
+            <div class="card-content">
+                <div class="two-paths">
+                    <div class="path top-down">
+                        <h5>TOP-DOWN</h5>
+                        <p>Owner tries → upgrades → rolls out to clinic</p>
+                    </div>
+                    <div class="path bottom-up">
+                        <h5>BOTTOM-UP</h5>
+                        <p>Staff → ambassador → we contact owner</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arrow-h pos-arrow-7-8">
+            <div class="arrow-h-line"></div>
+        </div>
+
+        <div class="card theme-6 pos-8">
+            <div class="card-header">
+                <span class="card-number">8</span>
+                <span class="card-title">Billing</span>
+                <span class="card-badge">STRIPE</span>
+            </div>
+            <div class="card-content">
+                <p class="card-subtitle">Subscription & payment</p>
+                <ul>
+                    <li>Credit/debit card</li>
+                    <li>Auto-renewal</li>
+                    <li>Per-user licenses</li>
+                    <li>e-conomic integration</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="arrow-h pos-arrow-8-9">
+            <div class="arrow-h-line"></div>
+        </div>
+
+        <div class="card theme-5 pos-9">
+            <div class="card-header">
+                <span class="card-number">9</span>
+                <span class="card-title">Platform Add-ons</span>
+                <span class="card-badge">ROADMAP</span>
+            </div>
+            <div class="card-content">
+                <p class="card-subtitle">Future extensions</p>
+                <ul>
+                    <li>People's Book (health data)</li>
+                    <li>People's Doctor App (patient app)</li>
+                    <li>Cross-system journal access</li>
+                    <li>Direct clinic communication</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-badge">WWW.PEOPLESDOCTOR.COM</div>
+    </footer>
+</body>
+</html>

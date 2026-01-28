@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>People's Doctor - Aktiv Konsultation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../Design System/platform.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Page-specific styles for active consultation */
+
+    /* Top header with patient info and recording */
+    .consultation-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      animation: fadeUp 0.4s ease-out forwards;
+      flex-shrink: 0;
+      overflow: visible;
+      position: relative;
+      padding-top: 10px;
+      padding-bottom: 20px;
+    }
+
+    .patient-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .patient-info__name {
+      font-size: 1rem;
+      color: #13102C;
+    }
+
+    .patient-info__name strong {
+      font-weight: 600;
+    }
+
+    .patient-info__time {
+      font-size: 1rem;
+      color: #13102C;
+    }
+
+    .patient-info__time strong {
+      font-weight: 600;
+    }
+
+    /* Recording section - centered */
+    .recording-section {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .recording-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 20px 0 8px 0;
+    }
+
+    .recording-timer {
+      width: 80px;
+      text-align: right;
+      font-size: 1.75rem;
+      font-weight: 500;
+      color: #13102C;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .record-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Large record button with waveform */
+    .record-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #B61010 0%, #F26C6C 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .record-circle--active::before,
+    .record-circle--active::after {
+      content: '';
+      position: absolute;
+      width: calc(100% + 24px);
+      height: calc(100% + 24px);
+      border-radius: 50%;
+      border: 12px solid rgba(239, 68, 68, 0.35);
+      animation: pulseRing 4s ease-out infinite;
+      opacity: 0;
+    }
+
+    .record-circle--active::after {
+      animation-delay: 2s;
+    }
+
+    .record-circle--paused {
+      background: linear-gradient(180deg, #6B7280 0%, #9CA3AF 100%);
+    }
+
+    .record-circle--paused::before,
+    .record-circle--paused::after {
+      display: none;
+    }
+
+    @keyframes pulseRing {
+      0% {
+        transform: scale(1);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.4;
+      }
+      100% {
+        transform: scale(1.6);
+        opacity: 0;
+      }
+    }
+
+    /* Waveform bars inside circle */
+    .waveform {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 32px;
+    }
+
+    .waveform__bar {
+      width: 4px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 2px;
+      animation: wave 1s ease-in-out infinite;
+    }
+
+    .waveform__bar:nth-child(1) { height: 14px; animation-delay: 0s; }
+    .waveform__bar:nth-child(2) { height: 24px; animation-delay: 0.1s; }
+    .waveform__bar:nth-child(3) { height: 18px; animation-delay: 0.2s; }
+    .waveform__bar:nth-child(4) { height: 28px; animation-delay: 0.3s; }
+    .waveform__bar:nth-child(5) { height: 20px; animation-delay: 0.4s; }
+
+    .record-circle--paused .waveform__bar {
+      animation: none;
+      height: 14px;
+    }
+
+    @keyframes wave {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(0.5); }
+    }
+
+    /* Pause button */
+    .pause-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 200px;
+      padding: 14px 28px;
+      background: var(--color-white);
+      border: none;
+      border-radius: var(--radius-full);
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--color-text);
+      cursor: pointer;
+      transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+      white-space: nowrap;
+      box-shadow: var(--shadow-nav-secondary);
+    }
+
+    .pause-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(38, 48, 79, 0.08);
+    }
+
+    .pause-btn:active {
+      transform: translateY(0);
+      box-shadow: var(--shadow-nav-secondary);
+    }
+
+    .pause-btn:focus {
+      outline: none;
+    }
+
+    .pause-btn:focus-visible {
+      outline: 2px solid var(--color-navy-400);
+      outline-offset: 2px;
+    }
+
+    .pause-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Recording status label - moved inside record-wrapper */
+    .recording-status {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #DC2626;
+      text-align: center;
+      min-width: 140px;
+    }
+
+    .recording-status--paused {
+      color: #6B7280;
+    }
+
+    /* Microphone section */
+    .mic-section {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 8px;
+      align-self: center;
+      margin-top: 20px;
+    }
+
+    .mic-dropdown {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: var(--color-white);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      font-family: inherit;
+      font-size: 0.875rem;
+      color: var(--color-text);
+      cursor: pointer;
+      min-width: 240px;
+    }
+
+    .mic-dropdown svg {
+      width: 16px;
+      height: 16px;
+      color: var(--color-navy-500);
+      margin-left: auto;
+    }
+
+    .mic-test {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.938rem;
+      color: #13102C;
+    }
+
+    .mic-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 24px;
+    }
+
+    .mic-bar {
+      width: 6px;
+      height: 20px;
+      background: var(--color-gray-300);
+      border-radius: 3px;
+      transition: background-color 0.1s ease;
+    }
+
+    .mic-bar--active {
+      background: #22C55E;
+    }
+
+    /* Three column layout */
+    .consultation-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1fr;
+      gap: 30px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* Left column with transcription and checklist */
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .consultation-panel {
+      background: var(--color-white);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .consultation-panel--flex {
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* Left column panels: 50/50 split */
+    .left-column .consultation-panel {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 26px;
+      border-bottom: 1px solid var(--color-gray-200);
+      flex-shrink: 0;
+      min-height: 56px;
+    }
+
+    .panel-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #13102C;
+    }
+
+    .panel-dropdown {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: var(--color-white);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      font-family: inherit;
+      font-size: 0.813rem;
+      color: var(--color-text);
+      cursor: pointer;
+    }
+
+    .panel-dropdown svg {
+      width: 14px;
+      height: 14px;
+      color: var(--color-navy-500);
+    }
+
+    .panel-content {
+      flex: 1;
+      padding: 18px 26px;
+      overflow-y: auto;
+      font-size: 0.813rem;
+      line-height: 1.6;
+      color: #13102C;
+    }
+
+    .panel-content p {
+      margin-bottom: 16px;
+    }
+
+    .panel-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Transcription styling */
+    .transcript-line {
+      margin-bottom: 16px;
+    }
+
+    .transcript-line:last-child {
+      margin-bottom: 0;
+    }
+
+    .transcript-speaker {
+      font-style: italic;
+      color: #13102C;
+    }
+
+    /* Notes sections */
+    .notes-section {
+      margin-bottom: 14px;
+    }
+
+    .notes-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .notes-label {
+      font-size: 0.813rem;
+      font-weight: 700;
+      color: #13102C;
+      margin-bottom: 4px;
+    }
+
+    .notes-content {
+      font-size: 0.813rem;
+      line-height: 1.6;
+      color: #13102C;
+    }
+
+    /* Patient resume styling */
+    .resume-section {
+      margin-bottom: 12px;
+    }
+
+    .resume-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .resume-label {
+      font-size: 0.813rem;
+      font-weight: 700;
+      color: #13102C;
+      margin-bottom: 3px;
+    }
+
+    .resume-content {
+      font-size: 0.813rem;
+      line-height: 1.5;
+      color: #13102C;
+    }
+
+    .resume-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .resume-list li {
+      position: relative;
+      padding-left: 14px;
+      margin-bottom: 2px;
+      font-size: 0.813rem;
+      line-height: 1.4;
+      color: #13102C;
+    }
+
+    .resume-list li::before {
+      content: "–";
+      position: absolute;
+      left: 0;
+      color: #13102C;
+    }
+
+    /* Checklist styling */
+    .checklist {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      margin-left: 4px;
+    }
+
+    .checklist li {
+      position: relative;
+      padding-left: 16px;
+      margin-bottom: 8px;
+      font-size: 0.813rem;
+      line-height: 1.4;
+      color: #13102C;
+    }
+
+    .checklist li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 4px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #13102C;
+    }
+
+    /* AI input at bottom of patient resume */
+    .ai-input-section {
+      padding: 12px 30px;
+      border-top: 1px solid var(--color-gray-200);
+      flex-shrink: 0;
+    }
+
+    .ai-input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: var(--color-gray-50);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+    }
+
+    .ai-input {
+      flex: 1;
+      border: none;
+      background: none;
+      font-family: inherit;
+      font-size: 0.875rem;
+      color: var(--color-text);
+      outline: none;
+    }
+
+    .ai-input::placeholder {
+      color: var(--color-navy-400);
+    }
+
+    .ai-send-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--color-navy-500);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .ai-send-btn svg {
+      width: 14px;
+      height: 14px;
+      color: var(--color-white);
+    }
+
+    /* Bottom action bar */
+    .action-bar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      padding-top: 12px;
+      flex-shrink: 0;
+      animation: fadeUp 0.4s ease-out forwards;
+      animation-delay: 0.2s;
+    }
+
+    .action-bar .action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 28px;
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+      will-change: transform, box-shadow;
+    }
+
+    .action-bar .action-btn--secondary {
+      background: var(--color-white);
+      border: none;
+      color: var(--color-text);
+      box-shadow: var(--shadow-nav-secondary);
+    }
+
+    .action-bar .action-btn--secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(38, 48, 79, 0.08);
+    }
+
+    .action-bar .action-btn--primary {
+      background: var(--gradient-button-primary);
+      border: none;
+      color: var(--color-white);
+      box-shadow: 0 4px 15px rgba(56, 69, 109, 0.2);
+    }
+
+    .action-bar .action-btn--primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(56, 69, 109, 0.25);
+    }
+
+    .action-bar .action-btn:focus {
+      outline: none;
+    }
+
+    .action-bar .action-btn:focus-visible {
+      outline: 2px solid var(--color-navy-400);
+      outline-offset: 2px;
+    }
+
+    /* Disabled state for action buttons during recording */
+    .action-bar .action-btn--disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .action-bar .action-btn--secondary.action-btn--disabled {
+      background: var(--color-gray-100);
+      color: var(--color-navy-400);
+    }
+
+    .action-bar .action-btn--primary.action-btn--disabled {
+      background: var(--color-gray-200);
+      box-shadow: none;
+    }
+
+    /* Main content override for this page */
+    .main {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Full width content area without sidebar */
+    .content-area--full {
+      display: flex;
+      padding: 30px 100px 12px 100px;
+      height: 100vh;
+      overflow: visible;
+      box-sizing: border-box;
+    }
+
+    /* Hide topbar on this page */
+    .topbar {
+      display: none;
+    }
+
+    /* Allow pulse animation to overflow */
+    .platform {
+      overflow: visible;
+    }
+
+    .content-area--full .main {
+      flex: 1;
+      max-width: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: visible;
+      gap: 8px;
+    }
+
+    /* Ensure grid fills available space without overflow */
+    .consultation-grid {
+      overflow: hidden;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .consultation-panel {
+      overflow: hidden;
+      max-height: 100%;
+    }
+
+    .consultation-panel .panel-content {
+      overflow-y: auto;
+    }
+
+    /* Make action bar more compact */
+    .action-bar {
+      padding-top: 8px;
+      padding-bottom: 20px;
+    }
+
+
+    /* Responsive */
+    @media (max-width: 1280px) {
+      .content-area--full {
+        padding: 16px 48px;
+      }
+
+      .consultation-grid {
+        gap: 16px;
+      }
+
+      .panel-header {
+        padding: 12px 16px;
+      }
+
+      .panel-content {
+        padding: 12px 16px;
+      }
+
+      .record-circle {
+        width: 60px;
+        height: 60px;
+      }
+
+      .waveform__bar {
+        width: 4px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .content-area--full {
+        padding: 16px 24px;
+        height: auto;
+        overflow: auto;
+      }
+
+      .consultation-header {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .recording-section {
+        width: 100%;
+      }
+
+      .mic-section {
+        align-items: center;
+        width: 100%;
+      }
+
+      .consultation-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .left-column {
+        display: contents;
+      }
+
+      .consultation-panel {
+        max-height: 300px;
+      }
+
+      .action-bar {
+        flex-direction: column;
+      }
+
+      .action-btn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .recording-row {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .patient-info {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="platform">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar__logo">
+        <a href="platform-preview.html" style="text-decoration: none; display: flex; align-items: baseline; gap: 4px;">
+          <span class="logo-text logo-text--people">People's</span>
+          <span class="logo-text logo-text--doctor">Doctor</span>
+        </a>
+      </div>
+      <div class="topbar__right">
+        <div class="clinic-dropdown">
+          <span>Current clinic: Valby Lægehus</span>
+          <i data-lucide="chevron-down"></i>
+        </div>
+        <div class="flags">
+          <div class="flag flag--dk"></div>
+          <div class="flag flag--uk"></div>
+        </div>
+        <div class="user-menu">
+          <div class="user-avatar">M</div>
+          <span class="user-name">Morten Skov</span>
+          <i data-lucide="chevron-down"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Area (No Sidebar) -->
+    <div class="content-area content-area--full">
+      <!-- Main Content -->
+      <main class="main">
+        <!-- Consultation Header -->
+        <div class="consultation-header">
+          <!-- Patient Info -->
+          <div class="patient-info">
+            <div class="patient-info__name"><strong>Fornavn:</strong> Nancy</div>
+            <div class="patient-info__time"><strong>Starttidspunkt:</strong> 25-10-2026 10:47</div>
+          </div>
+
+          <!-- Recording Section -->
+          <div class="recording-section">
+            <div class="recording-row">
+              <span class="recording-timer" id="recordingTimer">8:07</span>
+              <div class="record-wrapper">
+                <div class="record-circle record-circle--active" id="recordCircle">
+                  <div class="waveform">
+                    <div class="waveform__bar"></div>
+                    <div class="waveform__bar"></div>
+                    <div class="waveform__bar"></div>
+                    <div class="waveform__bar"></div>
+                    <div class="waveform__bar"></div>
+                  </div>
+                </div>
+                <div class="recording-status" id="recordingStatus">Optagelse aktiv</div>
+              </div>
+              <button class="pause-btn" id="pauseBtn">
+                <span id="pauseBtnText">Sæt på pause</span>
+                <i data-lucide="pause" id="pauseIcon"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Microphone Section -->
+          <div class="mic-section">
+            <button class="mic-dropdown">
+              Mikrofon i computer (indbygget)
+              <i data-lucide="chevron-down"></i>
+            </button>
+            <div class="mic-test">
+              <span>Mikrofon-signal</span>
+              <div class="mic-bars" id="micBars">
+                <div class="mic-bar mic-bar--active"></div>
+                <div class="mic-bar mic-bar--active"></div>
+                <div class="mic-bar mic-bar--active"></div>
+                <div class="mic-bar mic-bar--active"></div>
+                <div class="mic-bar mic-bar--active"></div>
+                <div class="mic-bar mic-bar--active"></div>
+                <div class="mic-bar"></div>
+                <div class="mic-bar"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Three Panel Grid -->
+        <div class="consultation-grid">
+          <!-- Left Column -->
+          <div class="left-column">
+            <!-- Transskription Panel -->
+            <div class="consultation-panel consultation-panel--flex">
+              <div class="panel-header">
+                <h2 class="panel-title">Transskription</h2>
+              </div>
+              <div class="panel-content">
+                <p class="transcript-line"><span class="transcript-speaker">Patient:</span> Jeg har haft trykken midt i brystet de sidste par uger. Det kommer især når jeg går hurtigt eller går på trapper.</p>
+                <p class="transcript-line"><span class="transcript-speaker">Læge:</span> Hvor længe varer det typisk?</p>
+                <p class="transcript-line"><span class="transcript-speaker">Patient:</span> Måske fem minutter. Det går væk, når jeg sætter mig ned.</p>
+                <p class="transcript-line"><span class="transcript-speaker">Læge:</span> Stråler det nogen steder hen?</p>
+              </div>
+            </div>
+
+            <!-- Huskeliste Panel -->
+            <div class="consultation-panel">
+              <div class="panel-header">
+                <h2 class="panel-title">Huskeliste</h2>
+              </div>
+              <div class="panel-content">
+                <ul class="checklist">
+                  <li>Rygestopkursus</li>
+                  <li>Genoptræningskursus</li>
+                  <li>Slankekursus</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notater Panel -->
+          <div class="consultation-panel">
+            <div class="panel-header">
+              <h2 class="panel-title">Notater</h2>
+              <button class="panel-dropdown">
+                SOAP uden baggrund
+                <i data-lucide="chevron-down"></i>
+              </button>
+            </div>
+            <div class="panel-content">
+              <div class="notes-section">
+                <div class="notes-label">Anamnese</div>
+                <div class="notes-content">
+                  Patient med to ugers tiltagende trykken retrosternalt, udløst af moderat fysisk aktivitet. Varighed ca. 5 min, lindres ved hvile. Let udstråling til venstre skulder. Let dyspnø ved anfald. Ingen kvalme. Familiær disposition til IHS (far med AMI v. 62 år). Øget træthed gennem de seneste uger. Ingen medicinændringer.
+                </div>
+              </div>
+              <div class="notes-section">
+                <div class="notes-label">Objektivt</div>
+                <div class="notes-content">
+                  Almen upåvirket, vågen og klar. Normal vejrtrækning i hvile. Ingen ødemer. BT 132/78, puls 78 reg. Cor/pulm uden mislyde eller krepitationer. EKG initialt uden akutte iskæmitegn (fiktivt).
+                </div>
+              </div>
+              <div class="notes-section">
+                <div class="notes-label">Vurdering:</div>
+                <div class="notes-content">
+                  Brystsmerter forenelige med mulig stabil angina pectoris. Familiær disposition og belastningsudløste symptomer taler for videre kardiologisk udredning. Ingen tegn på akut koronart syndrom aktuelt.
+                </div>
+              </div>
+              <div class="notes-section">
+                <div class="notes-label">Plan:</div>
+                <div class="notes-content">
+                  – Bestilling af EKG og blodprøver inkl. lipidprofil, HbA1c og troponin (screening).<br>
+                  – Henvisning til kardiologisk vurdering inkl. arbejdsekg.<br>
+                  – Rådgivning om at undgå hård fysisk belastning indtil
+                </div>
+              </div>
+            </div>
+            <div class="ai-input-section">
+              <div class="ai-input-wrapper">
+                <input type="text" class="ai-input" placeholder="Tilføj oplysninger til notatet...">
+                <button class="ai-send-btn">
+                  <i data-lucide="send"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Patientresume Panel -->
+          <div class="consultation-panel">
+            <div class="panel-header">
+              <h2 class="panel-title">Patientresume</h2>
+            </div>
+            <div class="panel-content">
+              <div class="resume-section">
+                <div class="resume-label">Hovedsymptom:</div>
+                <div class="resume-content">
+                  Belastningsudløst brystsmerte (tryk), retrosternalt, varighed ca. 5 min, lindres ved hvile.
+                </div>
+              </div>
+              <div class="resume-section">
+                <div class="resume-label">Symptomkarakteristika:</div>
+                <ul class="resume-list">
+                  <li>Lokalisation: retrosternalt</li>
+                  <li>Udløsende faktor: moderat fysisk aktivitet</li>
+                  <li>Lindring: hvile</li>
+                  <li>Udstråling: venstre skulder</li>
+                  <li>Associerede symptomer: let dyspnø, øget træthed</li>
+                  <li>Fravær af: kvalme, synkope, hvilesmerter</li>
+                </ul>
+              </div>
+              <div class="resume-section">
+                <div class="resume-label">Risiko- og baggrundsdata:</div>
+                <ul class="resume-list">
+                  <li>Familiær disposition: far med AMI (62 år)</li>
+                  <li>Ingen nylige medicinændringer</li>
+                  <li>Ingen kendt hjertesygdom</li>
+                </ul>
+              </div>
+              <div class="resume-section">
+                <div class="resume-label">Objektive fund:</div>
+                <ul class="resume-list">
+                  <li>BT 132/78</li>
+                  <li>Puls 78, regelmæssig</li>
+                  <li>Cor/pulm: upåfaldende</li>
+                  <li>Ingen ødemer</li>
+                  <li>EKG: ingen akutte iskæmitegn (fiktivt)</li>
+                </ul>
+              </div>
+            </div>
+            <div class="ai-input-section">
+              <div class="ai-input-wrapper">
+                <input type="text" class="ai-input" placeholder="Stil spørgsmål til patientjournal...">
+                <button class="ai-send-btn">
+                  <i data-lucide="send"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar">
+          <button class="action-btn action-btn--secondary action-btn--disabled" id="copyBtn">Kopier notat</button>
+          <button class="action-btn action-btn--primary action-btn--disabled" id="saveBtn">Gem & Afslut</button>
+        </div>
+      </main>
+    </div>
+
+    <!-- Bottom Navigation (Mobile/Tablet) -->
+    <nav class="bottom-nav">
+      <ul class="bottom-nav__list">
+        <a href="platform-preview.html" class="bottom-nav__item bottom-nav__item--active">
+          <i data-lucide="play"></i>
+          <span>Start</span>
+        </a>
+        <a href="konsultationshistorik.html" class="bottom-nav__item">
+          <i data-lucide="history"></i>
+          <span>Historik</span>
+        </a>
+        <a href="journalresume.html" class="bottom-nav__item">
+          <i data-lucide="file-text"></i>
+          <span>Journal</span>
+        </a>
+        <a href="honorarforslag.html" class="bottom-nav__item">
+          <i data-lucide="receipt"></i>
+          <span>Honorar</span>
+        </a>
+        <a href="#" class="bottom-nav__item">
+          <i data-lucide="help-circle"></i>
+          <span>Hjælp</span>
+        </a>
+      </ul>
+    </nav>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    // Recording state management
+    let isPaused = false;
+    let seconds = 487; // Start at 8:07
+    let timerInterval = null;
+    let micMeterInterval = null;
+
+    const recordCircle = document.getElementById('recordCircle');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const pauseBtnText = document.getElementById('pauseBtnText');
+    const pauseIcon = document.getElementById('pauseIcon');
+    const recordingTimer = document.getElementById('recordingTimer');
+    const recordingStatus = document.getElementById('recordingStatus');
+    const micBars = document.querySelectorAll('#micBars .mic-bar');
+
+    // Action buttons
+    const copyBtn = document.getElementById('copyBtn');
+    const saveBtn = document.getElementById('saveBtn');
+
+    // Format time as M:SS
+    function formatTime(totalSeconds) {
+      const minutes = Math.floor(totalSeconds / 60);
+      const secs = totalSeconds % 60;
+      return `${minutes}:${String(secs).padStart(2, '0')}`;
+    }
+
+    // Update timer display
+    function updateTimer() {
+      seconds++;
+      recordingTimer.textContent = formatTime(seconds);
+    }
+
+    // Start timer
+    function startTimer() {
+      if (!timerInterval) {
+        timerInterval = setInterval(updateTimer, 1000);
+      }
+    }
+
+    // Stop timer
+    function stopTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+
+    // Audio meter simulation
+    let currentLevel = 6;
+    function updateMicMeter() {
+      // Smoothly vary between 5-7 bars (subtle movement)
+      const change = Math.random() < 0.5 ? -1 : 1;
+      currentLevel = Math.max(5, Math.min(7, currentLevel + change));
+
+      micBars.forEach((bar, index) => {
+        if (index < currentLevel) {
+          bar.classList.add('mic-bar--active');
+        } else {
+          bar.classList.remove('mic-bar--active');
+        }
+      });
+    }
+
+    // Start mic meter animation
+    function startMicMeter() {
+      if (!micMeterInterval) {
+        micMeterInterval = setInterval(updateMicMeter, 400);
+      }
+    }
+
+    // Stop mic meter animation
+    function stopMicMeter() {
+      if (micMeterInterval) {
+        clearInterval(micMeterInterval);
+        micMeterInterval = null;
+      }
+      // Set all bars to inactive when paused
+      micBars.forEach(bar => bar.classList.remove('mic-bar--active'));
+    }
+
+    // Update action buttons state
+    function updateActionButtons() {
+      if (isPaused) {
+        copyBtn.classList.remove('action-btn--disabled');
+        saveBtn.classList.remove('action-btn--disabled');
+      } else {
+        copyBtn.classList.add('action-btn--disabled');
+        saveBtn.classList.add('action-btn--disabled');
+      }
+    }
+
+    // Helper function to update icon
+    function updatePauseIcon(iconName) {
+      const iconContainer = pauseBtn.querySelector('svg, i');
+      if (iconContainer) {
+        iconContainer.remove();
+      }
+      const newIcon = document.createElement('i');
+      newIcon.setAttribute('data-lucide', iconName);
+      pauseBtn.appendChild(newIcon);
+      lucide.createIcons();
+    }
+
+    // Toggle recording state
+    function toggleRecording() {
+      isPaused = !isPaused;
+
+      if (isPaused) {
+        // Paused state
+        stopTimer();
+        // Mic meter keeps running even when paused
+        recordCircle.classList.remove('record-circle--active');
+        recordCircle.classList.add('record-circle--paused');
+        pauseBtnText.textContent = 'Start igen';
+        updatePauseIcon('play');
+        recordingStatus.textContent = 'Optagelse pauset';
+        recordingStatus.classList.add('recording-status--paused');
+      } else {
+        // Active state
+        startTimer();
+        // Mic meter keeps running continuously
+        recordCircle.classList.remove('record-circle--paused');
+        recordCircle.classList.add('record-circle--active');
+        pauseBtnText.textContent = 'Sæt på pause';
+        updatePauseIcon('pause');
+        recordingStatus.textContent = 'Optagelse aktiv';
+        recordingStatus.classList.remove('recording-status--paused');
+      }
+
+      updateActionButtons();
+    }
+
+    // Event listeners
+    pauseBtn.addEventListener('click', toggleRecording);
+    recordCircle.addEventListener('click', toggleRecording);
+
+    // Save and finish - navigate back to start screen
+    saveBtn.addEventListener('click', function() {
+      if (!saveBtn.classList.contains('action-btn--disabled')) {
+        window.location.href = 'platform-preview.html';
+      }
+    });
+
+    // Start recording on page load
+    startTimer();
+    startMicMeter();
+  </script>
+</body>
+</html>

@@ -1,0 +1,2216 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>People's Doctor - Salgsprocessen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, #e8eef4 0%, #dce4ed 100%);
+            min-height: 100vh;
+            padding: 60px 40px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 500;
+            color: #1a2b4a;
+            margin-bottom: 12px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #5a6a7a;
+            font-weight: 500;
+        }
+
+        /* Phase Sections */
+        .phase-section {
+            margin-bottom: 16px;
+        }
+
+        .phase-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #7a8a9a;
+            margin-bottom: 14px;
+            padding-left: 4px;
+        }
+
+        /* Lars Section - Expanded */
+        .lars-section {
+            background: white;
+            border-radius: 20px;
+            padding: 28px 32px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 12px rgba(26, 43, 74, 0.06);
+        }
+
+        .lars-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .lars-badge {
+            background: linear-gradient(135deg, #1a2b4a, #2d4a6f);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .lars-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #1a2b4a;
+        }
+
+        .lars-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .lars-step {
+            background: #f4f7fa;
+            border-radius: 14px;
+            padding: 20px;
+            position: relative;
+            border-left: 3px solid #3d5a80;
+        }
+
+        .lars-step-number {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: 24px;
+            height: 24px;
+            background: #3d5a80;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .lars-step h4 {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #1a2b4a;
+            margin-bottom: 8px;
+        }
+
+        .lars-step p {
+            font-size: 0.8rem;
+            color: #5a6a7a;
+            line-height: 1.4;
+        }
+
+        .lars-step ul {
+            list-style: none;
+            margin-top: 8px;
+        }
+
+        .lars-step ul li {
+            font-size: 0.75rem;
+            color: #5a6a7a;
+            padding: 3px 0;
+            padding-left: 14px;
+            position: relative;
+        }
+
+        .lars-step ul li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            background: #3d5a80;
+            border-radius: 50%;
+        }
+
+        /* Morten/GTM Section - Expanded */
+        .morten-section {
+            background: white;
+            border-radius: 20px;
+            padding: 28px 32px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 12px rgba(26, 43, 74, 0.06);
+        }
+
+        .morten-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .morten-badge {
+            background: linear-gradient(135deg, #3d5a80, #4a6fa5);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .morten-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #1a2b4a;
+        }
+
+        .morten-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .morten-step {
+            background: #f4f7fa;
+            border-radius: 14px;
+            padding: 20px;
+            position: relative;
+            border-left: 3px solid #4a6fa5;
+        }
+
+        .morten-step-number {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: 24px;
+            height: 24px;
+            background: #4a6fa5;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .morten-step h4 {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #1a2b4a;
+            margin-bottom: 8px;
+        }
+
+        .morten-step p {
+            font-size: 0.8rem;
+            color: #5a6a7a;
+            line-height: 1.4;
+        }
+
+        .morten-step ul {
+            list-style: none;
+            margin-top: 8px;
+        }
+
+        .morten-step ul li {
+            font-size: 0.75rem;
+            color: #5a6a7a;
+            padding: 3px 0;
+            padding-left: 14px;
+            position: relative;
+        }
+
+        .morten-step ul li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            background: #4a6fa5;
+            border-radius: 50%;
+        }
+
+        /* Conversion/Traffic Section - Expanded */
+        .conversion-section {
+            background: white;
+            border-radius: 20px;
+            padding: 28px 32px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 12px rgba(26, 43, 74, 0.06);
+        }
+
+        .conversion-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .conversion-badge {
+            background: linear-gradient(135deg, #5a7a9a, #7a9aba);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .conversion-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #1a2b4a;
+        }
+
+        .conversion-steps {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        /* Anders/Onboarding Section - Expanded */
+        .anders-section {
+            background: white;
+            border-radius: 20px;
+            padding: 28px 32px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 12px rgba(26, 43, 74, 0.06);
+        }
+
+        .anders-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .anders-badge {
+            background: linear-gradient(135deg, #5a7a9a, #7a9aba);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .anders-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #1a2b4a;
+        }
+
+        .anders-steps {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .anders-step {
+            background: #f4f7fa;
+            border-radius: 14px;
+            padding: 20px;
+            position: relative;
+            border-left: 3px solid #5a7a9a;
+        }
+
+        .anders-step-number {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: 24px;
+            height: 24px;
+            background: #5a7a9a;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .anders-step h4 {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #1a2b4a;
+            margin-bottom: 8px;
+        }
+
+        .anders-step p {
+            font-size: 0.8rem;
+            color: #5a6a7a;
+            line-height: 1.4;
+        }
+
+        .anders-step ul {
+            list-style: none;
+            margin-top: 8px;
+        }
+
+        .anders-step ul li {
+            font-size: 0.75rem;
+            color: #5a6a7a;
+            padding: 3px 0;
+            padding-left: 14px;
+            position: relative;
+        }
+
+        .anders-step ul li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            background: #5a7a9a;
+            border-radius: 50%;
+        }
+
+        .conversion-step {
+            background: #f4f7fa;
+            border-radius: 14px;
+            padding: 20px;
+            position: relative;
+            border-left: 3px solid #7a9aba;
+        }
+
+        .conversion-step-number {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: 24px;
+            height: 24px;
+            background: #7a9aba;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .conversion-step h4 {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #1a2b4a;
+            margin-bottom: 8px;
+        }
+
+        .conversion-step p {
+            font-size: 0.8rem;
+            color: #5a6a7a;
+            line-height: 1.4;
+        }
+
+        .conversion-step ul {
+            list-style: none;
+            margin-top: 8px;
+        }
+
+        .conversion-step ul li {
+            font-size: 0.75rem;
+            color: #5a6a7a;
+            padding: 3px 0;
+            padding-left: 14px;
+            position: relative;
+        }
+
+        .conversion-step ul li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            background: #7a9aba;
+            border-radius: 50%;
+        }
+
+        /* Target Audience Section */
+        .audience-section {
+            background: white;
+            border-radius: 20px;
+            padding: 28px 32px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 12px rgba(26, 43, 74, 0.06);
+        }
+
+        .audience-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .audience-header h3 {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #1a2b4a;
+            margin-bottom: 8px;
+        }
+
+        .audience-header p {
+            font-size: 0.85rem;
+            color: #5a6a7a;
+        }
+
+        .audience-cards {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 24px;
+        }
+
+        .audience-card {
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+        }
+
+        .audience-card.primary-focus {
+            background: linear-gradient(135deg, #1a2b4a 0%, #2d4a6f 100%);
+            color: white;
+            border: 3px solid #d4af37;
+            box-shadow: 0 4px 20px rgba(26, 43, 74, 0.2);
+        }
+
+        .audience-card.secondary-focus {
+            background: #f4f7fa;
+            color: #1a2b4a;
+            border: 2px solid #dce4ed;
+        }
+
+        .focus-badge {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: linear-gradient(135deg, #d4af37, #f0c850);
+            color: #1a2b4a;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
+        }
+
+        .secondary-badge {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #7a9aba;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .audience-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .primary-focus .audience-card-icon {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .secondary-focus .audience-card-icon {
+            background: #dce4ed;
+        }
+
+        .audience-card-icon svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .primary-focus .audience-card-icon svg {
+            stroke: white;
+        }
+
+        .secondary-focus .audience-card-icon svg {
+            stroke: #3d5a80;
+        }
+
+        .audience-card h4 {
+            font-size: 1.15rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .audience-card-subtitle {
+            font-size: 0.8rem;
+            opacity: 0.85;
+            margin-bottom: 16px;
+        }
+
+        .audience-features {
+            list-style: none;
+        }
+
+        .audience-features li {
+            font-size: 0.8rem;
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .primary-focus .audience-features li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            background: #d4af37;
+            border-radius: 50%;
+        }
+
+        .secondary-focus .audience-features li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            background: #7a9aba;
+            border-radius: 50%;
+        }
+
+        .audience-features li {
+            opacity: 0.9;
+        }
+
+        .decision-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            padding: 10px 14px;
+            background: rgba(212, 175, 55, 0.2);
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .decision-indicator svg {
+            width: 16px;
+            height: 16px;
+            stroke: #d4af37;
+        }
+
+        .flow-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            padding: 10px 14px;
+            background: #e8eef4;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #3d5a80;
+        }
+
+        .flow-indicator svg {
+            width: 16px;
+            height: 16px;
+            stroke: #3d5a80;
+        }
+
+        /* Main Flow Row */
+        .flow-row {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .card-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            box-shadow: 0 2px 12px rgba(26, 43, 74, 0.06);
+            transition: all 0.3s ease;
+            flex: 1;
+            border-left: 4px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(26, 43, 74, 0.1);
+        }
+
+        .card.primary {
+            border-left-color: #3d5a80;
+        }
+
+        .card.secondary {
+            border-left-color: #7a8a9a;
+        }
+
+        .card-owner {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #7a8a9a;
+            margin-bottom: 6px;
+        }
+
+        .card-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #3d5a80;
+            color: white;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-right: 10px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #1a2b4a;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-description {
+            font-size: 0.85rem;
+            color: #5a6a7a;
+            line-height: 1.4;
+        }
+
+        /* Horizontal Arrow Connector */
+        .horizontal-arrow {
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            flex-shrink: 0;
+        }
+
+        .arrow-line {
+            width: 36px;
+            height: 3px;
+            background: #3d5a80;
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .arrow-line::after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-left: 12px solid #3d5a80;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+        }
+
+        /* Vertical Arrow between sections */
+        .vertical-arrow-section {
+            display: flex;
+            justify-content: center;
+            padding: 24px 0;
+        }
+
+        .vertical-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .vertical-arrow-line {
+            width: 4px;
+            height: 40px;
+            background: linear-gradient(180deg, #3d5a80, #4a6fa5);
+            border-radius: 2px;
+        }
+
+        .vertical-arrow-head {
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-top: 14px solid #4a6fa5;
+            margin-top: -1px;
+        }
+
+        /* AI Nurturing Section */
+        .nurturing-card {
+            background: white;
+            border-radius: 20px;
+            padding: 28px 36px;
+            position: relative;
+            box-shadow: 0 2px 12px rgba(26, 43, 74, 0.06);
+            border-left: 4px solid #4a6fa5;
+        }
+
+        .nurturing-card .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #4a6fa5, #3d5a80);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            margin-bottom: 14px;
+        }
+
+        .nurturing-card .ai-badge svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .nurturing-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nurturing-left h3 {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #1a2b4a;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+        }
+
+        .nurturing-left p {
+            color: #5a6a7a;
+            font-size: 0.9rem;
+        }
+
+        /* Nurturing Grid */
+        .nurturing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .nurturing-item {
+            background: #f0f4f8;
+            border-radius: 14px;
+            padding: 18px 20px;
+            border-left: 3px solid #4a6fa5;
+        }
+
+        .nurturing-item-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .nurturing-item-number {
+            width: 22px;
+            height: 22px;
+            background: #4a6fa5;
+            color: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .nurturing-item h4 {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1a2b4a;
+        }
+
+        .nurturing-item-subtitle {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #3d5a80;
+            margin-bottom: 8px;
+        }
+
+        .nurturing-item ul {
+            list-style: none;
+        }
+
+        .nurturing-item ul li {
+            font-size: 0.75rem;
+            color: #5a6a7a;
+            padding: 2px 0;
+            padding-left: 12px;
+            position: relative;
+        }
+
+        .nurturing-item ul li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 5px;
+            background: #4a6fa5;
+            border-radius: 50%;
+        }
+
+        /* Split Arrow Indicator */
+        .split-arrows {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .split-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #4a6fa5;
+            letter-spacing: 0.12em;
+        }
+
+        .split-icon {
+            display: flex;
+            gap: 6px;
+        }
+
+        .split-arrow-down {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .split-arrow-line {
+            width: 3px;
+            height: 20px;
+            background: #4a6fa5;
+            border-radius: 2px;
+        }
+
+        .split-arrow-head {
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 10px solid #4a6fa5;
+        }
+
+        /* Double split arrows */
+        .split-connector {
+            display: flex;
+            justify-content: center;
+            padding: 20px 0;
+            gap: 280px;
+        }
+
+        .split-connector .vertical-arrow-line {
+            width: 4px;
+            height: 36px;
+            background: linear-gradient(180deg, #4a6fa5, #3d5a80);
+        }
+
+        .split-connector .vertical-arrow-head {
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-top: 14px solid #3d5a80;
+        }
+
+        /* Two Paths Section */
+        .paths-section {
+            background: white;
+            border-radius: 20px;
+            padding: 28px 32px;
+            box-shadow: 0 2px 12px rgba(26, 43, 74, 0.06);
+        }
+
+        .paths-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .paths-badge {
+            background: linear-gradient(135deg, #2d4a6f, #3d5a80);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .paths-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #1a2b4a;
+        }
+
+        .paths-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .path-card {
+            background: #f4f7fa;
+            border-radius: 14px;
+            padding: 20px;
+            border-left: 3px solid #3d5a80;
+        }
+
+        .path-card.secondary {
+            border-left-color: #7a9aba;
+        }
+
+        .path-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid #dce4ed;
+        }
+
+        .path-card-icon {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1a2b4a;
+        }
+
+        .path-card.secondary .path-card-icon {
+            background: #7a9aba;
+        }
+
+        .path-card-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: white;
+            fill: none;
+        }
+
+        .path-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .path-badge.primary {
+            background: #1a2b4a;
+            color: white;
+        }
+
+        .path-badge.secondary {
+            background: #7a9aba;
+            color: white;
+        }
+
+        .path-card-title {
+            display: block;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a2b4a;
+        }
+
+        .path-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .path-step {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .path-step-number {
+            width: 22px;
+            height: 22px;
+            min-width: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: white;
+            background: #3d5a80;
+        }
+
+        .path-card.secondary .path-step-number {
+            background: #7a9aba;
+        }
+
+        .path-step-content h5 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #1a2b4a;
+            margin-bottom: 2px;
+        }
+
+        .path-step-content p {
+            font-size: 0.75rem;
+            color: #5a6a7a;
+            line-height: 1.4;
+        }
+
+        .path-arrow {
+            display: flex;
+            justify-content: flex-start;
+            padding: 4px 0 4px 5px;
+        }
+
+        .path-arrow svg {
+            width: 12px;
+            height: 12px;
+            stroke: #7a9aba;
+        }
+
+        .path-result {
+            margin-top: 16px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #1a2b4a, #2d4a6f);
+            color: white;
+        }
+
+        .path-card.secondary .path-result {
+            background: linear-gradient(135deg, #3d5a80, #4a6fa5);
+        }
+
+        .path-result-icon {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .path-result-icon svg {
+            width: 16px;
+            height: 16px;
+            stroke: white;
+        }
+
+        .path-result-text h5 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1px;
+        }
+
+        .path-result-text p {
+            font-size: 0.7rem;
+            opacity: 0.85;
+        }
+
+        .step-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-right: 10px;
+        }
+
+        /* Converging arrows */
+        .simple-converge {
+            display: flex;
+            justify-content: center;
+            padding: 24px 0;
+        }
+
+        .merge-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .merge-lines {
+            display: flex;
+            gap: 140px;
+            margin-bottom: -4px;
+        }
+
+        .merge-line-left, .merge-line-right {
+            width: 4px;
+            height: 22px;
+            background: linear-gradient(180deg, #2d4a6f, #1a2b4a);
+            border-radius: 2px;
+        }
+
+        .merge-v {
+            width: 160px;
+            height: 26px;
+            position: relative;
+        }
+
+        .merge-v::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 85px;
+            height: 4px;
+            background: #1a2b4a;
+            transform: rotate(20deg);
+            transform-origin: left center;
+            border-radius: 2px;
+        }
+
+        .merge-v::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 85px;
+            height: 4px;
+            background: #1a2b4a;
+            transform: rotate(-20deg);
+            transform-origin: right center;
+            border-radius: 2px;
+        }
+
+        .merge-final-line {
+            width: 5px;
+            height: 26px;
+            background: #1a2b4a;
+            border-radius: 2px;
+            margin-top: 6px;
+        }
+
+        .merge-arrow-head {
+            width: 0;
+            height: 0;
+            border-left: 14px solid transparent;
+            border-right: 14px solid transparent;
+            border-top: 16px solid #1a2b4a;
+            margin-top: -1px;
+        }
+
+        /* Billing Section - Restyled */
+        .billing-section {
+            background: white;
+            border-radius: 20px;
+            padding: 28px 32px;
+            box-shadow: 0 2px 12px rgba(26, 43, 74, 0.06);
+        }
+
+        .billing-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .billing-badge {
+            background: linear-gradient(135deg, #635bff, #7a73ff);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .billing-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #1a2b4a;
+        }
+
+        .billing-steps {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .billing-step {
+            background: #f4f7fa;
+            border-radius: 14px;
+            padding: 20px;
+            position: relative;
+            border-left: 3px solid #635bff;
+        }
+
+        .billing-step-number {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: 24px;
+            height: 24px;
+            background: #635bff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .billing-step h4 {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #1a2b4a;
+            margin-bottom: 8px;
+        }
+
+        .billing-step p {
+            font-size: 0.8rem;
+            color: #5a6a7a;
+            line-height: 1.4;
+        }
+
+        .billing-step ul {
+            list-style: none;
+            margin-top: 8px;
+        }
+
+        .billing-step ul li {
+            font-size: 0.75rem;
+            color: #5a6a7a;
+            padding: 3px 0;
+            padding-left: 14px;
+            position: relative;
+        }
+
+        .billing-step ul li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            background: #635bff;
+            border-radius: 50%;
+        }
+
+        /* Add-ons Section */
+        .addons-section {
+            background: white;
+            border-radius: 20px;
+            padding: 28px 32px;
+            box-shadow: 0 2px 12px rgba(26, 43, 74, 0.06);
+        }
+
+        .addons-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .addons-badge {
+            background: linear-gradient(135deg, #1a2b4a, #2d4a6f);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .addons-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #1a2b4a;
+        }
+
+        .addons-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .addon-card {
+            background: #f4f7fa;
+            border-radius: 14px;
+            padding: 24px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            border: 2px dashed #c5d1de;
+            transition: all 0.3s ease;
+        }
+
+        .addon-card:hover {
+            border-color: #3d5a80;
+            background: #f8fafc;
+        }
+
+        .addon-icon {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a2b4a, #2d4a6f);
+        }
+
+        .addon-icon.secondary {
+            background: linear-gradient(135deg, #3d5a80, #4a6fa5);
+        }
+
+        .addon-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: white;
+        }
+
+        .addon-content {
+            flex: 1;
+        }
+
+        .addon-badge {
+            display: inline-block;
+            background: #1a2b4a;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+        }
+
+        .addon-badge.secondary {
+            background: #3d5a80;
+        }
+
+        .addon-content h4 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #1a2b4a;
+            margin-bottom: 6px;
+        }
+
+        .addon-content p {
+            font-size: 0.8rem;
+            color: #5a6a7a;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .footer-badge {
+            display: inline-block;
+            background: #1a2b4a;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .lars-steps {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .morten-steps {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .conversion-steps {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nurturing-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .flow-row {
+                flex-wrap: wrap;
+            }
+
+            .card-wrapper {
+                flex: 0 0 calc(50% - 30px);
+            }
+
+            .horizontal-arrow {
+                display: none;
+            }
+
+            .split-connector,
+            .ambassador-to-upselling,
+            .merge-lines {
+                gap: 120px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .audience-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .lars-steps {
+                grid-template-columns: 1fr;
+            }
+
+            .morten-steps {
+                grid-template-columns: 1fr;
+            }
+
+            .conversion-steps {
+                grid-template-columns: 1fr;
+            }
+
+            .anders-steps {
+                grid-template-columns: 1fr;
+            }
+
+            .nurturing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .audience-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .paths-container {
+                grid-template-columns: 1fr;
+            }
+
+            .billing-steps {
+                grid-template-columns: 1fr;
+            }
+
+            .addons-container {
+                grid-template-columns: 1fr;
+            }
+
+            .flow-row {
+                flex-direction: column;
+            }
+
+            .card-wrapper {
+                flex: 1 1 100%;
+            }
+
+            .ambassador-row,
+            .upselling-row {
+                flex-direction: column;
+            }
+
+            .split-connector,
+            .ambassador-to-upselling {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .merge-lines {
+                gap: 50px;
+            }
+
+            .merge-v {
+                width: 70px;
+            }
+
+            .merge-v::before,
+            .merge-v::after {
+                width: 40px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            body {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>People's Doctor</h1>
+            <p>From Partnership to Paying Clinics</p>
+        </header>
+
+        <!-- Lars Section - Expanded Partnership Process -->
+        <section class="phase-section">
+            <div class="phase-label">Partnerships (Network Selling)</div>
+            <div class="lars-section">
+                <div class="lars-header">
+                    <span class="lars-badge">LARS</span>
+                    <span class="lars-title">1. Partnerships</span>
+                </div>
+                <div class="lars-steps">
+                    <div class="lars-step">
+                        <span class="lars-step-number">A</span>
+                        <h4>Identify Partners</h4>
+                        <p>Find relevant networks and platforms</p>
+                        <ul>
+                            <li>CGM</li>
+                            <li>KirCACS</li>
+                            <li>ProTreatment</li>
+                            <li>Vores Klinik</li>
+                            <li>NOVAX</li>
+                            <li>EG</li>
+                        </ul>
+                    </div>
+                    <div class="lars-step">
+                        <span class="lars-step-number">B</span>
+                        <h4>Contact & Pitch</h4>
+                        <p>Present value proposition to partners</p>
+                        <ul>
+                            <li>Initial meetings</li>
+                            <li>Platform demo</li>
+                            <li>Commercial terms</li>
+                        </ul>
+                    </div>
+                    <div class="lars-step">
+                        <span class="lars-step-number">C</span>
+                        <h4>Agreement & Integration</h4>
+                        <p>Formalize the collaboration</p>
+                        <ul>
+                            <li>Partner agreement</li>
+                            <li>Technical integration</li>
+                            <li>Offers & billing (e-conomic)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vertical Arrow -->
+        <div class="vertical-arrow-section">
+            <div class="vertical-arrow">
+                <div class="vertical-arrow-line"></div>
+                <div class="vertical-arrow-head"></div>
+            </div>
+        </div>
+
+        <!-- Morten Section - Expanded GTM Process -->
+        <section class="phase-section">
+            <div class="phase-label">Go-to-Market & Acquisition</div>
+            <div class="morten-section">
+                <div class="morten-header">
+                    <span class="morten-badge">MORTEN</span>
+                    <span class="morten-title">2. GTM Plan & Activation</span>
+                </div>
+                <div class="morten-steps">
+                    <div class="morten-step">
+                        <span class="morten-step-number">A</span>
+                        <h4>Webinars</h4>
+                        <p>Education and lead generation</p>
+                        <ul>
+                            <li>Partner webinars</li>
+                            <li>Product demos</li>
+                            <li>Industry events</li>
+                        </ul>
+                    </div>
+                    <div class="morten-step">
+                        <span class="morten-step-number">B</span>
+                        <h4>Push & Communication</h4>
+                        <p>Direct outreach</p>
+                        <ul>
+                            <li>Email campaigns</li>
+                            <li>Newsletters</li>
+                            <li>Communication plan</li>
+                        </ul>
+                    </div>
+                    <div class="morten-step">
+                        <span class="morten-step-number">C</span>
+                        <h4>Activation</h4>
+                        <p>Ongoing collaboration on activation/onboarding of new users</p>
+                        <ul>
+                            <li>Partner activation</li>
+                            <li>Rollout support</li>
+                            <li>Onboarding assistance</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vertical Arrow -->
+        <div class="vertical-arrow-section">
+            <div class="vertical-arrow">
+                <div class="vertical-arrow-line"></div>
+                <div class="vertical-arrow-head"></div>
+            </div>
+        </div>
+
+        <!-- Conversion Section - Expanded -->
+        <section class="phase-section">
+            <div class="phase-label">Lead Generation & Conversion</div>
+            <div class="conversion-section">
+                <div class="conversion-header">
+                    <span class="conversion-badge">TRAFFIC</span>
+                    <span class="conversion-title">3. Website & Onboarding</span>
+                </div>
+                <div class="conversion-steps">
+                    <div class="conversion-step">
+                        <span class="conversion-step-number">A</span>
+                        <h4>Traffic to Website</h4>
+                        <p>Leads from all channels</p>
+                        <ul>
+                            <li>Partner referrals</li>
+                            <li>SoMe & content</li>
+                            <li>Email campaigns</li>
+                            <li>Webinar follow-up</li>
+                        </ul>
+                    </div>
+                    <div class="conversion-step">
+                        <span class="conversion-step-number">B</span>
+                        <h4>Website Visit</h4>
+                        <p>Presentation of product and value</p>
+                        <ul>
+                            <li>peoplesDoctor.com</li>
+                            <li>Product benefits</li>
+                            <li>Testimonials</li>
+                            <li>Call-to-action</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vertical Arrow -->
+        <div class="vertical-arrow-section">
+            <div class="vertical-arrow">
+                <div class="vertical-arrow-line"></div>
+                <div class="vertical-arrow-head"></div>
+            </div>
+        </div>
+
+        <!-- Anders Section - Onboarding & Activation -->
+        <section class="phase-section">
+            <div class="phase-label">Sign-up & Onboarding</div>
+            <div class="anders-section">
+                <div class="anders-header">
+                    <span class="anders-badge">ANDERS HASLE</span>
+                    <span class="anders-title">3B. Sign-up & Activation</span>
+                </div>
+                <div class="anders-steps">
+                    <div class="anders-step">
+                        <span class="anders-step-number">A</span>
+                        <h4>Sign-up & Onboarding</h4>
+                        <p>Self-service registration</p>
+                        <ul>
+                            <li>MitID login</li>
+                            <li>Guided tour</li>
+                            <li>First consultation</li>
+                            <li>Automatic license</li>
+                        </ul>
+                    </div>
+                    <div class="anders-step">
+                        <span class="anders-step-number">B</span>
+                        <h4>Active User</h4>
+                        <p>Freemium activated</p>
+                        <ul>
+                            <li>Uses product daily</li>
+                            <li>Experiences value</li>
+                            <li>Ready for nurturing</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Split into Target Audiences -->
+        <div class="vertical-arrow-section">
+            <div class="vertical-arrow">
+                <div class="vertical-arrow-line"></div>
+                <div class="vertical-arrow-head"></div>
+            </div>
+        </div>
+
+        <!-- Target Audience Section -->
+        <section class="phase-section">
+            <div class="phase-label">Target Audience & Strategy</div>
+            <div class="audience-section">
+                <div class="audience-header">
+                    <h3>4. Differentiated Approach to Target Groups</h3>
+                    <p>Two distinct user types with different decision-making power and support needs</p>
+                </div>
+                <div class="audience-cards">
+                    <!-- Clinic Owner - High Touch -->
+                    <div class="audience-card primary-focus">
+                        <span class="focus-badge">HIGH-TOUCH</span>
+                        <div class="audience-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 21h18M9 8h1M9 12h1M9 16h1M14 8h1M14 12h1M14 16h1M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16"/>
+                            </svg>
+                        </div>
+                        <h4>Clinic Owner</h4>
+                        <p class="audience-card-subtitle">The decision-maker with budget responsibility</p>
+                        <ul class="audience-features">
+                            <li>Personal welcome call at sign-up</li>
+                            <li>Ida/Nanna assigned as dedicated contact</li>
+                            <li>Weekly follow-up call until value is proven</li>
+                            <li>Can roll out to all staff with one decision</li>
+                        </ul>
+                        <div class="decision-indicator">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+                            </svg>
+                            Dedicated support → clinic upgrade
+                        </div>
+                    </div>
+
+                    <!-- Clinic Staff - Self-Service -->
+                    <div class="audience-card secondary-focus">
+                        <span class="secondary-badge">SELF-SERVICE</span>
+                        <div class="audience-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+                            </svg>
+                        </div>
+                        <h4>Clinic Staff</h4>
+                        <p class="audience-card-subtitle">The individual user</p>
+                        <ul class="audience-features">
+                            <li>Freemium self-service flow</li>
+                            <li>Can become ambassador</li>
+                            <li>Bottom-up potential</li>
+                        </ul>
+                        <div class="flow-indicator">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 5v14M5 12l7 7 7-7"/>
+                            </svg>
+                            Via recommendation to owner
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vertical Arrow to Nurturing -->
+        <div class="vertical-arrow-section">
+            <div class="vertical-arrow">
+                <div class="vertical-arrow-line"></div>
+                <div class="vertical-arrow-head"></div>
+            </div>
+        </div>
+
+        <!-- AI Nurturing - Expanded -->
+        <section class="phase-section">
+            <div class="nurturing-card">
+                <div class="ai-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2a2 2 0 012 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 017 7h1a1 1 0 011 1v3a1 1 0 01-1 1h-1v1a2 2 0 01-2 2H5a2 2 0 01-2-2v-1H2a1 1 0 01-1-1v-3a1 1 0 011-1h1a7 7 0 017-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 012-2z"/>
+                        <circle cx="7.5" cy="14.5" r="1.5"/>
+                        <circle cx="16.5" cy="14.5" r="1.5"/>
+                    </svg>
+                    AI-DRIVEN
+                </div>
+                <div class="nurturing-content">
+                    <div class="nurturing-left">
+                        <h3>
+                            <span class="card-number" style="background: #4a6fa5;">5</span>
+                            Intelligent Nurturing & Upselling
+                        </h3>
+                        <p>AI optimizes user experience and drives conversion from freemium to premium</p>
+                    </div>
+                </div>
+
+                <!-- Nurturing Components Grid -->
+                <div class="nurturing-grid">
+                    <div class="nurturing-item">
+                        <div class="nurturing-item-header">
+                            <span class="nurturing-item-number">1</span>
+                            <h4>Track & Understand Behavior</h4>
+                        </div>
+                        <div class="nurturing-item-subtitle">AI monitors engagement and churn risk:</div>
+                        <ul>
+                            <li>Daily consultation volume</li>
+                            <li>Login frequency and session depth</li>
+                            <li>Review scores and feedback sentiment</li>
+                        </ul>
+                    </div>
+
+                    <div class="nurturing-item">
+                        <div class="nurturing-item-header">
+                            <span class="nurturing-item-number">2</span>
+                            <h4>On-Platform Engagement</h4>
+                        </div>
+                        <div class="nurturing-item-subtitle">AI identifies engagement level and risk:</div>
+                        <ul>
+                            <li>Smart tips based on usage patterns</li>
+                            <li>Proactive help at friction points</li>
+                            <li>Easy access to support</li>
+                        </ul>
+                    </div>
+
+                    <div class="nurturing-item">
+                        <div class="nurturing-item-header">
+                            <span class="nurturing-item-number">3</span>
+                            <h4>Continuous Tailoring (Lucas)</h4>
+                        </div>
+                        <div class="nurturing-item-subtitle">AI refines note prompting through feedback:</div>
+                        <ul>
+                            <li>Learns from user edits</li>
+                            <li>Adapts templates to specialty</li>
+                            <li>Improves quality over time</li>
+                        </ul>
+                    </div>
+
+                    <div class="nurturing-item">
+                        <div class="nurturing-item-header">
+                            <span class="nurturing-item-number">4</span>
+                            <h4>Email Nurturing (Umar)</h4>
+                        </div>
+                        <div class="nurturing-item-subtitle">Automated flows that drive retention:</div>
+                        <ul>
+                            <li>Onboarding and re-engagement sequences</li>
+                            <li>Weekly activity summaries</li>
+                            <li>Trigger-based upsell campaigns</li>
+                        </ul>
+                    </div>
+
+                    <div class="nurturing-item">
+                        <div class="nurturing-item-header">
+                            <span class="nurturing-item-number">5</span>
+                            <h4>Intelligent Upselling</h4>
+                        </div>
+                        <div class="nurturing-item-subtitle">Behavior-driven, perfectly timed offers:</div>
+                        <ul>
+                            <li>Trigger: High activity signals readiness</li>
+                            <li>Low-friction offers</li>
+                            <li>Personalized feature recommendations</li>
+                        </ul>
+                    </div>
+
+                    <div class="nurturing-item">
+                        <div class="nurturing-item-header">
+                            <span class="nurturing-item-number">6</span>
+                            <h4>Dashboard</h4>
+                        </div>
+                        <div class="nurturing-item-subtitle">Real-time visibility into performance:</div>
+                        <ul>
+                            <li>Engagement scores and churn risk per user</li>
+                            <li>Upsell conversion rates</li>
+                            <li>Revenue and customer lifetime value</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vertical Arrow -->
+        <div class="vertical-arrow-section">
+            <div class="vertical-arrow">
+                <div class="vertical-arrow-line"></div>
+                <div class="vertical-arrow-head"></div>
+            </div>
+        </div>
+
+        <!-- Two Conversion Paths -->
+        <section class="phase-section">
+            <div class="phase-label">Conversion & Upgrade</div>
+            <div class="paths-section">
+                <div class="paths-header">
+                    <span class="paths-badge">CONVERSION</span>
+                    <span class="paths-title">6. Two Paths to Full Clinic Solution</span>
+                </div>
+                <div class="paths-container">
+                    <!-- Path A: Clinic Owner Direct -->
+                    <div class="path-card">
+                        <div class="path-card-header">
+                            <div>
+                                <span class="path-badge primary">TOP-DOWN</span>
+                                <span class="path-card-title">Clinic Owner → Full Clinic</span>
+                            </div>
+                        </div>
+                        <div class="path-steps">
+                            <div class="path-step">
+                                <span class="path-step-number">1</span>
+                                <div class="path-step-content">
+                                    <h5>Clinic owner tries freemium</h5>
+                                    <p>High-touch onboarding with Ida/Nanna</p>
+                                </div>
+                            </div>
+                            <div class="path-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 5v14M5 12l7 7 7-7"/>
+                                </svg>
+                            </div>
+                            <div class="path-step">
+                                <span class="path-step-number">2</span>
+                                <div class="path-step-content">
+                                    <h5>Upgrades to premium</h5>
+                                    <p>Sees value and chooses paid subscription</p>
+                                </div>
+                            </div>
+                            <div class="path-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 5v14M5 12l7 7 7-7"/>
+                                </svg>
+                            </div>
+                            <div class="path-step">
+                                <span class="path-step-number">3</span>
+                                <div class="path-step-content">
+                                    <h5>Rolls out to entire clinic</h5>
+                                    <p>All employees get access</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="path-result">
+                            <div class="path-result-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                                </svg>
+                            </div>
+                            <div class="path-result-text">
+                                <h5>Full Clinic Solution</h5>
+                                <p>Everyone on premium</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Path B: Bottom-Up via Ambassador -->
+                    <div class="path-card secondary">
+                        <div class="path-card-header">
+                            <div>
+                                <span class="path-badge secondary">BOTTOM-UP</span>
+                                <span class="path-card-title">Staff → Clinic Owner</span>
+                            </div>
+                        </div>
+                        <div class="path-steps">
+                            <div class="path-step">
+                                <span class="path-step-number">1</span>
+                                <div class="path-step-content">
+                                    <h5>Staff uses freemium</h5>
+                                    <p>Individual user experiences value</p>
+                                </div>
+                            </div>
+                            <div class="path-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 5v14M5 12l7 7 7-7"/>
+                                </svg>
+                            </div>
+                            <div class="path-step">
+                                <span class="path-step-number">2</span>
+                                <div class="path-step-content">
+                                    <h5>Becomes ambassador</h5>
+                                    <p>Requests clinic solution from owner</p>
+                                </div>
+                            </div>
+                            <div class="path-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 5v14M5 12l7 7 7-7"/>
+                                </svg>
+                            </div>
+                            <div class="path-step">
+                                <span class="path-step-number">3</span>
+                                <div class="path-step-content">
+                                    <h5>We contact clinic owner</h5>
+                                    <p>Ida/Nanna starts high-touch flow</p>
+                                </div>
+                            </div>
+                            <div class="path-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 5v14M5 12l7 7 7-7"/>
+                                </svg>
+                            </div>
+                            <div class="path-step">
+                                <span class="path-step-number">4</span>
+                                <div class="path-step-content">
+                                    <h5>→ Top-Down flow</h5>
+                                    <p>Follows clinic owner flow</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="path-result">
+                            <div class="path-result-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                                </svg>
+                            </div>
+                            <div class="path-result-text">
+                                <h5>→ Full Clinic Solution</h5>
+                                <p>Via clinic owner contact</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vertical Arrow -->
+        <div class="vertical-arrow-section">
+            <div class="vertical-arrow">
+                <div class="vertical-arrow-line"></div>
+                <div class="vertical-arrow-head"></div>
+            </div>
+        </div>
+
+        <!-- Billing Section - Restyled -->
+        <section class="phase-section">
+            <div class="phase-label">Payment</div>
+            <div class="billing-section">
+                <div class="billing-header">
+                    <span class="billing-badge">STRIPE</span>
+                    <span class="billing-title">7. Subscription & Billing</span>
+                </div>
+                <div class="billing-steps">
+                    <div class="billing-step">
+                        <span class="billing-step-number">A</span>
+                        <h4>Payment Setup</h4>
+                        <p>Automatic billing via Stripe</p>
+                        <ul>
+                            <li>Credit/debit card</li>
+                            <li>Auto-renewal</li>
+                            <li>e-conomic integration</li>
+                        </ul>
+                    </div>
+                    <div class="billing-step">
+                        <span class="billing-step-number">B</span>
+                        <h4>License Management</h4>
+                        <p>Scalable pricing</p>
+                        <ul>
+                            <li>Per-user licenses</li>
+                            <li>Clinic packages</li>
+                            <li>Enterprise agreements</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vertical Arrow -->
+        <div class="vertical-arrow-section">
+            <div class="vertical-arrow">
+                <div class="vertical-arrow-line"></div>
+                <div class="vertical-arrow-head"></div>
+            </div>
+        </div>
+
+        <!-- Future Add-ons Section -->
+        <section class="phase-section">
+            <div class="phase-label">Future Extensions</div>
+            <div class="addons-section">
+                <div class="addons-header">
+                    <span class="addons-badge">ROADMAP</span>
+                    <span class="addons-title">8. Platform Add-ons</span>
+                </div>
+                <div class="addons-container">
+                    <div class="addon-card">
+                        <div class="addon-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+                            </svg>
+                        </div>
+                        <div class="addon-content">
+                            <span class="addon-badge">HEALTH DATA</span>
+                            <h4>People's Book</h4>
+                            <p>Centralized health data platform with patient history and cross-system journal access</p>
+                        </div>
+                    </div>
+                    <div class="addon-card">
+                        <div class="addon-icon secondary">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                                <path d="M12 18h.01"/>
+                            </svg>
+                        </div>
+                        <div class="addon-content">
+                            <span class="addon-badge secondary">PATIENT APP</span>
+                            <h4>People's Doctor App</h4>
+                            <p>Patient-facing app with access to personal health data, booking and direct communication with the clinic</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-badge">WWW.PEOPLESDOCTOR.COM</div>
+        </footer>
+    </div>
+</body>
+</html>

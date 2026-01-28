@@ -1,0 +1,2102 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>People's Clinic - Eksekveringsplan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-navy-900: #13102C;
+            --color-navy-800: #26304F;
+            --color-navy-700: #323E63;
+            --color-navy-600: #38456D;
+            --color-navy-500: #5669A4;
+            --color-navy-400: #A3B0D9;
+            --color-gray-200: #DADAEC;
+            --color-gray-100: #F8F8FD;
+            --color-white: #FFFFFF;
+            --color-success: #22C55E;
+            --color-warning: #F59E0B;
+            --color-danger: #EF4444;
+            --color-accent: #EC4899;
+            --color-gold: #d4af37;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #EBEBF4 0%, #FFFFFF 100%);
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.4rem;
+            font-weight: 600;
+            color: var(--color-navy-900);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: var(--color-navy-500);
+            font-weight: 500;
+        }
+
+        .header-badges {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        .header-badge.deadline {
+            background: linear-gradient(135deg, var(--color-danger), #DC2626);
+            color: white;
+        }
+
+        .header-badge.goal {
+            background: linear-gradient(135deg, var(--color-success), #16A34A);
+            color: white;
+        }
+
+        .header-badge svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Principle Cards */
+        .principles-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .principle-card {
+            background: var(--color-white);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(26, 43, 74, 0.06);
+            border-top: 4px solid var(--color-navy-500);
+        }
+
+        .principle-card .icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--color-navy-600), var(--color-navy-500));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+        }
+
+        .principle-card .icon svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+
+        .principle-card h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--color-navy-900);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .principle-card p {
+            font-size: 0.8rem;
+            color: var(--color-navy-600);
+            line-height: 1.5;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-navy-400);
+            margin-bottom: 14px;
+            padding-left: 4px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--color-white);
+            border-radius: 20px;
+            padding: 28px 32px;
+            box-shadow: 0 2px 12px rgba(26, 43, 74, 0.06);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .card-badge {
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: white;
+        }
+
+        .card-badge.week {
+            background: linear-gradient(135deg, var(--color-navy-900), var(--color-navy-700));
+        }
+
+        .card-badge.critical {
+            background: linear-gradient(135deg, var(--color-danger), #DC2626);
+        }
+
+        .card-badge.important {
+            background: linear-gradient(135deg, var(--color-warning), #D97706);
+        }
+
+        .card-badge.standard {
+            background: linear-gradient(135deg, var(--color-navy-600), var(--color-navy-500));
+        }
+
+        .card-badge.success {
+            background: linear-gradient(135deg, var(--color-success), #16A34A);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--color-navy-900);
+        }
+
+        /* Sprint Timeline */
+        .sprint-timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .sprint-timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--color-navy-500), var(--color-navy-400));
+            border-radius: 2px;
+        }
+
+        .sprint-week {
+            position: relative;
+            margin-bottom: 32px;
+        }
+
+        .sprint-week:last-child {
+            margin-bottom: 0;
+        }
+
+        .sprint-week::before {
+            content: '';
+            position: absolute;
+            left: -29px;
+            top: 8px;
+            width: 16px;
+            height: 16px;
+            background: var(--color-navy-500);
+            border-radius: 50%;
+            border: 4px solid var(--color-white);
+            box-shadow: 0 2px 8px rgba(26, 43, 74, 0.15);
+        }
+
+        .sprint-week.milestone::before {
+            background: var(--color-gold);
+            width: 20px;
+            height: 20px;
+            left: -31px;
+            top: 6px;
+        }
+
+        .sprint-week.current::before {
+            background: var(--color-success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+        }
+
+        .sprint-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .sprint-week-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-navy-500);
+            background: var(--color-gray-100);
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .sprint-week.milestone .sprint-week-label {
+            background: linear-gradient(135deg, var(--color-gold), #f0c850);
+            color: var(--color-navy-900);
+        }
+
+        .sprint-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-navy-900);
+        }
+
+        .sprint-tasks {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+        }
+
+        .sprint-task {
+            background: var(--color-gray-100);
+            border-radius: 12px;
+            padding: 16px;
+            border-left: 4px solid var(--color-navy-500);
+        }
+
+        .sprint-task.critical {
+            border-left-color: var(--color-danger);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .sprint-task.important {
+            border-left-color: var(--color-warning);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .sprint-task.done {
+            border-left-color: var(--color-success);
+            background: rgba(34, 197, 94, 0.05);
+        }
+
+        .sprint-task h5 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-navy-900);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sprint-task p {
+            font-size: 0.78rem;
+            color: var(--color-navy-600);
+            line-height: 1.5;
+        }
+
+        .task-owner {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: var(--color-navy-500);
+            background: var(--color-white);
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-left: auto;
+        }
+
+        /* Ceremony Cards */
+        .ceremony-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .ceremony-card {
+            background: var(--color-gray-100);
+            border-radius: 14px;
+            padding: 20px;
+            border-left: 4px solid var(--color-navy-500);
+        }
+
+        .ceremony-card h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--color-navy-900);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ceremony-card h4 svg {
+            width: 18px;
+            height: 18px;
+            color: var(--color-navy-500);
+        }
+
+        .ceremony-card .frequency {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: var(--color-white);
+            background: var(--color-navy-500);
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .ceremony-card p {
+            font-size: 0.8rem;
+            color: var(--color-navy-600);
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .ceremony-card ul {
+            list-style: none;
+            margin-top: 8px;
+        }
+
+        .ceremony-card ul li {
+            font-size: 0.78rem;
+            color: var(--color-navy-600);
+            padding: 3px 0;
+            padding-left: 14px;
+            position: relative;
+        }
+
+        .ceremony-card ul li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 5px;
+            background: var(--color-navy-500);
+            border-radius: 50%;
+        }
+
+        /* Decision Framework */
+        .decision-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .decision-card {
+            background: var(--color-gray-100);
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .decision-card.do {
+            border: 2px solid var(--color-success);
+            background: rgba(34, 197, 94, 0.05);
+        }
+
+        .decision-card.dont {
+            border: 2px solid var(--color-danger);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .decision-card h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .decision-card.do h4 {
+            color: #16A34A;
+        }
+
+        .decision-card.dont h4 {
+            color: #DC2626;
+        }
+
+        .decision-card h4 svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .decision-card ul {
+            list-style: none;
+        }
+
+        .decision-card ul li {
+            font-size: 0.82rem;
+            color: var(--color-navy-700);
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .decision-card.do ul li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: 700;
+        }
+
+        .decision-card.dont ul li::before {
+            content: '✗';
+            position: absolute;
+            left: 0;
+            color: var(--color-danger);
+            font-weight: 700;
+        }
+
+        /* RACI Matrix */
+        .raci-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        .raci-table th {
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-navy-900);
+            background: var(--color-gray-100);
+            border-bottom: 2px solid var(--color-gray-200);
+        }
+
+        .raci-table th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        .raci-table th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        .raci-table td {
+            padding: 12px 16px;
+            font-size: 0.85rem;
+            color: var(--color-navy-800);
+            border-bottom: 1px solid var(--color-gray-200);
+            vertical-align: middle;
+        }
+
+        .raci-table tr:hover td {
+            background: var(--color-gray-100);
+        }
+
+        .raci-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .raci-badge.r {
+            background: var(--color-navy-900);
+            color: white;
+        }
+
+        .raci-badge.a {
+            background: var(--color-gold);
+            color: var(--color-navy-900);
+        }
+
+        .raci-badge.c {
+            background: var(--color-navy-400);
+            color: white;
+        }
+
+        .raci-badge.i {
+            background: var(--color-gray-200);
+            color: var(--color-navy-700);
+        }
+
+        /* Success Metrics */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .metric-card {
+            background: var(--color-gray-100);
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .metric-card .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-navy-900);
+            margin-bottom: 4px;
+        }
+
+        .metric-card .metric-label {
+            font-size: 0.8rem;
+            color: var(--color-navy-600);
+            margin-bottom: 8px;
+        }
+
+        .metric-card .metric-target {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: var(--color-success);
+            background: rgba(34, 197, 94, 0.15);
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        /* Escalation Path */
+        .escalation-flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 20px;
+            background: var(--color-gray-100);
+            border-radius: 14px;
+        }
+
+        .escalation-step {
+            flex: 1;
+            text-align: center;
+            padding: 16px;
+            background: var(--color-white);
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .escalation-step:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: var(--color-navy-400);
+        }
+
+        .escalation-step .level {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: var(--color-white);
+            background: var(--color-navy-500);
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        .escalation-step.critical .level {
+            background: var(--color-danger);
+        }
+
+        .escalation-step h5 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-navy-900);
+            margin-bottom: 4px;
+        }
+
+        .escalation-step p {
+            font-size: 0.75rem;
+            color: var(--color-navy-600);
+        }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--color-gray-200);
+            font-size: 0.85rem;
+            color: var(--color-navy-800);
+        }
+
+        .checklist li:last-child {
+            border-bottom: none;
+        }
+
+        .checklist-checkbox {
+            width: 22px;
+            height: 22px;
+            min-width: 22px;
+            border: 2px solid var(--color-navy-400);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .checklist-checkbox:hover {
+            border-color: var(--color-navy-500);
+            background: var(--color-gray-100);
+        }
+
+        .checklist-checkbox.checked {
+            background: var(--color-success);
+            border-color: var(--color-success);
+        }
+
+        .checklist-checkbox.checked svg {
+            color: white;
+        }
+
+        .checklist-checkbox svg {
+            width: 14px;
+            height: 14px;
+            color: transparent;
+        }
+
+        .checklist-content {
+            flex: 1;
+        }
+
+        .checklist-content strong {
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .checklist-content span {
+            font-size: 0.78rem;
+            color: var(--color-navy-500);
+        }
+
+        /* Communication Plan */
+        .comm-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .comm-card {
+            background: var(--color-gray-100);
+            border-radius: 14px;
+            padding: 20px;
+            border-left: 4px solid var(--color-navy-500);
+        }
+
+        .comm-card h5 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-navy-900);
+            margin-bottom: 8px;
+        }
+
+        .comm-card .audience {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: var(--color-navy-500);
+            margin-bottom: 8px;
+        }
+
+        .comm-card p {
+            font-size: 0.8rem;
+            color: var(--color-navy-600);
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--color-gray-200);
+        }
+
+        .footer-badge {
+            display: inline-block;
+            background: var(--color-navy-900);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        /* Executive Summary */
+        .exec-summary {
+            background: linear-gradient(135deg, var(--color-navy-900) 0%, var(--color-navy-700) 100%);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 40px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .exec-summary::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .exec-summary-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .exec-summary-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--color-gold), #f0c850);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .exec-summary-icon svg {
+            width: 28px;
+            height: 28px;
+            color: var(--color-navy-900);
+        }
+
+        .exec-summary-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .exec-summary-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.85;
+        }
+
+        .exec-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            margin: 24px 0;
+        }
+
+        .exec-situation {
+            margin-bottom: 32px;
+        }
+
+        .exec-situation-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .exec-situation-title svg {
+            width: 20px;
+            height: 20px;
+            color: var(--color-danger);
+        }
+
+        .exec-situation p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            opacity: 0.95;
+        }
+
+        .exec-situation p strong {
+            color: var(--color-gold);
+        }
+
+        /* Problem Cards */
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .problem-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 20px;
+            border-left: 4px solid var(--color-danger);
+            backdrop-filter: blur(10px);
+        }
+
+        .problem-card.warning {
+            border-left-color: var(--color-warning);
+        }
+
+        .problem-card.blocked {
+            border-left-color: #9CA3AF;
+        }
+
+        .problem-card.orange {
+            border-left-color: #F97316;
+        }
+
+        .problem-card.purple {
+            border-left-color: #8B5CF6;
+        }
+
+        .problem-card.blue {
+            border-left-color: #3B82F6;
+        }
+
+        .problem-card.teal {
+            border-left-color: #14B8A6;
+        }
+
+        .problem-number {
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-danger);
+            margin-bottom: 8px;
+        }
+
+        .problem-card.warning .problem-number {
+            color: var(--color-warning);
+        }
+
+        .problem-card.blocked .problem-number {
+            color: #9CA3AF;
+        }
+
+        .problem-card.orange .problem-number {
+            color: #F97316;
+        }
+
+        .problem-card.purple .problem-number {
+            color: #8B5CF6;
+        }
+
+        .problem-card.blue .problem-number {
+            color: #3B82F6;
+        }
+
+        .problem-card.teal .problem-number {
+            color: #14B8A6;
+        }
+
+        .problem-card h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .problem-card p {
+            font-size: 0.8rem;
+            opacity: 0.85;
+            line-height: 1.5;
+        }
+
+        /* Critical Decisions */
+        .decisions-section {
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .decisions-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .decisions-header svg {
+            width: 24px;
+            height: 24px;
+            color: var(--color-gold);
+        }
+
+        .decisions-header h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .decision-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .critical-decision {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .decision-number {
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            background: var(--color-gold);
+            color: var(--color-navy-900);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 800;
+        }
+
+        .decision-content h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .decision-content p {
+            font-size: 0.82rem;
+            opacity: 0.85;
+            line-height: 1.5;
+        }
+
+        .decision-impact {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: var(--color-gold);
+            margin-top: 6px;
+        }
+
+        .decision-impact svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Bottom Line */
+        .bottom-line {
+            margin-top: 32px;
+            padding: 20px 24px;
+            background: rgba(34, 197, 94, 0.15);
+            border-radius: 12px;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .bottom-line-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .bottom-line-header svg {
+            width: 20px;
+            height: 20px;
+            color: var(--color-success);
+        }
+
+        .bottom-line-header h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-success);
+        }
+
+        .bottom-line p {
+            font-size: 0.9rem;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        /* What's At Stake */
+        .stakes-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .stake-item {
+            text-align: center;
+            padding: 16px 12px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+        }
+
+        .stake-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-gold);
+            margin-bottom: 4px;
+        }
+
+        .stake-label {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .principles-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .ceremony-grid {
+                grid-template-columns: 1fr;
+            }
+            .problem-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .stakes-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .decision-grid, .comm-grid {
+                grid-template-columns: 1fr;
+            }
+            .escalation-flow {
+                flex-direction: column;
+            }
+            .escalation-step:not(:last-child)::after {
+                content: '↓';
+                position: static;
+                display: block;
+                margin-top: 8px;
+            }
+            body {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .problem-grid {
+                grid-template-columns: 1fr;
+            }
+            .exec-summary {
+                padding: 24px;
+            }
+            .exec-summary-title {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .principles-grid, .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            .header-badges {
+                flex-direction: column;
+                align-items: center;
+            }
+            .stakes-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .exec-summary-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .critical-decision {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>People's Clinic</h1>
+            <p>Eksekveringsplan - Best Practice for Projekt Gennemforelse</p>
+            <div class="header-badges">
+                <div class="header-badge deadline">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12,6 12,12 16,14"/>
+                    </svg>
+                    12 UGER TIL DEADLINE
+                </div>
+                <div class="header-badge goal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                    MAL: VERIFICERET BETALINGSVILLIGHED
+                </div>
+            </div>
+        </header>
+
+        <!-- THE CORE PROBLEM - Ultra clear -->
+        <section style="background: linear-gradient(135deg, var(--color-navy-900) 0%, #1a1a3e 100%); border-radius: 24px; padding: 48px; margin-bottom: 24px; color: white; position: relative; overflow: hidden;">
+            <!-- Background accent -->
+            <div style="position: absolute; top: -100px; right: -100px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(86, 105, 164, 0.3) 0%, transparent 70%); pointer-events: none;"></div>
+
+            <!-- Revenue status - THE MAIN POINT -->
+            <div style="text-align: center; margin-bottom: 40px; position: relative;">
+                <div style="display: inline-flex; align-items: center; gap: 12px; background: rgba(239, 68, 68, 0.2); border: 2px solid rgba(239, 68, 68, 0.5); padding: 12px 28px; border-radius: 50px; margin-bottom: 24px;">
+                    <div style="width: 12px; height: 12px; background: #EF4444; border-radius: 50%; animation: blink 1s infinite;"></div>
+                    <span style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #FCA5A5;">Kritisk Status</span>
+                </div>
+                <style>@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }</style>
+
+                <h2 style="font-size: 2.8rem; font-weight: 800; margin-bottom: 16px; line-height: 1.1;">
+                    Nuværende indtjening: <span style="color: #EF4444;">0 kr.</span>
+                </h2>
+                <p style="font-size: 1.15rem; opacity: 0.9; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+                    Vi brænder investorpenge hver eneste dag. Ingen kunder betaler.<br>
+                    <strong style="color: var(--color-navy-400);">Denne plan skal vende det på 12 uger.</strong>
+                </p>
+            </div>
+
+            <!-- The equation -->
+            <div style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; margin-bottom: 40px;">
+                <div style="background: rgba(255,255,255,0.1); padding: 20px 32px; border-radius: 16px; text-align: center; min-width: 140px;">
+                    <div style="font-size: 2rem; font-weight: 800; color: #EF4444;">0</div>
+                    <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7; margin-top: 4px;">Betalende kunder</div>
+                </div>
+                <div style="font-size: 2rem; color: var(--color-navy-400);">→</div>
+                <div style="background: rgba(255,255,255,0.1); padding: 20px 32px; border-radius: 16px; text-align: center; min-width: 140px;">
+                    <div style="font-size: 2rem; font-weight: 800; color: var(--color-warning);">12</div>
+                    <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7; margin-top: 4px;">Uger til deadline</div>
+                </div>
+                <div style="font-size: 2rem; color: var(--color-navy-400);">→</div>
+                <div style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1)); border: 2px solid rgba(34, 197, 94, 0.4); padding: 20px 32px; border-radius: 16px; text-align: center; min-width: 140px;">
+                    <div style="font-size: 2rem; font-weight: 800; color: var(--color-success);">?</div>
+                    <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7; margin-top: 4px;">Betalende kunder</div>
+                </div>
+            </div>
+
+            <!-- One sentence summary -->
+            <div style="background: rgba(86, 105, 164, 0.2); border-left: 4px solid var(--color-navy-500); padding: 20px 24px; border-radius: 0 12px 12px 0; max-width: 900px; margin: 0 auto;">
+                <p style="font-size: 1rem; line-height: 1.7; margin: 0;">
+                    <strong style="color: white;">Missionen:</strong> På 12 uger skal vi bevise, at læger vil betale for vores AI-notatløsning.
+                    Det kræver et konkurrencedygtigt produkt, valideret værdi, og mindst én betalende kunde.
+                    <span style="color: var(--color-navy-400);">Alt andet er sekundært.</span>
+                </p>
+            </div>
+        </section>
+
+        <!-- WHY WE'RE NOT THERE YET -->
+        <section class="exec-summary">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 32px;">
+                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, var(--color-navy-500), var(--color-navy-600)); border-radius: 14px; display: flex; align-items: center; justify-content: center;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="width: 28px; height: 28px;">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="exec-summary-title">Hvorfor vi ikke tjener penge endnu</h2>
+                    <p class="exec-summary-subtitle">7 blokeringer der skal håndteres</p>
+                </div>
+            </div>
+
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="problem-number">Blokering #1</div>
+                    <h4>Produktet halter (antagelse)</h4>
+                    <p>Netværksfeedback indikerer, at Noteless foretrækkes pga. UX og look/feel. Vi antager det er årsagen – men har ikke hård data.</p>
+                </div>
+                <div class="problem-card orange">
+                    <div class="problem-number">Blokering #2</div>
+                    <h4>Vi bygger til alle - perfektionerer intet</h4>
+                    <p>4 målgrupper. 0 perfekte løsninger. Ressourcerne spredes for tyndt. Resultatet: Halvfærdigt til alle.</p>
+                </div>
+                <div class="problem-card warning">
+                    <div class="problem-number">Blokering #3</div>
+                    <h4>Journalresume = ukendt værdi</h4>
+                    <p>Vi ved ikke præcist hvor ofte det bruges. Antagelse: Uden EPJ-connector (auto-import af FNX) bliver det aldrig daglig brug. Manuel upload = friktion.</p>
+                </div>
+                <div class="problem-card purple">
+                    <div class="problem-number">Blokering #4</div>
+                    <h4>Begrænset udviklerkraft</h4>
+                    <p>Vi har ikke ressourcer til alt. Prioritering er kritisk – hver feature koster noget andet. Ingen plads til "nice-to-have".</p>
+                </div>
+                <div class="problem-card blocked">
+                    <div class="problem-number">Blokering #5</div>
+                    <h4>EPJ-connector: Ude af vores hænder</h4>
+                    <p>CGM og NOVAX kontrollerer tidslinjen. Vi venter. Kan ikke planlægges. Må arbejde uden den.</p>
+                </div>
+                <div class="problem-card blue">
+                    <div class="problem-number">Blokering #6</div>
+                    <h4>Ingen betalingsvalidering endnu</h4>
+                    <p>Vi har aldrig testet om læger faktisk vil betale. Alt er antagelser. Nul data.</p>
+                </div>
+                <div class="problem-card teal">
+                    <div class="problem-number">Blokering #7</div>
+                    <h4>Feedback kræver prioritering</h4>
+                    <p>Værdifuld input fra superbrugere. Men med begrænset udviklerkraft skal vi balancere forbedringer mod lanceringstempo. Klare kriterier for "klar til lancering" er nødvendigt.</p>
+                </div>
+            </div>
+
+            <div class="exec-divider"></div>
+
+            <!-- THE 5 DECISIONS -->
+            <div style="background: linear-gradient(135deg, rgba(86, 105, 164, 0.15), rgba(86, 105, 164, 0.05)); border-radius: 20px; padding: 32px; border: 2px solid rgba(86, 105, 164, 0.3);">
+                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+                    <div style="width: 48px; height: 48px; background: var(--color-navy-500); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" style="width: 24px; height: 24px;">
+                            <polyline points="9 11 12 14 22 4"/>
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 2px;">7 beslutninger ledelsen skal tage NU</h3>
+                        <p style="font-size: 0.85rem; opacity: 0.7;">Uden disse beslutninger kan planen ikke eksekveres</p>
+                    </div>
+                </div>
+
+                <div class="decision-list">
+                    <div class="critical-decision" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px;">
+                        <div class="decision-number">1</div>
+                        <div class="decision-content">
+                            <h4>KUN læger. Drop resten.</h4>
+                            <p>Fysioterapeuter (6.300), tandlæger, kiropraktorer - parkeret. Alt fokus på 3.400 læger via partnere. Én målgruppe. Én perfekt løsning.</p>
+                            <div class="decision-impact">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                                75% mindre kompleksitet
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="critical-decision" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px;">
+                        <div class="decision-number">2</div>
+                        <div class="decision-content">
+                            <h4>Validér værdi FØRST. Tidligt GO/NO-GO.</h4>
+                            <p>Før vi sætter pris og kræver penge, skal vi sikre os at produktet giver så meget værdi i klinisk praksis, at lægen er villig til at betale for det. Test oplevet værdi hos læger hurtigt. Få input på produkterne, så vi kan skære og sammensætte tidligt. Data fra brugertests bestemmer retning – ikke antagelser.</p>
+                            <div class="decision-impact">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                                Undgår at bygge det forkerte – og at prissætte noget uden reel værdi
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="critical-decision" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px;">
+                        <div class="decision-number">3</div>
+                        <div class="decision-content">
+                            <h4>UI har højeste prioritet.</h4>
+                            <p>AI-notatløsningens UX skal matche eller overgå markedet – det er forudsætningen for at læger vælger os. Frontend prioriterer dette, mens andre opgaver kører parallelt hvor det giver mening.</p>
+                            <div class="decision-impact">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                                Forudsætning for salg
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="critical-decision" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px;">
+                        <div class="decision-number">4</div>
+                        <div class="decision-content">
+                            <h4>Partnerbrugere: 2 mdr. gratis, derefter rabat.</h4>
+                            <p>Brugere via partnere får 2 måneders gratis premium. Herefter træder partnerrabat ind (% fastsat i kontrakt, udarbejdet af Lars). Betalingsløsning bygges i uge 11-12 når produktet er valideret.</p>
+                            <div class="decision-impact">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                                Validér værdi før betaling
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="critical-decision" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px;">
+                        <div class="decision-number">5</div>
+                        <div class="decision-content">
+                            <h4>CTO sætter realistiske deadlines.</h4>
+                            <p>Salg og marketing er afhængige af et funktionsdygtigt produkt. Optimistiske deadlines skaber kun problemer senere. CTO leverer ærlige estimater – så resten af organisationen kan planlægge efter virkeligheden, ikke ønsketænkning.</p>
+                            <div class="decision-impact">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                                Troværdig planlægning for hele teamet
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="critical-decision" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px;">
+                        <div class="decision-number">6</div>
+                        <div class="decision-content">
+                            <h4>Alt input går gennem Product Owner.</h4>
+                            <p>Feedback og ønsker centraliseres hos Daniel (PO). Han prioriterer, definerer "klar til lancering" og kommunikerer tilbage. For at sikre fremdrift: Input der ikke er registreret hos PO, kan ikke forventes implementeret. Superbrugere informeres om denne proces og vores ressourcesituation.</p>
+                            <div class="decision-impact">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                                Klar proces og forventningsafstemning
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="critical-decision" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px;">
+                        <div class="decision-number">7</div>
+                        <div class="decision-content">
+                            <h4>Disciplin i eksekvering. Ingen afvigelser.</h4>
+                            <p>Planen virker kun, hvis vi holder os til den. Eksterne forstyrrelser, nye idéer og skiftende prioriteter vil komme – det er uundgåeligt. Ledelsen forpligter sig nu til at følge denne plan, så vi kan pege tilbage på aftalen, når presset kommer. Uden den forpligtelse kan vi ikke nå i mål.</p>
+                            <div class="decision-impact">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                                Fælles forpligtelse sikrer gennemførelse
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- What success looks like -->
+            <div style="margin-top: 32px; background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.05)); border-radius: 16px; padding: 24px 28px; border: 2px solid rgba(34, 197, 94, 0.3);">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" style="width: 24px; height: 24px;">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                    <h4 style="font-size: 1.1rem; font-weight: 700; color: #22C55E; margin: 0;">Om 12 uger har vi:</h4>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                    <div style="background: rgba(255,255,255,0.08); padding: 16px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7; margin-bottom: 4px;">Produkt</div>
+                        <div style="font-size: 0.95rem; font-weight: 600;">UI på niveau med markedet</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.08); padding: 16px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7; margin-bottom: 4px;">Validering</div>
+                        <div style="font-size: 0.95rem; font-weight: 600;">Produkter der koster det, de er værd</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.08); padding: 16px; border-radius: 10px; text-align: center;">
+                        <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7; margin-bottom: 4px;">Revenue</div>
+                        <div style="font-size: 0.95rem; font-weight: 600;">Minimum 1 betalende læge</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Core Principles -->
+        <section class="section">
+            <div class="section-label">Kerneprincipper for Eksekvering</div>
+            <div class="principles-grid">
+                <div class="principle-card">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                    </div>
+                    <h3>Test tidligt</h3>
+                    <p>Find hurtigt ud af, hvad der virker – og hvad der ikke gør. Bedre at vide det nu end om 2 måneder.</p>
+                </div>
+                <div class="principle-card">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <h3>Små skridt</h3>
+                    <p>Vi leverer i små bidder, så vi løbende kan justere. Ingen store lanceringer uden feedback undervejs.</p>
+                </div>
+                <div class="principle-card">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <h3>Lægen først</h3>
+                    <p>Alle beslutninger måles mod: "Giver dette værdi for lægen i hverdagen?" Hvis ikke, gør vi det ikke.</p>
+                </div>
+                <div class="principle-card">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="9" y1="9" x2="15" y2="15"/>
+                            <line x1="15" y1="9" x2="9" y2="15"/>
+                        </svg>
+                    </div>
+                    <h3>Sig nej</h3>
+                    <p>Nye ønsker og idéer er fristende, men stjæler fokus. Standardsvaret er: "Det tager vi efter lancering."</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sprint Timeline -->
+        <section class="section">
+            <div class="section-label">12-Ugers Sprint-plan</div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-badge week">TIDSLINJE</span>
+                    <span class="card-title">Uge-for-uge eksekvering</span>
+                </div>
+
+                <div class="sprint-timeline">
+                    <!-- Week 1-2 -->
+                    <div class="sprint-week current">
+                        <div class="sprint-header">
+                            <span class="sprint-week-label">Uge 1-2</span>
+                            <span class="sprint-title">Forberedelse & Realistisk Planlægning</span>
+                        </div>
+                        <div class="sprint-tasks">
+                            <div class="sprint-task critical">
+                                <h5>Rekruttér 3-6 læger til brugertest <span class="task-owner">Product</span></h5>
+                                <p>KUN læger via partnerkontakter. Andre målgrupper er parkeret. Fokus på klinisk værdi-validering.</p>
+                            </div>
+                            <div class="sprint-task critical">
+                                <h5>CTO leverer realistiske tidsestimater <span class="task-owner">CTO</span></h5>
+                                <p>Ærlige estimater – ikke optimistiske. Salg og marketing planlægger ud fra disse. Alt input via PO (Daniel).</p>
+                            </div>
+                            <div class="sprint-task important">
+                                <h5>Afklar FNX-fil kompatibilitet <span class="task-owner">Tech</span></h5>
+                                <p>Kan alle læge-EPJ'er eksportere FNX? Kritisk for journalresume-værdien.</p>
+                            </div>
+                            <div class="sprint-task">
+                                <h5>Setup brugertest-protokol <span class="task-owner">Product</span></h5>
+                                <p>Struktureret interview-guide. Fokus: Oplever lægen nok klinisk værdi til at ville betale?</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Week 3-4 -->
+                    <div class="sprint-week milestone">
+                        <div class="sprint-header">
+                            <span class="sprint-week-label">Uge 3-4 - MILESTONE</span>
+                            <span class="sprint-title">Værdivalidering & GO/NO-GO</span>
+                        </div>
+                        <div class="sprint-tasks">
+                            <div class="sprint-task critical">
+                                <h5>Gennemfør brugertests med læger <span class="task-owner">Product</span></h5>
+                                <p>3-6 læger tester AI-notatløsning + journalresume. Giver det nok værdi i klinisk praksis?</p>
+                            </div>
+                            <div class="sprint-task critical">
+                                <h5>GO/NO-GO beslutning <span class="task-owner">Leadership</span></h5>
+                                <p>Vil læger betale for dette? Data bestemmer. Skær og sammensæt produkterne baseret på feedback.</p>
+                            </div>
+                            <div class="sprint-task important">
+                                <h5>CTO fastlægger realistisk tidsplan <span class="task-owner">CTO</span></h5>
+                                <p>Baseret på brugertest-feedback og ærlige estimater. Resten af teamet planlægger herefter.</p>
+                            </div>
+                            <div class="sprint-task">
+                                <h5>Koordinér med partnere <span class="task-owner">Sales</span></h5>
+                                <p>Informér om kommende gratis premium-periode for partnerbrugere. Aftal onboarding.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Week 5-6 -->
+                    <div class="sprint-week">
+                        <div class="sprint-header">
+                            <span class="sprint-week-label">Uge 5-6</span>
+                            <span class="sprint-title">UI-Udvikling Sprint 1 (Højeste Prioritet)</span>
+                        </div>
+                        <div class="sprint-tasks">
+                            <div class="sprint-task critical">
+                                <h5>AI-notatløsning - Core UI <span class="task-owner">Frontend</span></h5>
+                                <p>UI har højeste prioritet. UX skal matche eller overgå markedet. Fokus på konsultationsflow for læger.</p>
+                            </div>
+                            <div class="sprint-task important">
+                                <h5>Digital onboarding for læger <span class="task-owner">Frontend</span></h5>
+                                <p>Self-serve signup flow. MitID integration. Kun målrettet læger.</p>
+                            </div>
+                            <div class="sprint-task">
+                                <h5>Backend: Premium/Freemium gates <span class="task-owner">Backend</span></h5>
+                                <p>Adgangskontrol mellem tiers. Forberedelse til partnerrabat-model.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Week 7-8 -->
+                    <div class="sprint-week">
+                        <div class="sprint-header">
+                            <span class="sprint-week-label">Uge 7-8</span>
+                            <span class="sprint-title">UI-Udvikling Sprint 2 + Journalresume</span>
+                        </div>
+                        <div class="sprint-tasks">
+                            <div class="sprint-task critical">
+                                <h5>AI-notatløsning - Færdiggørelse <span class="task-owner">Frontend</span></h5>
+                                <p>Notatskabeloner. Feedback fra brugertests indarbejdet. Klar til lancering.</p>
+                            </div>
+                            <div class="sprint-task important">
+                                <h5>Journalresume UI integration <span class="task-owner">Frontend</span></h5>
+                                <p>FNX-upload flow. Resume-visning. Kun hvis GO fra uge 3-4.</p>
+                            </div>
+                            <div class="sprint-task">
+                                <h5>QA & Bug fixes <span class="task-owner">Team</span></h5>
+                                <p>Intern testing. Al feedback gennem PO (Daniel) som prioriterer.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Week 9-10 -->
+                    <div class="sprint-week milestone">
+                        <div class="sprint-header">
+                            <span class="sprint-week-label">Uge 9-10 - LANCERING</span>
+                            <span class="sprint-title">Gratis Premium til Partnerbrugere</span>
+                        </div>
+                        <div class="sprint-tasks">
+                            <div class="sprint-task critical">
+                                <h5>Lancér til partnerbrugere (læger) <span class="task-owner">GTM</span></h5>
+                                <p>2 måneders gratis premium for brugere via partnere. Kun læger. Koordineret kommunikation.</p>
+                            </div>
+                            <div class="sprint-task critical">
+                                <h5>Aktivér tracking & analytics <span class="task-owner">Product</span></h5>
+                                <p>Brugsfrekvens. Oplevet værdi. Engagement. Bruges som grundlag for prissætning.</p>
+                            </div>
+                            <div class="sprint-task important">
+                                <h5>Partner onboarding support <span class="task-owner">Sales</span></h5>
+                                <p>Hjælp partnere med at aktivere deres læger. FAQ. Troubleshooting.</p>
+                            </div>
+                            <div class="sprint-task">
+                                <h5>Feedback via PO-proces <span class="task-owner">Product</span></h5>
+                                <p>Al feedback centraliseres hos Daniel (PO). Klare kriterier for hvad der tages med.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Week 11-12 -->
+                    <div class="sprint-week milestone">
+                        <div class="sprint-header">
+                            <span class="sprint-week-label">Uge 11-12 - DEADLINE</span>
+                            <span class="sprint-title">Betalingsvalidering & Konvertering</span>
+                        </div>
+                        <div class="sprint-tasks">
+                            <div class="sprint-task critical">
+                                <h5>Implementér betalingsløsning <span class="task-owner">Backend</span></h5>
+                                <p>Partnerrabat (% fastsat i kontrakt af Lars). Betalingsflow for læger.</p>
+                            </div>
+                            <div class="sprint-task critical">
+                                <h5>Konvertering: Gratis → Betaling <span class="task-owner">GTM</span></h5>
+                                <p>Gratis periode slutter. Personlig kontakt til aktive læger. Minimum 1 betalende læge.</p>
+                            </div>
+                            <div class="sprint-task critical">
+                                <h5>Investor-rapport <span class="task-owner">Leadership</span></h5>
+                                <p>Dokumentér: Betalende kunder. Valideret klinisk værdi. Engagement data. Learnings.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ceremonies -->
+        <section class="section">
+            <div class="section-label">Mødestruktur (Ceremonies)</div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-badge standard">RYTME</span>
+                    <span class="card-title">Faste møder der driver fremdrift</span>
+                </div>
+                <div class="ceremony-grid">
+                    <div class="ceremony-card">
+                        <h4>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12,6 12,12 16,14"/>
+                            </svg>
+                            Daily Standup
+                        </h4>
+                        <span class="frequency">Dagligt - 15 min</span>
+                        <p>Kort, fokuseret status. Identificér blokeringer med det samme.</p>
+                        <ul>
+                            <li>Hvad lavede jeg i går?</li>
+                            <li>Hvad laver jeg i dag?</li>
+                            <li>Er der noget der blokerer mig?</li>
+                        </ul>
+                    </div>
+                    <div class="ceremony-card">
+                        <h4>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                            </svg>
+                            Sprint Planning
+                        </h4>
+                        <span class="frequency">Hver 2. uge - 1 time</span>
+                        <p>Prioritér næste sprints opgaver. Estimér. Commit som team.</p>
+                        <ul>
+                            <li>Review af backlog</li>
+                            <li>Kapacitetsplanlægning</li>
+                            <li>Sprint commitment</li>
+                        </ul>
+                    </div>
+                    <div class="ceremony-card">
+                        <h4>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            </svg>
+                            Weekly Review
+                        </h4>
+                        <span class="frequency">Ugentligt - 30 min</span>
+                        <p>Ledelsens overblik. Metrics gennemgang. Beslutninger.</p>
+                        <ul>
+                            <li>Progress mod mål</li>
+                            <li>Risici og blokeringer</li>
+                            <li>Resource-justeringer</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RACI Matrix -->
+        <section class="section">
+            <div class="section-label">Ansvarsfordeling (RACI)</div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-badge standard">ROLLER</span>
+                    <span class="card-title">Hvem gør hvad?</span>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--color-navy-600); margin-bottom: 16px;">
+                    <strong>R</strong> = Responsible (udfører) | <strong>A</strong> = Accountable (ansvarlig) | <strong>C</strong> = Consulted | <strong>I</strong> = Informed
+                </p>
+                <table class="raci-table">
+                    <thead>
+                        <tr>
+                            <th>Aktivitet</th>
+                            <th>Product</th>
+                            <th>Frontend</th>
+                            <th>Backend</th>
+                            <th>CTO</th>
+                            <th>Sales/GTM</th>
+                            <th>Leadership</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Brugertest & Feedback</td>
+                            <td><span class="raci-badge r">R</span></td>
+                            <td><span class="raci-badge c">C</span></td>
+                            <td><span class="raci-badge i">I</span></td>
+                            <td><span class="raci-badge c">C</span></td>
+                            <td><span class="raci-badge c">C</span></td>
+                            <td><span class="raci-badge a">A</span></td>
+                        </tr>
+                        <tr>
+                            <td>UI-opdatering</td>
+                            <td><span class="raci-badge c">C</span></td>
+                            <td><span class="raci-badge r">R</span></td>
+                            <td><span class="raci-badge c">C</span></td>
+                            <td><span class="raci-badge a">A</span></td>
+                            <td><span class="raci-badge i">I</span></td>
+                            <td><span class="raci-badge i">I</span></td>
+                        </tr>
+                        <tr>
+                            <td>Premium/Freemium Backend</td>
+                            <td><span class="raci-badge c">C</span></td>
+                            <td><span class="raci-badge c">C</span></td>
+                            <td><span class="raci-badge r">R</span></td>
+                            <td><span class="raci-badge a">A</span></td>
+                            <td><span class="raci-badge i">I</span></td>
+                            <td><span class="raci-badge i">I</span></td>
+                        </tr>
+                        <tr>
+                            <td>Partner-koordinering</td>
+                            <td><span class="raci-badge c">C</span></td>
+                            <td><span class="raci-badge i">I</span></td>
+                            <td><span class="raci-badge i">I</span></td>
+                            <td><span class="raci-badge i">I</span></td>
+                            <td><span class="raci-badge r">R</span></td>
+                            <td><span class="raci-badge a">A</span></td>
+                        </tr>
+                        <tr>
+                            <td>Go-to-Market lancering</td>
+                            <td><span class="raci-badge c">C</span></td>
+                            <td><span class="raci-badge c">C</span></td>
+                            <td><span class="raci-badge c">C</span></td>
+                            <td><span class="raci-badge c">C</span></td>
+                            <td><span class="raci-badge r">R</span></td>
+                            <td><span class="raci-badge a">A</span></td>
+                        </tr>
+                        <tr>
+                            <td>Betalingsløsning</td>
+                            <td><span class="raci-badge c">C</span></td>
+                            <td><span class="raci-badge c">C</span></td>
+                            <td><span class="raci-badge r">R</span></td>
+                            <td><span class="raci-badge a">A</span></td>
+                            <td><span class="raci-badge i">I</span></td>
+                            <td><span class="raci-badge i">I</span></td>
+                        </tr>
+                        <tr>
+                            <td>Investor-kommunikation</td>
+                            <td><span class="raci-badge c">C</span></td>
+                            <td><span class="raci-badge i">I</span></td>
+                            <td><span class="raci-badge i">I</span></td>
+                            <td><span class="raci-badge c">C</span></td>
+                            <td><span class="raci-badge c">C</span></td>
+                            <td><span class="raci-badge r">R</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Decision Framework -->
+        <section class="section">
+            <div class="section-label">Beslutningsramme</div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-badge important">SCOPE GUARD</span>
+                    <span class="card-title">Hvordan vi siger ja og nej</span>
+                </div>
+                <div class="decision-grid">
+                    <div class="decision-card do">
+                        <h4>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                            GØR DETTE
+                        </h4>
+                        <ul>
+                            <li>Direkte relateret til lægers daglige workflow</li>
+                            <li>Adresserer feedback fra brugertests</li>
+                            <li>Kan implementeres inden for sprint</li>
+                            <li>Øger sandsynlighed for betaling</li>
+                            <li>Fjerner friktion i onboarding</li>
+                            <li>Løser kritisk bug eller blocker</li>
+                        </ul>
+                    </div>
+                    <div class="decision-card dont">
+                        <h4>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"/>
+                                <line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                            GØR IKKE DETTE
+                        </h4>
+                        <ul>
+                            <li>"Nice to have" features</li>
+                            <li>Relateret til andre målgrupper (fysio, tandlæger)</li>
+                            <li>Kræver mere end 2 dages arbejde uden klar ROI</li>
+                            <li>Afhænger af ekstern levering (EPJ-connector)</li>
+                            <li>Redesign eller refactoring uden brugerværdi</li>
+                            <li>Noget en enkelt bruger har bedt om</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Success Metrics -->
+        <section class="section">
+            <div class="section-label">Succeskriterier</div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-badge success">METRICS</span>
+                    <span class="card-title">Hvordan vi måler succes</span>
+                </div>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">?</div>
+                        <div class="metric-label">Betalende læger</div>
+                        <span class="metric-target">Fastlæg mål efter brugertest</span>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">50%</div>
+                        <div class="metric-label">Aktiveringsrate</div>
+                        <span class="metric-target">Signup → Første konsultation</span>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">3+</div>
+                        <div class="metric-label">Konsultationer/uge</div>
+                        <span class="metric-target">Per aktiv bruger</span>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">8+</div>
+                        <div class="metric-label">NPS Score</div>
+                        <span class="metric-target">Net Promoter Score</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Escalation Path -->
+        <section class="section">
+            <div class="section-label">Eskaleringssti</div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-badge critical">BLOKERINGER</span>
+                    <span class="card-title">Når noget går galt</span>
+                </div>
+                <div class="escalation-flow">
+                    <div class="escalation-step">
+                        <span class="level">Level 1</span>
+                        <h5>Daily Standup</h5>
+                        <p>Blokeringer rejses her først. Løses samme dag hvis muligt.</p>
+                    </div>
+                    <div class="escalation-step">
+                        <span class="level">Level 2</span>
+                        <h5>CTO / Product Lead</h5>
+                        <p>Hvis ikke løst inden EOD. Prioritering og ressource-allokering.</p>
+                    </div>
+                    <div class="escalation-step">
+                        <span class="level">Level 3</span>
+                        <h5>Weekly Review</h5>
+                        <p>Strukturelle problemer. Scope-ændringer. Risici for deadline.</p>
+                    </div>
+                    <div class="escalation-step critical">
+                        <span class="level">KRITISK</span>
+                        <h5>Emergency Meeting</h5>
+                        <p>Deadline i fare. Scope cut beslutning. Investor-kommunikation.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Communication Plan -->
+        <section class="section">
+            <div class="section-label">Kommunikationsplan</div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-badge standard">STAKEHOLDERS</span>
+                    <span class="card-title">Hvem får hvad at vide hvornår</span>
+                </div>
+                <div class="comm-grid">
+                    <div class="comm-card">
+                        <div class="audience">INVESTORER</div>
+                        <h5>Månedlig status + Milestone updates</h5>
+                        <p>Kort, fakta-baseret rapport. Progress mod mål. Risici. Næste skridt. Ingen overraskelser.</p>
+                    </div>
+                    <div class="comm-card">
+                        <div class="audience">PARTNERE (CGM, NOVAX, etc.)</div>
+                        <h5>2 uger før lancering + Ugentligt under lancering</h5>
+                        <p>Heads-up om gratis premium. Onboarding-materialer. Support-kanal. Feedback-loop.</p>
+                    </div>
+                    <div class="comm-card">
+                        <div class="audience">TEAMET</div>
+                        <h5>Daily standup + Slack/Teams</h5>
+                        <p>Transparent kommunikation. Blokeringer deles med det samme. Fejring af wins.</p>
+                    </div>
+                    <div class="comm-card">
+                        <div class="audience">BRUGERE (LÆGER)</div>
+                        <h5>Ved signup + Feature releases</h5>
+                        <p>Onboarding emails. Feature announcements. Support og feedback-kanaler.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pre-Launch Checklist -->
+        <section class="section">
+            <div class="section-label">Pre-Launch Tjekliste</div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-badge warning">UGE 8</span>
+                    <span class="card-title">Før vi går live med gratis premium</span>
+                </div>
+                <ul class="checklist">
+                    <li>
+                        <div class="checklist-checkbox" onclick="this.classList.toggle('checked')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="checklist-content">
+                            <strong>UI-opdatering færdig og testet</strong>
+                            <span>AI notatløsning har forbedret UX baseret på brugerfeedback</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="checklist-checkbox" onclick="this.classList.toggle('checked')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="checklist-content">
+                            <strong>Digital onboarding fungerer</strong>
+                            <span>Self-serve signup, MitID, guided tour</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="checklist-checkbox" onclick="this.classList.toggle('checked')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="checklist-content">
+                            <strong>Premium/Freemium gates implementeret</strong>
+                            <span>Soft paywall, feature-gating, upgrade prompts</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="checklist-checkbox" onclick="this.classList.toggle('checked')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="checklist-content">
+                            <strong>Journalresume tilgængelig i premium</strong>
+                            <span>FNX-upload flow fungerer, værdi er tydelig</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="checklist-checkbox" onclick="this.classList.toggle('checked')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="checklist-content">
+                            <strong>Analytics og tracking aktiveret</strong>
+                            <span>Brugsfrekvens, feature adoption, engagement metrics</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="checklist-checkbox" onclick="this.classList.toggle('checked')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="checklist-content">
+                            <strong>Partnere er briefet og klar</strong>
+                            <span>CGM XMO, Vores Klinik, NOVAX, Netværkspraksis, Allés Lægehus</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="checklist-checkbox" onclick="this.classList.toggle('checked')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="checklist-content">
+                            <strong>Support-kanaler er på plads</strong>
+                            <span>FAQ, help docs, support email/chat</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="checklist-checkbox" onclick="this.classList.toggle('checked')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </div>
+                        <div class="checklist-content">
+                            <strong>Feedback-mekanismer er implementeret</strong>
+                            <span>In-app feedback, NPS, interview pipeline</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Key Risks -->
+        <section class="section">
+            <div class="section-label">Kritiske Risici at Overvåge</div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-badge critical">WATCH LIST</span>
+                    <span class="card-title">Ting der kan ødelægge planen</span>
+                </div>
+                <div class="decision-grid">
+                    <div class="decision-card dont" style="border-color: var(--color-warning);">
+                        <h4 style="color: #D97706;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                <line x1="12" y1="9" x2="12" y2="13"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                            Tidlige Advarselstegn
+                        </h4>
+                        <ul>
+                            <li>Frontend-udvikler er bag plan efter uge 4</li>
+                            <li>Brugertest viser lavt værdi-opfattelse</li>
+                            <li>Partnere er ikke responsive på koordinering</li>
+                            <li>CTO-estimater er markant højere end forventet</li>
+                            <li>Ingen læger melder sig til brugertest</li>
+                        </ul>
+                    </div>
+                    <div class="decision-card do" style="border-color: var(--color-navy-500);">
+                        <h4 style="color: var(--color-navy-700);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                            </svg>
+                            Kontingency Actions
+                        </h4>
+                        <ul>
+                            <li>Skær journalresume fra premium bundle</li>
+                            <li>Reducer UI-scope til kun critical path</li>
+                            <li>Forlæng gratis periode med 2 uger</li>
+                            <li>Fokusér på færre partnere (kun top 2)</li>
+                            <li>Hyr freelance frontend-hjælp</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-badge">PEOPLE'S CLINIC - EKSEKVERINGSPLAN 2024</div>
+        </footer>
+    </div>
+</body>
+</html>

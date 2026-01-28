@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>People's Doctor - Indstillinger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../Design System/platform.css">
+  <style>
+    /* Page-specific overrides */
+    .settings-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      max-width: 100%;
+      overflow: hidden;
+      gap: var(--spacing-section-gap);
+    }
+
+    .page-header {
+      flex-shrink: 0;
+    }
+
+    .page-header__title {
+      font-size: 32px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .page-header__subtitle {
+      font-size: var(--font-size-md);
+      color: var(--color-text);
+    }
+
+    /* Tabs */
+    .settings-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--color-gray-200);
+      flex-shrink: 0;
+    }
+
+    .settings-tab {
+      padding: 12px 24px;
+      font-size: var(--font-size-md);
+      font-weight: 500;
+      color: var(--color-navy-400);
+      cursor: pointer;
+      border: none;
+      background: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all var(--transition-fast);
+      font-family: inherit;
+    }
+
+    .settings-tab:hover {
+      color: var(--color-text);
+    }
+
+    .settings-tab--active {
+      color: var(--color-navy-800);
+      border-bottom-color: var(--color-navy-800);
+    }
+
+    /* Tab panels */
+    .settings-tab-panel {
+      display: none;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    .settings-tab-panel--active {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .settings-tab-panel .card {
+      padding: 30px;
+    }
+
+    /* Profile card */
+    .profile-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .profile-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: var(--radius-full);
+      background: var(--gradient-button-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-white);
+      font-size: var(--font-size-2xl);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-info__name {
+      font-size: var(--font-size-xl);
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 2px;
+    }
+
+    .profile-info__email {
+      font-size: var(--font-size-base);
+      color: var(--color-navy-400);
+      margin-bottom: 4px;
+    }
+
+    .profile-info__role {
+      display: inline-flex;
+    }
+
+    /* Profile form */
+    .profile-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-top: 16px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-row--3col {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group--full {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      font-size: var(--font-size-base);
+      font-weight: 500;
+      color: var(--color-text);
+    }
+
+    .form-input {
+      padding: 10px 14px;
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      font-size: var(--font-size-md);
+      font-family: inherit;
+      color: var(--color-text);
+      background: var(--color-white);
+      transition: border-color var(--transition-fast);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--color-navy-500);
+    }
+
+    .form-input--readonly {
+      background: var(--color-gray-100);
+      color: var(--color-navy-400);
+      cursor: default;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 4px;
+    }
+
+    /* Settings list — uses platform.css base styles for .settings-row, only adds padding context */
+    .settings-list {
+      display: flex;
+      flex-direction: column;
+      padding: 30px;
+    }
+
+    .settings-list .settings-section__title {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-primary);
+      padding: 0 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .settings-list .settings-row {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--color-gray-100);
+    }
+
+    .settings-list .settings-row:last-child {
+      border-bottom: none;
+    }
+
+    /* Danger zone */
+    .settings-danger {
+      border: 1px solid #e53e3e;
+    }
+
+    .settings-danger .settings-section__title {
+      color: #e53e3e;
+    }
+
+    /* Template list */
+    .template-list__title {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 0;
+    }
+
+    .template-list-header {
+      padding: 0;
+    }
+
+    .template-list-description {
+      font-size: var(--font-size-sm);
+      color: var(--color-navy-400);
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+
+    .template-list {
+      padding: 8px 0;
+    }
+
+    .template-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      margin: 4px 0;
+      border-radius: var(--radius-lg);
+      background: var(--color-white);
+      border: 1px solid var(--color-gray-100);
+      position: relative;
+      transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1),
+                  box-shadow 0.2s ease,
+                  background 0.15s ease;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .template-item:hover {
+      background: var(--color-gray-50);
+      border-color: var(--color-gray-200);
+    }
+
+    .template-item__left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .template-item__drag {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-navy-300);
+      cursor: grab;
+      flex-shrink: 0;
+      padding: 6px;
+      border-radius: var(--radius-md);
+      transition: all 0.15s ease;
+    }
+
+    .template-item:hover .template-item__drag {
+      color: var(--color-navy-500);
+      background: var(--color-navy-100);
+    }
+
+    .template-item__drag svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .template-item__info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .template-item__name {
+      font-size: var(--font-size-md);
+      font-weight: 500;
+      color: var(--color-text);
+    }
+
+    .template-item__description {
+      font-size: var(--font-size-sm);
+      color: var(--color-navy-400);
+    }
+
+    /* Drag and drop states */
+    .template-list {
+      position: relative;
+      padding: 4px 0;
+    }
+
+    .template-item--dragging {
+      position: fixed;
+      z-index: 1000;
+      pointer-events: none;
+      box-shadow: 0 12px 28px rgba(19, 16, 44, 0.2),
+                  0 4px 10px rgba(19, 16, 44, 0.1);
+      transform: scale(1.02);
+      background: var(--color-white);
+      border-color: var(--color-primary);
+    }
+
+    .template-item--dragging .template-item__drag {
+      color: var(--color-primary);
+      background: var(--color-primary-light);
+      cursor: grabbing;
+    }
+
+    .template-item--placeholder {
+      background: var(--color-gray-50);
+      border: 2px dashed var(--color-gray-300);
+      opacity: 0.6;
+    }
+
+    .template-item--placeholder * {
+      visibility: hidden;
+    }
+
+    /* Smooth reordering animation */
+    .template-list--reordering .template-item:not(.template-item--dragging):not(.template-item--placeholder) {
+      transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    /* Save notification */
+    .save-notification {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--color-success);
+      color: white;
+      padding: 12px 20px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      z-index: 1000;
+    }
+
+    .save-notification--visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .page-header__title {
+        font-size: 24px;
+      }
+
+      .template-item__description {
+        display: none;
+      }
+    }
+
+    /* Compliance content styles */
+    .compliance-content {
+      max-width: 800px;
+    }
+
+    .compliance-section {
+      margin-bottom: 32px;
+    }
+
+    .compliance-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .compliance-section__title {
+      font-size: var(--font-size-xl);
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 16px;
+    }
+
+    .compliance-section__text {
+      font-size: var(--font-size-md);
+      color: var(--color-text);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .compliance-section__text:last-child {
+      margin-bottom: 0;
+    }
+
+    .compliance-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .compliance-list__item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--color-gray-50);
+      border-radius: var(--radius-lg);
+    }
+
+    .compliance-list__icon {
+      color: var(--color-success);
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+    }
+
+    .compliance-list__text {
+      font-size: var(--font-size-md);
+      color: var(--color-text);
+      line-height: 1.5;
+    }
+
+    .compliance-list__text strong {
+      font-weight: 600;
+    }
+
+    .highlight-box {
+      background: linear-gradient(135deg, var(--color-navy-50) 0%, var(--color-gray-50) 100%);
+      border: 1px solid var(--color-navy-100);
+      border-radius: var(--radius-xl);
+      padding: 20px 24px;
+      margin-top: 24px;
+    }
+
+    .highlight-box__title {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 8px;
+    }
+
+    .highlight-box__text {
+      font-size: var(--font-size-base);
+      color: var(--color-navy-600);
+      line-height: 1.5;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="platform">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar__logo">
+        <a href="platform-preview.html">
+          <img src="../Design System/assets/Peoples Clinic.svg" alt="People's Clinic" class="topbar__logo-img">
+        </a>
+      </div>
+      <div class="topbar__right">
+        <div class="clinic-dropdown">
+          <span>Valby Lægehus</span>
+          <svg><use href="#chevron-down"/></svg>
+        </div>
+        <div class="flags">
+          <div class="flag flag--dk"></div>
+          <div class="flag flag--uk"></div>
+        </div>
+        <div class="user-menu" id="userMenu">
+          <span class="user-name">Dr. Anna Nielsen</span>
+          <div class="user-avatar">AN</div>
+          <!-- User Dropdown -->
+          <div class="user-dropdown">
+            <div class="user-dropdown__label">Brugerpanel</div>
+            <a href="beskeder.html" class="user-dropdown__item">
+              <svg><use href="#message-square"/></svg>
+              Dine beskeder
+            </a>
+            <a href="indstillinger.html" class="user-dropdown__item">
+              <svg><use href="#sliders"/></svg>
+              Brugerindstillinger
+            </a>
+            <div class="user-dropdown__divider"></div>
+            <div class="user-dropdown__label">Klinikadministration</div>
+            <a href="admin-klinik-admin.html" class="user-dropdown__item">
+              <svg><use href="#users"/></svg>
+              Klinikadministration
+            </a>
+            <a href="admin-klinik.html" class="user-dropdown__item">
+              <svg><use href="#building-2"/></svg>
+              Klinikindstillinger
+            </a>
+            <div class="user-dropdown__divider"></div>
+            <a href="#" class="user-dropdown__item">
+              <svg><use href="#log-out"/></svg>
+              Log ud
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <div class="content-area">
+      <!-- Sidebar Navigation -->
+      <aside class="sidebar">
+        <nav class="sidebar__nav">
+          <a href="platform-preview.html" class="nav-btn nav-btn--primary">
+            <i data-lucide="play"></i>
+            Start Konsultation
+          </a>
+          <a href="konsultationshistorik.html" class="nav-btn nav-btn--secondary">
+            <svg><use href="#history"/></svg>
+            Konsultationshistorik
+          </a>
+          <a href="journalresume.html" class="nav-btn nav-btn--secondary">
+            <svg><use href="#file-text"/></svg>
+            Journalresume
+          </a>
+          <a href="honorarforslag.html" class="nav-btn nav-btn--secondary">
+            <svg><use href="#receipt"/></svg>
+            Honorarforslag
+          </a>
+          <a href="klinikdrift-dashboard.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="activity"></i>
+            Klinikdrift
+          </a>
+        </nav>
+        <div class="sidebar__bottom-box">
+          <!-- Brugerpanel — alle brugere -->
+          <div class="bottom-section-label">Brugerpanel</div>
+          <a href="beskeder.html" class="bottom-link">
+            <svg><use href="#message-square"/></svg>
+            Dine beskeder
+          </a>
+          <a href="indstillinger.html" class="bottom-link bottom-link--active">
+            <svg><use href="#sliders"/></svg>
+            Brugerindstillinger
+          </a>
+
+          <!-- Klinikadministration — kun klinikejer -->
+          <div class="bottom-section-label">Klinikadministration</div>
+          <a href="admin-klinik-admin.html" class="bottom-link">
+            <svg><use href="#users"/></svg>
+            Klinikadministration
+          </a>
+          <a href="admin-klinik.html" class="bottom-link">
+            <svg><use href="#building-2"/></svg>
+            Klinikindstillinger
+          </a>
+
+          <!-- Log ud -->
+          <a href="#" class="bottom-link" style="margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--color-gray-100);">
+            <svg><use href="#log-out"/></svg>
+            Log ud
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Content + Right Sidebar -->
+      <div class="content-with-aside">
+      <main class="settings-container">
+        <div class="page-header">
+          <h1 class="page-header__title">Indstillinger</h1>
+          <p class="page-header__subtitle">Tilpas din profil og applikationsindstillinger</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="settings-tabs">
+          <button class="settings-tab settings-tab--active" data-tab="templates">Notatskabeloner</button>
+          <button class="settings-tab" data-tab="profile">Rediger profil</button>
+          <button class="settings-tab" data-tab="settings">Indstillinger</button>
+          <button class="settings-tab" data-tab="security">Sikkerhed & Compliance</button>
+        </div>
+
+        <!-- Tab 1: Rediger profil -->
+        <div class="settings-tab-panel" data-panel="profile">
+          <div class="card">
+            <div class="profile-card">
+              <div class="profile-avatar">AN</div>
+              <div class="profile-info">
+                <div class="profile-info__name">Dr. Anna Nielsen</div>
+                <div class="profile-info__email">anna.nielsen@valbylaegehus.dk</div>
+                <div class="profile-info__role">
+                  <span class="badge badge--admin">Administrator</span>
+                </div>
+              </div>
+            </div>
+            <div class="profile-form">
+              <div class="form-row form-row--3col">
+                <div class="form-group">
+                  <label class="form-label">Fornavn</label>
+                  <input type="text" class="form-input" value="Anna">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Mellemnavn</label>
+                  <input type="text" class="form-input" value="">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Efternavn</label>
+                  <input type="text" class="form-input" value="Nielsen">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">E-mail</label>
+                  <input type="email" class="form-input" value="anna.nielsen@valbylaegehus.dk">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Telefon</label>
+                  <input type="tel" class="form-input" value="+45 2345 6789">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Specialisering</label>
+                  <input type="text" class="form-input" value="Almen medicin">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Autorisations-ID</label>
+                  <input type="text" class="form-input form-input--readonly" value="DK-09876" readonly>
+                </div>
+              </div>
+              <div class="form-group form-group--full">
+                <label class="form-label">Klinik</label>
+                <input type="text" class="form-input form-input--readonly" value="Valby Lægehus" readonly>
+              </div>
+              <div class="form-actions">
+                <button class="btn-secondary btn-secondary--primary">Gem ændringer</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Indstillinger -->
+        <div class="settings-tab-panel" data-panel="settings">
+          <!-- General settings -->
+          <div class="card settings-list">
+            <h2 class="settings-section__title">Generelt</h2>
+            <div class="settings-row">
+              <div class="settings-row__label">
+                <span class="settings-row__title">Sprog</span>
+                <span class="settings-row__description">Vælg applikationens sprog</span>
+              </div>
+              <select class="settings-select">
+                <option>Dansk</option>
+                <option>English</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Security settings -->
+          <div class="card settings-list">
+            <h2 class="settings-section__title">Sikkerhed</h2>
+            <div class="settings-row">
+              <div class="settings-row__label">
+                <span class="settings-row__title">To-faktor autentificering</span>
+                <span class="settings-row__description">Ekstra sikkerhed ved login</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="badge badge--active">Aktiveret</span>
+                <button class="btn-secondary">Konfigurer</button>
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row__label">
+                <span class="settings-row__title">Automatisk log ud</span>
+                <span class="settings-row__description">Log ud efter inaktivitet</span>
+              </div>
+              <select class="settings-select">
+                <option>30 minutter</option>
+                <option>1 time</option>
+                <option>2 timer</option>
+                <option>4 timer</option>
+              </select>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row__label">
+                <span class="settings-row__title">Skift adgangskode</span>
+                <span class="settings-row__description">Sidst ændret for 45 dage siden</span>
+              </div>
+              <button class="btn-secondary">Skift adgangskode</button>
+            </div>
+          </div>
+
+          <!-- Danger zone -->
+          <div class="card settings-list settings-danger">
+            <h2 class="settings-section__title">Farezone</h2>
+            <div class="settings-row">
+              <div class="settings-row__label">
+                <span class="settings-row__title">Slet konto</span>
+                <span class="settings-row__description">Permanent sletning af alle data. Denne handling kan ikke fortrydes.</span>
+              </div>
+              <button class="btn-danger">Slet konto</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Notatskabeloner -->
+        <div class="settings-tab-panel settings-tab-panel--active" data-panel="templates">
+          <!-- Default template selector -->
+          <div class="card settings-list">
+            <h2 class="settings-section__title">Standard notatskabelon</h2>
+            <div class="settings-row">
+              <div class="settings-row__label">
+                <span class="settings-row__title">Standardskabelon</span>
+                <span class="settings-row__description">Denne skabelon bruges som standard ved nye konsultationer</span>
+              </div>
+              <select class="settings-select">
+                <option>SOAP</option>
+                <option>SOAP - Kort</option>
+                <option>SOAP - Psykisk</option>
+                <option>SOAP med baggrund</option>
+                <option>Fritekst</option>
+                <option>Struktureret</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Template visibility & ordering -->
+          <div class="card">
+            <div class="template-list-header">
+              <h2 class="template-list__title">Skabelon-synlighed & rækkefølge</h2>
+              <p class="template-list-description">Træk for at ændre rækkefølge. Brug kontakten for at skjule eller vise skabeloner.</p>
+            </div>
+            <div class="template-list">
+              <div class="template-item">
+                <div class="template-item__left">
+                  <span class="template-item__drag">
+                    <svg><use href="#grip-vertical"/></svg>
+                  </span>
+                  <div class="template-item__info">
+                    <span class="template-item__name">SOAP</span>
+                    <span class="template-item__description">Subjektiv, Objektiv, Analyse, Plan</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <span class="template-item__drag">
+                    <svg><use href="#grip-vertical"/></svg>
+                  </span>
+                  <div class="template-item__info">
+                    <span class="template-item__name">SOAP - Kort</span>
+                    <span class="template-item__description">Kortfattet SOAP-format</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <span class="template-item__drag">
+                    <svg><use href="#grip-vertical"/></svg>
+                  </span>
+                  <div class="template-item__info">
+                    <span class="template-item__name">SOAP - Psykisk</span>
+                    <span class="template-item__description">SOAP tilpasset psykiske lidelser</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <span class="template-item__drag">
+                    <svg><use href="#grip-vertical"/></svg>
+                  </span>
+                  <div class="template-item__info">
+                    <span class="template-item__name">SOAP med baggrund</span>
+                    <span class="template-item__description">SOAP med udvidet baggrundssektion</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <span class="template-item__drag">
+                    <svg><use href="#grip-vertical"/></svg>
+                  </span>
+                  <div class="template-item__info">
+                    <span class="template-item__name">Årskontrol</span>
+                    <span class="template-item__description">Skabelon til årlig helbredskontrol</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <span class="template-item__drag">
+                    <svg><use href="#grip-vertical"/></svg>
+                  </span>
+                  <div class="template-item__info">
+                    <span class="template-item__name">Kiropraktor Notat</span>
+                    <span class="template-item__description">Tilpasset kiropraktisk behandling</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input">
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <span class="template-item__drag">
+                    <svg><use href="#grip-vertical"/></svg>
+                  </span>
+                  <div class="template-item__info">
+                    <span class="template-item__name">Fysioterapeut Notat</span>
+                    <span class="template-item__description">Tilpasset fysioterapeutisk behandling</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input">
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <span class="template-item__drag">
+                    <svg><use href="#grip-vertical"/></svg>
+                  </span>
+                  <div class="template-item__info">
+                    <span class="template-item__name">Fritekst</span>
+                    <span class="template-item__description">Frit format uden sektioner</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <span class="template-item__drag">
+                    <svg><use href="#grip-vertical"/></svg>
+                  </span>
+                  <div class="template-item__info">
+                    <span class="template-item__name">Struktureret</span>
+                    <span class="template-item__description">Struktureret format med faste felter</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: Sikkerhed & Compliance -->
+        <div class="settings-tab-panel" data-panel="security">
+          <div class="card" style="padding: 30px;">
+            <div class="compliance-content">
+              <section class="compliance-section">
+                <h2 class="compliance-section__title">Overholdelse af GDPR og EU AI Act</h2>
+                <p class="compliance-section__text">
+                  People's Doctor er udviklet med fuld overholdelse af EU's General Data Protection Regulation (GDPR) samt den nye EU AI Act.
+                  Al patientdata behandles i overensstemmelse med de strengeste europæiske standarder for datasikkerhed og privatliv.
+                </p>
+                <p class="compliance-section__text">
+                  Vores AI-system er klassificeret som et høj-risiko system under EU AI Act, hvilket betyder at vi følger ekstra strenge
+                  krav til transparens, dokumentation og menneskelig overvågning af alle AI-genererede resultater.
+                </p>
+              </section>
+
+              <section class="compliance-section">
+                <h2 class="compliance-section__title">Vores vigtigste compliance-foranstaltninger</h2>
+                <ul class="compliance-list">
+                  <li class="compliance-list__item">
+                    <i data-lucide="check-circle" class="compliance-list__icon"></i>
+                    <span class="compliance-list__text">
+                      <strong>Ende-til-ende kryptering:</strong> Al data er krypteret både under transport og i hvile med AES-256 kryptering.
+                    </span>
+                  </li>
+                  <li class="compliance-list__item">
+                    <i data-lucide="check-circle" class="compliance-list__icon"></i>
+                    <span class="compliance-list__text">
+                      <strong>Datacenter i EU:</strong> Alle patientdata opbevares udelukkende på servere placeret inden for EU's grænser.
+                    </span>
+                  </li>
+                  <li class="compliance-list__item">
+                    <i data-lucide="check-circle" class="compliance-list__icon"></i>
+                    <span class="compliance-list__text">
+                      <strong>Adgangskontrol:</strong> Rollebaseret adgangsstyring sikrer at kun autoriseret personale har adgang til patientdata.
+                    </span>
+                  </li>
+                  <li class="compliance-list__item">
+                    <i data-lucide="check-circle" class="compliance-list__icon"></i>
+                    <span class="compliance-list__text">
+                      <strong>Audit logging:</strong> Alle handlinger i systemet logges og kan spores for at sikre fuld ansvarlighed.
+                    </span>
+                  </li>
+                  <li class="compliance-list__item">
+                    <i data-lucide="check-circle" class="compliance-list__icon"></i>
+                    <span class="compliance-list__text">
+                      <strong>Databehandleraftaler:</strong> Vi har indgået databehandleraftaler med alle underleverandører i overensstemmelse med GDPR artikel 28.
+                    </span>
+                  </li>
+                  <li class="compliance-list__item">
+                    <i data-lucide="check-circle" class="compliance-list__icon"></i>
+                    <span class="compliance-list__text">
+                      <strong>Regelmæssige sikkerhedsaudits:</strong> Vores systemer gennemgår løbende penetrationstests og sikkerhedsgennemgange.
+                    </span>
+                  </li>
+                </ul>
+              </section>
+
+              <section class="compliance-section">
+                <h2 class="compliance-section__title">AI-transparens og lægens ansvar</h2>
+                <p class="compliance-section__text">
+                  Alle AI-genererede journalnotater og honorarforslag er tydeligt markeret som maskin-genererede.
+                  Det er altid den behandlende læges ansvar at gennemgå, redigere og godkende alt indhold før det
+                  anvendes i patientbehandlingen.
+                </p>
+                <p class="compliance-section__text">
+                  People's Doctor fungerer udelukkende som et støtteværktøj - det erstatter ikke lægefaglig
+                  vurdering og beslutningstagning.
+                </p>
+
+                <div class="highlight-box">
+                  <p class="highlight-box__title">Har du spørgsmål om datasikkerhed?</p>
+                  <p class="highlight-box__text">
+                    Kontakt vores Data Protection Officer på dpo@peoplesdoctor.dk eller læs vores fulde
+                    privatlivspolitik og databehandlingsaftale i dokumentationsportalen.
+                  </p>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Right Sidebar -->
+      <aside class="aside-right">
+        <div class="card support-card">
+          <div class="support-avatars">
+            <div class="support-avatar">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face" alt="Support">
+            </div>
+            <div class="support-avatar">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" alt="Support">
+              <div class="support-badge">4</div>
+            </div>
+          </div>
+          <div class="support-title">Brug for hjælp?</div>
+          <div class="support-phone">+45 5251 5025</div>
+          <div class="support-email">support@peoplesdoctor.com</div>
+        </div>
+
+        <div class="card ai-card">
+          <div class="ai-card__title">AI Assistent</div>
+          <div class="ai-suggestions">
+            <div class="ai-suggestion">Hvordan bruger jeg People's Clinic?</div>
+            <div class="ai-suggestion">Hvordan gemmes mine patientdata?</div>
+            <div class="ai-suggestion">Er mine data 100% GDPR compliant?</div>
+            <div class="ai-suggestion">Hvordan virker journal-resumeet?</div>
+            <div class="ai-suggestion">Hvordan tilpasser jeg min notestil?</div>
+          </div>
+          <div class="ai-input-wrapper">
+            <input type="text" class="ai-input" placeholder="Spørg om hvad som helst...">
+            <button class="ai-btn">
+              <svg><use href="#mic"/></svg>
+            </button>
+            <button class="ai-btn ai-btn--send">
+              <svg><use href="#send"/></svg>
+            </button>
+          </div>
+        </div>
+      </aside>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation (Mobile/Tablet) -->
+    <nav class="bottom-nav">
+      <ul class="bottom-nav__list">
+        <li>
+          <a href="platform-preview.html" class="bottom-nav__item">
+            <svg><use href="#mic"/></svg>
+            Start
+          </a>
+        </li>
+        <li>
+          <a href="konsultationshistorik.html" class="bottom-nav__item">
+            <svg><use href="#file-text"/></svg>
+            Historik
+          </a>
+        </li>
+        <li>
+          <a href="beskeder.html" class="bottom-nav__item">
+            <svg><use href="#mail"/></svg>
+            Beskeder
+          </a>
+        </li>
+        <li>
+          <a href="indstillinger.html" class="bottom-nav__item bottom-nav__item--active">
+            <svg><use href="#settings"/></svg>
+            Brugerindstillinger
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- SVG Icons (hidden) -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol id="play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="5 3 19 12 5 21 5 3"/>
+    </symbol>
+    <symbol id="history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+      <path d="M3 3v5h5"/>
+      <path d="M12 7v5l4 2"/>
+    </symbol>
+    <symbol id="file-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <line x1="16" x2="8" y1="13" y2="13"/>
+      <line x1="16" x2="8" y1="17" y2="17"/>
+      <line x1="10" x2="8" y1="9" y2="9"/>
+    </symbol>
+    <symbol id="receipt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/>
+      <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/>
+      <path d="M12 17.5v-11"/>
+    </symbol>
+    <symbol id="mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect width="20" height="16" x="2" y="4" rx="2"/>
+      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+    </symbol>
+    <symbol id="settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+      <circle cx="12" cy="12" r="3"/>
+    </symbol>
+    <symbol id="shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+    </symbol>
+    <symbol id="log-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+      <polyline points="16 17 21 12 16 7"/>
+      <line x1="21" x2="9" y1="12" y2="12"/>
+    </symbol>
+    <symbol id="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m6 9 6 6 6-6"/>
+    </symbol>
+    <symbol id="edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+      <path d="m15 5 4 4"/>
+    </symbol>
+    <symbol id="settings-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 7h-9"/>
+      <path d="M14 17H5"/>
+      <circle cx="17" cy="17" r="3"/>
+      <circle cx="7" cy="7" r="3"/>
+    </symbol>
+    <symbol id="users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+    </symbol>
+    <symbol id="credit-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect width="20" height="14" x="2" y="5" rx="2"/>
+      <line x1="2" x2="22" y1="10" y2="10"/>
+    </symbol>
+    <symbol id="building-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/>
+      <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/>
+      <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/>
+      <path d="M10 6h4"/>
+      <path d="M10 10h4"/>
+      <path d="M10 14h4"/>
+      <path d="M10 18h4"/>
+    </symbol>
+    <symbol id="message-square" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </symbol>
+    <symbol id="mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+      <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+      <line x1="12" x2="12" y1="19" y2="22"/>
+    </symbol>
+    <symbol id="send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m22 2-7 20-4-9-9-4Z"/>
+      <path d="M22 2 11 13"/>
+    </symbol>
+    <symbol id="sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="4" x2="4" y1="21" y2="14"/>
+      <line x1="4" x2="4" y1="10" y2="3"/>
+      <line x1="12" x2="12" y1="21" y2="12"/>
+      <line x1="12" x2="12" y1="8" y2="3"/>
+      <line x1="20" x2="20" y1="21" y2="16"/>
+      <line x1="20" x2="20" y1="12" y2="3"/>
+      <line x1="2" x2="6" y1="14" y2="14"/>
+      <line x1="10" x2="14" y1="8" y2="8"/>
+      <line x1="18" x2="22" y1="16" y2="16"/>
+    </symbol>
+    <symbol id="grip-vertical" viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="9" cy="4" r="1.5"/>
+      <circle cx="15" cy="4" r="1.5"/>
+      <circle cx="9" cy="12" r="1.5"/>
+      <circle cx="15" cy="12" r="1.5"/>
+      <circle cx="9" cy="20" r="1.5"/>
+      <circle cx="15" cy="20" r="1.5"/>
+    </symbol>
+  </svg>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // User dropdown toggle
+    const userMenu = document.getElementById('userMenu');
+
+    userMenu.addEventListener('click', function(e) {
+      // Don't toggle if clicking on a link inside dropdown
+      if (e.target.closest('.user-dropdown__item')) {
+        return; // Let the link work normally
+      }
+      e.stopPropagation();
+      this.classList.toggle('user-menu--open');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function() {
+      userMenu.classList.remove('user-menu--open');
+    });
+
+    // Function to switch to a specific tab
+    function switchToTab(targetPanel) {
+      // Update tabs
+      document.querySelectorAll('.settings-tab').forEach(function(t) {
+        t.classList.remove('settings-tab--active');
+      });
+      var targetTab = document.querySelector('.settings-tab[data-tab="' + targetPanel + '"]');
+      if (targetTab) {
+        targetTab.classList.add('settings-tab--active');
+      }
+
+      // Update panels
+      document.querySelectorAll('.settings-tab-panel').forEach(function(p) {
+        p.classList.remove('settings-tab-panel--active');
+      });
+      var targetPanelEl = document.querySelector('[data-panel="' + targetPanel + '"]');
+      if (targetPanelEl) {
+        targetPanelEl.classList.add('settings-tab-panel--active');
+      }
+    }
+
+    // Check URL parameter for tab selection
+    var urlParams = new URLSearchParams(window.location.search);
+    var tabParam = urlParams.get('tab');
+    if (tabParam) {
+      switchToTab(tabParam);
+    }
+
+    // Tab switching on click
+    document.querySelectorAll('.settings-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        var targetPanel = this.getAttribute('data-tab');
+        switchToTab(targetPanel);
+      });
+    });
+
+    // ==========================================
+    // TEMPLATE PREFERENCES (localStorage)
+    // ==========================================
+
+    const STORAGE_KEY = 'peoplesClinic_templatePreferences';
+
+    // Default template configuration
+    const defaultTemplates = [
+      { id: 'soap', name: 'SOAP', description: 'Subjektiv, Objektiv, Analyse, Plan', visible: true, order: 0 },
+      { id: 'soap-kort', name: 'SOAP - Kort', description: 'Kortfattet SOAP-format', visible: true, order: 1 },
+      { id: 'soap-psykisk', name: 'SOAP - Psykisk', description: 'SOAP tilpasset psykiske lidelser', visible: true, order: 2 },
+      { id: 'soap-baggrund', name: 'SOAP med baggrund', description: 'SOAP med udvidet baggrundssektion', visible: true, order: 3 },
+      { id: 'aarskontrol', name: 'Årskontrol', description: 'Skabelon til årlig helbredskontrol', visible: true, order: 4 },
+      { id: 'kiropraktor', name: 'Kiropraktor Notat', description: 'Tilpasset kiropraktisk behandling', visible: false, order: 5 },
+      { id: 'fysioterapeut', name: 'Fysioterapeut Notat', description: 'Tilpasset fysioterapeutisk behandling', visible: false, order: 6 },
+      { id: 'fritekst', name: 'Fritekst', description: 'Frit format uden sektioner', visible: true, order: 7 },
+      { id: 'struktureret', name: 'Struktureret', description: 'Struktureret format med faste felter', visible: true, order: 8 }
+    ];
+
+    // Load preferences from localStorage or use defaults
+    function loadTemplatePreferences() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch (e) {
+          console.error('Error parsing template preferences:', e);
+          return defaultTemplates;
+        }
+      }
+      return defaultTemplates;
+    }
+
+    // Save preferences to localStorage
+    function saveTemplatePreferences(templates) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(templates));
+      // Dispatch event so other pages can react
+      window.dispatchEvent(new CustomEvent('templatePreferencesChanged', { detail: templates }));
+    }
+
+    // Get visible templates in order (for use in other pages)
+    function getVisibleTemplates() {
+      const templates = loadTemplatePreferences();
+      return templates
+        .filter(t => t.visible)
+        .sort((a, b) => a.order - b.order);
+    }
+
+    // Initialize template list from stored preferences
+    function initializeTemplateList() {
+      const templates = loadTemplatePreferences();
+      const templateList = document.querySelector('.template-list');
+      if (!templateList) return;
+
+      // Sort by order
+      templates.sort((a, b) => a.order - b.order);
+
+      // Rebuild the list
+      templateList.innerHTML = templates.map(template => `
+        <div class="template-item" data-template-id="${template.id}">
+          <div class="template-item__left">
+            <span class="template-item__drag" data-drag-handle>
+              <svg><use href="#grip-vertical"/></svg>
+            </span>
+            <div class="template-item__info">
+              <span class="template-item__name">${template.name}</span>
+              <span class="template-item__description">${template.description}</span>
+            </div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" class="toggle__input" ${template.visible ? 'checked' : ''}>
+            <span class="toggle__slider"></span>
+          </label>
+        </div>
+      `).join('');
+
+      // Re-attach event listeners
+      attachTemplateEventListeners();
+    }
+
+    // Attach event listeners to template items
+    function attachTemplateEventListeners() {
+      const templateItems = document.querySelectorAll('.template-item');
+
+      templateItems.forEach(item => {
+        // Toggle visibility
+        const toggle = item.querySelector('.toggle__input');
+        if (toggle) {
+          toggle.addEventListener('change', function() {
+            const templateId = item.getAttribute('data-template-id');
+            const templates = loadTemplatePreferences();
+            const template = templates.find(t => t.id === templateId);
+            if (template) {
+              template.visible = this.checked;
+              saveTemplatePreferences(templates);
+              showSaveNotification();
+            }
+          });
+        }
+
+        // Pointer-based drag (on the drag handle only)
+        const dragHandle = item.querySelector('[data-drag-handle]');
+        if (dragHandle) {
+          dragHandle.addEventListener('pointerdown', (e) => startDrag(e, item));
+        }
+      });
+    }
+
+    // ==========================================
+    // SMOOTH POINTER-BASED DRAG & DROP
+    // ==========================================
+
+    let dragState = null;
+
+    function startDrag(e, item) {
+      // Only respond to primary button (left click / touch)
+      if (e.button !== 0) return;
+
+      e.preventDefault();
+
+      const templateList = document.querySelector('.template-list');
+      const rect = item.getBoundingClientRect();
+      const listRect = templateList.getBoundingClientRect();
+
+      // Store initial state
+      dragState = {
+        item: item,
+        templateList: templateList,
+        startY: e.clientY,
+        offsetY: e.clientY - rect.top,
+        itemHeight: rect.height,
+        itemWidth: rect.width,
+        listTop: listRect.top,
+        initialIndex: [...templateList.children].indexOf(item),
+        currentIndex: [...templateList.children].indexOf(item),
+        initialOrder: [...templateList.querySelectorAll('.template-item')].map(el =>
+          el.getAttribute('data-template-id')
+        )
+      };
+
+      // Create placeholder
+      const placeholder = item.cloneNode(true);
+      placeholder.classList.add('template-item--placeholder');
+      placeholder.removeAttribute('data-template-id');
+      item.parentNode.insertBefore(placeholder, item);
+      dragState.placeholder = placeholder;
+
+      // Style the dragged item
+      item.classList.add('template-item--dragging');
+      item.style.width = dragState.itemWidth + 'px';
+      item.style.left = rect.left + 'px';
+      item.style.top = rect.top + 'px';
+
+      // Add reordering class for smooth animations
+      templateList.classList.add('template-list--reordering');
+
+      // Capture pointer
+      item.setPointerCapture(e.pointerId);
+
+      // Add move and end listeners
+      item.addEventListener('pointermove', onDragMove);
+      item.addEventListener('pointerup', onDragEnd);
+      item.addEventListener('pointercancel', onDragEnd);
+    }
+
+    function onDragMove(e) {
+      if (!dragState) return;
+
+      const { item, templateList, offsetY, itemHeight, placeholder } = dragState;
+
+      // Update dragged item position
+      const newTop = e.clientY - offsetY;
+      item.style.top = newTop + 'px';
+
+      // Get all items except dragged and placeholder
+      const items = [...templateList.querySelectorAll('.template-item:not(.template-item--dragging):not(.template-item--placeholder)')];
+
+      // Find where placeholder should go based on cursor position
+      let newIndex = items.length; // Default to end
+
+      for (let i = 0; i < items.length; i++) {
+        const itemRect = items[i].getBoundingClientRect();
+        const itemMiddle = itemRect.top + itemRect.height / 2;
+
+        if (e.clientY < itemMiddle) {
+          newIndex = i;
+          break;
+        }
+      }
+
+      // Move placeholder if needed
+      if (newIndex !== dragState.currentIndex) {
+        dragState.currentIndex = newIndex;
+
+        // Remove placeholder
+        placeholder.remove();
+
+        // Insert at new position
+        if (newIndex >= items.length) {
+          templateList.appendChild(placeholder);
+        } else {
+          templateList.insertBefore(placeholder, items[newIndex]);
+        }
+      }
+    }
+
+    function onDragEnd(e) {
+      if (!dragState) return;
+
+      const { item, templateList, placeholder, initialOrder } = dragState;
+
+      // Remove event listeners
+      item.removeEventListener('pointermove', onDragMove);
+      item.removeEventListener('pointerup', onDragEnd);
+      item.removeEventListener('pointercancel', onDragEnd);
+
+      // Release pointer capture
+      item.releasePointerCapture(e.pointerId);
+
+      // Move real item to placeholder position
+      templateList.insertBefore(item, placeholder);
+
+      // Remove placeholder
+      placeholder.remove();
+
+      // Clean up styles
+      item.classList.remove('template-item--dragging');
+      item.style.width = '';
+      item.style.left = '';
+      item.style.top = '';
+      templateList.classList.remove('template-list--reordering');
+
+      // Check if order changed and save
+      const newOrder = [...templateList.querySelectorAll('.template-item')].map(el =>
+        el.getAttribute('data-template-id')
+      );
+
+      const orderChanged = initialOrder.some((id, index) => id !== newOrder[index]);
+
+      if (orderChanged) {
+        // Update order in storage
+        const templates = loadTemplatePreferences();
+        templateList.querySelectorAll('.template-item').forEach((el, index) => {
+          const templateId = el.getAttribute('data-template-id');
+          const template = templates.find(t => t.id === templateId);
+          if (template) {
+            template.order = index;
+          }
+        });
+
+        saveTemplatePreferences(templates);
+        showSaveNotification();
+      }
+
+      dragState = null;
+    }
+
+    // Show save notification
+    function showSaveNotification() {
+      // Check if notification already exists
+      let notification = document.querySelector('.save-notification');
+      if (!notification) {
+        notification = document.createElement('div');
+        notification.className = 'save-notification';
+        notification.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 6L9 17l-5-5"/>
+          </svg>
+          Ændringer gemt
+        `;
+        document.body.appendChild(notification);
+      }
+
+      // Show notification
+      notification.classList.add('save-notification--visible');
+
+      // Hide after 2 seconds
+      setTimeout(() => {
+        notification.classList.remove('save-notification--visible');
+      }, 2000);
+    }
+
+    // Initialize on page load
+    initializeTemplateList();
+
+    // Also update the default template dropdown
+    function updateDefaultTemplateDropdown() {
+      const dropdown = document.querySelector('.settings-select');
+      if (!dropdown) return;
+
+      const visibleTemplates = getVisibleTemplates();
+      const currentValue = dropdown.value;
+
+      dropdown.innerHTML = visibleTemplates.map(t =>
+        `<option value="${t.id}">${t.name}</option>`
+      ).join('');
+
+      // Try to restore previous selection
+      if (visibleTemplates.some(t => t.name === currentValue)) {
+        dropdown.value = currentValue;
+      }
+    }
+
+    updateDefaultTemplateDropdown();
+
+    // Update dropdown when preferences change
+    window.addEventListener('templatePreferencesChanged', updateDefaultTemplateDropdown);
+  </script>
+</body>
+</html>

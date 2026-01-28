@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>People's Doctor - Konsultationshistorik</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../Design System/platform.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Page-specific overrides */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+    }
+
+    .page-header__left {
+      flex: 1;
+    }
+
+    .page-title {
+      font-size: 32px;
+      font-weight: 500;
+      color: var(--color-text);
+      margin-bottom: 8px;
+    }
+
+    .page-description {
+      font-size: var(--font-size-md);
+      color: var(--color-text);
+      line-height: 1.5;
+    }
+
+    @media (max-width: 1024px) {
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 24px;
+      }
+
+      .page-description {
+        font-size: var(--font-size-base);
+      }
+
+      /* Hide columns on mobile */
+      .table--history th:nth-child(2),
+      .table--history td:nth-child(2),
+      .table--history th:nth-child(4),
+      .table--history td:nth-child(4) {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="platform">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar__logo">
+        <a href="platform-preview.html">
+          <img src="../Design System/assets/Peoples Clinic.svg" alt="People's Clinic" class="topbar__logo-img">
+        </a>
+      </div>
+      <div class="topbar__right">
+        <div class="clinic-dropdown">
+          <span>Current clinic: Valby Lægehus</span>
+          <i data-lucide="chevron-down"></i>
+        </div>
+        <div class="flags">
+          <div class="flag flag--dk"></div>
+          <div class="flag flag--uk"></div>
+        </div>
+        <div class="user-menu">
+          <div class="user-avatar">M</div>
+          <span class="user-name">Morten Skov</span>
+          <i data-lucide="chevron-down"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <div class="content-area">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <nav class="sidebar__nav">
+          <a href="platform-preview.html" class="nav-btn nav-btn--primary">
+            <i data-lucide="play"></i>
+            Start Konsultation
+          </a>
+          <a href="konsultationshistorik.html" class="nav-btn nav-btn--secondary nav-btn--active">
+            <i data-lucide="history"></i>
+            Konsultationshistorik
+          </a>
+          <a href="journalresume.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="file-text"></i>
+            Journalresume
+          </a>
+          <a href="honorarforslag.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="receipt"></i>
+            Honorarforslag
+          </a>
+          <a href="klinikdrift-dashboard.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="activity"></i>
+            Klinikdrift
+          </a>
+        </nav>
+
+        <!-- Bottom Navigation Box -->
+        <div class="sidebar__bottom-box">
+          <!-- Brugerpanel — alle brugere -->
+          <div class="bottom-section-label">Brugerpanel</div>
+          <a href="beskeder.html" class="bottom-link">
+            <i data-lucide="message-square"></i>
+            Dine beskeder
+          </a>
+          <a href="indstillinger.html" class="bottom-link">
+            <i data-lucide="sliders"></i>
+            Brugerindstillinger
+          </a>
+
+          <!-- Klinikadministration — kun klinikejer -->
+          <div class="bottom-section-label">Klinikadministration</div>
+          <a href="admin-klinik-admin.html" class="bottom-link">
+            <i data-lucide="users"></i>
+            Klinikadministration
+          </a>
+          <a href="admin-klinik.html" class="bottom-link">
+            <i data-lucide="building-2"></i>
+            Klinikindstillinger
+          </a>
+
+          <!-- Log ud -->
+          <a href="#" class="bottom-link" style="margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--color-gray-100);">
+            <i data-lucide="log-out"></i>
+            Log ud
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main">
+        <div class="page-header">
+          <div class="page-header__left">
+            <h1 class="page-title">Konsultationshistorik</h1>
+            <p class="page-description">Gennemse og administrer dine tidligere konsultationer.</p>
+          </div>
+          <div class="search-box">
+            <input type="text" placeholder="Søg i konsultationshistorik">
+            <i data-lucide="search"></i>
+          </div>
+        </div>
+
+        <div class="card card--full">
+          <table class="table table--history">
+            <thead>
+              <tr>
+                <th>Patient</th>
+                <th>Dato</th>
+                <th>Emne</th>
+                <th>Honorarforslag</th>
+                <th>Handlinger</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Nancy Berggren</td>
+                <td>25.05.2025 12:18</td>
+                <td>Patienten havde ondt i ørerne</td>
+                <td><i data-lucide="alert-triangle" class="warning-icon" style="width:16px;height:16px;"></i></td>
+                <td class="table-actions">
+                  <a href="#" class="action-btn action-btn--secondary">Kopier</a>
+                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
+                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                </td>
+              </tr>
+              <tr>
+                <td>Ukendt patient</td>
+                <td>25.05.2025 11:17</td>
+                <td>Patienten havde knæsmerter</td>
+                <td>1012</td>
+                <td class="table-actions">
+                  <a href="#" class="action-btn action-btn--secondary">Kopier</a>
+                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
+                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                </td>
+              </tr>
+              <tr>
+                <td>Ukendt patient</td>
+                <td>25.05.2025 9:27</td>
+                <td>Patienten oplevede søvnproblemer</td>
+                <td>1212</td>
+                <td class="table-actions">
+                  <a href="#" class="action-btn action-btn--secondary">Kopier</a>
+                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
+                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                </td>
+              </tr>
+              <tr>
+                <td>Nancy Berggren</td>
+                <td>25.05.2025 12:18</td>
+                <td>Patienten havde ondt i ørerne</td>
+                <td><i data-lucide="alert-triangle" class="warning-icon" style="width:16px;height:16px;"></i></td>
+                <td class="table-actions">
+                  <a href="#" class="action-btn action-btn--secondary">Kopier</a>
+                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
+                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                </td>
+              </tr>
+              <tr>
+                <td>Ukendt patient</td>
+                <td>25.05.2025 11:17</td>
+                <td>Patienten havde knæsmerter</td>
+                <td>2132</td>
+                <td class="table-actions">
+                  <a href="#" class="action-btn action-btn--secondary">Kopier</a>
+                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
+                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                </td>
+              </tr>
+              <tr>
+                <td>Ukendt patient</td>
+                <td>25.05.2025 9:27</td>
+                <td>Patienten oplevede søvnproblemer</td>
+                <td>1231</td>
+                <td class="table-actions">
+                  <a href="#" class="action-btn action-btn--secondary">Kopier</a>
+                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
+                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                </td>
+              </tr>
+              <tr>
+                <td>Ukendt patient</td>
+                <td>25.05.2025 11:17</td>
+                <td>Patienten havde knæsmerter</td>
+                <td>2132</td>
+                <td class="table-actions">
+                  <a href="#" class="action-btn action-btn--secondary">Kopier</a>
+                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
+                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                </td>
+              </tr>
+              <tr>
+                <td>Ukendt patient</td>
+                <td>25.05.2025 9:27</td>
+                <td>Patienten oplevede søvnproblemer</td>
+                <td>1231</td>
+                <td class="table-actions">
+                  <a href="#" class="action-btn action-btn--secondary">Kopier</a>
+                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
+                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+
+    <!-- Bottom Navigation (Mobile/Tablet) -->
+    <nav class="bottom-nav">
+      <ul class="bottom-nav__list">
+        <a href="platform-preview.html" class="bottom-nav__item">
+          <i data-lucide="play"></i>
+          <span>Start</span>
+        </a>
+        <a href="konsultationshistorik.html" class="bottom-nav__item bottom-nav__item--active">
+          <i data-lucide="history"></i>
+          <span>Historik</span>
+        </a>
+        <a href="journalresume.html" class="bottom-nav__item">
+          <i data-lucide="file-text"></i>
+          <span>Journal</span>
+        </a>
+        <a href="honorarforslag.html" class="bottom-nav__item">
+          <i data-lucide="receipt"></i>
+          <span>Honorar</span>
+        </a>
+        <a href="#" class="bottom-nav__item">
+          <i data-lucide="help-circle"></i>
+          <span>Hjælp</span>
+        </a>
+      </ul>
+    </nav>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
