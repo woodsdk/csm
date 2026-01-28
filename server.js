@@ -3,7 +3,6 @@ const fs = require('fs');
 const path = require('path');
 
 const PORT = process.env.PORT || 3000;
-const BASE_DIR = './Peoples Clinic/People\'s Clinic UI Update';
 
 const mimeTypes = {
   '.html': 'text/html',
@@ -18,21 +17,32 @@ const mimeTypes = {
   '.ico': 'image/x-icon'
 };
 
+// Base paths
+const UI_DIR = './Peoples Clinic/People\'s Clinic UI Update';
+const DESIGN_DIR = './Peoples Clinic/Design System';
+
 const server = http.createServer((req, res) => {
   let urlPath = decodeURIComponent(req.url);
   let filePath;
 
   if (urlPath === '/' || urlPath === '') {
-    filePath = path.join(BASE_DIR, 'klinikdrift-dashboard.html');
-  } else if (urlPath.startsWith('/Design System/') || urlPath.startsWith('../Design System/')) {
-    // Handle Design System references
-    filePath = './Peoples Clinic' + urlPath.replace('..', '');
+    // Root serves the dashboard
+    filePath = path.join(UI_DIR, 'klinikdrift-dashboard.html');
+  } else if (urlPath.startsWith('/Design System/')) {
+    // Design System assets
+    filePath = './Peoples Clinic' + urlPath;
+  } else if (urlPath.endsWith('.css') && !urlPath.includes('/')) {
+    // CSS files in UI folder (e.g., /klinikdrift.css)
+    filePath = path.join(UI_DIR, urlPath);
+  } else if (urlPath.endsWith('.html')) {
+    // HTML files
+    filePath = path.join(UI_DIR, urlPath);
   } else if (urlPath.startsWith('/Assets/')) {
-    // Handle Assets folder
-    filePath = path.join(BASE_DIR, urlPath);
+    // Assets folder
+    filePath = path.join(UI_DIR, urlPath);
   } else {
-    // All other files relative to UI Update folder
-    filePath = path.join(BASE_DIR, urlPath);
+    // Default to UI folder
+    filePath = path.join(UI_DIR, urlPath);
   }
 
   const extname = path.extname(filePath).toLowerCase();
@@ -41,13 +51,13 @@ const server = http.createServer((req, res) => {
   fs.readFile(filePath, (error, content) => {
     if (error) {
       if (error.code === 'ENOENT') {
-        console.log('404 Not Found:', filePath);
+        console.log('404 Not Found:', urlPath, '->', filePath);
         res.writeHead(404);
-        res.end('File not found: ' + filePath);
+        res.end('File not found');
       } else {
         console.log('500 Error:', error.code, filePath);
         res.writeHead(500);
-        res.end('Server error: ' + error.code);
+        res.end('Server error');
       }
     } else {
       res.writeHead(200, { 'Content-Type': contentType });
@@ -58,5 +68,4 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`Serving files from: ${BASE_DIR}`);
 });
