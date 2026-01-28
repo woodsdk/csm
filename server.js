@@ -26,8 +26,8 @@ const server = http.createServer((req, res) => {
   let filePath;
 
   if (urlPath === '/' || urlPath === '') {
-    // Root serves the dashboard
-    filePath = path.join(UI_DIR, 'klinikdrift-dashboard.html');
+    // Root serves Start Konsultation page
+    filePath = path.join(UI_DIR, 'platform-preview.html');
   } else if (urlPath.startsWith('/Design System/')) {
     // Design System assets
     filePath = './Peoples Clinic' + urlPath;
