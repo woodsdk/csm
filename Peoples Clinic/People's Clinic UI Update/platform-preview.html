@@ -426,6 +426,8 @@
       min-width: 320px;
       flex-shrink: 0;
       display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .main__left .card {
@@ -437,12 +439,15 @@
 
     .main__left .card__title {
       font-size: 26px;
+      font-weight: 500;
     }
 
     .main__center {
       flex: 1;
       min-width: 0;
       display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .main__center .card {
@@ -452,6 +457,7 @@
 
     .main__center .card__title {
       font-size: 26px;
+      font-weight: 500;
     }
 
     /* BOTTOM SECTION: auto height, aligned to bottom */
@@ -911,104 +917,44 @@
       box-shadow: 0 4px 15px rgba(56, 69, 109, 0.2);
     }
 
-    /* ==========================================
-       SAMTALEHISTORIK TABLE
-       ========================================== */
-    .table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .table th {
-      text-align: left;
-      padding: 8px 12px;
-      font-size: 0.688rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #13102C;
-      background: var(--color-gray-100);
-      border-bottom: 1px solid var(--color-gray-200);
-    }
-
-    .table th:first-child {
-      border-radius: var(--radius-md) 0 0 0;
-    }
-
-    .table th:last-child {
-      border-radius: 0 var(--radius-md) 0 0;
-    }
-
-    .table tr {
-      height: 52px;
-    }
-
-    .table td {
-      padding: 8px 12px;
-      font-size: 0.813rem;
-      color: var(--color-text);
-      border-bottom: 1px solid var(--color-gray-200);
-      vertical-align: middle;
-    }
-
-    .table-actions {
+    .btn-secondary {
       display: flex;
-      gap: 6px;
-      flex-wrap: nowrap;
-    }
-
-    .table-btn {
-      padding: 4px 10px;
-      font-size: 0.688rem;
-      font-weight: 600;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      height: 44px;
+      padding: 2px 0;
+      background: linear-gradient(180deg, #F0F1F4 0%, #FFFFFF 100%);
+      color: var(--color-text);
+      font-family: inherit;
+      font-size: 0.9375rem;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.02em;
-      border-radius: var(--radius-full);
+      border: none;
+      border-radius: 100px;
       cursor: pointer;
       text-decoration: none;
+      flex-shrink: 0;
       white-space: nowrap;
+      box-shadow: 0 4px 15px rgba(56, 69, 109, 0.12);
       transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                   box-shadow 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       will-change: transform, box-shadow;
     }
 
-    .table-btn--outline {
-      background: var(--color-white);
-      border: 1px solid var(--color-gray-200);
-      color: var(--color-navy-500);
-      box-shadow: 0 2px 6px rgba(38, 48, 79, 0.03);
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(56, 69, 109, 0.18);
     }
 
-    .table-btn--outline:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(38, 48, 79, 0.06);
-    }
-
-    .table-btn--outline:active {
+    .btn-secondary:active {
       transform: translateY(0);
-      box-shadow: 0 2px 6px rgba(38, 48, 79, 0.03);
+      box-shadow: 0 4px 15px rgba(56, 69, 109, 0.12);
     }
 
-    .table-btn--link {
-      background: var(--color-white);
-      border: 1px solid var(--color-gray-200);
-      color: var(--color-navy-500);
-      box-shadow: 0 2px 6px rgba(38, 48, 79, 0.03);
-    }
-
-    .table-btn--link:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(38, 48, 79, 0.06);
-    }
-
-    .table-btn--link:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 6px rgba(38, 48, 79, 0.03);
-    }
-
-    .warning-icon {
-      color: #F59E0B;
-    }
+    /* Table inherits all styles from platform.css */
 
     /* ==========================================
        SUPPORT CARD
@@ -1493,8 +1439,8 @@
           <div class="flag flag--uk"></div>
         </div>
         <div class="user-menu" id="userMenu">
-          <div class="user-avatar">M</div>
-          <span class="user-name">Morten Skov</span>
+          <div class="user-avatar">A</div>
+          <span class="user-name">Dr. Anna Nielsen</span>
           <i data-lucide="chevron-down"></i>
           <!-- User Dropdown -->
           <div class="user-dropdown">
@@ -1592,9 +1538,8 @@
         <div class="main__top">
           <!-- Left Column: Start Konsultation -->
           <div class="main__left">
+            <h2 class="card__title">Start konsultation</h2>
             <div class="card">
-              <h2 class="card__title">Start konsultation</h2>
-
               <div class="card__content">
                 <div class="form-group">
                   <label class="form-label">Fødselsdato</label>
@@ -1684,21 +1629,26 @@
                 </div>
               </div>
 
-              <a href="konsultation-aktiv.html" class="btn-primary" style="text-decoration: none;">Start konsultation</a>
+              <a href="konsultation-aktiv.html" class="btn-primary" style="text-decoration: none; gap: 10px;">
+                <i data-lucide="play" style="width: 18px; height: 18px;"></i>
+                Start konsultation
+              </a>
+              <a href="#" class="btn-secondary" style="text-decoration: none; margin-top: 8px;">
+                <i data-lucide="video" style="width: 18px; height: 18px;"></i>
+                Start videokonsultation
+              </a>
             </div>
           </div>
 
           <!-- Center Column: Samtalehistorik -->
           <div class="main__center">
+            <h2 class="card__title">Samtalehistorik</h2>
             <div class="card">
-              <h2 class="card__title">Samtalehistorik</h2>
-
               <table class="table">
                 <thead>
                   <tr>
                     <th>Patient</th>
                     <th>Emne</th>
-                    <th>Honorar</th>
                     <th>Handlinger</th>
                   </tr>
                 </thead>
@@ -1706,28 +1656,25 @@
                   <tr>
                     <td>Nancy Berggren</td>
                     <td>Patienten havde ondt i ørerne</td>
-                    <td><i data-lucide="alert-triangle" class="warning-icon" style="width:16px;height:16px;"></i></td>
                     <td class="table-actions">
                       <a href="#" class="table-btn table-btn--outline">Kopier notat</a>
-                      <a href="#" class="table-btn table-btn--link">Vis & Rediger</a>
+                      <a href="#" class="table-btn table-btn--outline">Vis & Rediger</a>
                     </td>
                   </tr>
                   <tr>
                     <td>Ukendt patient</td>
                     <td>Patienten havde knæsmerter</td>
-                    <td>1012</td>
                     <td class="table-actions">
                       <a href="#" class="table-btn table-btn--outline">Kopier notat</a>
-                      <a href="#" class="table-btn table-btn--link">Vis & Rediger</a>
+                      <a href="#" class="table-btn table-btn--outline">Vis & Rediger</a>
                     </td>
                   </tr>
                   <tr>
                     <td>Ukendt patient</td>
                     <td>Patienten oplevede søvnproblemer</td>
-                    <td>1212</td>
                     <td class="table-actions">
                       <a href="#" class="table-btn table-btn--outline">Kopier notat</a>
-                      <a href="#" class="table-btn table-btn--link">Vis & Rediger</a>
+                      <a href="#" class="table-btn table-btn--outline">Vis & Rediger</a>
                     </td>
                   </tr>
                 </tbody>

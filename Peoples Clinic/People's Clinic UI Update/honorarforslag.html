@@ -35,6 +35,30 @@
       line-height: 1.5;
     }
 
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      font-size: 0.688rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+    }
+
+    .status-badge--pending {
+      background: #FFF3E0;
+      color: #E65100;
+    }
+
+    .status-badge--accepted {
+      background: #E8F5E9;
+      color: #2E7D32;
+    }
+
+    .status-badge--dismissed {
+      background: var(--color-gray-100);
+      color: var(--color-navy-500);
+    }
+
     @media (max-width: 1024px) {
       .page-header {
         flex-direction: column;
@@ -78,8 +102,8 @@
           <div class="flag flag--uk"></div>
         </div>
         <div class="user-menu">
-          <div class="user-avatar">M</div>
-          <span class="user-name">Morten Skov</span>
+          <div class="user-avatar">A</div>
+          <span class="user-name">Dr. Anna Nielsen</span>
           <i data-lucide="chevron-down"></i>
         </div>
       </div>
@@ -149,7 +173,7 @@
         <div class="page-header">
           <div class="page-header__left">
             <h1 class="page-title">Honorarforslag</h1>
-            <p class="page-description">Analyser konsultationer for gældende ydelseskoder.</p>
+            <p class="page-description">AI-identificerede ydelseskoder fra dine konsultationer. Gennemgå og accepter forslag.</p>
           </div>
           <div class="search-box">
             <input type="text" placeholder="Søg efter patient, CPR eller dato">
@@ -162,7 +186,9 @@
             <thead>
               <tr>
                 <th>Patient</th>
-                <th>Analysedato</th>
+                <th>Konsultationsdato</th>
+                <th>Identificerede forslag</th>
+                <th>Status</th>
                 <th>Handlinger</th>
               </tr>
             </thead>
@@ -170,65 +196,55 @@
               <tr>
                 <td>Nancy Berggren</td>
                 <td>25.05.2025 12:18</td>
+                <td>3 ydelseskoder</td>
+                <td><span class="status-badge status-badge--pending">Afventer gennemgang</span></td>
                 <td class="table-actions">
-                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
-                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                  <a href="#" class="action-btn action-btn--primary">Vis identificerede forslag</a>
                 </td>
               </tr>
               <tr>
                 <td>Ukendt patient</td>
                 <td>25.05.2025 11:17</td>
+                <td>2 ydelseskoder</td>
+                <td><span class="status-badge status-badge--pending">Afventer gennemgang</span></td>
                 <td class="table-actions">
-                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
-                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                  <a href="#" class="action-btn action-btn--primary">Vis identificerede forslag</a>
                 </td>
               </tr>
               <tr>
                 <td>Ukendt patient</td>
                 <td>25.05.2025 9:27</td>
+                <td>1 ydelseskode</td>
+                <td><span class="status-badge status-badge--accepted">Accepteret</span></td>
                 <td class="table-actions">
-                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
-                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                  <a href="#" class="action-btn action-btn--primary">Vis identificerede forslag</a>
                 </td>
               </tr>
               <tr>
                 <td>Nancy Berggren</td>
-                <td>25.05.2025 12:18</td>
+                <td>24.05.2025 14:32</td>
+                <td>4 ydelseskoder</td>
+                <td><span class="status-badge status-badge--accepted">Accepteret</span></td>
                 <td class="table-actions">
-                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
-                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                  <a href="#" class="action-btn action-btn--primary">Vis identificerede forslag</a>
                 </td>
               </tr>
               <tr>
                 <td>Ukendt patient</td>
-                <td>25.05.2025 11:17</td>
+                <td>24.05.2025 10:05</td>
+                <td>2 ydelseskoder</td>
+                <td><span class="status-badge status-badge--pending">Afventer gennemgang</span></td>
                 <td class="table-actions">
-                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
-                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                  <a href="#" class="action-btn action-btn--primary">Vis identificerede forslag</a>
                 </td>
               </tr>
               <tr>
                 <td>Ukendt patient</td>
-                <td>25.05.2025 9:27</td>
+                <td>23.05.2025 15:41</td>
+                <td>3 ydelseskoder</td>
+                <td><span class="status-badge status-badge--dismissed">Afvist</span></td>
                 <td class="table-actions">
-                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
-                  <a href="#" class="action-btn action-btn--danger">Slet</a>
-                </td>
-              </tr>
-              <tr>
-                <td>Ukendt patient</td>
-                <td>25.05.2025 11:17</td>
-                <td class="table-actions">
-                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
-                  <a href="#" class="action-btn action-btn--danger">Slet</a>
-                </td>
-              </tr>
-              <tr>
-                <td>Ukendt patient</td>
-                <td>25.05.2025 9:27</td>
-                <td class="table-actions">
-                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
-                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                  <a href="#" class="action-btn action-btn--primary">Vis identificerede forslag</a>
                 </td>
               </tr>
             </tbody>

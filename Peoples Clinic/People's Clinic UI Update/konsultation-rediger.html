@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>People's Doctor - Redigér og gem notat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../Design System/platform.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Full width content area */
+    .content-area--full {
+      display: flex;
+      padding: 30px 100px 20px 100px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .content-area--full .main {
+      flex: 1;
+      max-width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      min-height: 0;
+    }
+
+    /* Header bar */
+    .review-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      flex-shrink: 0;
+    }
+
+    .review-header__left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .review-header__back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--color-navy-500);
+      text-decoration: none;
+      margin-bottom: 6px;
+    }
+
+    .review-header__back svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .review-header__back:hover {
+      color: var(--color-navy-700);
+    }
+
+    .review-header__title {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--color-text);
+    }
+
+    .review-header__meta {
+      font-size: 0.875rem;
+      color: var(--color-navy-500);
+    }
+
+    /* Main two-column layout */
+    .review-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 24px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* Left: Primary editing area */
+    .review-main {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      min-height: 0;
+    }
+
+    /* Reuse panel pattern from konsultation-aktiv */
+    .consultation-panel {
+      background: var(--color-white);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 26px;
+      border-bottom: 1px solid var(--color-gray-200);
+      flex-shrink: 0;
+      min-height: 52px;
+    }
+
+    .panel-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .panel-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--color-gray-100);
+      border-radius: var(--radius-full);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--color-navy-500);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .panel-badge svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    .panel-dropdown {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: var(--color-white);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      font-family: inherit;
+      font-size: 0.75rem;
+      color: var(--color-text);
+      cursor: pointer;
+    }
+
+    .panel-dropdown svg {
+      width: 12px;
+      height: 12px;
+      color: var(--color-navy-500);
+    }
+
+    .panel-content {
+      flex: 1;
+      padding: 20px 26px;
+      overflow-y: auto;
+      font-size: 0.8125rem;
+      line-height: 1.7;
+      color: var(--color-text);
+    }
+
+    /* Notes sections */
+    .notes-section {
+      margin-bottom: 16px;
+    }
+
+    .notes-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .notes-label {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 4px;
+    }
+
+    .notes-content {
+      font-size: 0.8125rem;
+      line-height: 1.7;
+      color: var(--color-text);
+    }
+
+    /* Editable content styling */
+    .notes-content[contenteditable="true"] {
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      transition: border-color 0.2s ease, background 0.2s ease;
+      outline: none;
+    }
+
+    .notes-content[contenteditable="true"]:hover {
+      border-color: var(--color-gray-200);
+    }
+
+    .notes-content[contenteditable="true"]:focus {
+      border-color: var(--color-navy-400);
+      background: var(--color-gray-100);
+    }
+
+    /* AI input */
+    .ai-input-section {
+      padding: 12px 26px 16px;
+      border-top: 1px solid var(--color-gray-200);
+      flex-shrink: 0;
+    }
+
+    .ai-input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+    }
+
+    .ai-input {
+      flex: 1;
+      border: none;
+      background: none;
+      font-family: inherit;
+      font-size: 0.8125rem;
+      color: var(--color-text);
+      outline: none;
+    }
+
+    .ai-input::placeholder {
+      color: var(--color-navy-400);
+    }
+
+    .ai-send-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--color-navy-500);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .ai-send-btn svg {
+      width: 14px;
+      height: 14px;
+      color: var(--color-white);
+    }
+
+    /* Right sidebar */
+    .review-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      min-height: 0;
+    }
+
+    /* Transcript compact view */
+    .transcript-line {
+      margin-bottom: 10px;
+      font-size: 0.8125rem;
+      line-height: 1.6;
+    }
+
+    .transcript-line:last-child {
+      margin-bottom: 0;
+    }
+
+    .transcript-speaker {
+      font-weight: 600;
+      color: var(--color-navy-500);
+    }
+
+    /* Resume sections */
+    .resume-section {
+      margin-bottom: 12px;
+    }
+
+    .resume-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .resume-label {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 3px;
+    }
+
+    .resume-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .resume-list li {
+      position: relative;
+      padding-left: 14px;
+      margin-bottom: 2px;
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      color: var(--color-text);
+    }
+
+    .resume-list li::before {
+      content: "–";
+      position: absolute;
+      left: 0;
+    }
+
+    /* Bottom action bar */
+    .action-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-top: 16px;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+
+    .action-bar .action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 28px;
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  box-shadow 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform, box-shadow;
+      white-space: nowrap;
+    }
+
+    .action-bar .action-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .action-bar .action-btn--primary {
+      background: var(--gradient-button-primary);
+      border: none;
+      color: var(--color-white);
+      box-shadow: var(--shadow-button);
+    }
+
+    .action-bar .action-btn--primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-button-hover);
+    }
+
+    .action-bar .action-btn--secondary {
+      background: var(--color-white);
+      border: none;
+      color: var(--color-text);
+      box-shadow: var(--shadow-nav-secondary);
+    }
+
+    .action-bar .action-btn--secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-nav-secondary-hover);
+    }
+
+    .action-bar .action-btn--accent {
+      background: var(--color-navy-800);
+      border: none;
+      color: var(--color-white);
+      box-shadow: var(--shadow-button);
+    }
+
+    .action-bar .action-btn--accent:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-button-hover);
+    }
+
+    /* Spacer to push items right */
+    .action-bar__spacer {
+      flex: 1;
+    }
+
+    /* Bottom row */
+    .bottom-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0 4px;
+      flex-shrink: 0;
+    }
+
+    .rating {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .rating__star {
+      width: 18px;
+      height: 18px;
+      color: var(--color-gray-200);
+      cursor: pointer;
+      transition: color 0.15s ease;
+    }
+
+    .rating__star:hover,
+    .rating__star--active {
+      color: #F59E0B;
+    }
+
+    .return-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .return-option__check {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--color-success);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .return-option__check svg {
+      width: 12px;
+      height: 12px;
+      color: var(--color-white);
+    }
+
+    .return-option__label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .return-option__sublabel {
+      font-size: 0.6875rem;
+      color: var(--color-navy-500);
+    }
+
+    /* AI checkbox */
+    .ai-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 26px 14px;
+      font-size: 0.8125rem;
+      color: var(--color-navy-500);
+    }
+
+    .ai-checkbox input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--color-navy-500);
+      cursor: pointer;
+    }
+
+    /* Responsive */
+    @media (max-width: 1280px) {
+      .content-area--full {
+        padding: 24px 48px;
+      }
+
+      .review-layout {
+        grid-template-columns: 1fr 320px;
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .content-area--full {
+        padding: 20px 24px;
+      }
+
+      .review-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .review-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .content-area--full {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="platform">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar__logo">
+        <a href="platform-preview.html">
+          <img src="../Design System/assets/Peoples Clinic.svg" alt="People's Clinic" class="topbar__logo-img">
+        </a>
+      </div>
+      <div class="topbar__right">
+        <div class="clinic-dropdown">
+          <span>Current clinic: Valby Lægehus</span>
+          <i data-lucide="chevron-down"></i>
+        </div>
+        <div class="flags">
+          <div class="flag flag--dk"></div>
+          <div class="flag flag--uk"></div>
+        </div>
+        <div class="user-menu">
+          <div class="user-avatar">A</div>
+          <span class="user-name">Dr. Anna Nielsen</span>
+          <i data-lucide="chevron-down"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="content-area content-area--full">
+      <main class="main">
+
+        <!-- Header -->
+        <div class="review-header">
+          <div class="review-header__left">
+            <a href="platform-preview.html" class="review-header__back">
+              <i data-lucide="arrow-left"></i>
+              Tilbage til oversigt
+            </a>
+            <h1 class="review-header__title">Redigér og gem notat</h1>
+            <p class="review-header__meta">Nancy Berggren &middot; 25.05.2025 12:18 &middot; 8 min 7 sek</p>
+          </div>
+        </div>
+
+        <!-- Main layout: Editor left, Context right -->
+        <div class="review-layout">
+
+          <!-- LEFT: The main editing panel -->
+          <div class="review-main">
+            <div class="consultation-panel" style="flex: 1; min-height: 0;">
+              <div class="panel-header">
+                <h2 class="panel-title">Notat</h2>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="panel-badge">
+                    <i data-lucide="sparkles"></i>
+                    AI-genereret
+                  </span>
+                  <button class="panel-dropdown">
+                    SOAP
+                    <i data-lucide="chevron-down"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="panel-content">
+                <div class="notes-section">
+                  <div class="notes-label">Anamnese</div>
+                  <div class="notes-content" contenteditable="true">Patient med to ugers tiltagende trykken retrosternalt, udløst af moderat fysisk aktivitet. Varighed ca. 5 min, lindres ved hvile. Let udstråling til venstre skulder. Let dyspnø ved anfald. Ingen kvalme. Familiær disposition til IHS (far med AMI v. 62 år). Øget træthed gennem de seneste uger. Ingen medicinændringer.</div>
+                </div>
+                <div class="notes-section">
+                  <div class="notes-label">Objektivt</div>
+                  <div class="notes-content" contenteditable="true">Almen upåvirket, vågen og klar. Normal vejrtrækning i hvile. Ingen ødemer. BT 132/78, puls 78 reg. Cor/pulm uden mislyde eller krepitationer. EKG initialt uden akutte iskæmitegn.</div>
+                </div>
+                <div class="notes-section">
+                  <div class="notes-label">Vurdering</div>
+                  <div class="notes-content" contenteditable="true">Brystsmerter forenelige med mulig stabil angina pectoris. Familiær disposition og belastningsudløste symptomer taler for videre kardiologisk udredning. Ingen tegn på akut koronart syndrom aktuelt.</div>
+                </div>
+                <div class="notes-section">
+                  <div class="notes-label">Plan</div>
+                  <div class="notes-content" contenteditable="true">– Bestilling af EKG og blodprøver inkl. lipidprofil, HbA1c og troponin (screening).<br>– Henvisning til kardiologisk vurdering inkl. arbejds-EKG.<br>– Rådgivning om at undgå hård fysisk belastning indtil udredning er afsluttet.</div>
+                </div>
+              </div>
+              <div class="ai-input-section">
+                <div class="ai-input-wrapper">
+                  <input type="text" class="ai-input" placeholder="Bed AI'en om at ændre eller tilføje noget...">
+                  <button class="ai-send-btn">
+                    <i data-lucide="send"></i>
+                  </button>
+                </div>
+              </div>
+              <label class="ai-checkbox">
+                <input type="checkbox">
+                AI'en skal lære at generere noter som denne
+              </label>
+            </div>
+          </div>
+
+          <!-- RIGHT: Context sidebar -->
+          <div class="review-sidebar">
+
+            <!-- Transskription (compact) -->
+            <div class="consultation-panel" style="flex: 1; min-height: 0;">
+              <div class="panel-header">
+                <h2 class="panel-title">Transskription</h2>
+              </div>
+              <div class="panel-content">
+                <div class="transcript-line"><span class="transcript-speaker">Patient:</span> Jeg har haft trykken midt i brystet de sidste par uger. Det kommer især når jeg går hurtigt eller går på trapper.</div>
+                <div class="transcript-line"><span class="transcript-speaker">Læge:</span> Hvor længe varer det typisk?</div>
+                <div class="transcript-line"><span class="transcript-speaker">Patient:</span> Måske fem minutter. Det går væk, når jeg sætter mig ned.</div>
+                <div class="transcript-line"><span class="transcript-speaker">Læge:</span> Stråler det nogen steder hen?</div>
+                <div class="transcript-line"><span class="transcript-speaker">Patient:</span> Lidt op i venstre skulder nogen gange. Og jeg bliver lidt forpustet.</div>
+                <div class="transcript-line"><span class="transcript-speaker">Læge:</span> Har der været kvalme eller svimmelhed?</div>
+                <div class="transcript-line"><span class="transcript-speaker">Patient:</span> Nej, ikke rigtig. Men jeg har været mere træt end normalt de seneste uger.</div>
+              </div>
+            </div>
+
+            <!-- Patientresume -->
+            <div class="consultation-panel" style="flex: 1; min-height: 0;">
+              <div class="panel-header">
+                <h2 class="panel-title">Patientresume</h2>
+              </div>
+              <div class="panel-content">
+                <div class="resume-section">
+                  <div class="resume-label">Hovedsymptom</div>
+                  <div style="font-size: 0.8125rem; line-height: 1.5; color: var(--color-text);">Belastningsudløst brystsmerte (tryk), retrosternalt, varighed ca. 5 min, lindres ved hvile.</div>
+                </div>
+                <div class="resume-section">
+                  <div class="resume-label">Symptomkarakteristika</div>
+                  <ul class="resume-list">
+                    <li>Lokalisation: retrosternalt</li>
+                    <li>Udløsende: moderat fysisk aktivitet</li>
+                    <li>Lindring: hvile</li>
+                    <li>Udstråling: venstre skulder</li>
+                    <li>Associeret: let dyspnø, træthed</li>
+                  </ul>
+                </div>
+                <div class="resume-section">
+                  <div class="resume-label">Objektive fund</div>
+                  <ul class="resume-list">
+                    <li>BT 132/78, puls 78 reg.</li>
+                    <li>Cor/pulm: upåfaldende</li>
+                    <li>Ingen ødemer</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="ai-input-section">
+                <div class="ai-input-wrapper">
+                  <input type="text" class="ai-input" placeholder="Spørg til patientjournal...">
+                  <button class="ai-send-btn">
+                    <i data-lucide="send"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar">
+          <button class="action-btn action-btn--primary">
+            <i data-lucide="check"></i>
+            Godkend & Gem
+          </button>
+          <button class="action-btn action-btn--secondary">
+            <i data-lucide="copy"></i>
+            Kopier
+          </button>
+          <button class="action-btn action-btn--secondary">
+            <i data-lucide="refresh-cw"></i>
+            Regenerer
+          </button>
+          <div class="action-bar__spacer"></div>
+          <a href="konsultation-aktiv.html" class="action-btn action-btn--accent">
+            <i data-lucide="play"></i>
+            Genoptag
+          </a>
+        </div>
+
+        <!-- Bottom row -->
+        <div class="bottom-row">
+          <div class="rating">
+            <i data-lucide="star" class="rating__star"></i>
+            <i data-lucide="star" class="rating__star"></i>
+            <i data-lucide="star" class="rating__star"></i>
+            <i data-lucide="star" class="rating__star"></i>
+            <i data-lucide="star" class="rating__star"></i>
+            <i data-lucide="star" class="rating__star"></i>
+            <i data-lucide="star" class="rating__star"></i>
+            <i data-lucide="star" class="rating__star"></i>
+            <i data-lucide="star" class="rating__star"></i>
+            <i data-lucide="star" class="rating__star"></i>
+          </div>
+          <div class="return-option">
+            <div class="return-option__check">
+              <i data-lucide="check"></i>
+            </div>
+            <div>
+              <div class="return-option__label">Gå til start efter gem</div>
+              <div class="return-option__sublabel">Notatet kopieres til udklipsholderen</div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+
+    <!-- Bottom Navigation (Mobile/Tablet) -->
+    <nav class="bottom-nav">
+      <ul class="bottom-nav__list">
+        <a href="platform-preview.html" class="bottom-nav__item">
+          <i data-lucide="play"></i>
+          <span>Start</span>
+        </a>
+        <a href="konsultationshistorik.html" class="bottom-nav__item">
+          <i data-lucide="history"></i>
+          <span>Historik</span>
+        </a>
+        <a href="journalresume.html" class="bottom-nav__item">
+          <i data-lucide="file-text"></i>
+          <span>Journal</span>
+        </a>
+        <a href="honorarforslag.html" class="bottom-nav__item">
+          <i data-lucide="receipt"></i>
+          <span>Honorar</span>
+        </a>
+        <a href="#" class="bottom-nav__item">
+          <i data-lucide="help-circle"></i>
+          <span>Hjælp</span>
+        </a>
+      </ul>
+    </nav>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

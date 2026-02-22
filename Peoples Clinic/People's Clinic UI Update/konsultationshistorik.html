@@ -51,11 +51,9 @@
         font-size: var(--font-size-base);
       }
 
-      /* Hide columns on mobile */
+      /* Hide date column on mobile */
       .table--history th:nth-child(2),
-      .table--history td:nth-child(2),
-      .table--history th:nth-child(4),
-      .table--history td:nth-child(4) {
+      .table--history td:nth-child(2) {
         display: none;
       }
     }
@@ -80,8 +78,8 @@
           <div class="flag flag--uk"></div>
         </div>
         <div class="user-menu">
-          <div class="user-avatar">M</div>
-          <span class="user-name">Morten Skov</span>
+          <div class="user-avatar">A</div>
+          <span class="user-name">Dr. Anna Nielsen</span>
           <i data-lucide="chevron-down"></i>
         </div>
       </div>
@@ -166,7 +164,6 @@
                 <th>Patient</th>
                 <th>Dato</th>
                 <th>Emne</th>
-                <th>Honorarforslag</th>
                 <th>Handlinger</th>
               </tr>
             </thead>
@@ -175,88 +172,72 @@
                 <td>Nancy Berggren</td>
                 <td>25.05.2025 12:18</td>
                 <td>Patienten havde ondt i ørerne</td>
-                <td><i data-lucide="alert-triangle" class="warning-icon" style="width:16px;height:16px;"></i></td>
                 <td class="table-actions">
-                  <a href="#" class="action-btn action-btn--secondary">Kopier</a>
-                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
-                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                  <a href="#" class="table-btn table-btn--outline">Kopier notat</a>
+                  <a href="#" class="table-btn table-btn--outline">Vis & Rediger</a>
                 </td>
               </tr>
               <tr>
                 <td>Ukendt patient</td>
                 <td>25.05.2025 11:17</td>
                 <td>Patienten havde knæsmerter</td>
-                <td>1012</td>
                 <td class="table-actions">
-                  <a href="#" class="action-btn action-btn--secondary">Kopier</a>
-                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
-                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                  <a href="#" class="table-btn table-btn--outline">Kopier notat</a>
+                  <a href="#" class="table-btn table-btn--outline">Vis & Rediger</a>
                 </td>
               </tr>
               <tr>
                 <td>Ukendt patient</td>
                 <td>25.05.2025 9:27</td>
                 <td>Patienten oplevede søvnproblemer</td>
-                <td>1212</td>
                 <td class="table-actions">
-                  <a href="#" class="action-btn action-btn--secondary">Kopier</a>
-                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
-                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                  <a href="#" class="table-btn table-btn--outline">Kopier notat</a>
+                  <a href="#" class="table-btn table-btn--outline">Vis & Rediger</a>
                 </td>
               </tr>
               <tr>
                 <td>Nancy Berggren</td>
-                <td>25.05.2025 12:18</td>
+                <td>24.05.2025 14:32</td>
                 <td>Patienten havde ondt i ørerne</td>
-                <td><i data-lucide="alert-triangle" class="warning-icon" style="width:16px;height:16px;"></i></td>
                 <td class="table-actions">
-                  <a href="#" class="action-btn action-btn--secondary">Kopier</a>
-                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
-                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                  <a href="#" class="table-btn table-btn--outline">Kopier notat</a>
+                  <a href="#" class="table-btn table-btn--outline">Vis & Rediger</a>
                 </td>
               </tr>
               <tr>
                 <td>Ukendt patient</td>
-                <td>25.05.2025 11:17</td>
+                <td>24.05.2025 10:05</td>
                 <td>Patienten havde knæsmerter</td>
-                <td>2132</td>
                 <td class="table-actions">
-                  <a href="#" class="action-btn action-btn--secondary">Kopier</a>
-                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
-                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                  <a href="#" class="table-btn table-btn--outline">Kopier notat</a>
+                  <a href="#" class="table-btn table-btn--outline">Vis & Rediger</a>
                 </td>
               </tr>
               <tr>
                 <td>Ukendt patient</td>
-                <td>25.05.2025 9:27</td>
+                <td>23.05.2025 15:41</td>
                 <td>Patienten oplevede søvnproblemer</td>
-                <td>1231</td>
                 <td class="table-actions">
-                  <a href="#" class="action-btn action-btn--secondary">Kopier</a>
-                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
-                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                  <a href="#" class="table-btn table-btn--outline">Kopier notat</a>
+                  <a href="#" class="table-btn table-btn--outline">Vis & Rediger</a>
                 </td>
               </tr>
               <tr>
                 <td>Ukendt patient</td>
-                <td>25.05.2025 11:17</td>
+                <td>23.05.2025 9:12</td>
                 <td>Patienten havde knæsmerter</td>
-                <td>2132</td>
                 <td class="table-actions">
-                  <a href="#" class="action-btn action-btn--secondary">Kopier</a>
-                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
-                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                  <a href="#" class="table-btn table-btn--outline">Kopier notat</a>
+                  <a href="#" class="table-btn table-btn--outline">Vis & Rediger</a>
                 </td>
               </tr>
               <tr>
                 <td>Ukendt patient</td>
-                <td>25.05.2025 9:27</td>
+                <td>22.05.2025 16:08</td>
                 <td>Patienten oplevede søvnproblemer</td>
-                <td>1231</td>
                 <td class="table-actions">
-                  <a href="#" class="action-btn action-btn--secondary">Kopier</a>
-                  <a href="#" class="action-btn action-btn--primary">Vis & Rediger</a>
-                  <a href="#" class="action-btn action-btn--danger">Slet</a>
+                  <a href="#" class="table-btn table-btn--outline">Kopier notat</a>
+                  <a href="#" class="table-btn table-btn--outline">Vis & Rediger</a>
                 </td>
               </tr>
             </tbody>
