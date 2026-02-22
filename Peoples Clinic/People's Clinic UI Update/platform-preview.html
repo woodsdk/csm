@@ -62,7 +62,8 @@
 
     html, body {
       width: 100%;
-      min-height: 100vh;
+      height: 100vh;
+      overflow: hidden;
     }
 
     body {
@@ -80,9 +81,10 @@
        ========================================== */
     .platform {
       width: 100%;
-      min-height: 100vh;
+      height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
 
     /* ==========================================
@@ -261,9 +263,10 @@
     .content-area {
       flex: 1;
       display: flex;
-      padding: 40px 50px 50px 50px;
-      gap: 80px;
+      padding: 24px 40px 24px 40px;
+      gap: 40px;
       min-height: 0;
+      overflow: hidden;
     }
 
     /* ==========================================
@@ -288,7 +291,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 14px 20px;
+      padding: 12px 20px;
       border-radius: var(--radius-full);
       font-size: 0.875rem;  /* 14px */
       font-weight: 700;
@@ -403,9 +406,11 @@
     .main {
       flex: 1;
       min-width: 0;
+      min-height: 0;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
+      overflow: hidden;
     }
 
     /* TOP SECTION: fills remaining space */
@@ -413,7 +418,7 @@
       flex: 1;
       min-height: 0;
       display: flex;
-      gap: 80px;
+      gap: 40px;
     }
 
     .main__left {
@@ -464,7 +469,7 @@
     .card {
       background: var(--color-white);
       border-radius: var(--radius-2xl);
-      padding: 25px;
+      padding: 20px;
       box-shadow: var(--shadow-card);
     }
 
@@ -472,7 +477,7 @@
       font-size: 1.125rem;
       font-weight: 500;
       color: var(--color-text);
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       flex-shrink: 0;
     }
 
@@ -486,7 +491,7 @@
        START KONSULTATION FORM
        ========================================== */
     .form-group {
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .form-label {
@@ -494,7 +499,7 @@
       font-size: 0.813rem;
       font-weight: 500;
       color: var(--color-text);
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .form-row {
@@ -555,9 +560,9 @@
       background: var(--color-gray-100);
       border: 1px dashed var(--color-gray-200);
       border-radius: var(--radius-lg);
-      padding: 10px;
+      padding: 8px;
       text-align: center;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       cursor: pointer;
       transition: all 0.2s ease;
     }
@@ -847,7 +852,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      margin: 8px 0;
+      margin: 4px 0;
       font-size: 0.75rem;
       color: var(--color-text);
     }
@@ -889,7 +894,7 @@
       border-radius: 100px;
       cursor: pointer;
       box-shadow: 0 4px 15px rgba(56, 69, 109, 0.2);
-      margin-top: 12px;
+      margin-top: auto;
       flex-shrink: 0;
       transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                   box-shadow 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -932,6 +937,10 @@
 
     .table th:last-child {
       border-radius: 0 var(--radius-md) 0 0;
+    }
+
+    .table tr {
+      height: 52px;
     }
 
     .table td {
@@ -1006,7 +1015,7 @@
        ========================================== */
     .support-card {
       text-align: center;
-      padding: 24px 32px;
+      padding: 16px 24px;
       width: 280px;
       display: flex;
       flex-direction: column;
