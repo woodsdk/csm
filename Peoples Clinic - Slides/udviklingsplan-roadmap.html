@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>People's Clinic - Udviklingsplan & Roadmap</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --navy-900: #13102C;
+            --navy-800: #26304F;
+            --navy-700: #323E63;
+            --navy-600: #38456D;
+            --navy-500: #5669A4;
+            --navy-400: #A3B0D9;
+            --gray-200: #DADAEC;
+            --gray-100: #F8F8FD;
+            --white: #FFFFFF;
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --gold: #d4af37;
+            --blue: #3B82F6;
+            --purple: #8B5CF6;
+            --teal: #14B8A6;
+            --pink: #EC4899;
+            --orange: #F97316;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #EBEBF4 0%, #FFFFFF 100%);
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        .container { max-width: 1500px; margin: 0 auto; }
+
+        /* Header */
+        .header { text-align: center; margin-bottom: 32px; }
+        .header h1 { font-size: 2.2rem; font-weight: 600; color: var(--navy-900); margin-bottom: 6px; }
+        .header p { font-size: 0.95rem; color: var(--navy-500); font-weight: 500; }
+
+        .header-badges {
+            display: flex; justify-content: center; gap: 10px;
+            margin-top: 14px; flex-wrap: wrap;
+        }
+
+        .hbadge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 16px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 0.03em; color: white;
+        }
+
+        .hbadge svg { width: 14px; height: 14px; }
+        .hbadge.warn { background: linear-gradient(135deg, var(--danger), #DC2626); }
+        .hbadge.info { background: linear-gradient(135deg, var(--navy-600), var(--navy-500)); }
+
+        /* Nav */
+        .nav { display: flex; justify-content: center; gap: 8px; margin-bottom: 28px; }
+        .nav-btn {
+            padding: 10px 22px; background: var(--white); border: 2px solid var(--gray-200);
+            border-radius: 10px; font-size: 0.82rem; font-weight: 600;
+            color: var(--navy-700); cursor: pointer; transition: all 0.2s;
+        }
+        .nav-btn:hover { border-color: var(--navy-400); transform: translateY(-1px); }
+        .nav-btn.active { background: linear-gradient(135deg, var(--navy-600), var(--navy-500)); color: white; border-color: transparent; }
+
+        /* Sections */
+        .section { display: none; animation: fadeIn 0.3s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .section-label {
+            font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em;
+            text-transform: uppercase; color: var(--navy-400); margin-bottom: 12px; padding-left: 2px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--white); border-radius: 16px; padding: 24px 28px;
+            box-shadow: 0 2px 12px rgba(26,43,74,0.06); margin-bottom: 16px;
+        }
+
+        /* Summary row */
+        .summary-row {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px;
+        }
+        .summary-card {
+            background: var(--white); border-radius: 14px; padding: 20px; text-align: center;
+            box-shadow: 0 2px 12px rgba(26,43,74,0.06);
+        }
+        .s-num { font-size: 2.2rem; font-weight: 800; color: var(--navy-900); }
+        .s-num.red { color: var(--danger); }
+        .s-label { font-size: 0.82rem; font-weight: 600; color: var(--navy-700); margin-bottom: 2px; }
+        .s-sub { font-size: 0.72rem; color: var(--navy-500); }
+
+        /* Capacity cards */
+        .cap-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+        .cap-card {
+            background: var(--white); border-radius: 14px; padding: 18px; text-align: center;
+            box-shadow: 0 2px 12px rgba(26,43,74,0.06); position: relative; overflow: hidden;
+        }
+        .cap-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+        .cap-card.red::before { background: var(--danger); }
+        .cap-card.yellow::before { background: var(--warning); }
+        .cap-card.green::before { background: var(--success); }
+        .cap-card.gray::before { background: var(--navy-400); }
+
+        .cap-name { font-size: 0.95rem; font-weight: 700; color: var(--navy-900); margin-bottom: 2px; }
+        .cap-role { font-size: 0.78rem; color: var(--navy-500); margin-bottom: 6px; }
+        .cap-tag {
+            display: inline-block; padding: 3px 10px; border-radius: 12px;
+            font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
+        }
+        .cap-tag.red { background: rgba(239,68,68,0.12); color: #DC2626; }
+        .cap-tag.yellow { background: rgba(245,158,11,0.12); color: #D97706; }
+        .cap-tag.green { background: rgba(34,197,94,0.12); color: #16A34A; }
+        .cap-tasks { font-size: 0.72rem; color: var(--navy-500); margin-top: 8px; line-height: 1.4; }
+        .cap-bar { height: 6px; background: var(--gray-100); border-radius: 3px; margin-top: 8px; overflow: hidden; }
+        .cap-fill { height: 100%; border-radius: 3px; }
+        .cap-fill.red { background: var(--danger); }
+        .cap-fill.yellow { background: var(--warning); }
+        .cap-fill.green { background: var(--success); }
+
+        /* Alert banner */
+        .alert {
+            border-radius: 14px; padding: 22px 28px; color: white; margin-bottom: 20px;
+            display: flex; align-items: flex-start; gap: 16px;
+        }
+        .alert.red { background: linear-gradient(135deg, var(--danger), #DC2626); }
+        .alert svg { width: 36px; height: 36px; flex-shrink: 0; margin-top: 2px; }
+        .alert h3 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+        .alert p { font-size: 0.82rem; opacity: 0.92; line-height: 1.5; }
+
+        /* Two-col split */
+        .split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+        .list-item {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.82rem; color: var(--navy-800); padding: 4px 0;
+        }
+        .list-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+        /* ==================== GANTT ==================== */
+        .gantt-scroll { overflow-x: auto; margin-bottom: 16px; }
+
+        .gantt {
+            display: grid;
+            grid-template-columns: 300px repeat(14, minmax(68px, 1fr));
+            min-width: 1300px;
+            font-size: 0.72rem;
+        }
+
+        .g-head {
+            background: var(--navy-900); color: white; padding: 10px 8px;
+            font-weight: 700; text-align: center; letter-spacing: 0.04em;
+            font-size: 0.68rem; text-transform: uppercase; white-space: nowrap;
+        }
+        .g-head:first-child { text-align: left; padding-left: 14px; border-radius: 10px 0 0 0; }
+        .g-head:last-child { border-radius: 0 10px 0 0; }
+
+        /* Week sub-header with dates */
+        .g-week {
+            background: var(--navy-800); color: var(--navy-400); padding: 6px 4px;
+            font-size: 0.6rem; font-weight: 600; text-align: center;
+        }
+        .g-week:first-child { text-align: left; padding-left: 14px; color: rgba(255,255,255,0.6); }
+
+        /* Phase separator */
+        .g-phase {
+            grid-column: 1 / -1; padding: 8px 14px;
+            font-weight: 700; font-size: 0.75rem; color: var(--navy-900);
+            border-bottom: 2px solid var(--navy-400);
+        }
+        .g-phase.pd20 { background: rgba(56,69,109,0.08); }
+        .g-phase.other { background: rgba(239,68,68,0.06); color: var(--danger); }
+
+        /* Row label */
+        .g-label {
+            padding: 8px 14px; background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+            display: flex; align-items: center; gap: 8px;
+            color: var(--navy-800); font-weight: 500;
+        }
+        .g-label .owner {
+            font-size: 0.62rem; font-weight: 700; color: var(--navy-500);
+            background: var(--gray-100); padding: 2px 6px; border-radius: 4px;
+            white-space: nowrap;
+        }
+        .g-label .prio {
+            font-size: 0.58rem; font-weight: 800; padding: 2px 6px; border-radius: 4px;
+            color: white; white-space: nowrap;
+        }
+        .g-label .prio.p5 { background: var(--danger); }
+        .g-label .prio.p4 { background: var(--warning); }
+        .g-label .prio.p3 { background: var(--blue); }
+        .g-label .prio.p2 { background: var(--navy-500); }
+        .g-label .prio.p1 { background: var(--navy-400); }
+
+        .g-label.dim { opacity: 0.5; }
+
+        /* Cells */
+        .g-cell {
+            padding: 8px 3px; background: var(--white);
+            border-bottom: 1px solid var(--gray-200); position: relative;
+        }
+
+        .bar {
+            height: 20px; border-radius: 5px; position: absolute;
+            top: 50%; left: 2px; right: 2px; transform: translateY(-50%);
+        }
+        .bar.ui { background: linear-gradient(135deg, #3B82F6, #60A5FA); }
+        .bar.ai { background: linear-gradient(135deg, #8B5CF6, #A78BFA); }
+        .bar.product { background: linear-gradient(135deg, var(--navy-600), var(--navy-500)); }
+        .bar.support { background: linear-gradient(135deg, var(--teal), #2DD4BF); }
+        .bar.gtm { background: linear-gradient(135deg, var(--success), #4ADE80); }
+        .bar.blocked { background: repeating-linear-gradient(45deg, var(--danger), var(--danger) 3px, #FCA5A5 3px, #FCA5A5 6px); }
+        .bar.parked { background: var(--gray-200); opacity: 0.5; }
+        .bar.ms {
+            background: linear-gradient(135deg, var(--gold), #f0c850);
+            height: 24px; border: 2px solid var(--gold);
+        }
+        .bar.infra { background: linear-gradient(135deg, var(--orange), #FB923C); }
+
+        /* Milestone diamond */
+        .diamond {
+            width: 14px; height: 14px; background: var(--gold);
+            transform: translateY(-50%) rotate(45deg);
+            position: absolute; top: 50%; left: calc(50% - 7px);
+            border: 2px solid #b8941f;
+        }
+
+        /* Legend */
+        .legend { display: flex; gap: 18px; flex-wrap: wrap; padding: 12px 0; }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--navy-700); }
+        .legend-swatch { width: 20px; height: 10px; border-radius: 3px; }
+
+        /* Export */
+        .export-bar {
+            background: var(--gray-100); border: 2px solid var(--gray-200); border-radius: 10px;
+            padding: 12px 20px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+        }
+        .export-bar p { font-size: 0.78rem; color: var(--navy-600); flex: 1; }
+        .export-bar button {
+            background: linear-gradient(135deg, var(--navy-600), var(--navy-500));
+            color: white; border: none; padding: 7px 16px; border-radius: 7px;
+            font-size: 0.75rem; font-weight: 600; cursor: pointer; white-space: nowrap;
+        }
+
+        /* Footer */
+        .footer { text-align: center; margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--gray-200); }
+        .footer-badge {
+            display: inline-block; background: var(--navy-900); color: white;
+            padding: 10px 24px; border-radius: 8px; font-size: 0.75rem; font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 1100px) {
+            .summary-row, .cap-row { grid-template-columns: repeat(2, 1fr); }
+            .split { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 700px) {
+            body { padding: 16px; }
+            .summary-row, .cap-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+    <header class="header">
+        <h1>Udviklingsplan & Roadmap</h1>
+        <p>People's Clinic &mdash; Produktudvikling Q1-Q2 2026</p>
+        <div class="header-badges">
+            <span class="hbadge warn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+                INGEN DEDIKERET FRONTEND &middot; AI-DEV DELT M. ANDRE PROJEKTER
+            </span>
+            <span class="hbadge info">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+                FEB &ndash; MAJ 2026
+            </span>
+        </div>
+    </header>
+
+    <!-- NAV -->
+    <nav class="nav">
+        <div class="nav-btn active" onclick="show('overview')">Overblik</div>
+        <div class="nav-btn" onclick="show('gantt')">Roadmap & Tidslinje</div>
+    </nav>
+
+    <!-- ======================== SLIDE 1: OVERBLIK ======================== -->
+    <div id="s-overview" class="section active">
+
+        <div class="section-label">STATUS &mdash; TEAM VS. PIPELINE</div>
+
+        <div class="summary-row">
+            <div class="summary-card">
+                <div class="s-num">24</div>
+                <div class="s-label">Projekter i pipeline</div>
+                <div class="s-sub">12 i PD 2.0 &middot; 12 andre projekter</div>
+            </div>
+            <div class="summary-card">
+                <div class="s-num red">&infin;</div>
+                <div class="s-label">Kapacitetsgab</div>
+                <div class="s-sub">Ingen dedikeret frontend. AI-dev delt.</div>
+            </div>
+            <div class="summary-card">
+                <div class="s-num">5</div>
+                <div class="s-label">Teammedlemmer p&aring; projekter</div>
+                <div class="s-sub">Anders &middot; Lucas &middot; Freja &middot; Simon &middot; Morten/Daniel</div>
+            </div>
+            <div class="summary-card">
+                <div class="s-num red">0</div>
+                <div class="s-label">Dedikeret til PD</div>
+                <div class="s-sub">Alle delt med andre projekter</div>
+            </div>
+        </div>
+
+        <div class="section-label">TEAMOVERSIGT &mdash; ALLOKERING & TILG&AElig;NGELIGHED</div>
+
+        <div class="cap-row">
+            <div class="cap-card red">
+                <div class="cap-name">Anders</div>
+                <div class="cap-role">AI-udvikler &middot; Delt m. andre projekter</div>
+                <span class="cap-tag red">Overbelastet</span>
+                <div class="cap-tasks">SOAP (Gemma, ASR, diarization, mikrofon), Journalresume FNX, Connectors (XMO, Complimenta, KirCACS)</div>
+                <div class="cap-bar"><div class="cap-fill red" style="width:100%"></div></div>
+            </div>
+            <div class="cap-card red">
+                <div class="cap-name">Lucas</div>
+                <div class="cap-role">Udvikler &middot; Ikke frontend-erfaring</div>
+                <span class="cap-tag red">Overbelastet</span>
+                <div class="cap-tasks">UI-opdatering (efter Mortens mockups), Admin-panel, SOAP agenter/placeholders. Afventer afstemning m. Steve + Morten</div>
+                <div class="cap-bar"><div class="cap-fill red" style="width:100%"></div></div>
+            </div>
+            <div class="cap-card yellow">
+                <div class="cap-name">Freja</div>
+                <div class="cap-role">Support & Ops</div>
+                <span class="cap-tag yellow">Strakt</span>
+                <div class="cap-tasks">Alarmberedskab, platform support, tidsm&aring;ling, support-integration</div>
+                <div class="cap-bar"><div class="cap-fill yellow" style="width:80%"></div></div>
+            </div>
+            <div class="cap-card yellow">
+                <div class="cap-name">Simon</div>
+                <div class="cap-role">CRM & Analytics</div>
+                <span class="cap-tag yellow">Strakt</span>
+                <div class="cap-tasks">Acquisition/Churn dashboard, retention, kommunikation, onboarding funnel</div>
+                <div class="cap-bar"><div class="cap-fill yellow" style="width:75%"></div></div>
+            </div>
+        </div>
+
+        <!-- Alert -->
+        <div class="alert red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <div>
+                <h3>Ingen dedikeret udviklingskapacitet &mdash; 24 projekter i pipeline</h3>
+                <p>Der er ingen frontend-udvikler. Lucas har ikke frontend-erfaring og er endnu ikke afstemt med Steve om tid. Anders (AI) er delt med andre projekter.
+                Alle 5 teammedlemmer har flere parallelle projekter. PD 2.0-pakken alene indeholder 12 delprojekter, som alle kæmper om den samme begrænsede kapacitet.
+                De 12 &oslash;vrige projekter (klinikl&oslash;sning, compliance, migreringer, betalingsl&oslash;sning m.fl.) har reelt ingen allokeret kapacitet.</p>
+            </div>
+        </div>
+
+        <!-- Split: Kan / Kan ikke -->
+        <div class="split">
+            <div class="card" style="border-top: 4px solid var(--success);">
+                <div style="font-size: 0.9rem; font-weight: 700; color: var(--navy-900); margin-bottom: 12px;">PD 2.0 Update &mdash; I gang</div>
+                <div class="list-item"><svg viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg> SOAP placeholders (Lucas) &mdash; 18/2</div>
+                <div class="list-item"><svg viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg> Digital onboarding test + launch (Daniel/Morten)</div>
+                <div class="list-item"><svg viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg> XMO connector demo (Janos) &mdash; 24/2</div>
+                <div class="list-item"><svg viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg> Complimenta m&oslash;de &mdash; 18/2, deadline 18/3</div>
+                <div class="list-item"><svg viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg> Carl B XMO opl&aelig;g &mdash; 4/3</div>
+                <div class="list-item"><svg viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg> Alarmberedskab + support (Freja)</div>
+                <div class="list-item"><svg viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg> Retention dashboard (Simon)</div>
+                <p style="margin-top: 10px; font-size: 0.72rem; color: var(--navy-500); font-style: italic; border-top: 1px solid var(--gray-200); padding-top: 8px;">UI-opdatering afventer Lucas &harr; Steve &harr; Morten afstemning. Tid ukendt.</p>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--danger);">
+                <div style="font-size: 0.9rem; font-weight: 700; color: var(--danger); margin-bottom: 12px;">Andre projekter &mdash; Ingen allokeret kapacitet</div>
+                <div class="list-item"><svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Tilpasning til andre m&aring;lgrupper (tandlæger, kiropraktorer, PT, f&aelig;ngselslæger)</div>
+                <div class="list-item"><svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> AI Support (chatbot, tale, viderestilling)</div>
+                <div class="list-item"><svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Intelligent nurturing & upsell (tracking, triggers, Fresh)</div>
+                <div class="list-item"><svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Tracking & Dashboard (marketing + engagement)</div>
+                <div class="list-item"><svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Telefonsystem-integration</div>
+                <div class="list-item"><svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Type 2 compliance (ny platform)</div>
+                <div class="list-item"><svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Gefion + Bluetech migrering, ISAE 3000, Medical Device, Klinikl&oslash;sning, Betalingsl&oslash;sning, Open Source Research</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================== SLIDE 2: GANTT ROADMAP ======================== -->
+    <div id="s-gantt" class="section">
+
+        <div class="export-bar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy-500)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+            <p>Tabellen kan kopieres til Google Sheets / Excel. Marker &rarr; Cmd+C &rarr; Inds&aelig;t.</p>
+            <button onclick="selectGantt()">Mark&eacute;r tabel</button>
+        </div>
+
+        <div class="gantt-scroll">
+        <div class="gantt" id="gantt-table">
+            <!-- Column headers: weeks with dates -->
+            <div class="g-head">Projekt / Opgave</div>
+            <div class="g-head">U8</div>
+            <div class="g-head">U9</div>
+            <div class="g-head">U10</div>
+            <div class="g-head">U11</div>
+            <div class="g-head">U12</div>
+            <div class="g-head">U13</div>
+            <div class="g-head">U14</div>
+            <div class="g-head">U15</div>
+            <div class="g-head">U16</div>
+            <div class="g-head">U17</div>
+            <div class="g-head">U18</div>
+            <div class="g-head">U19</div>
+            <div class="g-head">U20</div>
+            <div class="g-head">U21</div>
+
+            <!-- Date sub-row -->
+            <div class="g-week">Ansvarlig &middot; Prioritet</div>
+            <div class="g-week">17/2</div>
+            <div class="g-week">24/2</div>
+            <div class="g-week">3/3</div>
+            <div class="g-week">10/3</div>
+            <div class="g-week">17/3</div>
+            <div class="g-week">24/3</div>
+            <div class="g-week">31/3</div>
+            <div class="g-week">7/4</div>
+            <div class="g-week">14/4</div>
+            <div class="g-week">21/4</div>
+            <div class="g-week">28/4</div>
+            <div class="g-week">5/5</div>
+            <div class="g-week">12/5</div>
+            <div class="g-week">19/5</div>
+
+            <!-- ===== PD 2.0 UPDATE ===== -->
+            <div class="g-phase pd20">PEOPLE'S DOCTOR 2.0 UPDATE</div>
+
+            <!-- UI opdatering -->
+            <div class="g-label">UI-opdatering <span class="owner">Lucas + Morten</span> <span class="prio p2">P2</span></div>
+            <div class="g-cell"></div><!--U8-->
+            <div class="g-cell"></div><!--U9-->
+            <div class="g-cell"><div class="bar ui" style="opacity:0.4"></div></div><!--U10: afventer-->
+            <div class="g-cell"><div class="bar ui" style="opacity:0.4"></div></div><!--U11-->
+            <div class="g-cell"><div class="bar ui"></div></div><!--U12-->
+            <div class="g-cell"><div class="bar ui"></div></div><!--U13-->
+            <div class="g-cell"><div class="bar ui"></div></div><!--U14-->
+            <div class="g-cell"><div class="bar ui"></div></div><!--U15-->
+            <div class="g-cell"><div class="bar ui"></div></div><!--U16-->
+            <div class="g-cell"><div class="bar ui"></div></div><!--U17-->
+            <div class="g-cell"></div><!--U18-->
+            <div class="g-cell"></div><!--U19-->
+            <div class="g-cell"></div><!--U20-->
+            <div class="g-cell"></div><!--U21-->
+
+            <!-- Digital onboarding -->
+            <div class="g-label">Digital onboarding <span class="owner">Daniel + Morten</span> <span class="prio p4">P4</span></div>
+            <div class="g-cell"><div class="bar product"></div></div><!--U8: test-->
+            <div class="g-cell"><div class="bar product"></div></div><!--U9-->
+            <div class="g-cell"><div class="bar gtm"></div></div><!--U10: launch-->
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+
+            <!-- SOAP agenter/placeholders -->
+            <div class="g-label">SOAP notat &mdash; Agenter + Placeholders <span class="owner">Lucas</span> <span class="prio p5">P5</span></div>
+            <div class="g-cell"><div class="bar ai"></div></div><!--U8: 18/2 klar-->
+            <div class="g-cell"><div class="bar ai"></div></div><!--U9: testgruppe-->
+            <div class="g-cell"><div class="bar gtm"></div></div><!--U10: launch-->
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+
+            <!-- SOAP mikrofon -->
+            <div class="g-label">SOAP notat &mdash; Mobilmikrofon (QR) <span class="owner">Anders</span> <span class="prio p5">P5</span></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"><div class="bar ai"></div></div><!--U9-->
+            <div class="g-cell"><div class="bar ai"></div></div><!--U10-->
+            <div class="g-cell"><div class="bar ai"></div></div><!--U11-->
+            <div class="g-cell"><div class="bar ai"></div></div><!--U12-->
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+
+            <!-- SOAP diarization -->
+            <div class="g-label">SOAP notat &mdash; Diarization <span class="owner">Anders</span> <span class="prio p5">P5</span></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"><div class="bar ai"></div></div><!--U10-->
+            <div class="g-cell"><div class="bar ai"></div></div><!--U11-->
+            <div class="g-cell"><div class="bar ai"></div></div><!--U12-->
+            <div class="g-cell"><div class="bar ai"></div></div><!--U13-->
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+
+            <!-- SOAP Gemma + ASR -->
+            <div class="g-label">SOAP notat &mdash; MedGemma + medASR <span class="owner">Anders</span> <span class="prio p5">P5</span></div>
+            <div class="g-cell"><div class="bar ai"></div></div><!--U8: low-hanging-->
+            <div class="g-cell"><div class="bar ai"></div></div><!--U9-->
+            <div class="g-cell"><div class="bar ai"></div></div><!--U10-->
+            <div class="g-cell"><div class="bar ai"></div></div><!--U11-->
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+
+            <!-- Journalresume FNX multi -->
+            <div class="g-label">Journalresume &mdash; FNX multi <span class="owner">Anders</span> <span class="prio p5">P5</span></div>
+            <div class="g-cell"><div class="bar ai"></div></div><!--U8-->
+            <div class="g-cell"><div class="bar ai"></div></div><!--U9: test m. Jonas, Peder, Lars K-->
+            <div class="g-cell"><div class="bar gtm"></div></div><!--U10: launch-->
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+
+            <!-- Connector XMO -->
+            <div class="g-label">Connector &mdash; XMO <span class="owner">Anders/Janos</span> <span class="prio p5">P5</span></div>
+            <div class="g-cell"><div class="bar infra"></div></div><!--U8-->
+            <div class="g-cell"><div class="diamond"></div></div><!--U9: 24/2 demo-->
+            <div class="g-cell"><div class="bar gtm"></div></div><!--U10: deploy-->
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+
+            <!-- Connector Complimenta -->
+            <div class="g-label">Connector &mdash; Complimenta <span class="owner">Anders</span> <span class="prio p5">P5</span></div>
+            <div class="g-cell"><div class="diamond"></div></div><!--U8: møde 18/2-->
+            <div class="g-cell"><div class="bar infra"></div></div><!--U9-->
+            <div class="g-cell"><div class="bar infra"></div></div><!--U10-->
+            <div class="g-cell"><div class="bar infra"></div></div><!--U11-->
+            <div class="g-cell"><div class="diamond"></div></div><!--U12: deadline 18/3-->
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+
+            <!-- Alarmberedskab -->
+            <div class="g-label">Alarmberedskab / Akut support <span class="owner">Freja</span> <span class="prio p5">P5</span></div>
+            <div class="g-cell"><div class="bar support"></div></div><!--U8-->
+            <div class="g-cell"><div class="bar support"></div></div><!--U9-->
+            <div class="g-cell"><div class="bar support"></div></div><!--U10-->
+            <div class="g-cell"><div class="bar support"></div></div><!--U11-->
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+
+            <!-- Platform support -->
+            <div class="g-label">Platform support <span class="owner">Freja</span> <span class="prio p4">P4</span></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"><div class="bar support"></div></div><!--U11-->
+            <div class="g-cell"><div class="bar support"></div></div><!--U12-->
+            <div class="g-cell"><div class="bar support"></div></div><!--U13-->
+            <div class="g-cell"><div class="bar support"></div></div><!--U14-->
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+
+            <!-- Retention Dashboard -->
+            <div class="g-label">Acquisition/Churn &mdash; Retention Dashboard <span class="owner">Simon</span> <span class="prio p5">P5</span></div>
+            <div class="g-cell"><div class="bar gtm"></div></div><!--U8-->
+            <div class="g-cell"><div class="bar gtm"></div></div><!--U9-->
+            <div class="g-cell"><div class="bar gtm"></div></div><!--U10-->
+            <div class="g-cell"><div class="bar gtm"></div></div><!--U11-->
+            <div class="g-cell"><div class="bar gtm"></div></div><!--U12-->
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+            <div class="g-cell"></div>
+
+            <!-- ===== ANDRE PROJEKTER ===== -->
+            <div class="g-phase other">ANDRE PROJEKTER &mdash; IKKE PD 2.0 (INGEN ALLOKERET KAPACITET)</div>
+
+            <div class="g-label dim">Tilpasning til andre m&aring;lgrupper <span class="prio p1">P1</span></div>
+            <div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div>
+
+            <div class="g-label dim">AI Support (chatbot, tale, viderestilling) <span class="prio p2">P2</span></div>
+            <div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div>
+
+            <div class="g-label dim">Intelligent nurturing & upsell <span class="prio p3">P3</span></div>
+            <div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div>
+
+            <div class="g-label dim">Tracking & Dashboard (marketing + engagement) <span class="prio p3">P3</span></div>
+            <div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div>
+
+            <div class="g-label dim">Telefonsystem-integration <span class="prio p4">P4</span></div>
+            <div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div>
+
+            <div class="g-label dim">Type 2 compliance (ny platform) <span class="prio p4">P4</span></div>
+            <div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div>
+
+            <div class="g-label dim">Gefion-migrering <span class="prio p1">P1</span></div>
+            <div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div>
+
+            <div class="g-label dim">Bluetech-migrering <span class="prio p1">P1</span></div>
+            <div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div>
+
+            <div class="g-label dim">ISAE 3000-implementering <span class="prio p1">P1</span></div>
+            <div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div>
+
+            <div class="g-label dim">Medical Device (forskningsprojekt) <span class="prio p1">P1</span></div>
+            <div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div>
+
+            <div class="g-label dim">Klinikl&oslash;sning <span class="prio p1">P1</span></div>
+            <div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div>
+
+            <div class="g-label dim">Betalingsl&oslash;sning <span class="prio p1">P1</span></div>
+            <div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div>
+
+            <div class="g-label dim">Open Source Research <span class="prio p1">P1</span></div>
+            <div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div><div class="g-cell"><div class="bar parked"></div></div>
+
+        </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item"><div class="legend-swatch" style="background: linear-gradient(135deg, #3B82F6, #60A5FA);"></div> UI / Frontend</div>
+            <div class="legend-item"><div class="legend-swatch" style="background: linear-gradient(135deg, #8B5CF6, #A78BFA);"></div> AI / Backend</div>
+            <div class="legend-item"><div class="legend-swatch" style="background: linear-gradient(135deg, var(--navy-600), var(--navy-500));"></div> Product / Test</div>
+            <div class="legend-item"><div class="legend-swatch" style="background: linear-gradient(135deg, var(--success), #4ADE80);"></div> Launch / GTM</div>
+            <div class="legend-item"><div class="legend-swatch" style="background: linear-gradient(135deg, var(--teal), #2DD4BF);"></div> Support / Ops</div>
+            <div class="legend-item"><div class="legend-swatch" style="background: linear-gradient(135deg, var(--orange), #FB923C);"></div> Integration / Connector</div>
+            <div class="legend-item"><div class="legend-swatch" style="background: var(--gray-200); opacity: 0.5;"></div> Parkeret (ingen kapacitet)</div>
+            <div class="legend-item"><div style="width:12px;height:12px;background:var(--gold);transform:rotate(45deg);border:2px solid #b8941f;"></div> Milestone / Deadline</div>
+            <div class="legend-item" style="margin-left: 12px; padding-left: 12px; border-left: 1px solid var(--gray-200);">
+                <span class="prio p5" style="font-size:0.6rem;padding:2px 5px;border-radius:3px;">P5</span> = H&oslash;jest
+                <span class="prio p1" style="font-size:0.6rem;padding:2px 5px;border-radius:3px;margin-left:4px;">P1</span> = Lavest
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <span class="footer-badge">People's Clinic &mdash; Udviklingsplan feb-maj 2026 &mdash; Fortroligt</span>
+    </footer>
+</div>
+
+<script>
+function show(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(t => t.classList.remove('active'));
+    document.getElementById('s-' + id).classList.add('active');
+    event.target.classList.add('active');
+}
+function selectGantt() {
+    const el = document.getElementById('gantt-table');
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    const btn = event.target;
+    btn.textContent = 'Markeret!';
+    btn.style.background = 'var(--success)';
+    setTimeout(() => { btn.textContent = 'Markér tabel'; btn.style.background = ''; }, 2000);
+}
+</script>
+</body>
+</html>

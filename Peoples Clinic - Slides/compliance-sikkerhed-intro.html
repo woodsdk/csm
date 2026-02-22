@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>People's Clinic – Compliance & Sikkerhed</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../Peoples Clinic/Design System/platform.css">
+  <style>
+    /* ─── Override platform base to work as slides ─── */
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--color-navy-900);
+    }
+
+    body {
+      font-family: var(--font-family);
+      color: var(--color-text);
+    }
+
+    /* ─── Slide system – viewport-fill ─── */
+    .slides {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ─── Navigation ─── */
+    .slide-nav {
+      position: fixed;
+      bottom: clamp(16px, 2.5vh, 32px);
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 100;
+      background: rgba(19, 16, 44, 0.7);
+      backdrop-filter: blur(12px);
+      padding: 10px 20px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .slide-nav button {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 0;
+    }
+
+    .slide-nav button.active {
+      background: var(--color-white);
+      border-color: var(--color-white);
+      transform: scale(1.2);
+    }
+
+    .slide-nav button:hover:not(.active) {
+      border-color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* ═══════════════════════════════════════════
+       SLIDE 1: Introduktion
+       ═══════════════════════════════════════════ */
+    .slide-intro {
+      background: linear-gradient(135deg, var(--color-navy-900) 0%, var(--color-navy-700) 100%);
+      padding: clamp(32px, 5vw, 80px);
+      padding-bottom: clamp(60px, 8vh, 100px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: clamp(32px, 5vh, 64px);
+      position: relative;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .slide-intro::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -10%;
+      width: 60%;
+      height: 160%;
+      background: radial-gradient(ellipse, rgba(86, 105, 164, 0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .slide-intro::after {
+      content: '';
+      position: absolute;
+      bottom: -20%;
+      left: -5%;
+      width: 40%;
+      height: 100%;
+      background: radial-gradient(ellipse, rgba(86, 105, 164, 0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .intro-top {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+    }
+
+    .intro-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      color: var(--color-white);
+      font-size: clamp(0.55rem, 0.7vw, 0.75rem);
+      font-weight: 600;
+      padding: 6px 18px;
+      border-radius: var(--radius-full);
+      margin-bottom: clamp(14px, 2.5vh, 28px);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .intro-title {
+      font-size: clamp(2rem, 4vw, 4.5rem);
+      font-weight: 800;
+      color: var(--color-white);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      margin-bottom: clamp(10px, 1.8vh, 20px);
+    }
+
+    .intro-title span {
+      background: linear-gradient(135deg, #A3B0D9, #7B8DC4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .intro-subtitle {
+      font-size: clamp(0.9rem, 1.2vw, 1.35rem);
+      font-weight: 400;
+      color: var(--color-navy-400);
+      line-height: 1.6;
+      max-width: 700px;
+    }
+
+    /* Bottom section: AI Act callout + stats */
+    .intro-bottom {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: flex-end;
+      gap: clamp(24px, 3vw, 48px);
+      flex-wrap: wrap;
+    }
+
+    .intro-stats {
+      display: flex;
+      gap: clamp(20px, 3vw, 48px);
+      flex-wrap: wrap;
+    }
+
+    .intro-stat {
+      position: relative;
+      padding-left: clamp(12px, 1.2vw, 20px);
+    }
+
+    .intro-stat::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 4px;
+      bottom: 4px;
+      width: 3px;
+      background: var(--gradient-button-primary);
+      border-radius: 2px;
+    }
+
+    .intro-stat-value {
+      font-size: clamp(1.2rem, 1.8vw, 2rem);
+      font-weight: 700;
+      color: var(--color-white);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .intro-stat-label {
+      font-size: clamp(0.65rem, 0.75vw, 0.85rem);
+      font-weight: 500;
+      color: var(--color-navy-400);
+    }
+
+    /* ═══════════════════════════════════════════
+       SLIDE 2: Compliance
+       ═══════════════════════════════════════════ */
+    .slide-compliance {
+      background: var(--gradient-page-bg);
+      padding: clamp(20px, 3vw, 40px) clamp(24px, 5vw, 80px);
+      padding-bottom: clamp(50px, 7vh, 90px);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .slide-header {
+      margin-bottom: clamp(8px, 1.5vh, 20px);
+    }
+
+    .slide-header-badge {
+      display: inline-block;
+      font-size: clamp(0.55rem, 0.6vw, 0.7rem);
+      font-weight: 700;
+      color: var(--color-navy-500);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: clamp(4px, 0.8vh, 10px);
+      padding: 5px 14px;
+      background: rgba(86, 105, 164, 0.08);
+      border-radius: var(--radius-full);
+    }
+
+    .slide-header h2 {
+      font-size: clamp(1.4rem, 2.4vw, 2.6rem);
+      font-weight: 700;
+      color: var(--color-navy-900);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .slide-header h2 span {
+      color: var(--color-navy-500);
+    }
+
+    /* AI Act hero banner for slide 2 */
+    .ai-act-banner {
+      background: linear-gradient(135deg, var(--color-navy-900) 0%, var(--color-navy-700) 100%);
+      border-radius: var(--radius-xl);
+      padding: clamp(14px, 1.6vw, 24px) clamp(22px, 2.8vw, 40px);
+      display: flex;
+      align-items: center;
+      gap: clamp(16px, 2vw, 28px);
+      margin-bottom: clamp(8px, 1.2vh, 16px);
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .ai-act-banner::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      right: -5%;
+      width: 50%;
+      height: 200%;
+      background: radial-gradient(ellipse, rgba(86, 105, 164, 0.18) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .ai-act-banner-icon {
+      width: clamp(44px, 4vw, 64px);
+      height: clamp(44px, 4vw, 64px);
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.05));
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(20px, 2vw, 30px);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .ai-act-banner-content {
+      flex: 1;
+      position: relative;
+      z-index: 1;
+    }
+
+    .ai-act-banner-content h3 {
+      font-size: clamp(1rem, 1.3vw, 1.5rem);
+      font-weight: 700;
+      color: var(--color-white);
+      margin-bottom: 4px;
+    }
+
+    .ai-act-banner-content p {
+      font-size: clamp(0.7rem, 0.85vw, 0.95rem);
+      color: var(--color-navy-400);
+      line-height: 1.5;
+    }
+
+    .ai-act-banner-badges {
+      display: flex;
+      gap: clamp(8px, 0.8vw, 12px);
+      position: relative;
+      z-index: 1;
+      flex-shrink: 0;
+    }
+
+    .ai-act-badge {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-full);
+      padding: clamp(5px, 0.5vw, 8px) clamp(12px, 1.2vw, 18px);
+      font-size: clamp(0.6rem, 0.7vw, 0.8rem);
+      font-weight: 600;
+      color: var(--color-white);
+      white-space: nowrap;
+    }
+
+    .compliance-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(12px, 1.5vw, 24px);
+      flex: 1;
+      min-height: 0;
+    }
+
+    .compliance-card {
+      background: var(--color-white);
+      border-radius: var(--radius-xl);
+      padding: clamp(16px, 2vw, 32px) clamp(18px, 2.2vw, 36px);
+      box-shadow: var(--shadow-card);
+      border: 1px solid rgba(218, 218, 236, 0.5);
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .compliance-card:hover {
+      box-shadow: 0 6px 30px rgba(38, 48, 79, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .compliance-card-icon {
+      width: clamp(32px, 3vw, 48px);
+      height: clamp(32px, 3vw, 48px);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(14px, 1.5vw, 22px);
+      margin-bottom: clamp(8px, 1.2vh, 16px);
+    }
+
+    .icon-gdpr { background: linear-gradient(135deg, #E0E7FF, #C7D2FE); }
+    .icon-data { background: linear-gradient(135deg, #D1FAE5, #A7F3D0); }
+    .icon-audit { background: linear-gradient(135deg, #FEF3C7, #FDE68A); }
+    .icon-human { background: linear-gradient(135deg, #FCE7F3, #FBCFE8); }
+
+    .compliance-card h3 {
+      font-size: clamp(0.9rem, 1.1vw, 1.25rem);
+      font-weight: 700;
+      color: var(--color-navy-900);
+      margin-bottom: clamp(4px, 0.6vh, 8px);
+    }
+
+    .compliance-card p {
+      font-size: clamp(0.7rem, 0.85vw, 0.95rem);
+      color: var(--color-navy-600);
+      line-height: 1.5;
+    }
+
+    .compliance-card .check-list {
+      list-style: none;
+      padding: 0;
+      margin-top: clamp(6px, 1vh, 12px);
+    }
+
+    .compliance-card .check-list li {
+      font-size: clamp(0.68rem, 0.8vw, 0.9rem);
+      color: var(--color-navy-700);
+      padding: clamp(2px, 0.4vh, 5px) 0;
+      display: flex;
+      align-items: center;
+      gap: clamp(6px, 0.6vw, 10px);
+    }
+
+    .check-icon {
+      width: clamp(16px, 1.2vw, 20px);
+      height: clamp(16px, 1.2vw, 20px);
+      border-radius: 50%;
+      background: #ECFDF5;
+      color: var(--color-success);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(8px, 0.7vw, 11px);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════════
+       SLIDE 3: Sikkerhed – Teknisk
+       ═══════════════════════════════════════════ */
+    .slide-security {
+      background: var(--gradient-page-bg);
+      padding: clamp(28px, 4.5vw, 70px) clamp(24px, 5vw, 80px);
+      padding-bottom: clamp(50px, 7vh, 90px);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .security-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(14px, 1.8vw, 32px);
+      flex: 1;
+      min-height: 0;
+    }
+
+    .security-left,
+    .security-right {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(10px, 1.2vw, 18px);
+      min-height: 0;
+    }
+
+    .security-card {
+      background: var(--color-white);
+      border-radius: var(--radius-xl);
+      padding: clamp(16px, 1.8vw, 28px) clamp(18px, 2vw, 32px);
+      box-shadow: var(--shadow-card);
+      border: 1px solid rgba(218, 218, 236, 0.5);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .security-card-header {
+      display: flex;
+      align-items: center;
+      gap: clamp(8px, 1vw, 14px);
+      margin-bottom: clamp(8px, 1.2vh, 16px);
+    }
+
+    .security-card-icon {
+      width: clamp(32px, 2.8vw, 44px);
+      height: clamp(32px, 2.8vw, 44px);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(14px, 1.4vw, 20px);
+      flex-shrink: 0;
+    }
+
+    .icon-encrypt { background: linear-gradient(135deg, #E0E7FF, #C7D2FE); }
+    .icon-server { background: linear-gradient(135deg, #D1FAE5, #A7F3D0); }
+    .icon-access { background: linear-gradient(135deg, #FEF3C7, #FDE68A); }
+    .icon-monitor { background: linear-gradient(135deg, #FCE7F3, #FBCFE8); }
+
+    .security-card h3 {
+      font-size: clamp(0.85rem, 1vw, 1.15rem);
+      font-weight: 700;
+      color: var(--color-navy-900);
+    }
+
+    .security-card h3 span {
+      display: block;
+      font-size: clamp(0.6rem, 0.7vw, 0.8rem);
+      font-weight: 500;
+      color: var(--color-navy-400);
+      margin-top: 2px;
+    }
+
+    .security-detail {
+      font-size: clamp(0.68rem, 0.8vw, 0.9rem);
+      color: var(--color-navy-600);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .security-detail ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .security-detail ul li {
+      padding: clamp(2px, 0.4vh, 6px) 0;
+      display: flex;
+      align-items: flex-start;
+      gap: clamp(6px, 0.6vw, 10px);
+    }
+
+    .security-detail ul li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-navy-500);
+      flex-shrink: 0;
+      margin-top: clamp(5px, 0.6vw, 7px);
+    }
+
+    .security-highlight {
+      margin-top: clamp(6px, 1vh, 12px);
+      background: rgba(86, 105, 164, 0.06);
+      border-radius: var(--radius-lg);
+      padding: clamp(8px, 0.8vw, 12px) clamp(10px, 1vw, 16px);
+      font-size: clamp(0.6rem, 0.7vw, 0.8rem);
+      color: var(--color-navy-600);
+      border-left: 3px solid var(--color-navy-500);
+    }
+
+    .security-highlight strong {
+      color: var(--color-navy-900);
+    }
+
+    /* Data flow banner */
+    .data-flow-banner {
+      margin-top: clamp(12px, 1.8vh, 24px);
+      background: linear-gradient(135deg, var(--color-navy-900) 0%, var(--color-navy-700) 100%);
+      border-radius: var(--radius-xl);
+      padding: clamp(16px, 1.8vw, 28px) clamp(20px, 2.5vw, 40px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .data-flow-banner::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      right: -5%;
+      width: 40%;
+      height: 180%;
+      background: radial-gradient(ellipse, rgba(86, 105, 164, 0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .data-flow-steps {
+      display: flex;
+      align-items: center;
+      gap: clamp(8px, 1.2vw, 20px);
+      position: relative;
+      z-index: 1;
+    }
+
+    .flow-step {
+      display: flex;
+      align-items: center;
+      gap: clamp(6px, 0.6vw, 10px);
+    }
+
+    .flow-step-icon {
+      width: clamp(28px, 2.5vw, 40px);
+      height: clamp(28px, 2.5vw, 40px);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(11px, 1.1vw, 16px);
+      flex-shrink: 0;
+    }
+
+    .flow-step-text {
+      color: var(--color-white);
+      font-size: clamp(0.6rem, 0.75vw, 0.85rem);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .flow-step-text span {
+      display: block;
+      font-size: clamp(0.5rem, 0.6vw, 0.7rem);
+      font-weight: 400;
+      color: var(--color-navy-400);
+    }
+
+    .flow-arrow {
+      color: var(--color-navy-400);
+      font-size: clamp(0.7rem, 0.9vw, 1.1rem);
+    }
+
+    .data-flow-dpo {
+      position: relative;
+      z-index: 1;
+      text-align: right;
+      flex-shrink: 0;
+      margin-left: clamp(12px, 2vw, 32px);
+    }
+
+    .dpo-label {
+      font-size: clamp(0.5rem, 0.55vw, 0.65rem);
+      font-weight: 600;
+      color: var(--color-navy-400);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+
+    .dpo-email {
+      font-size: clamp(0.65rem, 0.8vw, 0.9rem);
+      font-weight: 600;
+      color: var(--color-white);
+    }
+
+    /* ─── Shared footer ─── */
+    .slide-footer {
+      position: absolute;
+      bottom: clamp(14px, 2.2vh, 28px);
+      right: clamp(24px, 5vw, 80px);
+      font-size: clamp(0.55rem, 0.6vw, 0.7rem);
+      color: var(--color-navy-400);
+      opacity: 0.6;
+    }
+
+    .slide-footer-dark {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE: Smaller desktops & laptops
+       ═══════════════════════════════════════════ */
+
+    @media (max-width: 1440px) {
+      .compliance-card {
+        padding: clamp(14px, 1.6vw, 24px) clamp(16px, 1.8vw, 28px);
+      }
+      .compliance-card-icon {
+        margin-bottom: clamp(6px, 0.8vh, 12px);
+      }
+    }
+
+    @media (max-width: 1280px) {
+      .intro-stats {
+        gap: clamp(16px, 2.5vw, 32px);
+      }
+
+      .data-flow-banner {
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .data-flow-dpo {
+        text-align: left;
+        margin-left: 0;
+        width: 100%;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .ai-act-banner-badges {
+        display: none;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .slide-intro {
+        padding: clamp(24px, 4vw, 48px);
+        padding-bottom: clamp(48px, 7vh, 80px);
+      }
+
+      .intro-subtitle {
+        margin-bottom: clamp(20px, 3vh, 36px);
+      }
+
+      .intro-stats {
+        gap: 16px;
+      }
+
+      .intro-stat-value {
+        font-size: clamp(1rem, 2vw, 1.6rem);
+      }
+
+      .compliance-grid {
+        gap: clamp(8px, 1vw, 14px);
+      }
+
+      .compliance-card .check-list li {
+        font-size: clamp(0.6rem, 0.75vw, 0.8rem);
+      }
+
+      .flow-step-text span {
+        display: none;
+      }
+
+    }
+
+    @media (max-height: 750px) {
+      .slide-header {
+        margin-bottom: clamp(10px, 2vh, 24px);
+      }
+
+      .compliance-card-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 13px;
+        margin-bottom: 6px;
+      }
+
+      .compliance-card h3 {
+        font-size: 0.85rem;
+        margin-bottom: 2px;
+      }
+
+      .compliance-card p {
+        font-size: 0.68rem;
+      }
+
+      .compliance-card .check-list li {
+        padding: 2px 0;
+        font-size: 0.65rem;
+      }
+
+      .check-icon {
+        width: 14px;
+        height: 14px;
+        font-size: 7px;
+      }
+
+      .security-card-header {
+        margin-bottom: 6px;
+      }
+
+      .security-card-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 13px;
+      }
+
+      .security-highlight {
+        margin-top: 6px;
+        padding: 6px 10px;
+        font-size: 0.58rem;
+      }
+
+      .data-flow-banner {
+        padding: 12px 16px;
+        margin-top: 10px;
+      }
+
+      .flow-step-icon {
+        width: 24px;
+        height: 24px;
+        font-size: 10px;
+      }
+
+      .ai-act-banner {
+        padding: 12px 18px;
+        margin-bottom: 10px;
+      }
+
+      .ai-act-banner-content h3 {
+        font-size: 0.9rem;
+      }
+
+      .ai-act-banner-content p {
+        font-size: 0.68rem;
+      }
+    }
+
+    @media (max-height: 650px) {
+      .compliance-card p {
+        display: none;
+      }
+
+      .security-highlight {
+        display: none;
+      }
+
+      .slide-header h2 {
+        font-size: clamp(1.2rem, 2.2vw, 2rem);
+      }
+
+      .intro-title {
+        font-size: clamp(1.6rem, 3vw, 2.8rem);
+      }
+
+      .intro-subtitle {
+        font-size: clamp(0.8rem, 1vw, 1rem);
+      }
+
+    }
+  </style>
+</head>
+<body>
+
+  <div class="slides" id="slides">
+
+    <!-- ══════════════════════════════════════
+         SLIDE 1: Introduktion
+         ══════════════════════════════════════ -->
+    <div class="slide active" id="slide-1">
+      <div class="slide-intro">
+        <div class="intro-top">
+          <div class="intro-badge">Demo &middot; People's Clinic</div>
+          <h1 class="intro-title">
+            AI-st&oslash;ttet klinik.<br>
+            <span>Bygget p&aring; sikkerhed<br>og tryghed.</span>
+          </h1>
+          <p class="intro-subtitle">
+            People's Clinic er en GDPR- og AI Act-compliant platform, der hj&aelig;lper l&aelig;ger med dokumentation, notater og klinikdrift &ndash; uden at g&aring; p&aring; kompromis med patientsikkerheden.
+          </p>
+        </div>
+
+        <div class="intro-bottom">
+          <div class="intro-stats">
+            <div class="intro-stat">
+              <div class="intro-stat-value">EU AI Act</div>
+              <div class="intro-stat-label">Compliant &middot; GDPR</div>
+            </div>
+            <div class="intro-stat">
+              <div class="intro-stat-value">AES-256</div>
+              <div class="intro-stat-label">End-to-end kryptering</div>
+            </div>
+            <div class="intro-stat">
+              <div class="intro-stat-value">EU</div>
+              <div class="intro-stat-label">Data forbliver i EU</div>
+            </div>
+            <div class="intro-stat">
+              <div class="intro-stat-value">DPO</div>
+              <div class="intro-stat-label">Dedikeret databeskyttelse</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer slide-footer-dark">People's Clinic &middot; Fortroligt</div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 2: Compliance-overblik
+         ══════════════════════════════════════ -->
+    <div class="slide" id="slide-2">
+      <div class="slide-compliance">
+        <div class="slide-header">
+          <div class="slide-header-badge">Compliance</div>
+          <h2>Vi overholder reglerne, <span>s&aring; du kan fokusere p&aring; patienten</span></h2>
+        </div>
+
+        <!-- AI Act prominent banner -->
+        <div class="ai-act-banner">
+          <div class="ai-act-banner-icon">&#9878;&#65039;</div>
+          <div class="ai-act-banner-content">
+            <h3>EU AI Act &amp; GDPR Compliant</h3>
+            <p>People's Clinic er fuldt reguleret efter EU's AI Act og GDPR. Vores AI er risikoklassificeret, transparent, og l&aelig;gen har altid det sidste ord.</p>
+          </div>
+          <div class="ai-act-banner-badges">
+            <span class="ai-act-badge">&#10003; AI Act</span>
+            <span class="ai-act-badge">&#10003; GDPR</span>
+            <span class="ai-act-badge">&#10003; EU Data</span>
+          </div>
+        </div>
+
+        <div class="compliance-grid">
+          <!-- GDPR -->
+          <div class="compliance-card">
+            <div class="compliance-card-icon icon-gdpr">&#128274;</div>
+            <h3>GDPR</h3>
+            <p>Fuld overholdelse af EU's databeskyttelsesforordning.</p>
+            <ul class="check-list">
+              <li><span class="check-icon">&#10003;</span> Databehandleraftale (DPA) medf&oslash;lger</li>
+              <li><span class="check-icon">&#10003;</span> Retten til sletning &amp; indsigt</li>
+              <li><span class="check-icon">&#10003;</span> Lovligt behandlingsgrundlag dokumenteret</li>
+            </ul>
+          </div>
+
+          <!-- Datah&aring;ndtering -->
+          <div class="compliance-card">
+            <div class="compliance-card-icon icon-data">&#127919;</div>
+            <h3>Datah&aring;ndtering</h3>
+            <p>Sundhedsdata behandles med h&oslash;jeste sikkerhedsniveau.</p>
+            <ul class="check-list">
+              <li><span class="check-icon">&#10003;</span> Data lagres udelukkende i EU</li>
+              <li><span class="check-icon">&#10003;</span> Ingen deling med tredjeparter</li>
+              <li><span class="check-icon">&#10003;</span> Automatisk dataminimering</li>
+            </ul>
+          </div>
+
+          <!-- Audit & ansvar -->
+          <div class="compliance-card">
+            <div class="compliance-card-icon icon-audit">&#128203;</div>
+            <h3>Audit &amp; dokumentation</h3>
+            <p>Alt er logget og dokumenteret til revision.</p>
+            <ul class="check-list">
+              <li><span class="check-icon">&#10003;</span> Komplet audit-trail p&aring; handlinger</li>
+              <li><span class="check-icon">&#10003;</span> DPO tilknyttet: dpo@peoplesclinic.dk</li>
+              <li><span class="check-icon">&#10003;</span> &Aring;rlig risikovurdering</li>
+            </ul>
+          </div>
+
+          <!-- L&aelig;gen i kontrol -->
+          <div class="compliance-card">
+            <div class="compliance-card-icon icon-human">&#128105;&#8205;&#9877;&#65039;</div>
+            <h3>L&aelig;gen har kontrollen</h3>
+            <p>AI er et st&oslash;ttev&aelig;rkt&oslash;j &ndash; ikke en erstatning.</p>
+            <ul class="check-list">
+              <li><span class="check-icon">&#10003;</span> L&aelig;gen godkender alle AI-genererede notater</li>
+              <li><span class="check-icon">&#10003;</span> Transparens om AI-genereret indhold</li>
+              <li><span class="check-icon">&#10003;</span> Faglig vurdering g&aring;r altid forud</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="slide-footer">People's Clinic &middot; Fortroligt</div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SLIDE 3: Teknisk sikkerhed
+         ══════════════════════════════════════ -->
+    <div class="slide" id="slide-3">
+      <div class="slide-security">
+        <div class="slide-header">
+          <div class="slide-header-badge">Sikkerhed</div>
+          <h2>S&aring;dan beskytter vi <span>jeres data</span></h2>
+        </div>
+
+        <div class="security-layout">
+          <div class="security-left">
+            <!-- Kryptering -->
+            <div class="security-card">
+              <div class="security-card-header">
+                <div class="security-card-icon icon-encrypt">&#128272;</div>
+                <h3>Kryptering<span>Data i transit og i hvile</span></h3>
+              </div>
+              <div class="security-detail">
+                <ul>
+                  <li>AES-256-kryptering p&aring; al lagret data</li>
+                  <li>TLS 1.3 p&aring; al kommunikation</li>
+                  <li>Krypterede backups med separat n&oslash;gleh&aring;ndtering</li>
+                </ul>
+              </div>
+              <div class="security-highlight">
+                <strong>Lydoptagelser</strong> krypteres i realtid og slettes automatisk efter notatgenerering.
+              </div>
+            </div>
+
+            <!-- Adgangsstyring -->
+            <div class="security-card">
+              <div class="security-card-header">
+                <div class="security-card-icon icon-access">&#128100;</div>
+                <h3>Adgangsstyring<span>Rollebaseret kontrol</span></h3>
+              </div>
+              <div class="security-detail">
+                <ul>
+                  <li>Rollebaseret adgang (RBAC): Admin, l&aelig;ge, sekret&aelig;r</li>
+                  <li>Multifaktor-autentificering (MFA)</li>
+                  <li>Automatisk session-udl&oslash;b ved inaktivitet</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="security-right">
+            <!-- Infrastruktur -->
+            <div class="security-card">
+              <div class="security-card-header">
+                <div class="security-card-icon icon-server">&#9729;&#65039;</div>
+                <h3>Infrastruktur<span>EU-baseret hosting</span></h3>
+              </div>
+              <div class="security-detail">
+                <ul>
+                  <li>Data lagres i EU-datacenter (ISO 27001-certificeret)</li>
+                  <li>Ingen data overf&oslash;res til tredjelande</li>
+                  <li>Redundant lagring med automatisk failover</li>
+                </ul>
+              </div>
+              <div class="security-highlight">
+                <strong>Sub-processorer</strong> er alle EU-baserede og gennemg&aring;r &aring;rlig sikkerhedsgennemgang.
+              </div>
+            </div>
+
+            <!-- Overv&aring;gning -->
+            <div class="security-card">
+              <div class="security-card-header">
+                <div class="security-card-icon icon-monitor">&#128065;&#65039;</div>
+                <h3>Overv&aring;gning<span>Kontinuerlig sikkerhed</span></h3>
+              </div>
+              <div class="security-detail">
+                <ul>
+                  <li>24/7 overv&aring;gning af systemer og adgang</li>
+                  <li>Automatisk anomali-detektion</li>
+                  <li>Incident response-plan dokumenteret og testet</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data flow banner -->
+        <div class="data-flow-banner">
+          <div class="data-flow-steps">
+            <div class="flow-step">
+              <div class="flow-step-icon">&#127897;&#65039;</div>
+              <div class="flow-step-text">Optagelse<span>Krypteret i browser</span></div>
+            </div>
+            <span class="flow-arrow">&rarr;</span>
+            <div class="flow-step">
+              <div class="flow-step-icon">&#128274;</div>
+              <div class="flow-step-text">Transport<span>TLS 1.3</span></div>
+            </div>
+            <span class="flow-arrow">&rarr;</span>
+            <div class="flow-step">
+              <div class="flow-step-icon">&#129302;</div>
+              <div class="flow-step-text">AI-behandling<span>EU-server</span></div>
+            </div>
+            <span class="flow-arrow">&rarr;</span>
+            <div class="flow-step">
+              <div class="flow-step-icon">&#128196;</div>
+              <div class="flow-step-text">Notat klar<span>Krypteret lagring</span></div>
+            </div>
+            <span class="flow-arrow">&rarr;</span>
+            <div class="flow-step">
+              <div class="flow-step-icon">&#128465;&#65039;</div>
+              <div class="flow-step-text">Lyd slettet<span>Automatisk</span></div>
+            </div>
+          </div>
+          <div class="data-flow-dpo">
+            <div class="dpo-label">Data Protection Officer</div>
+            <div class="dpo-email">dpo@peoplesclinic.dk</div>
+          </div>
+        </div>
+
+        <div class="slide-footer">People's Clinic &middot; Fortroligt</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Navigation dots -->
+  <div class="slide-nav" id="slideNav">
+    <button class="active" onclick="goTo(0)"></button>
+    <button onclick="goTo(1)"></button>
+    <button onclick="goTo(2)"></button>
+  </div>
+
+  <script>
+    var current = 0;
+    var slides = document.querySelectorAll('.slide');
+    var dots = document.querySelectorAll('.slide-nav button');
+
+    function goTo(index) {
+      slides[current].classList.remove('active');
+      dots[current].classList.remove('active');
+      current = index;
+      slides[current].classList.add('active');
+      dots[current].classList.add('active');
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        if (current < slides.length - 1) goTo(current + 1);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        if (current > 0) goTo(current - 1);
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<!-- saved from url=(0057)file:///Users/mortenskov/Downloads/produkt-scorecard.html -->
+<html lang="da"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produktscorecard – People's Doctor</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f7fa;
+            color: #1a2b4a;
+            padding: 40px 20px;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1a2b4a;
+        }
+        
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 32px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        
+        .card h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1a2b4a;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            text-align: left;
+            padding: 12px 8px;
+            border-bottom: 2px solid #e2e8f0;
+            font-weight: 600;
+            font-size: 13px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .parameter {
+            font-weight: 500;
+        }
+        
+        input[type="number"] {
+            width: 60px;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #3b5998;
+            box-shadow: 0 0 0 3px rgba(59, 89, 152, 0.1);
+        }
+        
+        select {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #3b5998;
+        }
+        
+        .score-high { background: #dcfce7; color: #166534; }
+        .score-mid { background: #fef9c3; color: #854d0e; }
+        .score-low { background: #fee2e2; color: #991b1b; }
+        
+        .questions {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        
+        .questions h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #475569;
+        }
+        
+        .questions ul {
+            margin-left: 20px;
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .questions li {
+            margin-bottom: 4px;
+        }
+        
+        .position-table {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .position-box {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        
+        .position-box.win {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+        }
+        
+        .position-box.good-enough {
+            background: #fef9c3;
+            border: 1px solid #fef08a;
+        }
+        
+        .position-box h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .position-box ul {
+            margin-left: 20px;
+            font-size: 14px;
+        }
+        
+        .gap-indicator {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Produktscorecard</h1>
+        <p class="subtitle">Dialogværktøj til produktstrategi – People's Doctor vs. Markedet</p>
+        
+        <div class="card">
+            <h2>1. Hvor står vi i dag?</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Os i dag</th>
+                        <th>Mål 6 mdr</th>
+                        <th>Noteless</th>
+                        <th>Vigtighed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="parameter">GDPR &amp; compliance</td>
+                        <td><input type="number" min="1" max="5" value="5"></td>
+                        <td><input type="number" min="1" max="5" value="5"></td>
+                        <td><input type="number" min="1" max="5" value="3"></td>
+                        <td>
+                            <select>
+                                <option value="høj" selected="">Høj</option>
+                                <option value="medium">Medium</option>
+                                <option value="lav">Lav</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="parameter">AI Act compliance</td>
+                        <td><input type="number" min="1" max="5" value="5"></td>
+                        <td><input type="number" min="1" max="5" value="5"></td>
+                        <td><input type="number" min="1" max="5" value="2"></td>
+                        <td>
+                            <select>
+                                <option value="høj" selected="">Høj</option>
+                                <option value="medium">Medium</option>
+                                <option value="lav">Lav</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="parameter">Notatkvalitet</td>
+                        <td><input type="number" min="1" max="5" value="3"></td>
+                        <td><input type="number" min="1" max="5" value="4"></td>
+                        <td><input type="number" min="1" max="5" value="5"></td>
+                        <td>
+                            <select>
+                                <option value="høj" selected="">Høj</option>
+                                <option value="medium">Medium</option>
+                                <option value="lav">Lav</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="parameter">Dansk sprogforståelse</td>
+                        <td><input type="number" min="1" max="5" value="4"></td>
+                        <td><input type="number" min="1" max="5" value="5"></td>
+                        <td><input type="number" min="1" max="5" value="4"></td>
+                        <td>
+                            <select>
+                                <option value="høj">Høj</option>
+                                <option value="medium" selected="">Medium</option>
+                                <option value="lav">Lav</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="parameter">EPJ-integration</td>
+                        <td><input type="number" min="1" max="5" value="3"></td>
+                        <td><input type="number" min="1" max="5" value="4"></td>
+                        <td><input type="number" min="1" max="5" value="3"></td>
+                        <td>
+                            <select>
+                                <option value="høj" selected="">Høj</option>
+                                <option value="medium">Medium</option>
+                                <option value="lav">Lav</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="parameter">Brugervenlighed</td>
+                        <td><input type="number" min="1" max="5" value="3"></td>
+                        <td><input type="number" min="1" max="5" value="4"></td>
+                        <td><input type="number" min="1" max="5" value="4"></td>
+                        <td>
+                            <select>
+                                <option value="høj" selected="">Høj</option>
+                                <option value="medium">Medium</option>
+                                <option value="lav">Lav</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="parameter">Hastighed</td>
+                        <td><input type="number" min="1" max="5" value="3"></td>
+                        <td><input type="number" min="1" max="5" value="4"></td>
+                        <td><input type="number" min="1" max="5" value="4"></td>
+                        <td>
+                            <select>
+                                <option value="høj">Høj</option>
+                                <option value="medium" selected="">Medium</option>
+                                <option value="lav">Lav</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="parameter">Pris</td>
+                        <td><input type="number" min="1" max="5" value="5"></td>
+                        <td><input type="number" min="1" max="5" value="5"></td>
+                        <td><input type="number" min="1" max="5" value="3"></td>
+                        <td>
+                            <select>
+                                <option value="høj" selected="">Høj</option>
+                                <option value="medium">Medium</option>
+                                <option value="lav">Lav</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="parameter">Support &amp; onboarding</td>
+                        <td><input type="number" min="1" max="5" value="4"></td>
+                        <td><input type="number" min="1" max="5" value="5"></td>
+                        <td><input type="number" min="1" max="5" value="3"></td>
+                        <td>
+                            <select>
+                                <option value="høj">Høj</option>
+                                <option value="medium" selected="">Medium</option>
+                                <option value="lav">Lav</option>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="questions">
+                <h3>Dialogspørgsmål:</h3>
+                <ul>
+                    <li>Er vi enige om scoringen?</li>
+                    <li>Hvilke 3 parametre er vigtigst for at vinde markedet?</li>
+                    <li>Hvor er gabet størst mellem "i dag" og "mål"?</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>2. Hvad vælger vi at vinde på?</h2>
+            <div class="position-table">
+                <div class="position-box win">
+                    <h3>✓ Vi vinder på</h3>
+                    <ul>
+                        <li>Compliance &amp; sikkerhed</li>
+                        <li>Pris (gratis entry)</li>
+                        <li>Dansk forankring</li>
+                    </ul>
+                </div>
+                <div class="position-box good-enough">
+                    <h3>○ Vi er "gode nok" på</h3>
+                    <ul>
+                        <li>Notatkvalitet</li>
+                        <li>Avancerede features</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="questions">
+                <h3>Dialogspørgsmål:</h3>
+                <ul>
+                    <li>Er ledelsen enig i dette trade-off?</li>
+                    <li>Hvad skal der til for at "god nok" bliver acceptabelt?</li>
+                    <li>Hvornår skal notatkvalitet være på niveau med Noteless?</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>3. Hvad gør vi konkret?</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Indsats</th>
+                        <th>Effekt på</th>
+                        <th>Kompleksitet</th>
+                        <th>Prioritet</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="parameter">Forbedre SOAP-struktur</td>
+                        <td>Notatkvalitet</td>
+                        <td>Medium</td>
+                        <td><input type="number" min="1" max="5" value="1"></td>
+                    </tr>
+                    <tr>
+                        <td class="parameter">XMO/NOVAX-integration</td>
+                        <td>EPJ-integration</td>
+                        <td>Høj</td>
+                        <td><input type="number" min="1" max="5" value="2"></td>
+                    </tr>
+                    <tr>
+                        <td class="parameter">Onboarding-flow i app</td>
+                        <td>Brugervenlighed</td>
+                        <td>Lav</td>
+                        <td><input type="number" min="1" max="5" value="3"></td>
+                    </tr>
+                    <tr>
+                        <td class="parameter">Hurtigere responstid</td>
+                        <td>Hastighed</td>
+                        <td>Medium</td>
+                        <td><input type="number" min="1" max="5" value="4"></td>
+                    </tr>
+                    <tr>
+                        <td class="parameter">Flere skabeloner pr. speciale</td>
+                        <td>Notatkvalitet</td>
+                        <td>Lav</td>
+                        <td><input type="number" min="1" max="5" value="5"></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="questions">
+                <h3>Dialogspørgsmål:</h3>
+                <ul>
+                    <li>Hvilke 2-3 indsatser giver mest værdi nu?</li>
+                    <li>Hvad blokerer os i dag?</li>
+                    <li>Hvordan hænger det sammen med Anders' roadmap?</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>4. Hvordan holder vi hinanden op på det?</h2>
+            <ul style="margin-left: 20px;">
+                <li>Månedlig scorecard-gennemgang (15 min)</li>
+                <li>Bruger-rating på notatkvalitet (data fra app)</li>
+                <li>Kvartalsvis: Har vi rykket os på de valgte parametre?</li>
+            </ul>
+        </div>
+    </div>
+
+
+</body></html>

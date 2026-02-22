@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>People's Clinic - Strategi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Navy Scale - fra design system */
+            --color-navy-900: #13102C;
+            --color-navy-800: #26304F;
+            --color-navy-700: #323E63;
+            --color-navy-600: #38456D;
+            --color-navy-500: #5669A4;
+            --color-navy-400: #A3B0D9;
+
+            /* Neutrals */
+            --color-gray-200: #DADAEC;
+            --color-gray-100: #F8F8FD;
+            --color-white: #FFFFFF;
+
+            /* Gradients */
+            --gradient-page-bg: linear-gradient(135deg, #EBEBF4 0%, #FFFFFF 100%);
+            --gradient-button-primary: linear-gradient(135deg, #38456D 0%, #5669A4 100%);
+
+            /* Shadows */
+            --shadow-card: 0 0 25px rgba(38, 48, 79, 0.05);
+
+            /* Radius */
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-2xl: 20px;
+            --radius-full: 9999px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gradient-page-bg);
+            width: 1920px;
+            height: 930px;
+            padding: 40px 80px;
+            overflow: hidden;
+            color: var(--color-navy-900);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--color-navy-900);
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--color-navy-500);
+            letter-spacing: 1px;
+        }
+
+        /* Main Flow */
+        .main-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 80px;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--color-white);
+            box-shadow: var(--shadow-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            border: 2px solid var(--color-gray-200);
+        }
+
+        .step-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--color-navy-600);
+        }
+
+        .step.final .step-circle {
+            width: 100px;
+            height: 100px;
+            background: var(--gradient-button-primary);
+            border: none;
+            box-shadow: 0 4px 20px rgba(56, 69, 109, 0.25);
+        }
+
+        .step.final .step-number {
+            font-size: 2.2rem;
+            color: var(--color-white);
+        }
+
+        .step-text {
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--color-navy-700);
+            line-height: 1.5;
+        }
+
+        .step.final .step-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--color-navy-600);
+        }
+
+        .arrow {
+            font-size: 1.5rem;
+            color: var(--color-gray-200);
+            margin-top: -30px;
+        }
+
+        /* Bottom Section */
+        .bottom-section {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 40px;
+        }
+
+        .card {
+            background: var(--color-white);
+            border-radius: var(--radius-xl);
+            padding: 20px 28px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .card h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-navy-900);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h2::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--gradient-button-primary);
+            border-radius: 2px;
+        }
+
+        /* Conversion Steps */
+        .conv-steps {
+            display: flex;
+            gap: 12px;
+        }
+
+        .conv-step {
+            flex: 1;
+            background: var(--color-gray-100);
+            border-radius: var(--radius-lg);
+            padding: 12px 14px;
+            text-align: left;
+        }
+
+        .conv-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--gradient-button-primary);
+            color: var(--color-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .conv-step strong {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-navy-900);
+            margin-bottom: 3px;
+        }
+
+        .conv-detail {
+            font-size: 0.7rem;
+            color: var(--color-navy-700);
+            line-height: 1.35;
+            margin-bottom: 5px;
+        }
+
+        .conv-trigger {
+            display: block;
+            font-size: 0.65rem;
+            color: var(--color-navy-500);
+            font-weight: 500;
+            padding-top: 5px;
+            border-top: 1px solid var(--color-gray-200);
+        }
+
+        /* Alternative Card */
+        .alt-card {
+            background: var(--color-gray-100);
+            border: 2px dashed var(--color-gray-200);
+            box-shadow: none;
+        }
+
+        .alt-card h2::before {
+            background: var(--color-gray-200);
+        }
+
+        .alt-text {
+            font-size: 1rem;
+            color: var(--color-navy-700);
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .alt-text strong {
+            color: var(--color-navy-900);
+            font-weight: 600;
+        }
+
+        .alt-note {
+            font-size: 0.9rem;
+            color: var(--color-navy-400);
+            font-style: italic;
+        }
+
+        /* Two Paths Section */
+        .paths-section {
+            display: flex;
+            align-items: stretch;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .path-card {
+            flex: 1;
+            background: var(--color-white);
+            border-radius: var(--radius-xl);
+            padding: 24px 28px;
+            box-shadow: var(--shadow-card);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .path-card.primary {
+            flex: 1.15;
+            border: 2px solid var(--color-navy-500);
+        }
+
+        .path-card.secondary {
+            background: var(--color-gray-100);
+            border: 2px dashed var(--color-gray-200);
+            box-shadow: none;
+        }
+
+        .path-badge {
+            position: absolute;
+            top: -10px;
+            left: 24px;
+            background: var(--gradient-button-primary);
+            color: var(--color-white);
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .path-card h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--color-navy-900);
+            margin-bottom: 4px;
+        }
+
+        .path-card.secondary h2 {
+            color: var(--color-navy-700);
+        }
+
+        .path-subtitle {
+            font-size: 0.8rem;
+            color: var(--color-navy-400);
+            margin-bottom: 16px;
+        }
+
+        .path-steps-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .path-step-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--color-gray-100);
+            padding: 10px 16px;
+            border-radius: var(--radius-lg);
+        }
+
+        .path-card.secondary .path-step-row {
+            background: var(--color-white);
+        }
+
+        .path-step-row.highlight {
+            background: var(--gradient-button-primary);
+        }
+
+        .path-card.secondary .path-step-row.highlight {
+            background: var(--gradient-button-primary);
+        }
+
+        .path-step-row.highlight .path-step-content strong {
+            color: var(--color-white);
+        }
+
+        .path-step-row.highlight .path-step-content span {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .path-num {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--color-navy-500);
+            color: var(--color-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .path-step-row.highlight .path-num {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .path-step-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .path-step-content strong {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-navy-900);
+        }
+
+        .path-step-content span {
+            font-size: 0.75rem;
+            color: var(--color-navy-500);
+        }
+
+        .path-note {
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: var(--color-navy-400);
+            font-style: italic;
+            padding-top: 10px;
+            border-top: 1px solid var(--color-gray-200);
+        }
+
+        .path-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 6px;
+        }
+
+        .path-divider span {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-navy-400);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* AI Engine Section */
+        .ai-engine-section {
+            background: var(--color-white);
+            border-radius: var(--radius-xl);
+            padding: 18px 28px;
+            box-shadow: var(--shadow-card);
+            border: 2px solid #e8b4ff;
+            position: relative;
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .ai-badge {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            letter-spacing: 0.5px;
+        }
+
+        .ai-header h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-navy-900);
+            margin: 0;
+        }
+
+        .ai-subtitle {
+            font-size: 0.75rem;
+            color: var(--color-navy-500);
+            margin: 0;
+            margin-left: auto;
+        }
+
+        .ai-flow {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .ai-step {
+            flex: 1;
+            background: linear-gradient(135deg, #f8f4ff 0%, #f0e8ff 100%);
+            border-radius: var(--radius-lg);
+            padding: 12px 14px;
+            text-align: center;
+        }
+
+        .ai-step.highlight {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+
+        .ai-step.highlight strong,
+        .ai-step.highlight span {
+            color: white;
+        }
+
+        .ai-icon {
+            font-size: 1.2rem;
+            margin-bottom: 6px;
+        }
+
+        .ai-step strong {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-navy-900);
+            margin-bottom: 2px;
+        }
+
+        .ai-step span {
+            font-size: 0.65rem;
+            color: var(--color-navy-500);
+            line-height: 1.3;
+        }
+
+        .ai-arrow {
+            color: #d4b8e8;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .ai-scalable {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            padding: 10px 16px;
+            border-radius: var(--radius-lg);
+            border: 1px solid #a5d6a7;
+        }
+
+        .scalable-icon {
+            font-size: 1.1rem;
+        }
+
+        .scalable-text {
+            font-size: 0.75rem;
+            color: #2e7d32;
+        }
+
+        .scalable-text strong {
+            font-weight: 700;
+        }
+
+        /* Result Banner */
+        .result-banner {
+            margin-top: 16px;
+            background: var(--gradient-button-primary);
+            border-radius: var(--radius-lg);
+            padding: 16px 36px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(56, 69, 109, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+        }
+
+        .result-label {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--color-white);
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: var(--radius-lg);
+            letter-spacing: 1px;
+        }
+
+        .result-main {
+            font-size: 1.1rem;
+            color: var(--color-white);
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .result-sub {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.85);
+            margin: 0;
+        }
+
+        .result-sub strong {
+            color: var(--color-white);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Fra freemium til klinikløsning</h1>
+        <p class="subtitle">Land & Expand</p>
+    </div>
+
+    <!-- Two Paths Section -->
+    <div class="paths-section">
+        <div class="path-card primary">
+            <div class="path-badge">Primær strategi</div>
+            <h2>Vej A: Nedefra og op</h2>
+            <p class="path-subtitle">Bottom-up: Brugerne driver salget</p>
+            <div class="path-steps-vertical">
+                <div class="path-step-row">
+                    <span class="path-num">1</span>
+                    <div class="path-step-content">
+                        <strong>Trafik fra partnerskaber</strong>
+                        <span>Fagforeninger, uddannelser, leverandører → volumen</span>
+                    </div>
+                </div>
+                <div class="path-step-row">
+                    <span class="path-num">2</span>
+                    <div class="path-step-content">
+                        <strong>Konverteres til freemium</strong>
+                        <span>Gratis signup → aktiv bruger</span>
+                    </div>
+                </div>
+                <div class="path-step-row">
+                    <span class="path-num">3</span>
+                    <div class="path-step-content">
+                        <strong>De kan ikke undvære det</strong>
+                        <span>Daglig brug, integreret i workflow</span>
+                    </div>
+                </div>
+                <div class="path-step-row">
+                    <span class="path-num">4</span>
+                    <div class="path-step-content">
+                        <strong>Kollegaerne hopper med</strong>
+                        <span>Viral spredning internt på klinikken</span>
+                    </div>
+                </div>
+                <div class="path-step-row highlight">
+                    <span class="path-num">5</span>
+                    <div class="path-step-content">
+                        <strong>Vi sælger til chefen</strong>
+                        <span>Når 60% bruger det → vi pitcher</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="path-divider">
+            <span>eller</span>
+        </div>
+
+        <div class="path-card secondary">
+            <h2>Vej B: Oppefra og ned</h2>
+            <p class="path-subtitle">Top-down: Klinikejeren starter</p>
+            <div class="path-steps-vertical">
+                <div class="path-step-row">
+                    <span class="path-num">1</span>
+                    <div class="path-step-content">
+                        <strong>Klinikejer via partnerskaber</strong>
+                        <span>Samme kanaler rammer også beslutningstagere</span>
+                    </div>
+                </div>
+                <div class="path-step-row">
+                    <span class="path-num">2</span>
+                    <div class="path-step-content">
+                        <strong>Starter trial direkte</strong>
+                        <span>Opretter klinik på Effektiv Klinikdrift</span>
+                    </div>
+                </div>
+                <div class="path-step-row highlight">
+                    <span class="path-num">3</span>
+                    <div class="path-step-content">
+                        <strong>Inviterer teamet</strong>
+                        <span>Hele klinikken onboardes samlet</span>
+                    </div>
+                </div>
+            </div>
+            <p class="path-note">Hurtigere salg – samme partnerskaber, men beslutningstageren først</p>
+        </div>
+    </div>
+
+    <!-- AI Engine Section -->
+    <div class="ai-engine-section">
+        <div class="ai-header">
+            <div class="ai-badge">AI-DREVET</div>
+            <h2>Intelligent Nurturing & Upselling</h2>
+            <p class="ai-subtitle">Automatisk skalering uden menneskelig involvering</p>
+        </div>
+        <div class="ai-flow">
+            <div class="ai-step">
+                <div class="ai-icon">📊</div>
+                <strong>Track adfærd</strong>
+                <span>AI monitorerer engagement og churn-risiko</span>
+            </div>
+            <div class="ai-arrow">→</div>
+            <div class="ai-step">
+                <div class="ai-icon">💬</div>
+                <strong>Smart engagement</strong>
+                <span>Proaktiv hjælp baseret på brugsmønstre</span>
+            </div>
+            <div class="ai-arrow">→</div>
+            <div class="ai-step">
+                <div class="ai-icon">📧</div>
+                <strong>E-mail nurturing</strong>
+                <span>Automatiske flows der driver retention</span>
+            </div>
+            <div class="ai-arrow">→</div>
+            <div class="ai-step highlight">
+                <div class="ai-icon">💰</div>
+                <strong>Auto-upsell</strong>
+                <span>AI trigger ved 60% adoption</span>
+            </div>
+        </div>
+        <div class="ai-scalable">
+            <span class="scalable-icon">🌍</span>
+            <span class="scalable-text"><strong>Skalerbart:</strong> Samme engine kan rulles ud i nye lande uden ekstra personale</span>
+        </div>
+    </div>
+
+    <!-- Result Banner -->
+    <div class="result-banner">
+        <div class="result-label">MÅL</div>
+        <p class="result-main">Hele klinikken på Effektiv Klinikdrift</p>
+        <p class="result-sub">699 kr/bruger/md • Gennemsnitlig klinik = 8 brugere = <strong>5.592 kr/md</strong></p>
+    </div>
+</body>
+</html>

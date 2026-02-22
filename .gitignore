@@ -1,0 +1,10 @@
+# OS files
+.DS_Store
+
+# Large binary/media files
+Videoer/
+Presi.indd
+
+# Adobe files
+*.prproj
+*.prin

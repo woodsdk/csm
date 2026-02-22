@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>People's Clinic – AI-løsning til almen praksis | XMO</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
+      color: #333;
+      background: #ebedf0;
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    /* ---- XMO HEADER ---- */
+    .xmo-header {
+      background: #1b2a4a;
+      color: #fff;
+      text-align: center;
+      padding: 24px 24px 20px;
+    }
+
+    .xmo-header h1 {
+      font-size: 20px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .xmo-header .header-sub {
+      font-size: 12px;
+      color: rgba(255,255,255,0.45);
+      margin-top: 3px;
+    }
+
+    /* ---- HERO ---- */
+    .hero {
+      background: #fff;
+      text-align: center;
+      padding: 56px 24px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .hero .badge {
+      display: inline-block;
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 3px;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .hero h2 {
+      font-size: 30px;
+      font-weight: 800;
+      color: #1b2a4a;
+      margin-bottom: 12px;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+    }
+
+    .hero .subtitle {
+      font-size: 15px;
+      color: #666;
+      max-width: 500px;
+      margin: 0 auto 28px;
+      line-height: 1.55;
+    }
+
+    .hero .btn-cta {
+      display: inline-block;
+      background: #1b2a4a;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 13px 36px;
+      border-radius: 3px;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .hero .btn-cta:hover { background: #253a5e; }
+
+    /* ---- TRUST BAR ---- */
+    .trust-bar {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 28px;
+      padding: 0;
+      flex-wrap: wrap;
+    }
+
+    .trust-bar .trust-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #1b2a4a;
+      background: #f0f4f8;
+      border: 1px solid #d8e1ec;
+      border-radius: 20px;
+      padding: 6px 14px;
+    }
+
+    .trust-bar .trust-item .trust-icon {
+      font-size: 14px;
+    }
+
+    /* ---- HERO SCREENSHOT ---- */
+    .hero-screenshot {
+      max-width: 920px;
+      margin: 20px auto 0;
+    }
+
+    .hero-screenshot img {
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      display: block;
+      margin-bottom: 24px;
+    }
+
+    /* ---- CONTENT ---- */
+    .content-area {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ---- SECTIONS ---- */
+    .section {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 32px 40px;
+      margin-top: 12px;
+    }
+
+    .section h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #1b2a4a;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .section .lead {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .section p {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+
+    /* ---- FEATURE LIST ---- */
+    .feature-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+
+    .feature-list li {
+      font-size: 14px;
+      color: #444;
+      padding: 10px 0 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+      line-height: 1.45;
+    }
+
+    .feature-list li:nth-last-child(-n+2) {
+      border-bottom: none;
+    }
+
+    .feature-list li strong {
+      color: #1b2a4a;
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 1px;
+    }
+
+    .feature-list li span {
+      color: #777;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      .feature-list { grid-template-columns: 1fr; }
+      .feature-list li:last-child { border-bottom: none; }
+    }
+
+    /* ---- SECURITY GRID ---- */
+    .security-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 700px) {
+      .security-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .security-grid { grid-template-columns: 1fr; }
+    }
+
+    .security-card {
+      background: #f7f8fa;
+      border: 1px solid #e8e9ec;
+      border-radius: 4px;
+      padding: 16px 18px;
+    }
+
+    .security-card h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1b2a4a;
+      margin-bottom: 4px;
+    }
+
+    .security-card p {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 0;
+      line-height: 1.45;
+    }
+
+    /* ---- VIDEO GRID ---- */
+    .video-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .video-grid { grid-template-columns: 1fr; }
+    }
+
+    .video-card {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .video-thumb {
+      position: relative;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: #1b2a4a;
+    }
+
+    .video-thumb .play-btn {
+      width: 44px;
+      height: 44px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .video-thumb:hover .play-btn { background: rgba(255,255,255,0.25); }
+
+    .video-thumb .play-btn::after {
+      content: '';
+      width: 0; height: 0;
+      border-style: solid;
+      border-width: 7px 0 7px 12px;
+      border-color: transparent transparent transparent #fff;
+      margin-left: 2px;
+    }
+
+    .video-thumb .duration {
+      position: absolute;
+      bottom: 6px; right: 8px;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
+
+    .video-card .video-info {
+      padding: 10px 14px;
+      background: #fff;
+    }
+
+    .video-card .video-info h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1b2a4a;
+      margin-bottom: 2px;
+    }
+
+    .video-card .video-info p {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 0;
+    }
+
+    /* ---- HIGHLIGHT BOX ---- */
+    .highlight-box {
+      background: #f5f9f5;
+      border-left: 3px solid #4caf50;
+      border-radius: 3px;
+      padding: 16px 20px;
+      margin-top: 8px;
+    }
+
+    .highlight-box p {
+      color: #444;
+      margin-bottom: 0;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    /* ---- NUMBER CALLOUT ---- */
+    .number-row {
+      display: flex;
+      gap: 24px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .number-item {
+      text-align: center;
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .number-item .num {
+      font-size: 32px;
+      font-weight: 800;
+      color: #1b2a4a;
+      line-height: 1;
+    }
+
+    .number-item .num-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #999;
+      margin-top: 4px;
+    }
+
+    /* ---- CTA BANNER ---- */
+    .cta-banner {
+      background: #1b2a4a;
+      color: #fff;
+      text-align: center;
+      padding: 40px 24px;
+      margin-top: 12px;
+    }
+
+    .cta-banner h2 {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    .cta-banner .btn-cta {
+      display: inline-block;
+      background: #fff;
+      color: #1b2a4a;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 13px 36px;
+      border-radius: 3px;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .cta-banner .btn-cta:hover { background: #f0f0f0; }
+
+    .cta-banner .note {
+      font-size: 12px;
+      color: rgba(255,255,255,0.35);
+      margin-top: 12px;
+    }
+
+    /* ---- FOOTER ---- */
+    .page-footer {
+      text-align: center;
+      padding: 18px 24px;
+      font-size: 11px;
+      color: #999;
+      background: #ebedf0;
+    }
+
+    .page-footer a { color: #5669A4; text-decoration: none; }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 600px) {
+      .hero h2 { font-size: 24px; }
+      .hero { padding: 28px 16px 0; }
+      .section { padding: 24px 20px; }
+      .section h2 { font-size: 18px; }
+      .number-row { gap: 12px; }
+      .number-item .num { font-size: 26px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <div class="hero">
+    <h2>Sikker AI-journalf&oslash;ring direkte i XMO</h2>
+    <p class="subtitle">Lytter med under konsultationen og skriver journalen for dig. Bygget af danske l&aelig;ger, ISAE 3000-revideret og gratis for alle XMO-brugere.</p>
+    <a href="#aktiver" class="btn-cta">Gratis at bruge &ndash; Pr&oslash;v nu</a>
+
+    <div class="trust-bar">
+      <span class="trust-item">ISAE 3000-revideret</span>
+      <span class="trust-item">Hostet i EU</span>
+      <span class="trust-item">EU AI Act-klar</span>
+      <span class="trust-item">0 kr. for XMO-brugere</span>
+    </div>
+
+    <div class="hero-screenshot">
+      <img src="billeder/Skærmbillede 2026-02-12 kl. 09.22.54.png" alt="People's Clinic konsultationsview">
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content-area">
+
+    <!-- FEATURES -->
+    <div class="section">
+      <h2>Fra samtale til f&aelig;rdig journal &ndash; p&aring; sekunder</h2>
+      <p class="lead">Hele arbejdsgangen &ndash; fra patienten s&aelig;tter sig til journalen er f&aelig;rdig. Direkte i XMO.</p>
+
+      <ul class="feature-list">
+        <li>
+          <strong>Transskription</strong>
+          <span>Lytter med og transskriberer samtalen i baggrunden</span>
+        </li>
+        <li>
+          <strong>Journalnotat</strong>
+          <span>Automatisk i SOAP, fritekst eller jeres egne skabeloner</span>
+        </li>
+        <li>
+          <strong>XMO-integration</strong>
+          <span>Overf&oslash;r til journalen med &eacute;t klik</span>
+        </li>
+        <li>
+          <strong>Ydelseskoder</strong>
+          <span>Foresl&aring;r koder baseret p&aring; konsultationens indhold</span>
+        </li>
+        <li>
+          <strong>Patientresum&eacute;</strong>
+          <span>AI-overblik over journalhistorikken</span>
+        </li>
+        <li>
+          <strong>Klinisk dansk</strong>
+          <span>ICPC-2, diagnoser, pr&aelig;paratnavne, fagsprog</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- SIKKERHED -->
+    <div class="section">
+      <h2>I kan trygt bruge det</h2>
+      <p class="lead">Sikkerhed og compliance er fundamentet &ndash; ikke noget vi har tilf&oslash;jet bagefter.</p>
+
+      <div class="security-grid">
+        <div class="security-card">
+          <h3>Revideret af BDO</h3>
+          <p>ISAE 3000-certificeret. Dokumentation I kan vise til tilsyn.</p>
+        </div>
+        <div class="security-card">
+          <h3>Data bliver i EU</h3>
+          <p>Europ&aelig;iske servere. Ingen patientdata forlader EU.</p>
+        </div>
+        <div class="security-card">
+          <h3>EU AI Act-klar</h3>
+          <p>Compliant n&aring;r reglerne tr&aelig;der i kraft.</p>
+        </div>
+        <div class="security-card">
+          <h3>Intet gemmes</h3>
+          <p>Lyd slettes i realtid. Kan ikke genafspilles.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIDEO -->
+    <div class="section">
+      <h2>Se hvordan det virker</h2>
+
+      <div class="video-grid">
+        <div class="video-card">
+          <div class="video-thumb">
+            <div class="play-btn"></div>
+            <div class="duration">10:00</div>
+          </div>
+          <div class="video-info">
+            <h3>Fuld demo</h3>
+            <p>Konsultation fra start til f&aelig;rdigt notat i XMO</p>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-thumb">
+            <div class="play-btn"></div>
+            <div class="duration">3:00</div>
+          </div>
+          <div class="video-info">
+            <h3>Kom i gang p&aring; 3 min</h3>
+            <p>Fra aktivering til f&oslash;rste konsultation</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRATIS -->
+    <div class="section">
+      <h2>Gratis for hele klinikken</h2>
+      <div class="highlight-box">
+        <p><strong>0 kr.</strong> for alle XMO-brugere. L&aelig;ger, sygeplejersker og sekret&aelig;rer. Ingen binding. I er i gang p&aring; under 2 minutter.</p>
+      </div>
+    </div>
+
+    <!-- KLAR TIL FREMTIDEN -->
+    <div class="section">
+      <h2>Klar til fremtiden</h2>
+      <p>AI i almen praksis er her nu. Med People's Clinic f&aring;r I en dansk l&oslash;sning med revideret sikkerhed og fuld EU-compliance. Mindre tid p&aring; sk&aelig;rmen &ndash; mere tid med patienten.</p>
+    </div>
+
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-banner" id="aktiver">
+    <h2>Aktiver People's Clinic gratis</h2>
+    <a href="#" class="btn-cta">Gratis at bruge &ndash; Pr&oslash;v nu</a>
+    <div class="note">Allerede integreret med XMO &ndash; I er i gang p&aring; under 2 minutter</div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-footer">
+    People's Clinic &copy; 2026 &middot;
+    <a href="#">Privatlivspolitik</a> &middot;
+    <a href="#">Vilk&aring;r</a> &middot;
+    <a href="mailto:support@peoplesdoctor.com">support@peoplesdoctor.com</a> &middot;
+    +45 5251 5025
+  </div>
+
+</body>
+</html>
