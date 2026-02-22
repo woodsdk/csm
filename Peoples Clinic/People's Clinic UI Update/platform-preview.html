@@ -453,6 +453,7 @@
     .main__center .card {
       flex: 1;
       overflow: hidden;
+      padding: 0;
     }
 
     .main__center .card__title {
@@ -968,7 +969,7 @@
 
     .table th {
       text-align: left;
-      padding: 8px 12px;
+      padding: 12px 16px;
       font-size: 0.688rem;
       font-weight: 600;
       text-transform: uppercase;
@@ -979,19 +980,29 @@
     }
 
     .table th:first-child {
-      border-radius: var(--radius-md) 0 0 0;
+      padding-left: 24px;
+      border-radius: var(--radius-2xl) 0 0 0;
     }
 
     .table th:last-child {
-      border-radius: 0 var(--radius-md) 0 0;
+      padding-right: 24px;
+      border-radius: 0 var(--radius-2xl) 0 0;
     }
 
     .table td {
-      padding: 8px 12px;
-      font-size: 0.813rem;
+      padding: 16px;
+      font-size: 0.875rem;
       color: var(--color-text);
       border-bottom: 1px solid var(--color-gray-200);
       vertical-align: middle;
+    }
+
+    .table td:first-child {
+      padding-left: 24px;
+    }
+
+    .table td:last-child {
+      padding-right: 24px;
     }
 
     .table-actions {
