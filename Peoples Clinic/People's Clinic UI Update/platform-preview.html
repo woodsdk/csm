@@ -482,7 +482,8 @@
 
     .card__content {
       flex: 1;
-      overflow: visible;
+      overflow-y: auto;
+      overflow-x: visible;
       min-height: 0;
     }
 
@@ -949,6 +950,7 @@
     .table-actions {
       display: flex;
       gap: 6px;
+      flex-wrap: nowrap;
     }
 
     .table-btn {
@@ -960,6 +962,7 @@
       border-radius: var(--radius-full);
       cursor: pointer;
       text-decoration: none;
+      white-space: nowrap;
       transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                   box-shadow 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       will-change: transform, box-shadow;
@@ -967,7 +970,7 @@
 
     .table-btn--outline {
       background: var(--color-white);
-      border: 1px solid var(--color-gray-200);
+      border: 1.5px solid var(--color-navy-500);
       color: var(--color-navy-500);
       box-shadow: 0 2px 6px rgba(38, 48, 79, 0.03);
     }
@@ -984,7 +987,7 @@
 
     .table-btn--link {
       background: var(--color-white);
-      border: 1px solid var(--color-gray-200);
+      border: 1.5px solid var(--color-navy-500);
       color: var(--color-navy-500);
       box-shadow: 0 2px 6px rgba(38, 48, 79, 0.03);
     }
