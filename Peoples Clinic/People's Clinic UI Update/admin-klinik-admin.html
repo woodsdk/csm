@@ -12,9 +12,6 @@
   <style>
     .card { padding: 24px; }
     .settings-container { flex: 1; display: flex; flex-direction: column; min-height: 0; max-width: 100%; overflow: hidden; gap: 12px; }
-    .page-header { margin-bottom: 0; }
-    .page-header__title { font-size: 32px; font-weight: 500; margin-bottom: 4px; }
-    .page-header__subtitle { font-size: var(--font-size-md); color: var(--color-text); }
     .admin-tab-panel { display: none; }
     .admin-tab-panel--active { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow-y: auto; gap: 20px; }
     .admin-list-item__role { display: flex; align-items: center; gap: 8px; min-width: 180px; justify-content: flex-end; }
@@ -180,8 +177,8 @@
 
     /* Buttons */
     .btn-primary { padding: 12px 24px; background: var(--gradient-button-primary); color: var(--color-white); border: none; border-radius: var(--radius-lg); font-size: var(--font-size-md); font-weight: 500; font-family: inherit; cursor: pointer; transition: all var(--transition-fast); display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-primary:hover, .btn-primary:active { background: linear-gradient(135deg, #2F3D62 0%, #4A5D96 100%); box-shadow: 0 4px 18px rgba(56, 69, 109, 0.3); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-danger { padding: 12px 24px; background: #EF4444; color: var(--color-white); border: none; border-radius: var(--radius-lg); font-size: var(--font-size-md); font-weight: 500; font-family: inherit; cursor: pointer; }
     .btn-danger:hover { background: #DC2626; }
 
@@ -205,6 +202,18 @@
   </style>
 </head>
 <body>
+  <!-- Device Blocker (mobile/tablet) -->
+  <div class="device-blocker">
+    <svg class="device-blocker__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="2" y="3" width="20" height="14" rx="2"/>
+      <line x1="8" y1="21" x2="16" y2="21"/>
+      <line x1="12" y1="17" x2="12" y2="21"/>
+    </svg>
+    <h1 class="device-blocker__title">Åbn People's Clinic på din computer</h1>
+    <p class="device-blocker__text">Platformen er designet til desktop og fungerer bedst på en større skærm.</p>
+    <p class="device-blocker__note">Vi arbejder på en mobilversion — stay tuned!</p>
+  </div>
+
   <div class="platform">
     <header class="topbar">
       <div class="topbar__logo">
@@ -226,12 +235,11 @@
           <div class="user-avatar">AN</div>
           <div class="user-dropdown">
             <div class="user-dropdown__label">Brugerpanel</div>
-            <a href="beskeder.html" class="user-dropdown__item"><svg><use href="#message-square"/></svg>Dine beskeder</a>
+            <a href="beskeder.html" class="user-dropdown__item"><svg><use href="#alert-circle"/></svg>Systemnotifikationer</a>
             <a href="indstillinger.html" class="user-dropdown__item"><svg><use href="#sliders"/></svg>Brugerindstillinger</a>
             <div class="user-dropdown__divider"></div>
             <div class="user-dropdown__label">Klinikadministration</div>
-            <a href="admin-klinik-admin.html" class="user-dropdown__item"><svg><use href="#users"/></svg>Klinikadministration</a>
-            <a href="admin-klinik.html" class="user-dropdown__item"><svg><use href="#building-2"/></svg>Klinikindstillinger</a>
+            <a href="admin-dashboard.html" class="user-dropdown__item"><svg><use href="#settings"/></svg>Klinikadministration</a>
             <div class="user-dropdown__divider"></div>
             <a href="#" class="user-dropdown__item"><svg><use href="#log-out"/></svg>Log ud</a>
           </div>
@@ -243,19 +251,17 @@
       <aside class="sidebar">
         <nav class="sidebar__nav">
           <a href="platform-preview.html" class="nav-btn nav-btn--primary"><i data-lucide="play"></i>Start Konsultation</a>
-          <a href="konsultationshistorik.html" class="nav-btn nav-btn--secondary"><svg><use href="#history"/></svg>Konsultationshistorik</a>
-          <a href="journalresume.html" class="nav-btn nav-btn--secondary"><svg><use href="#file-text"/></svg>Journalresume</a>
-          <a href="honorarforslag.html" class="nav-btn nav-btn--secondary"><svg><use href="#receipt"/></svg>Honorarforslag</a>
+          <a href="patientoversigt.html" class="nav-btn nav-btn--secondary"><i data-lucide="layout-list"></i>Seneste konsultationer</a>
+          <a href="ai-assistent.html" class="nav-btn nav-btn--secondary"><i data-lucide="sparkles"></i>Min Assistent</a>
+          <a href="beskedassistent.html" class="nav-btn nav-btn--secondary"><i data-lucide="inbox"></i>Beskedassistent</a>
           <a href="klinikdrift-dashboard.html" class="nav-btn nav-btn--secondary"><i data-lucide="activity"></i>Klinikdrift</a>
         </nav>
         <div class="sidebar__bottom-box">
           <div class="bottom-section-label">Brugerpanel</div>
-          <a href="beskeder.html" class="bottom-link"><svg><use href="#message-square"/></svg>Dine beskeder</a>
+          <a href="beskeder.html" class="bottom-link"><svg><use href="#alert-circle"/></svg>Systemnotifikationer</a>
           <a href="indstillinger.html" class="bottom-link"><svg><use href="#sliders"/></svg>Brugerindstillinger</a>
-          <div class="bottom-section-label">Klinikadministration</div>
-          <a href="admin-klinik-admin.html" class="bottom-link bottom-link--active"><svg><use href="#users"/></svg>Klinikadministration</a>
-          <a href="admin-klinik.html" class="bottom-link"><svg><use href="#building-2"/></svg>Klinikindstillinger</a>
-          <a href="#" class="bottom-link" style="margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--color-gray-100);"><svg><use href="#log-out"/></svg>Log ud</a>
+          <a href="admin-dashboard.html" class="bottom-link"><svg><use href="#settings"/></svg>Klinikadministration</a>
+          <a href="#" class="bottom-link bottom-link--separated"><svg><use href="#log-out"/></svg>Log ud</a>
         </div>
       </aside>
 
@@ -372,15 +378,19 @@
         <aside class="aside-right">
           <div class="card support-card">
             <div class="support-avatars">
-              <div class="support-avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face" alt="Support"></div>
-              <div class="support-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" alt="Support"><div class="support-badge">4</div></div>
+              <div class="support-avatar"><img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=face" alt="Support"></div>
+              <div class="support-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" alt="Support"></div>
             </div>
-            <div class="support-title">Brug for hjælp?</div>
-            <div class="support-phone">+45 5251 5025</div>
-            <div class="support-email">support@peoplesdoctor.com</div>
+            <div class="support-title">Vil du vises rundt?</div>
+            <div class="support-subtitle">Book en kort intro — vi hjælper dig trygt i gang med platformen.</div>
+            <a href="#" class="support-cta">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.05 5A5 5 0 0 1 19 8.95M15.05 1A9 9 0 0 1 23 8.94M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              Book introduktion
+            </a>
+            <div class="support-note">30 min · gratis · videomøde</div>
           </div>
           <div class="card ai-card">
-            <div class="ai-card__title">AI Assistent</div>
+            <div class="ai-card__title">Min Assistent</div>
             <div class="ai-suggestions">
               <div class="ai-suggestion">Hvordan administrerer jeg brugere?</div>
               <div class="ai-suggestion">Hvordan ændrer jeg mit abonnement?</div>
@@ -671,6 +681,7 @@
     <symbol id="edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></symbol>
     <symbol id="building-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></symbol>
     <symbol id="message-square" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="alert-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
     <symbol id="sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="4" y1="21" y2="14"/><line x1="4" x2="4" y1="10" y2="3"/><line x1="12" x2="12" y1="21" y2="12"/><line x1="12" x2="12" y1="8" y2="3"/><line x1="20" x2="20" y1="21" y2="16"/><line x1="20" x2="20" y1="12" y2="3"/><line x1="2" x2="6" y1="14" y2="14"/><line x1="10" x2="14" y1="8" y2="8"/><line x1="18" x2="22" y1="16" y2="16"/></symbol>
     <symbol id="send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol>
     <symbol id="download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></symbol>
@@ -685,6 +696,7 @@
     <symbol id="pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="4" height="16" x="6" y="4"/><rect width="4" height="16" x="14" y="4"/></symbol>
     <symbol id="credit-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></symbol>
     <symbol id="info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></symbol>
+    <symbol id="settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
   </svg>
 
   <script>

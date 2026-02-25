@@ -7,11 +7,23 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../Design System/platform.css">
+  <link rel="stylesheet" href="../Design System/platform.css?v=2">
   <link rel="stylesheet" href="klinikdrift.css">
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
+  <!-- Device Blocker (mobile/tablet) -->
+  <div class="device-blocker">
+    <svg class="device-blocker__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="2" y="3" width="20" height="14" rx="2"/>
+      <line x1="8" y1="21" x2="16" y2="21"/>
+      <line x1="12" y1="17" x2="12" y2="21"/>
+    </svg>
+    <h1 class="device-blocker__title">Åbn People's Clinic på din computer</h1>
+    <p class="device-blocker__text">Platformen er designet til desktop og fungerer bedst på en større skærm.</p>
+    <p class="device-blocker__note">Vi arbejder på en mobilversion — stay tuned!</p>
+  </div>
+
   <div class="platform">
     <!-- Top Bar -->
     <header class="topbar">
@@ -46,18 +58,16 @@
             <i data-lucide="play"></i>
             Start Konsultation
           </a>
-          <a href="konsultationshistorik.html" class="nav-btn nav-btn--secondary">
-            <i data-lucide="history"></i>
-            Konsultationshistorik
+          <a href="patientoversigt.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="layout-list"></i>
+            Seneste konsultationer
           </a>
-          <a href="journalresume.html" class="nav-btn nav-btn--secondary">
-            <i data-lucide="file-text"></i>
-            Journalresume
-          </a>
-          <a href="honorarforslag.html" class="nav-btn nav-btn--secondary">
-            <i data-lucide="receipt"></i>
-            Honorarforslag
-          </a>
+          <a href="ai-assistent.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="sparkles"></i>
+            Min Assistent          </a>
+          <a href="beskedassistent.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="inbox"></i>
+            Beskedassistent          </a>
           <a href="klinikdrift-dashboard.html" class="nav-btn nav-btn--secondary nav-btn--active">
             <i data-lucide="activity"></i>
             Klinikdrift
@@ -69,27 +79,21 @@
           <!-- Brugerpanel — alle brugere -->
           <div class="bottom-section-label">Brugerpanel</div>
           <a href="beskeder.html" class="bottom-link">
-            <i data-lucide="message-square"></i>
-            Dine beskeder
+            <i data-lucide="alert-circle"></i>
+            Systemnotifikationer
           </a>
           <a href="indstillinger.html" class="bottom-link">
             <i data-lucide="sliders"></i>
             Brugerindstillinger
           </a>
 
-          <!-- Klinikadministration — kun klinikejer -->
-          <div class="bottom-section-label">Klinikadministration</div>
-          <a href="admin-klinik-admin.html" class="bottom-link">
-            <i data-lucide="users"></i>
+          <a href="admin-dashboard.html" class="bottom-link">
+            <i data-lucide="settings"></i>
             Klinikadministration
-          </a>
-          <a href="admin-klinik.html" class="bottom-link">
-            <i data-lucide="building-2"></i>
-            Klinikindstillinger
           </a>
 
           <!-- Log ud -->
-          <a href="#" class="bottom-link" style="margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--color-gray-100);">
+          <a href="#" class="bottom-link bottom-link--separated">
             <i data-lucide="log-out"></i>
             Log ud
           </a>
@@ -116,7 +120,7 @@
             </div>
           </div>
 
-          <!-- Tab Navigation -->
+          <!-- Tab Navigation (3 tabs) -->
           <div class="tabs">
             <button class="tab tab--active" data-tab="overblik">
               <i data-lucide="layout-dashboard"></i>
@@ -124,27 +128,17 @@
             </button>
             <button class="tab" data-tab="team">
               <i data-lucide="heart"></i>
-              <span>Team & Trivsel</span>
-            </button>
-            <button class="tab" data-tab="kvalitet">
-              <i data-lucide="shield-check"></i>
-              <span>Patientkvalitet</span>
-            </button>
-            <button class="tab" data-tab="flow">
-              <i data-lucide="clock"></i>
-              <span>Flow & Tid</span>
+              <span>Team & Økonomi</span>
             </button>
             <button class="tab" data-tab="ai-insights">
               <i data-lucide="sparkles"></i>
               <span>AI Insights</span>
             </button>
-            <button class="tab" data-tab="okonomi">
-              <i data-lucide="coins"></i>
-              <span>Økonomi</span>
-            </button>
           </div>
 
-        <!-- Tab Content: Overblik -->
+        <!-- ===================== -->
+        <!-- Tab 1: Overblik       -->
+        <!-- ===================== -->
         <div class="kd-tab-content kd-tab-content--active" data-tab-content="overblik">
           <!-- KPI Stats Row -->
           <div class="kd-stats-grid">
@@ -190,185 +184,99 @@
 
             <div class="stat-card stat-card--kpi">
               <div class="stat-card__header">
-                <span class="stat-card__label">AI-anbefalinger</span>
-                <div class="stat-card__icon" style="background: rgba(99, 102, 241, 0.1); color: #6366f1;">
-                  <i data-lucide="sparkles"></i>
+                <span class="stat-card__label">Konsultationer i dag</span>
+                <div class="stat-card__icon">
+                  <i data-lucide="calendar"></i>
                 </div>
               </div>
-              <div class="stat-card__value">4</div>
+              <div class="stat-card__value">47</div>
               <div class="stat-card__trend">
-                <a href="#" data-goto-tab="ai-insights" style="color: #6366f1; text-decoration: none;">Se indsigter →</a>
+                12 tilbage
               </div>
             </div>
           </div>
 
-          <!-- Two Column Layout -->
-          <div class="overblik-grid">
-            <!-- Left: Alerts + Queue -->
-            <div class="overblik-grid__left">
-              <!-- Alerts that need action -->
-              <div class="alert-section">
-                <h3 class="alert-section__title">
-                  <i data-lucide="alert-circle"></i>
-                  Kræver handling
-                </h3>
+          <!-- Alerts + Venteværelse -->
+          <div class="alert-section">
+            <h3 class="alert-section__title">
+              <i data-lucide="alert-circle"></i>
+              Kræver handling
+            </h3>
 
-                <div class="alert-card alert-card--info">
-                  <div class="alert-card__icon">
-                    <i data-lucide="clock"></i>
-                  </div>
-                  <div class="alert-card__content">
-                    <div class="alert-card__title">2 patienter venter over 25 min</div>
-                    <div class="alert-card__description">Dorthe Jensen (32 min), Carl Madsen (28 min)</div>
-                  </div>
-                  <div class="alert-card__action">
-                    <button class="action-btn action-btn--primary">Se ventende</button>
-                  </div>
-                </div>
-
-                <div class="alert-card alert-card--trivsel">
-                  <div class="alert-card__icon">
-                    <i data-lucide="user"></i>
-                  </div>
-                  <div class="alert-card__content">
-                    <div class="alert-card__title">Dr. Pedersen har høj belastning</div>
-                    <div class="alert-card__description">18 patienter, 6 tilbage - Sygepl. Jens har kapacitet</div>
-                  </div>
-                  <div class="alert-card__action">
-                    <button class="action-btn action-btn--secondary">Omfordel</button>
-                  </div>
-                </div>
+            <div class="alert-card alert-card--info">
+              <div class="alert-card__icon">
+                <i data-lucide="clock"></i>
               </div>
-
-              <!-- Live Queue -->
-              <div class="live-queue">
-                <div class="live-queue__header">
-                  <h3 class="live-queue__title">
-                    <i data-lucide="users"></i>
-                    Venteværelse
-                  </h3>
-                </div>
-                <table class="queue-table">
-                  <thead>
-                    <tr>
-                      <th>Patient</th>
-                      <th>Venter på</th>
-                      <th class="text-right">Tid</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="queue-table__row--critical">
-                      <td class="queue-table__patient">Dorthe Jensen</td>
-                      <td class="queue-table__detail">Blodprøve</td>
-                      <td class="queue-table__time text-right">32 min</td>
-                    </tr>
-                    <tr class="queue-table__row--warning">
-                      <td class="queue-table__patient">Carl Madsen</td>
-                      <td class="queue-table__detail">Dr. Hansen</td>
-                      <td class="queue-table__time text-right">28 min</td>
-                    </tr>
-                    <tr>
-                      <td class="queue-table__patient">Birthe Sørensen</td>
-                      <td class="queue-table__detail">Dr. Pedersen</td>
-                      <td class="queue-table__time text-right">12 min</td>
-                    </tr>
-                    <tr>
-                      <td class="queue-table__patient">Anders Christensen</td>
-                      <td class="queue-table__detail">Dr. Nielsen</td>
-                      <td class="queue-table__time text-right">8 min</td>
-                    </tr>
-                  </tbody>
-                </table>
+              <div class="alert-card__content">
+                <div class="alert-card__title">2 patienter venter over 25 min</div>
+                <div class="alert-card__description">Dorthe Jensen (32 min), Carl Madsen (28 min)</div>
+              </div>
+              <div class="alert-card__action">
+                <button class="action-btn action-btn--primary">Se ventende</button>
               </div>
             </div>
 
-            <!-- Right: Team Status -->
-            <div class="overblik-grid__right">
-              <div class="team-section">
-                <h3 class="team-section__title">
-                  <i data-lucide="activity"></i>
-                  Teamstatus
-                </h3>
-                <div class="team-list">
-                  <div class="team-row">
-                    <div class="team-row__avatar team-row__avatar--green">AN</div>
-                    <div class="team-row__info">
-                      <span class="team-row__name">Dr. Nielsen</span>
-                      <span class="team-row__role">Praktiserende læge</span>
-                    </div>
-                    <div class="team-row__stats">
-                      <span class="team-row__count">12 pat</span>
-                      <span class="team-row__remaining">3 tilbage</span>
-                    </div>
-                    <div class="team-row__status team-row__status--good">Optimal</div>
-                  </div>
-                  <div class="team-row team-row--attention">
-                    <div class="team-row__avatar team-row__avatar--yellow">LP</div>
-                    <div class="team-row__info">
-                      <span class="team-row__name">Dr. Pedersen</span>
-                      <span class="team-row__role">Praktiserende læge</span>
-                    </div>
-                    <div class="team-row__stats">
-                      <span class="team-row__count">18 pat</span>
-                      <span class="team-row__remaining">6 tilbage</span>
-                    </div>
-                    <div class="team-row__status team-row__status--warning">Travl</div>
-                  </div>
-                  <div class="team-row">
-                    <div class="team-row__avatar team-row__avatar--green">MH</div>
-                    <div class="team-row__info">
-                      <span class="team-row__name">Dr. Hansen</span>
-                      <span class="team-row__role">Praktiserende læge</span>
-                    </div>
-                    <div class="team-row__stats">
-                      <span class="team-row__count">14 pat</span>
-                      <span class="team-row__remaining">2 tilbage</span>
-                    </div>
-                    <div class="team-row__status team-row__status--good">Optimal</div>
-                  </div>
-                  <div class="team-row">
-                    <div class="team-row__avatar team-row__avatar--green">SJ</div>
-                    <div class="team-row__info">
-                      <span class="team-row__name">Sygepl. Jens</span>
-                      <span class="team-row__role">Sygeplejerske</span>
-                    </div>
-                    <div class="team-row__stats">
-                      <span class="team-row__count">12 pat</span>
-                      <span class="team-row__remaining">1 tilbage</span>
-                    </div>
-                    <div class="team-row__status team-row__status--good">Optimal</div>
-                  </div>
-                </div>
+            <div class="alert-card alert-card--trivsel">
+              <div class="alert-card__icon">
+                <i data-lucide="user"></i>
               </div>
-
-              <!-- AI Indsigter preview -->
-              <div class="ai-preview">
-                <div class="ai-preview__header">
-                  <i data-lucide="sparkles"></i>
-                  <span>AI har fundet</span>
-                </div>
-                <div class="ai-preview__items">
-                  <a href="#" class="ai-preview__item" data-goto-tab="ai-insights">
-                    <span class="ai-preview__badge ai-preview__badge--critical">!</span>
-                    <span>Kritisk patient-case</span>
-                  </a>
-                  <a href="#" class="ai-preview__item" data-goto-tab="okonomi">
-                    <span class="ai-preview__badge">3</span>
-                    <span>Manglende registreringer</span>
-                  </a>
-                  <a href="#" class="ai-preview__item" data-goto-tab="ai-insights">
-                    <span class="ai-preview__badge">3</span>
-                    <span>Booking-optimeringer</span>
-                  </a>
-                </div>
+              <div class="alert-card__content">
+                <div class="alert-card__title">Dr. Pedersen har høj belastning</div>
+                <div class="alert-card__description">18 patienter, 6 tilbage - Sygepl. Jens har kapacitet</div>
+              </div>
+              <div class="alert-card__action">
+                <button class="action-btn action-btn--secondary">Omfordel</button>
               </div>
             </div>
+          </div>
+
+          <!-- Live Queue -->
+          <div class="live-queue">
+            <div class="live-queue__header">
+              <h3 class="live-queue__title">
+                <i data-lucide="users"></i>
+                Venteværelse
+              </h3>
+            </div>
+            <table class="queue-table">
+              <thead>
+                <tr>
+                  <th>Patient</th>
+                  <th>Venter på</th>
+                  <th class="text-right">Tid</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="queue-table__row--critical">
+                  <td class="queue-table__patient">Dorthe Jensen</td>
+                  <td class="queue-table__detail">Blodprøve</td>
+                  <td class="queue-table__time text-right">32 min</td>
+                </tr>
+                <tr class="queue-table__row--warning">
+                  <td class="queue-table__patient">Carl Madsen</td>
+                  <td class="queue-table__detail">Dr. Hansen</td>
+                  <td class="queue-table__time text-right">28 min</td>
+                </tr>
+                <tr>
+                  <td class="queue-table__patient">Birthe Sørensen</td>
+                  <td class="queue-table__detail">Dr. Pedersen</td>
+                  <td class="queue-table__time text-right">12 min</td>
+                </tr>
+                <tr>
+                  <td class="queue-table__patient">Anders Christensen</td>
+                  <td class="queue-table__detail">Dr. Nielsen</td>
+                  <td class="queue-table__time text-right">8 min</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
-        <!-- Tab Content: Team & Trivsel -->
+        <!-- ===================== -->
+        <!-- Tab 2: Team & Økonomi -->
+        <!-- ===================== -->
         <div class="kd-tab-content" data-tab-content="team">
-          <!-- Team Stats -->
+          <!-- KPI Stats -->
           <div class="kd-stats-grid kd-stats-grid--3">
             <div class="stat-card stat-card--kpi stat-card--trivsel">
               <div class="stat-card__header">
@@ -398,24 +306,23 @@
 
             <div class="stat-card stat-card--kpi">
               <div class="stat-card__header">
-                <span class="stat-card__label">Dokumentationstid</span>
+                <span class="stat-card__label">Registreringsrate</span>
                 <div class="stat-card__icon">
-                  <i data-lucide="file-text"></i>
+                  <i data-lucide="check-circle"></i>
                 </div>
               </div>
-              <div class="stat-card__value">4.2 min</div>
+              <div class="stat-card__value">96%</div>
               <div class="stat-card__trend stat-card__trend--up">
-                <i data-lucide="trending-down"></i>
-                -1.5 min
-                <span class="stat-card__trend-label">pga. AI</span>
+                <i data-lucide="trending-up"></i>
+                +2%
+                <span class="stat-card__trend-label">denne måned</span>
               </div>
             </div>
           </div>
 
-          <!-- Staff Performance Grid -->
+          <!-- Simplified Staff Cards -->
           <div class="staff-section">
-            <h3 class="staff-section__title">Arbejdsbelastning i dag</h3>
-            <p class="staff-section__description">Følg med i hvordan teamet har det - optimal arbejdsbelastning giver bedre patientoplevelser</p>
+            <h3 class="staff-section__title">Teamoversigt</h3>
 
             <div class="staff-grid staff-grid--detailed">
               <!-- Staff Card 1 -->
@@ -432,27 +339,16 @@
                   <div class="trivsel-badge trivsel-badge--green">Optimal</div>
                 </div>
                 <div class="staff-card__body">
-                  <div class="staff-card__load-bar">
-                    <div class="staff-card__load-fill staff-card__load-fill--good" style="width: 60%;"></div>
-                  </div>
                   <div class="staff-card__metrics">
                     <div class="staff-card__metric">
                       <div class="staff-card__metric-value">12</div>
                       <div class="staff-card__metric-label">Patienter</div>
                     </div>
                     <div class="staff-card__metric">
-                      <div class="staff-card__metric-value">18m</div>
-                      <div class="staff-card__metric-label">Gns. tid</div>
-                    </div>
-                    <div class="staff-card__metric">
-                      <div class="staff-card__metric-value">3.8m</div>
-                      <div class="staff-card__metric-label">Dok.tid</div>
+                      <div class="staff-card__metric-value">3</div>
+                      <div class="staff-card__metric-label">Tilbage</div>
                     </div>
                   </div>
-                </div>
-                <div class="staff-card__insight staff-card__insight--positive">
-                  <i data-lucide="thumbs-up"></i>
-                  God balance mellem patienter og dokumentation
                 </div>
               </div>
 
@@ -470,27 +366,16 @@
                   <div class="trivsel-badge trivsel-badge--yellow">Travl</div>
                 </div>
                 <div class="staff-card__body">
-                  <div class="staff-card__load-bar">
-                    <div class="staff-card__load-fill staff-card__load-fill--warning" style="width: 90%;"></div>
-                  </div>
                   <div class="staff-card__metrics">
                     <div class="staff-card__metric">
                       <div class="staff-card__metric-value">18</div>
                       <div class="staff-card__metric-label">Patienter</div>
                     </div>
                     <div class="staff-card__metric">
-                      <div class="staff-card__metric-value">24m</div>
-                      <div class="staff-card__metric-label">Gns. tid</div>
-                    </div>
-                    <div class="staff-card__metric">
-                      <div class="staff-card__metric-value">5.1m</div>
-                      <div class="staff-card__metric-label">Dok.tid</div>
+                      <div class="staff-card__metric-value">6</div>
+                      <div class="staff-card__metric-label">Tilbage</div>
                     </div>
                   </div>
-                </div>
-                <div class="staff-card__insight staff-card__insight--attention">
-                  <i data-lucide="alert-circle"></i>
-                  Højere arbejdsbelastning - overvej at omfordele 2-3 patienter
                 </div>
               </div>
 
@@ -508,27 +393,16 @@
                   <div class="trivsel-badge trivsel-badge--green">Optimal</div>
                 </div>
                 <div class="staff-card__body">
-                  <div class="staff-card__load-bar">
-                    <div class="staff-card__load-fill staff-card__load-fill--good" style="width: 70%;"></div>
-                  </div>
                   <div class="staff-card__metrics">
                     <div class="staff-card__metric">
                       <div class="staff-card__metric-value">14</div>
                       <div class="staff-card__metric-label">Patienter</div>
                     </div>
                     <div class="staff-card__metric">
-                      <div class="staff-card__metric-value">16m</div>
-                      <div class="staff-card__metric-label">Gns. tid</div>
-                    </div>
-                    <div class="staff-card__metric">
-                      <div class="staff-card__metric-value">4.2m</div>
-                      <div class="staff-card__metric-label">Dok.tid</div>
+                      <div class="staff-card__metric-value">2</div>
+                      <div class="staff-card__metric-label">Tilbage</div>
                     </div>
                   </div>
-                </div>
-                <div class="staff-card__insight staff-card__insight--positive">
-                  <i data-lucide="thumbs-up"></i>
-                  Effektiv dokumentation, god patientflow
                 </div>
               </div>
 
@@ -546,725 +420,22 @@
                   <div class="trivsel-badge trivsel-badge--green">Optimal</div>
                 </div>
                 <div class="staff-card__body">
-                  <div class="staff-card__load-bar">
-                    <div class="staff-card__load-fill staff-card__load-fill--good" style="width: 60%;"></div>
-                  </div>
                   <div class="staff-card__metrics">
                     <div class="staff-card__metric">
                       <div class="staff-card__metric-value">12</div>
                       <div class="staff-card__metric-label">Patienter</div>
                     </div>
                     <div class="staff-card__metric">
-                      <div class="staff-card__metric-value">8m</div>
-                      <div class="staff-card__metric-label">Gns. tid</div>
-                    </div>
-                    <div class="staff-card__metric">
-                      <div class="staff-card__metric-value">2.1m</div>
-                      <div class="staff-card__metric-label">Dok.tid</div>
+                      <div class="staff-card__metric-value">1</div>
+                      <div class="staff-card__metric-label">Tilbage</div>
                     </div>
                   </div>
-                </div>
-                <div class="staff-card__insight staff-card__insight--positive">
-                  <i data-lucide="thumbs-up"></i>
-                  God kapacitet til at hjælpe kollegaer
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Support Insight -->
-          <div class="support-insight">
-            <div class="support-insight__icon">
-              <i data-lucide="lightbulb"></i>
-            </div>
-            <div class="support-insight__content">
-              <div class="support-insight__title">Administrativ støtte-mulighed</div>
-              <div class="support-insight__description">3 medarbejdere har udført arbejde der ikke er registreret korrekt. De fortjener anerkendelse for deres indsats.</div>
-              <a href="#" class="support-insight__link" data-goto-tab="okonomi">Hjælp dem med at få kredit →</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tab Content: Patientkvalitet -->
-        <div class="kd-tab-content" data-tab-content="kvalitet">
-          <!-- Quality Stats -->
-          <div class="kd-stats-grid">
-            <div class="stat-card stat-card--kpi stat-card--success">
-              <div class="stat-card__header">
-                <span class="stat-card__label">Opfølgningsrate</span>
-                <div class="stat-card__icon">
-                  <i data-lucide="check-circle"></i>
-                </div>
-              </div>
-              <div class="stat-card__value">94%</div>
-              <div class="stat-card__trend stat-card__trend--up">
-                <i data-lucide="trending-up"></i>
-                +2%
-                <span class="stat-card__trend-label">denne uge</span>
-              </div>
-            </div>
-
-            <div class="stat-card stat-card--kpi">
-              <div class="stat-card__header">
-                <span class="stat-card__label">Genbesøg (7 dage)</span>
-                <div class="stat-card__icon">
-                  <i data-lucide="repeat"></i>
-                </div>
-              </div>
-              <div class="stat-card__value">4.2%</div>
-              <div class="stat-card__trend stat-card__trend--up">
-                <i data-lucide="trending-down"></i>
-                -0.8%
-                <span class="stat-card__trend-label">forbedring</span>
-              </div>
-            </div>
-
-            <div class="stat-card stat-card--kpi">
-              <div class="stat-card__header">
-                <span class="stat-card__label">Kronikerkontrol</span>
-                <div class="stat-card__icon">
-                  <i data-lucide="calendar-check"></i>
-                </div>
-              </div>
-              <div class="stat-card__value">87%</div>
-              <div class="stat-card__trend">
-                12 patienter mangler
-              </div>
-            </div>
-
-            <div class="stat-card stat-card--kpi">
-              <div class="stat-card__header">
-                <span class="stat-card__label">Medicingennemgang</span>
-                <div class="stat-card__icon">
-                  <i data-lucide="pill"></i>
-                </div>
-              </div>
-              <div class="stat-card__value">91%</div>
-              <div class="stat-card__trend stat-card__trend--up">
-                <i data-lucide="trending-up"></i>
-                +5%
-                <span class="stat-card__trend-label">denne måned</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Quality Sections -->
-          <div class="quality-grid">
-            <div class="quality-section">
-              <h3 class="quality-section__title">
-                <i data-lucide="calendar-clock"></i>
-                Opfølgning påkrævet
-              </h3>
-              <div class="quality-list">
-                <div class="quality-item">
-                  <div class="quality-item__patient">Anders Christensen</div>
-                  <div class="quality-item__type">Blodtrykskontrol</div>
-                  <div class="quality-item__date">Planlagt: 3 dage siden</div>
-                  <button class="action-btn action-btn--primary">Book tid</button>
-                </div>
-                <div class="quality-item">
-                  <div class="quality-item__patient">Birgit Hansen</div>
-                  <div class="quality-item__type">Diabetes årskontrol</div>
-                  <div class="quality-item__date">Planlagt: 1 uge siden</div>
-                  <button class="action-btn action-btn--primary">Book tid</button>
-                </div>
-                <div class="quality-item">
-                  <div class="quality-item__patient">Carl Madsen</div>
-                  <div class="quality-item__type">KOL-kontrol</div>
-                  <div class="quality-item__date">Planlagt: 2 uger siden</div>
-                  <button class="action-btn action-btn--primary">Book tid</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="quality-section">
-              <h3 class="quality-section__title">
-                <i data-lucide="pill"></i>
-                Medicingennemgang anbefalet
-              </h3>
-              <div class="quality-list">
-                <div class="quality-item">
-                  <div class="quality-item__patient">Dorthe Jensen</div>
-                  <div class="quality-item__type">7 præparater, 82 år</div>
-                  <div class="quality-item__date">Sidst: 14 mdr. siden</div>
-                  <button class="action-btn action-btn--secondary">Gennemgå</button>
-                </div>
-                <div class="quality-item">
-                  <div class="quality-item__patient">Erik Sørensen</div>
-                  <div class="quality-item__type">6 præparater, 78 år</div>
-                  <div class="quality-item__date">Sidst: 11 mdr. siden</div>
-                  <button class="action-btn action-btn--secondary">Gennemgå</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tab Content: Flow & Tid -->
-        <div class="kd-tab-content" data-tab-content="flow">
-          <!-- Flow Stats -->
-          <div class="kd-stats-grid">
-            <div class="stat-card stat-card--kpi stat-card--success">
-              <div class="stat-card__header">
-                <span class="stat-card__label">Gns. ventetid</span>
-                <div class="stat-card__icon">
-                  <i data-lucide="clock"></i>
-                </div>
-              </div>
-              <div class="stat-card__value">23m</div>
-              <div class="stat-card__trend stat-card__trend--up">
-                <i data-lucide="trending-down"></i>
-                -4m
-                <span class="stat-card__trend-label">forbedring</span>
-              </div>
-            </div>
-
-            <div class="stat-card stat-card--kpi">
-              <div class="stat-card__header">
-                <span class="stat-card__label">Venter nu</span>
-                <div class="stat-card__icon">
-                  <i data-lucide="users"></i>
-                </div>
-              </div>
-              <div class="stat-card__value">4</div>
-              <div class="stat-card__trend">
-                2 over 25 min
-              </div>
-            </div>
-
-            <div class="stat-card stat-card--kpi">
-              <div class="stat-card__header">
-                <span class="stat-card__label">Konsultationer i dag</span>
-                <div class="stat-card__icon">
-                  <i data-lucide="calendar"></i>
-                </div>
-              </div>
-              <div class="stat-card__value">47</div>
-              <div class="stat-card__trend">
-                12 tilbage
-              </div>
-            </div>
-
-            <div class="stat-card stat-card--kpi">
-              <div class="stat-card__header">
-                <span class="stat-card__label">Akutte i dag</span>
-                <div class="stat-card__icon">
-                  <i data-lucide="zap"></i>
-                </div>
-              </div>
-              <div class="stat-card__value">8</div>
-              <div class="stat-card__trend">
-                17% af total
-              </div>
-            </div>
-          </div>
-
-          <!-- Flow Visualization -->
-          <div class="flow-section">
-            <h3 class="flow-section__title">Ventetidsfordeling i dag</h3>
-            <p class="flow-section__description">Fordeling af patienternes ventetid - grøn zone er målet</p>
-
-            <div class="flow-bar flow-bar--large">
-              <div class="flow-bar__segment flow-bar__segment--excellent" style="width: 45%;" title="Under 10 min: 45%"></div>
-              <div class="flow-bar__segment flow-bar__segment--good" style="width: 28%;" title="10-20 min: 28%"></div>
-              <div class="flow-bar__segment flow-bar__segment--warning" style="width: 18%;" title="20-30 min: 18%"></div>
-              <div class="flow-bar__segment flow-bar__segment--critical" style="width: 9%;" title="Over 30 min: 9%"></div>
-            </div>
-            <div class="flow-legend">
-              <div class="flow-legend__item">
-                <span class="flow-legend__dot flow-legend__dot--excellent"></span>
-                Under 10 min (45%)
-              </div>
-              <div class="flow-legend__item">
-                <span class="flow-legend__dot flow-legend__dot--good"></span>
-                10-20 min (28%)
-              </div>
-              <div class="flow-legend__item">
-                <span class="flow-legend__dot flow-legend__dot--warning"></span>
-                20-30 min (18%)
-              </div>
-              <div class="flow-legend__item">
-                <span class="flow-legend__dot flow-legend__dot--critical"></span>
-                Over 30 min (9%)
-              </div>
-            </div>
-          </div>
-
-          <!-- Patient Queue -->
-          <div class="queue-section">
-            <h3 class="queue-section__title">Patienter i venteværelset</h3>
-            <div class="patient-queue">
-              <div class="queue-item">
-                <div class="queue-item__position">1</div>
-                <div class="queue-item__info">
-                  <div class="queue-item__name">Anders Christensen</div>
-                  <div class="queue-item__stage">Venter på Dr. Nielsen</div>
-                </div>
-                <div class="queue-item__time queue-item__time--good">8 min</div>
-              </div>
-              <div class="queue-item">
-                <div class="queue-item__position">2</div>
-                <div class="queue-item__info">
-                  <div class="queue-item__name">Birthe Sørensen</div>
-                  <div class="queue-item__stage">Venter på Dr. Pedersen</div>
-                </div>
-                <div class="queue-item__time queue-item__time--good">12 min</div>
-              </div>
-              <div class="queue-item">
-                <div class="queue-item__position">3</div>
-                <div class="queue-item__info">
-                  <div class="queue-item__name">Carl Madsen</div>
-                  <div class="queue-item__stage">Venter på Dr. Hansen</div>
-                </div>
-                <div class="queue-item__time queue-item__time--warning">24 min</div>
-              </div>
-              <div class="queue-item">
-                <div class="queue-item__position">4</div>
-                <div class="queue-item__info">
-                  <div class="queue-item__name">Dorthe Jensen</div>
-                  <div class="queue-item__stage">Venter på blodprøve</div>
-                </div>
-                <div class="queue-item__time queue-item__time--critical">32 min</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tab Content: AI Insights -->
-        <div class="kd-tab-content" data-tab-content="ai-insights">
-          <!-- AI Stats Row -->
-          <div class="kd-stats-grid">
-            <div class="stat-card stat-card--kpi">
-              <div class="stat-card__header">
-                <span class="stat-card__label">Analyserede konsultationer</span>
-                <div class="stat-card__icon">
-                  <i data-lucide="file-search"></i>
-                </div>
-              </div>
-              <div class="stat-card__value">234</div>
-              <div class="stat-card__trend">
-                Denne uge
-              </div>
-            </div>
-
-            <div class="stat-card stat-card--kpi">
-              <div class="stat-card__header">
-                <span class="stat-card__label">Identificerede mønstre</span>
-                <div class="stat-card__icon">
-                  <i data-lucide="git-branch"></i>
-                </div>
-              </div>
-              <div class="stat-card__value">7</div>
-              <div class="stat-card__trend stat-card__trend--up">
-                <i data-lucide="trending-up"></i>
-                +2
-                <span class="stat-card__trend-label">nye</span>
-              </div>
-            </div>
-
-            <div class="stat-card stat-card--kpi stat-card--warning">
-              <div class="stat-card__header">
-                <span class="stat-card__label">Handlingsanbefalinger</span>
-                <div class="stat-card__icon">
-                  <i data-lucide="alert-circle"></i>
-                </div>
-              </div>
-              <div class="stat-card__value">4</div>
-              <div class="stat-card__trend">
-                Kræver gennemgang
-              </div>
-            </div>
-
-            <div class="stat-card stat-card--kpi">
-              <div class="stat-card__header">
-                <span class="stat-card__label">Cases til morgenmøde</span>
-                <div class="stat-card__icon">
-                  <i data-lucide="users"></i>
-                </div>
-              </div>
-              <div class="stat-card__value">2</div>
-              <div class="stat-card__trend">
-                Til diskussion
-              </div>
-            </div>
-          </div>
-
-          <!-- Main Grid -->
-          <div class="kd-grid">
-            <!-- Left Column: Insights -->
-            <div class="kd-grid__main">
-              <!-- Critical Insight -->
-              <div class="insight-card insight-card--critical">
-                <div class="insight-card__category insight-card__category--critical">
-                  <i data-lucide="alert-octagon"></i>
-                  KRITISK
-                </div>
-                <h3 class="insight-card__title">Patient med hyppige besøg kræver koordinering</h3>
-                <p class="insight-card__description">
-                  Patient Andersen (ID#447) har haft <strong>4 konsultationer på 14 dage</strong> hos 3 forskellige behandlere (Dr. Hansen, Dr. Petersen, Sygepl. Jensen). Konsultationerne omhandler relaterede symptomer. Anbefaler case-koordineringsmøde.
-                </p>
-                <div class="insight-card__actions">
-                  <button class="action-btn action-btn--secondary">Se patienthistorik</button>
-                  <button class="action-btn action-btn--primary">Opret case-møde</button>
-                </div>
-              </div>
-
-              <!-- Booking Optimization -->
-              <div class="insight-card insight-card--booking">
-                <div class="insight-card__category insight-card__category--booking">
-                  <i data-lucide="calendar"></i>
-                  BOOKING-OPTIMERING
-                </div>
-                <h3 class="insight-card__title">Diabetes-kontroller tager konsekvent længere end planlagt</h3>
-                <p class="insight-card__description">
-                  Analyse af de seneste 30 dage viser at diabetes-kontroller i gennemsnit tager <strong>18 minutter</strong> mod allokerede 10 minutter. Dette skaber kaskade-forsinkelser resten af dagen. Anbefaler at udvide booking-slots til 20 minutter.
-                </p>
-                <div class="insight-value-box">
-                  <span class="insight-value-box__label">Potentiel tidsbesparelse</span>
-                  <span class="insight-value-box__value">+45 min/dag reduceret forsinkelse</span>
-                </div>
-              </div>
-
-              <!-- Pattern Insight -->
-              <div class="insight-card insight-card--pattern">
-                <div class="insight-card__category insight-card__category--pattern">
-                  <i data-lucide="refresh-cw"></i>
-                  MØNSTER
-                </div>
-                <h3 class="insight-card__title">KOL-forværrings-cluster identificeret</h3>
-                <p class="insight-card__description">
-                  3 patienter med KOL-forværring er set denne uge. Dette kan indikere sæsonbetinget trigger (vejrskifte, luftkvalitet). Overvej proaktiv kontakt til øvrige KOL-patienter.
-                </p>
-                <div class="insight-card__actions">
-                  <button class="action-btn action-btn--secondary">Se KOL-patienter</button>
-                </div>
-              </div>
-
-              <!-- Trivsel Insight -->
-              <div class="insight-card insight-card--trivsel">
-                <div class="insight-card__category insight-card__category--trivsel">
-                  <i data-lucide="heart"></i>
-                  TEAM-TRIVSEL
-                </div>
-                <h3 class="insight-card__title">Dr. Petersen har haft en hård dag</h3>
-                <p class="insight-card__description">
-                  AI har identificeret 3 emotionelt krævende konsultationer (angst, sorg, kronisk smerte-håndtering) hos Dr. Petersen i dag. Anbefaler kollegial check-in.
-                </p>
-                <div class="insight-card__actions">
-                  <button class="action-btn action-btn--primary">Send støtte-besked</button>
-                </div>
-              </div>
-
-              <!-- Delay Heatmap -->
-              <div class="delay-heatmap">
-                <div class="delay-heatmap__header">
-                  <h3 class="delay-heatmap__title">
-                    <i data-lucide="calendar-range"></i>
-                    Forsinkelsesmønster (denne uge)
-                  </h3>
-                  <div class="delay-heatmap__legend">
-                    <div class="delay-heatmap__legend-item">
-                      <span class="delay-heatmap__legend-dot delay-heatmap__legend-dot--ontime"></span>
-                      On-time
-                    </div>
-                    <div class="delay-heatmap__legend-item">
-                      <span class="delay-heatmap__legend-dot delay-heatmap__legend-dot--delay"></span>
-                      5-15 min
-                    </div>
-                    <div class="delay-heatmap__legend-item">
-                      <span class="delay-heatmap__legend-dot delay-heatmap__legend-dot--critical"></span>
-                      >15 min
-                    </div>
-                  </div>
-                </div>
-
-                <div class="heatmap-grid">
-                  <!-- Header row -->
-                  <div class="heatmap-grid__header"></div>
-                  <div class="heatmap-grid__header">Man</div>
-                  <div class="heatmap-grid__header">Tir</div>
-                  <div class="heatmap-grid__header">Ons</div>
-                  <div class="heatmap-grid__header">Tor</div>
-                  <div class="heatmap-grid__header">Fre</div>
-
-                  <!-- 08:00 -->
-                  <div class="heatmap-grid__time">08:00</div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--ontime"><span class="heatmap-grid__dot heatmap-grid__dot--ontime"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--ontime"><span class="heatmap-grid__dot heatmap-grid__dot--ontime"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--ontime"><span class="heatmap-grid__dot heatmap-grid__dot--ontime"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--ontime"><span class="heatmap-grid__dot heatmap-grid__dot--ontime"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--ontime"><span class="heatmap-grid__dot heatmap-grid__dot--ontime"></span></div>
-
-                  <!-- 09:00 -->
-                  <div class="heatmap-grid__time">09:00</div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--ontime"><span class="heatmap-grid__dot heatmap-grid__dot--ontime"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--ontime"><span class="heatmap-grid__dot heatmap-grid__dot--ontime"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--ontime"><span class="heatmap-grid__dot heatmap-grid__dot--ontime"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--ontime"><span class="heatmap-grid__dot heatmap-grid__dot--ontime"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--ontime"><span class="heatmap-grid__dot heatmap-grid__dot--ontime"></span></div>
-
-                  <!-- 10:00 -->
-                  <div class="heatmap-grid__time">10:00</div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--delay"><span class="heatmap-grid__dot heatmap-grid__dot--delay"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--critical"><span class="heatmap-grid__dot heatmap-grid__dot--critical"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--delay"><span class="heatmap-grid__dot heatmap-grid__dot--delay"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--critical"><span class="heatmap-grid__dot heatmap-grid__dot--critical"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--ontime"><span class="heatmap-grid__dot heatmap-grid__dot--ontime"></span></div>
-
-                  <!-- 11:00 -->
-                  <div class="heatmap-grid__time">11:00</div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--critical"><span class="heatmap-grid__dot heatmap-grid__dot--critical"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--critical"><span class="heatmap-grid__dot heatmap-grid__dot--critical"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--delay"><span class="heatmap-grid__dot heatmap-grid__dot--delay"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--critical"><span class="heatmap-grid__dot heatmap-grid__dot--critical"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--delay"><span class="heatmap-grid__dot heatmap-grid__dot--delay"></span></div>
-
-                  <!-- 12:00 -->
-                  <div class="heatmap-grid__time">12:00</div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--empty"></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--empty"></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--empty"></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--empty"></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--empty"></div>
-
-                  <!-- 13:00 -->
-                  <div class="heatmap-grid__time">13:00</div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--ontime"><span class="heatmap-grid__dot heatmap-grid__dot--ontime"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--ontime"><span class="heatmap-grid__dot heatmap-grid__dot--ontime"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--ontime"><span class="heatmap-grid__dot heatmap-grid__dot--ontime"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--ontime"><span class="heatmap-grid__dot heatmap-grid__dot--ontime"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--ontime"><span class="heatmap-grid__dot heatmap-grid__dot--ontime"></span></div>
-
-                  <!-- 14:00 -->
-                  <div class="heatmap-grid__time">14:00</div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--ontime"><span class="heatmap-grid__dot heatmap-grid__dot--ontime"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--ontime"><span class="heatmap-grid__dot heatmap-grid__dot--ontime"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--ontime"><span class="heatmap-grid__dot heatmap-grid__dot--ontime"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--critical"><span class="heatmap-grid__dot heatmap-grid__dot--critical"></span></div>
-                  <div class="heatmap-grid__cell heatmap-grid__cell--delay"><span class="heatmap-grid__dot heatmap-grid__dot--delay"></span></div>
-                </div>
-
-                <div class="heatmap-insight">
-                  <i data-lucide="lightbulb"></i>
-                  <div class="heatmap-insight__text">
-                    <strong>Mønster identificeret:</strong> Tirsdag og torsdag kl. 10-11 har systematiske forsinkelser. Anbefaling: Reducer antal bookinger eller forlæng konsultationstid i dette tidsrum.
-                  </div>
-                </div>
-              </div>
-
-              <!-- Consultation Types -->
-              <div class="consult-types-section">
-                <h3 class="consult-types-section__title">
-                  <i data-lucide="bar-chart-3"></i>
-                  Konsultationstyper vs. allokeret tid
-                </h3>
-
-                <div class="consult-type-item">
-                  <div class="consult-type-item__label">Diabetes-kontrol</div>
-                  <div class="consult-type-item__bar-container">
-                    <div class="consult-type-item__bar" style="width: 100%;">
-                      <div class="consult-type-item__bar-planned" style="width: 55%;"></div>
-                      <div class="consult-type-item__bar-actual consult-type-item__bar-actual--over" style="width: 45%;"></div>
-                    </div>
-                  </div>
-                  <div class="consult-type-item__value consult-type-item__value--over">+8 min</div>
-                </div>
-
-                <div class="consult-type-item">
-                  <div class="consult-type-item__label">Mental sundhed</div>
-                  <div class="consult-type-item__bar-container">
-                    <div class="consult-type-item__bar" style="width: 100%;">
-                      <div class="consult-type-item__bar-planned" style="width: 50%;"></div>
-                      <div class="consult-type-item__bar-actual consult-type-item__bar-actual--over" style="width: 50%;"></div>
-                    </div>
-                  </div>
-                  <div class="consult-type-item__value consult-type-item__value--over">+12 min</div>
-                </div>
-
-                <div class="consult-type-item">
-                  <div class="consult-type-item__label">Årskontrol</div>
-                  <div class="consult-type-item__bar-container">
-                    <div class="consult-type-item__bar" style="width: 85%;">
-                      <div class="consult-type-item__bar-planned" style="width: 60%;"></div>
-                      <div class="consult-type-item__bar-actual consult-type-item__bar-actual--over" style="width: 40%;"></div>
-                    </div>
-                  </div>
-                  <div class="consult-type-item__value consult-type-item__value--over">+5 min</div>
-                </div>
-
-                <div class="consult-type-item">
-                  <div class="consult-type-item__label">Akut konsultation</div>
-                  <div class="consult-type-item__bar-container">
-                    <div class="consult-type-item__bar" style="width: 70%;">
-                      <div class="consult-type-item__bar-planned" style="width: 100%;"></div>
-                    </div>
-                  </div>
-                  <div class="consult-type-item__value consult-type-item__value--ontime">On-time</div>
-                </div>
-
-                <div class="consult-type-item">
-                  <div class="consult-type-item__label">Recept-fornyelse</div>
-                  <div class="consult-type-item__bar-container">
-                    <div class="consult-type-item__bar" style="width: 55%;">
-                      <div class="consult-type-item__bar-planned" style="width: 85%;"></div>
-                      <div class="consult-type-item__bar-actual consult-type-item__bar-actual--under" style="width: 0%;"></div>
-                    </div>
-                  </div>
-                  <div class="consult-type-item__value consult-type-item__value--under">-2 min</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Right Column: Summary & Reports -->
-            <div class="kd-grid__aside">
-              <!-- AI Analysis Summary -->
-              <div class="ai-analysis-card">
-                <h3 class="ai-analysis-card__title">
-                  <i data-lucide="brain"></i>
-                  AI Analyse - Denne uge
-                </h3>
-                <div class="ai-analysis-card__list">
-                  <div class="ai-analysis-card__item">
-                    <span class="ai-analysis-card__label">Analyserede konsultationer</span>
-                    <span class="ai-analysis-card__value">234</span>
-                  </div>
-                  <div class="ai-analysis-card__item">
-                    <span class="ai-analysis-card__label">Identificerede mønstre</span>
-                    <span class="ai-analysis-card__value">7</span>
-                  </div>
-                  <div class="ai-analysis-card__item">
-                    <span class="ai-analysis-card__label">Handlingsanbefalinger</span>
-                    <span class="ai-analysis-card__value">4</span>
-                  </div>
-                  <div class="ai-analysis-card__item">
-                    <span class="ai-analysis-card__label">Cases til morgenmøde</span>
-                    <span class="ai-analysis-card__value">2</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Morning Report -->
-              <div class="morning-report-card">
-                <h3 class="morning-report-card__title">
-                  <i data-lucide="file-text"></i>
-                  Auto-genereret morgenmøde-rapport
-                </h3>
-                <div class="morning-report-card__content">
-                  <div class="morning-report-card__date">Tirsdag 21. januar - Opsummering</div>
-
-                  <div class="morning-report-card__section morning-report-card__section--cases">
-                    <div class="morning-report-card__section-title">Cases til diskussion:</div>
-                    <ul class="morning-report-card__list">
-                      <li>Patient Andersen - hyppige besøg, behov for samlet plan</li>
-                      <li>3 patienter med KOL-forværring denne uge</li>
-                    </ul>
-                  </div>
-
-                  <div class="morning-report-card__section morning-report-card__section--capacity">
-                    <div class="morning-report-card__section-title">Kapacitet:</div>
-                    <ul class="morning-report-card__list">
-                      <li>Diabetes-kontroller: Overvej 20 min slots</li>
-                      <li>Kl. 10-11: Systematisk overbelastet</li>
-                    </ul>
-                  </div>
-
-                  <div class="morning-report-card__section morning-report-card__section--trivsel">
-                    <div class="morning-report-card__section-title">Team-trivsel:</div>
-                    <ul class="morning-report-card__list">
-                      <li>Dr. Petersen: 3 svære samtaler - tjek ind</li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="morning-report-card__actions">
-                  <button class="action-btn action-btn--secondary">
-                    <i data-lucide="send"></i>
-                    Send til team
-                  </button>
-                  <button class="action-btn action-btn--primary">
-                    <i data-lucide="download"></i>
-                    Download PDF
-                  </button>
-                </div>
-              </div>
-
-              <!-- Export Card -->
-              <div class="export-report-card">
-                <h3 class="export-report-card__title">
-                  <i data-lucide="file-down"></i>
-                  Eksporter rapport
-                </h3>
-                <p class="export-report-card__description">Generer en samlet AI-rapport til morgenmødet eller ledelsen.</p>
-                <button class="action-btn action-btn--primary" style="width: 100%;">
-                  <i data-lucide="download"></i>
-                  Download ugerapport (PDF)
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tab Content: Økonomi -->
-        <div class="kd-tab-content" data-tab-content="okonomi">
-          <!-- Economy Stats -->
-          <div class="kd-stats-grid">
-            <div class="stat-card stat-card--kpi">
-              <div class="stat-card__header">
-                <span class="stat-card__label">Dagens registreringer</span>
-                <div class="stat-card__icon">
-                  <i data-lucide="file-check"></i>
-                </div>
-              </div>
-              <div class="stat-card__value">18.500</div>
-              <div class="stat-card__trend stat-card__trend--up">
-                <i data-lucide="trending-up"></i>
-                +3.200 kr
-                <span class="stat-card__trend-label">over mål</span>
-              </div>
-            </div>
-
-            <div class="stat-card stat-card--kpi stat-card--support">
-              <div class="stat-card__header">
-                <span class="stat-card__label">Mangler registrering</span>
-                <div class="stat-card__icon stat-card__icon--support">
-                  <i data-lucide="help-circle"></i>
-                </div>
-              </div>
-              <div class="stat-card__value">3</div>
-              <div class="stat-card__trend">
-                +788 kr potentiale
-              </div>
-            </div>
-
-            <div class="stat-card stat-card--kpi">
-              <div class="stat-card__header">
-                <span class="stat-card__label">Registreringsrate</span>
-                <div class="stat-card__icon">
-                  <i data-lucide="check-circle"></i>
-                </div>
-              </div>
-              <div class="stat-card__value">96%</div>
-              <div class="stat-card__trend stat-card__trend--up">
-                <i data-lucide="trending-up"></i>
-                +2%
-                <span class="stat-card__trend-label">denne måned</span>
-              </div>
-            </div>
-
-            <div class="stat-card stat-card--kpi">
-              <div class="stat-card__header">
-                <span class="stat-card__label">Gns. pr. konsultation</span>
-                <div class="stat-card__icon">
-                  <i data-lucide="calculator"></i>
-                </div>
-              </div>
-              <div class="stat-card__value">845 kr</div>
-              <div class="stat-card__trend">
-                Klinikgennemsnit
-              </div>
-            </div>
-          </div>
-
-          <!-- Support Alerts -->
+          <!-- Honorar-alerts from Økonomi -->
           <div class="support-section">
             <div class="support-section__header">
               <h3 class="support-section__title">
@@ -1348,82 +519,143 @@
             </div>
           </div>
 
-          <!-- Team Performance -->
-          <div class="team-performance">
-            <h3 class="team-performance__title">
-              <i data-lucide="bar-chart-3"></i>
-              Registreringsperformance
-            </h3>
-            <p class="team-performance__description">Se hvem der kan have behov for administrativ støtte</p>
-
-            <table class="leaderboard">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Medarbejder</th>
-                  <th>Registreringer</th>
-                  <th>Pr. konsultation</th>
-                  <th>Registreringsrate</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr data-staff-id="1">
-                  <td class="leaderboard__rank">
-                    <span class="leaderboard__rank-badge leaderboard__rank-badge--gold">1</span>
-                  </td>
-                  <td>
-                    <div class="leaderboard__user">
-                      <div class="leaderboard__avatar">AN</div>
-                      <span class="leaderboard__name">Dr. Anna Nielsen</span>
-                    </div>
-                  </td>
-                  <td class="leaderboard__revenue">187.500 kr</td>
-                  <td class="leaderboard__per-consult">892 kr</td>
-                  <td class="leaderboard__accuracy leaderboard__accuracy--high">98%</td>
-                </tr>
-                <tr data-staff-id="2">
-                  <td class="leaderboard__rank">
-                    <span class="leaderboard__rank-badge leaderboard__rank-badge--silver">2</span>
-                  </td>
-                  <td>
-                    <div class="leaderboard__user">
-                      <div class="leaderboard__avatar">LP</div>
-                      <span class="leaderboard__name">Dr. Lars Pedersen</span>
-                    </div>
-                  </td>
-                  <td class="leaderboard__revenue">156.200 kr</td>
-                  <td class="leaderboard__per-consult">845 kr</td>
-                  <td class="leaderboard__accuracy leaderboard__accuracy--high">94%</td>
-                </tr>
-                <tr data-staff-id="3">
-                  <td class="leaderboard__rank">
-                    <span class="leaderboard__rank-badge leaderboard__rank-badge--bronze">3</span>
-                  </td>
-                  <td>
-                    <div class="leaderboard__user">
-                      <div class="leaderboard__avatar">MH</div>
-                      <span class="leaderboard__name">Dr. Marie Hansen</span>
-                    </div>
-                  </td>
-                  <td class="leaderboard__revenue">142.800 kr</td>
-                  <td class="leaderboard__per-consult">798 kr</td>
-                  <td class="leaderboard__accuracy leaderboard__accuracy--medium">91%</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <div class="ai-tip">
-              <div class="ai-tip__icon">
-                <i data-lucide="lightbulb"></i>
-              </div>
-              <div class="ai-tip__content">
-                <div class="ai-tip__text">
-                  <strong>Administrativ støtte:</strong> Dr. Hansen kan have gavn af et kort brush-up på tillægskoder. Dr. Nielsen bruger 23% flere relevante tillægskoder.
-                </div>
-              </div>
+          <!-- Support Insight -->
+          <div class="support-insight">
+            <div class="support-insight__icon">
+              <i data-lucide="lightbulb"></i>
+            </div>
+            <div class="support-insight__content">
+              <div class="support-insight__title">Administrativ støtte-mulighed</div>
+              <div class="support-insight__description">3 medarbejdere har udført arbejde der ikke er registreret korrekt. De fortjener anerkendelse for deres indsats.</div>
             </div>
           </div>
         </div>
+
+        <!-- ===================== -->
+        <!-- Tab 3: AI Insights    -->
+        <!-- ===================== -->
+        <div class="kd-tab-content" data-tab-content="ai-insights">
+          <!-- AI Stats Row (3 KPI) -->
+          <div class="kd-stats-grid kd-stats-grid--3">
+            <div class="stat-card stat-card--kpi">
+              <div class="stat-card__header">
+                <span class="stat-card__label">Analyserede konsultationer</span>
+                <div class="stat-card__icon">
+                  <i data-lucide="file-search"></i>
+                </div>
+              </div>
+              <div class="stat-card__value">234</div>
+              <div class="stat-card__trend">
+                Denne uge
+              </div>
+            </div>
+
+            <div class="stat-card stat-card--kpi">
+              <div class="stat-card__header">
+                <span class="stat-card__label">Identificerede mønstre</span>
+                <div class="stat-card__icon">
+                  <i data-lucide="git-branch"></i>
+                </div>
+              </div>
+              <div class="stat-card__value">7</div>
+              <div class="stat-card__trend stat-card__trend--up">
+                <i data-lucide="trending-up"></i>
+                +2
+                <span class="stat-card__trend-label">nye</span>
+              </div>
+            </div>
+
+            <div class="stat-card stat-card--kpi stat-card--warning">
+              <div class="stat-card__header">
+                <span class="stat-card__label">Handlingsanbefalinger</span>
+                <div class="stat-card__icon">
+                  <i data-lucide="alert-circle"></i>
+                </div>
+              </div>
+              <div class="stat-card__value">4</div>
+              <div class="stat-card__trend">
+                Kræver gennemgang
+              </div>
+            </div>
+          </div>
+
+          <!-- Morning Report -->
+          <div class="morning-report-card">
+            <h3 class="morning-report-card__title">
+              <i data-lucide="file-text"></i>
+              Auto-genereret morgenmøde-rapport
+            </h3>
+            <div class="morning-report-card__content">
+              <div class="morning-report-card__date">Tirsdag 21. januar - Opsummering</div>
+
+              <div class="morning-report-card__section morning-report-card__section--cases">
+                <div class="morning-report-card__section-title">Cases til diskussion:</div>
+                <ul class="morning-report-card__list">
+                  <li>Patient Andersen - hyppige besøg, behov for samlet plan</li>
+                  <li>3 patienter med KOL-forværring denne uge</li>
+                </ul>
+              </div>
+
+              <div class="morning-report-card__section morning-report-card__section--capacity">
+                <div class="morning-report-card__section-title">Kapacitet:</div>
+                <ul class="morning-report-card__list">
+                  <li>Diabetes-kontroller: Overvej 20 min slots</li>
+                  <li>Kl. 10-11: Systematisk overbelastet</li>
+                </ul>
+              </div>
+
+              <div class="morning-report-card__section morning-report-card__section--trivsel">
+                <div class="morning-report-card__section-title">Team-trivsel:</div>
+                <ul class="morning-report-card__list">
+                  <li>Dr. Petersen: 3 svære samtaler - tjek ind</li>
+                </ul>
+              </div>
+            </div>
+            <div class="morning-report-card__actions">
+              <button class="action-btn action-btn--secondary">
+                <i data-lucide="send"></i>
+                Send til team
+              </button>
+              <button class="action-btn action-btn--primary">
+                <i data-lucide="download"></i>
+                Download PDF
+              </button>
+            </div>
+          </div>
+
+          <!-- Critical Insight -->
+          <div class="insight-card insight-card--critical">
+            <div class="insight-card__category insight-card__category--critical">
+              <i data-lucide="alert-octagon"></i>
+              KRITISK
+            </div>
+            <h3 class="insight-card__title">Patient med hyppige besøg kræver koordinering</h3>
+            <p class="insight-card__description">
+              Patient Andersen (ID#447) har haft <strong>4 konsultationer på 14 dage</strong> hos 3 forskellige behandlere (Dr. Hansen, Dr. Petersen, Sygepl. Jensen). Konsultationerne omhandler relaterede symptomer. Anbefaler case-koordineringsmøde.
+            </p>
+            <div class="insight-card__actions">
+              <button class="action-btn action-btn--secondary">Se patienthistorik</button>
+              <button class="action-btn action-btn--primary">Opret case-møde</button>
+            </div>
+          </div>
+
+          <!-- Booking Optimization -->
+          <div class="insight-card insight-card--booking">
+            <div class="insight-card__category insight-card__category--booking">
+              <i data-lucide="calendar"></i>
+              BOOKING-OPTIMERING
+            </div>
+            <h3 class="insight-card__title">Diabetes-kontroller tager konsekvent længere end planlagt</h3>
+            <p class="insight-card__description">
+              Analyse af de seneste 30 dage viser at diabetes-kontroller i gennemsnit tager <strong>18 minutter</strong> mod allokerede 10 minutter. Dette skaber kaskade-forsinkelser resten af dagen. Anbefaler at udvide booking-slots til 20 minutter.
+            </p>
+            <div class="insight-value-box">
+              <span class="insight-value-box__label">Potentiel tidsbesparelse</span>
+              <span class="insight-value-box__value">+45 min/dag reduceret forsinkelse</span>
+            </div>
+          </div>
+        </div>
+
       </main>
     </div>
 
@@ -1457,7 +689,7 @@
   <script>
     lucide.createIcons();
 
-    // Tab Navigation - using platform .tabs and .tab classes
+    // Tab Navigation
     const tabs = document.querySelectorAll('.tabs .tab');
     const tabContents = document.querySelectorAll('.kd-tab-content');
 
@@ -1468,9 +700,7 @@
       tabContents.forEach(content => {
         content.classList.toggle('kd-tab-content--active', content.dataset.tabContent === tabName);
       });
-      // Store preference
       localStorage.setItem('kd_active_tab', tabName);
-      // Re-initialize icons
       lucide.createIcons();
     }
 
@@ -1480,22 +710,12 @@
       });
     });
 
-    // Restore tab state on load
+    // Restore tab state on load (only if valid)
     const savedTab = localStorage.getItem('kd_active_tab');
-    if (savedTab) {
+    const validTabs = ['overblik', 'team', 'ai-insights'];
+    if (savedTab && validTabs.includes(savedTab)) {
       switchTab(savedTab);
     }
-
-    // Handle "go to tab" links
-    document.querySelectorAll('[data-goto-tab]').forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const tabName = link.dataset.gotoTab;
-        switchTab(tabName);
-        // Scroll to top of content
-        document.querySelector('.klinikdrift-content').scrollTop = 0;
-      });
-    });
 
     // Support alert action buttons
     document.querySelectorAll('.support-alert .action-btn--primary').forEach(btn => {
@@ -1507,82 +727,6 @@
         setTimeout(() => {
           alert.style.display = 'none';
         }, 300);
-      });
-    });
-
-    // Quick actions hover
-    document.querySelectorAll('.quick-action').forEach(action => {
-      action.addEventListener('mouseenter', () => {
-        action.style.transform = 'translateX(4px)';
-      });
-      action.addEventListener('mouseleave', () => {
-        action.style.transform = 'translateX(0)';
-      });
-    });
-
-    // Simulate live queue updates
-    setInterval(() => {
-      document.querySelectorAll('.queue-item__time').forEach(timeEl => {
-        const currentTime = parseInt(timeEl.textContent);
-        if (!isNaN(currentTime)) {
-          const newTime = currentTime + 1;
-          timeEl.textContent = `${newTime} min`;
-
-          // Update color based on time
-          timeEl.classList.remove('queue-item__time--good', 'queue-item__time--warning', 'queue-item__time--critical');
-          if (newTime < 15) {
-            timeEl.classList.add('queue-item__time--good');
-          } else if (newTime < 25) {
-            timeEl.classList.add('queue-item__time--warning');
-          } else {
-            timeEl.classList.add('queue-item__time--critical');
-          }
-        }
-      });
-    }, 60000); // Update every minute
-
-    // Export report button
-    document.getElementById('exportReportBtn')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      alert('Månedsrapport genereres... (Demo)');
-    });
-
-    // Flow bar tooltips
-    document.querySelectorAll('.flow-bar__segment').forEach(segment => {
-      segment.style.cursor = 'pointer';
-      segment.addEventListener('mouseenter', (e) => {
-        const tooltip = document.createElement('div');
-        tooltip.className = 'flow-tooltip';
-        tooltip.textContent = segment.title;
-        tooltip.style.cssText = `
-          position: fixed;
-          background: var(--color-navy-900);
-          color: white;
-          padding: 6px 12px;
-          border-radius: 6px;
-          font-size: 12px;
-          pointer-events: none;
-          z-index: 1000;
-          left: ${e.clientX}px;
-          top: ${e.clientY - 35}px;
-          transform: translateX(-50%);
-        `;
-        document.body.appendChild(tooltip);
-        segment._tooltip = tooltip;
-      });
-
-      segment.addEventListener('mousemove', (e) => {
-        if (segment._tooltip) {
-          segment._tooltip.style.left = `${e.clientX}px`;
-          segment._tooltip.style.top = `${e.clientY - 35}px`;
-        }
-      });
-
-      segment.addEventListener('mouseleave', () => {
-        if (segment._tooltip) {
-          segment._tooltip.remove();
-          segment._tooltip = null;
-        }
       });
     });
   </script>

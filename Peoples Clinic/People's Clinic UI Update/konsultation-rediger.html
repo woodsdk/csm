@@ -42,26 +42,6 @@
       gap: 2px;
     }
 
-    .review-header__back {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.8125rem;
-      font-weight: 600;
-      color: var(--color-navy-500);
-      text-decoration: none;
-      margin-bottom: 6px;
-    }
-
-    .review-header__back svg {
-      width: 14px;
-      height: 14px;
-    }
-
-    .review-header__back:hover {
-      color: var(--color-navy-700);
-    }
-
     .review-header__title {
       font-size: 1.5rem;
       font-weight: 500;
@@ -76,7 +56,7 @@
     /* Main two-column layout */
     .review-layout {
       display: grid;
-      grid-template-columns: 1fr 380px;
+      grid-template-columns: 1fr 480px;
       gap: 24px;
       flex: 1;
       min-height: 0;
@@ -155,6 +135,54 @@
       color: var(--color-navy-500);
     }
 
+    /* Template dropdown menu */
+    .panel-dropdown-wrapper {
+      position: relative;
+    }
+
+    .panel-dropdown-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      right: 0;
+      z-index: 100;
+      min-width: 200px;
+      background: var(--color-white);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 8px 24px rgba(19, 16, 44, 0.12);
+      padding: 6px;
+    }
+
+    .panel-dropdown-menu--open {
+      display: block;
+    }
+
+    .panel-dropdown-menu__item {
+      display: block;
+      width: 100%;
+      padding: 8px 12px;
+      border: none;
+      background: none;
+      font-family: inherit;
+      font-size: var(--font-size-sm);
+      color: var(--color-text);
+      text-align: left;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background var(--transition-fast);
+    }
+
+    .panel-dropdown-menu__item:hover {
+      background: var(--color-gray-50);
+    }
+
+    .panel-dropdown-menu__item--active {
+      font-weight: 600;
+      color: var(--color-navy-700);
+      background: var(--color-gray-50);
+    }
+
     .panel-content {
       flex: 1;
       padding: 20px 26px;
@@ -193,6 +221,7 @@
       border: 1px solid transparent;
       transition: border-color 0.2s ease, background 0.2s ease;
       outline: none;
+      position: relative;
     }
 
     .notes-content[contenteditable="true"]:hover {
@@ -204,7 +233,757 @@
       background: var(--color-gray-100);
     }
 
-    /* AI input */
+    /* Notes section with phrase button */
+    .notes-section {
+      position: relative;
+    }
+
+    .notes-label-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .phrase-insert-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border: none;
+      background: none;
+      color: var(--color-navy-300);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: all 0.15s ease;
+      padding: 0;
+      opacity: 0;
+    }
+
+    .notes-section:hover .phrase-insert-btn {
+      opacity: 1;
+    }
+
+    .phrase-insert-btn:hover {
+      background: var(--color-navy-100, #e8eaf5);
+      color: var(--color-navy-600);
+    }
+
+    .phrase-insert-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Phrase autocomplete dropdown */
+    .phrase-autocomplete {
+      position: fixed;
+      z-index: 2000;
+      min-width: 340px;
+      max-width: 480px;
+      max-height: 280px;
+      overflow-y: auto;
+      background: var(--color-white);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 8px 24px rgba(19, 16, 44, 0.14);
+      padding: 4px;
+      display: none;
+    }
+
+    .phrase-autocomplete--visible {
+      display: block;
+    }
+
+    .phrase-autocomplete__item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background 0.1s ease;
+    }
+
+    .phrase-autocomplete__item:hover,
+    .phrase-autocomplete__item--active {
+      background: var(--color-gray-50);
+    }
+
+    .phrase-autocomplete__trigger {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      background: var(--color-navy-800);
+      color: var(--color-white);
+      font-size: 11px;
+      font-weight: 600;
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .phrase-autocomplete__info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .phrase-autocomplete__name {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--color-text);
+    }
+
+    .phrase-autocomplete__text {
+      font-size: 0.75rem;
+      color: var(--color-navy-400);
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .phrase-autocomplete__empty {
+      padding: 12px;
+      font-size: 0.8125rem;
+      color: var(--color-navy-400);
+      text-align: center;
+    }
+
+    .phrase-autocomplete__hint {
+      padding: 8px 12px;
+      font-size: 0.6875rem;
+      color: var(--color-navy-400);
+      border-top: 1px solid var(--color-gray-100);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .phrase-autocomplete__hint kbd {
+      display: inline-flex;
+      align-items: center;
+      padding: 1px 5px;
+      background: var(--color-gray-100);
+      border-radius: 3px;
+      font-size: 10px;
+      font-family: inherit;
+      font-weight: 600;
+    }
+
+    /* Phrase popover (for phrase button) */
+    .phrase-popover {
+      position: fixed;
+      z-index: 2000;
+      width: 320px;
+      max-height: 300px;
+      overflow-y: auto;
+      background: var(--color-white);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 8px 24px rgba(19, 16, 44, 0.14);
+      padding: 4px;
+      display: none;
+    }
+
+    .phrase-popover--visible {
+      display: block;
+    }
+
+    .phrase-popover__category {
+      padding: 6px 12px 4px;
+      font-size: 0.625rem;
+      font-weight: 600;
+      color: var(--color-navy-400);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Phrase insert animation */
+    @keyframes phraseInsertFlash {
+      0% { background-color: rgba(86, 105, 164, 0.15); }
+      100% { background-color: transparent; }
+    }
+
+    .phrase-just-inserted {
+      animation: phraseInsertFlash 1s ease;
+    }
+
+    /* Toast notification for phrase insert */
+    .phrase-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--color-navy-800);
+      color: white;
+      padding: 10px 18px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      z-index: 3000;
+    }
+
+    .phrase-toast--visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .phrase-toast svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* ──────────────────────────────────────────────
+       LÆR AF RETTELSER — Correction suggestions
+       ────────────────────────────────────────────── */
+
+    /* Learning badge in panel header */
+    .learning-badge {
+      display: none;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      background: rgba(86, 105, 164, 0.08);
+      border-radius: var(--radius-full);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--color-navy-500);
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .learning-badge--visible {
+      display: inline-flex;
+    }
+
+    .learning-badge svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* Correction suggestion button (per section) */
+    .correction-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      width: 22px;
+      height: 22px;
+      border: none;
+      background: none;
+      color: var(--color-navy-300);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: all 0.15s ease;
+      padding: 0;
+      opacity: 0;
+    }
+
+    .correction-btn--has-suggestions {
+      display: inline-flex;
+    }
+
+    .notes-section:hover .correction-btn {
+      opacity: 1;
+    }
+
+    .correction-btn:hover {
+      background: rgba(234, 179, 8, 0.12);
+      color: #b45309;
+    }
+
+    .correction-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Correction count badge */
+    .correction-btn__count {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      min-width: 15px;
+      height: 15px;
+      padding: 0 4px;
+      background: var(--color-navy-500);
+      color: var(--color-white);
+      font-size: 9px;
+      font-weight: 700;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    /* Correction popover */
+    .correction-popover {
+      position: fixed;
+      z-index: 2000;
+      width: 400px;
+      max-height: 360px;
+      overflow-y: auto;
+      background: var(--color-white);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 8px 24px rgba(19, 16, 44, 0.14);
+      display: none;
+    }
+
+    .correction-popover--visible {
+      display: block;
+    }
+
+    .correction-popover__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px 10px;
+      border-bottom: 1px solid var(--color-gray-100);
+    }
+
+    .correction-popover__title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .correction-popover__title svg {
+      width: 14px;
+      height: 14px;
+      color: var(--color-navy-500);
+    }
+
+    .correction-popover__subtitle {
+      font-size: 0.6875rem;
+      color: var(--color-navy-400);
+    }
+
+    /* Individual correction item */
+    .correction-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-gray-50);
+      cursor: pointer;
+      transition: background 0.1s ease;
+    }
+
+    .correction-item:last-child {
+      border-bottom: none;
+    }
+
+    .correction-item:hover {
+      background: var(--color-gray-50);
+    }
+
+    .correction-item__diff {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .correction-item__original {
+      font-size: 0.75rem;
+      color: var(--color-navy-400);
+      text-decoration: line-through;
+      line-height: 1.4;
+    }
+
+    .correction-item__arrow {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.625rem;
+      color: var(--color-navy-300);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    .correction-item__arrow svg {
+      width: 10px;
+      height: 10px;
+    }
+
+    .correction-item__corrected {
+      font-size: 0.8125rem;
+      color: var(--color-text);
+      font-weight: 500;
+      line-height: 1.4;
+      background: rgba(34, 197, 94, 0.06);
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      border-left: 2px solid rgba(34, 197, 94, 0.4);
+    }
+
+    .correction-item__meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .correction-item__use-count {
+      font-size: 0.625rem;
+      color: var(--color-navy-400);
+    }
+
+    .correction-item__insert-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      background: var(--color-navy-500);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s ease;
+    }
+
+    .correction-item__insert-btn:hover {
+      background: var(--color-navy-700);
+    }
+
+    .correction-item__insert-btn svg {
+      width: 10px;
+      height: 10px;
+    }
+
+    /* Correction toast (reuses phrase toast with different accent) */
+    .correction-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: linear-gradient(135deg, #065f46, #047857);
+      color: white;
+      padding: 10px 18px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      z-index: 3000;
+    }
+
+    .correction-toast--visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .correction-toast svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* ──────────────────────────────────────────────
+       REGENERER — Pulse animation on template change
+       ────────────────────────────────────────────── */
+    @keyframes regenerPulse {
+      0%, 100% { background: var(--color-navy-500); color: var(--color-white); box-shadow: 0 0 0 0 rgba(86, 105, 164, 0.5); }
+      50% { background: var(--color-navy-600); color: var(--color-white); box-shadow: 0 0 0 8px rgba(86, 105, 164, 0); }
+    }
+
+    .action-btn--regenerate-pulse {
+      animation: regenerPulse 1.2s ease infinite;
+      border-color: var(--color-navy-500) !important;
+    }
+
+    .action-btn--regenerate-pulse i {
+      color: var(--color-white) !important;
+    }
+
+    /* Regenerating spinner */
+    @keyframes regenerSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .action-btn--regenerating {
+      pointer-events: none;
+      opacity: 0.85;
+    }
+
+    .action-btn--regenerating i {
+      animation: regenerSpin 0.8s linear infinite;
+    }
+
+    /* Template change badge */
+    .template-pending-badge {
+      display: none;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      background: rgba(234, 179, 8, 0.12);
+      color: #92400e;
+      border-radius: var(--radius-full);
+      font-size: 0.625rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .template-pending-badge--visible {
+      display: inline-flex;
+    }
+
+    .template-pending-badge svg {
+      width: 10px;
+      height: 10px;
+    }
+
+    /* ──────────────────────────────────────────────
+       DIAGNOSIS CODES SECTION — Compact inline tags
+       ────────────────────────────────────────────── */
+    .codes-section {
+      padding: 10px 26px 14px;
+      border-top: 1px solid var(--color-gray-200);
+      flex-shrink: 0;
+    }
+
+    .codes-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .codes-title {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--color-navy-400);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    /* Code chips — horizontal wrap */
+    .code-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+
+    .code-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 26px;
+      padding: 0 9px 0 11px;
+      background: var(--color-white);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-full);
+      transition: background 0.35s cubic-bezier(0.25, 0.1, 0.25, 1), border-color 0.35s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+      line-height: 1;
+    }
+
+    .code-chip:hover {
+      border-color: var(--color-navy-300);
+      box-shadow: 0 1px 4px rgba(86, 105, 164, 0.1);
+    }
+
+    .code-chip--accepted {
+      background: rgba(34, 197, 94, 0.04);
+      border-color: rgba(34, 197, 94, 0.3);
+    }
+
+    .code-chip--removed {
+      opacity: 0;
+      width: 0;
+      padding: 0;
+      margin: 0;
+      border: none;
+      overflow: hidden;
+      transition: all 0.25s ease;
+    }
+
+    .code-chip__system {
+      display: none;
+    }
+
+    .code-chip__code {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--color-text);
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    }
+
+    .code-chip__desc {
+      font-size: 0.6875rem;
+      color: var(--color-navy-400);
+    }
+
+    .code-chip__btn {
+      width: 0;
+      height: 16px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: width 0.3s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1), background 0.2s ease, color 0.2s ease;
+      color: var(--color-navy-400);
+      flex-shrink: 0;
+      padding: 0;
+      opacity: 0;
+      overflow: hidden;
+    }
+
+    .code-chip:hover .code-chip__btn {
+      width: 16px;
+      opacity: 1;
+    }
+
+    .code-chip__btn i {
+      width: 10px;
+      height: 10px;
+    }
+
+    .code-chip__btn--accept {
+      color: var(--color-navy-300);
+    }
+
+    .code-chip__btn--accept:hover {
+      background: rgba(34, 197, 94, 0.15);
+      color: #22C55E;
+    }
+
+    .code-chip__btn--remove:hover {
+      background: rgba(239, 68, 68, 0.1);
+      color: #EF4444;
+    }
+
+    /* Confidence — left border accent */
+    .code-chip__confidence {
+      display: none;
+    }
+
+    /* Add code search — compact */
+    .code-search {
+      position: relative;
+    }
+
+    .code-search__input-wrapper {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 26px;
+      padding: 0 9px 0 11px;
+      border: 1px dashed var(--color-gray-200);
+      border-radius: var(--radius-full);
+      transition: all var(--transition-fast);
+    }
+
+    .code-search__input-wrapper:focus-within {
+      border-color: var(--color-navy-500);
+      border-style: solid;
+      background: var(--color-white);
+    }
+
+    .code-search__input-wrapper i {
+      width: 11px;
+      height: 11px;
+      color: var(--color-navy-400);
+      flex-shrink: 0;
+    }
+
+    .code-search__input {
+      border: none;
+      background: none;
+      font-family: inherit;
+      font-size: 0.6875rem;
+      color: var(--color-text);
+      outline: none;
+      width: 160px;
+    }
+
+    .code-search__input::placeholder {
+      color: var(--color-navy-400);
+    }
+
+    /* Autocomplete dropdown */
+    .code-autocomplete {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      width: 360px;
+      background: var(--color-white);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      max-height: 180px;
+      overflow-y: auto;
+      z-index: 100;
+      display: none;
+    }
+
+    .code-autocomplete.active {
+      display: block;
+    }
+
+    .code-autocomplete__item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      transition: background var(--transition-fast);
+    }
+
+    .code-autocomplete__item:hover {
+      background: var(--color-gray-50);
+    }
+
+    .code-autocomplete__item:not(:last-child) {
+      border-bottom: 1px solid var(--color-gray-100);
+    }
+
+    .code-autocomplete__system {
+      font-size: 0.5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 1px 4px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .code-autocomplete__code {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--color-text);
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    }
+
+    .code-autocomplete__desc {
+      flex: 1;
+      font-size: 0.6875rem;
+      color: var(--color-navy-500);
+    }
+
+    /* AI input — kept for sidebar only */
     .ai-input-section {
       padding: 12px 26px 16px;
       border-top: 1px solid var(--color-gray-200);
@@ -261,22 +1040,6 @@
       min-height: 0;
     }
 
-    /* Transcript compact view */
-    .transcript-line {
-      margin-bottom: 10px;
-      font-size: 0.8125rem;
-      line-height: 1.6;
-    }
-
-    .transcript-line:last-child {
-      margin-bottom: 0;
-    }
-
-    .transcript-speaker {
-      font-weight: 600;
-      color: var(--color-navy-500);
-    }
-
     /* Resume sections */
     .resume-section {
       margin-bottom: 12px;
@@ -314,22 +1077,115 @@
       left: 0;
     }
 
-    /* Bottom action bar */
+    /* Page-specific action bar override */
     .action-bar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding-top: 16px;
-      flex-shrink: 0;
-      flex-wrap: wrap;
+      padding-bottom: 24px;
     }
 
-    .action-bar .action-btn {
+    /* Rating modal */
+    .rating-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .rating-overlay.active {
+      display: flex;
+    }
+
+    .rating-modal {
+      background: var(--color-white);
+      border-radius: var(--radius-2xl);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      padding: 36px 40px;
+      text-align: center;
+      max-width: 460px;
+      width: 100%;
+    }
+
+    .rating-modal__title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 6px;
+    }
+
+    .rating-modal__subtitle {
+      font-size: 0.8125rem;
+      color: var(--color-navy-500);
+      margin-bottom: 24px;
+    }
+
+    .rating-scale {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .rating-scale__btn {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-lg);
+      border: none;
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--color-white);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .rating-scale__btn:hover {
+      transform: scale(1.15);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .rating-scale__labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.6875rem;
+      color: var(--color-navy-400);
+      padding: 0 2px;
+    }
+
+    .rating-comment {
+      width: 100%;
+      margin-top: 20px;
+      padding: 12px 14px;
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      font-family: inherit;
+      font-size: 0.8125rem;
+      color: var(--color-text);
+      resize: vertical;
+      min-height: 72px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .rating-comment::placeholder {
+      color: var(--color-navy-400);
+    }
+
+    .rating-comment:focus {
+      border-color: var(--color-navy-400);
+    }
+
+    .rating-submit-btn {
+      margin-top: 16px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 14px 28px;
+      padding: 12px 32px;
+      background: var(--gradient-button-primary);
+      border: none;
+      color: var(--color-white);
       font-family: inherit;
       font-size: 0.875rem;
       font-weight: 700;
@@ -337,136 +1193,348 @@
       letter-spacing: 0.02em;
       border-radius: var(--radius-full);
       cursor: pointer;
-      text-decoration: none;
-      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                  box-shadow 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      will-change: transform, box-shadow;
-      white-space: nowrap;
+      box-shadow: var(--shadow-button);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .action-bar .action-btn svg {
+    .rating-submit-btn:hover {
+      background: linear-gradient(135deg, #2F3D62 0%, #4A5D96 100%);
+      box-shadow: 0 4px 18px rgba(56, 69, 109, 0.3);
+    }
+
+    .rating-submit-btn:active {
+      background: linear-gradient(135deg, #2F3D62 0%, #4A5D96 100%);
+      box-shadow: 0 4px 18px rgba(56, 69, 109, 0.3);
+    }
+
+    .rating-submit-btn svg {
       width: 16px;
       height: 16px;
     }
 
-    .action-bar .action-btn--primary {
-      background: var(--gradient-button-primary);
-      border: none;
-      color: var(--color-white);
-      box-shadow: var(--shadow-button);
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
-    .action-bar .action-btn--primary:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-button-hover);
+    /* ──────────────────────────────────────────────
+       TRANSLATE SLIDE-OVER PANEL
+       ────────────────────────────────────────────── */
+    .translate-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.2);
+      z-index: 900;
     }
 
-    .action-bar .action-btn--secondary {
+    .translate-overlay.active {
+      display: block;
+    }
+
+    .translate-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 480px;
+      max-width: 90vw;
+      height: 100vh;
       background: var(--color-white);
-      border: none;
-      color: var(--color-text);
-      box-shadow: var(--shadow-nav-secondary);
+      box-shadow: -8px 0 40px rgba(0, 0, 0, 0.12);
+      z-index: 901;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
     }
 
-    .action-bar .action-btn--secondary:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-nav-secondary-hover);
+    .translate-overlay.active .translate-panel {
+      transform: translateX(0);
     }
 
-    .action-bar .action-btn--accent {
-      background: var(--color-navy-800);
-      border: none;
-      color: var(--color-white);
-      box-shadow: var(--shadow-button);
-    }
-
-    .action-bar .action-btn--accent:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-button-hover);
-    }
-
-    /* Spacer to push items right */
-    .action-bar__spacer {
-      flex: 1;
-    }
-
-    /* Bottom row */
-    .bottom-row {
+    .translate-panel__header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 0 4px;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--color-gray-200);
       flex-shrink: 0;
     }
 
-    .rating {
+    .translate-panel__title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-text);
       display: flex;
       align-items: center;
-      gap: 2px;
+      gap: 8px;
     }
 
-    .rating__star {
+    .translate-panel__title i {
       width: 18px;
       height: 18px;
-      color: var(--color-gray-200);
-      cursor: pointer;
-      transition: color 0.15s ease;
+      color: var(--color-navy-500);
     }
 
-    .rating__star:hover,
-    .rating__star--active {
-      color: #F59E0B;
-    }
-
-    .return-option {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .return-option__check {
-      width: 20px;
-      height: 20px;
+    .translate-panel__close {
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      background: var(--color-success);
+      border: none;
+      background: transparent;
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
+      cursor: pointer;
+      color: var(--color-navy-400);
+      transition: background 0.2s ease;
     }
 
-    .return-option__check svg {
-      width: 12px;
-      height: 12px;
-      color: var(--color-white);
+    .translate-panel__close:hover {
+      background: var(--color-gray-100);
     }
 
-    .return-option__label {
-      font-size: 0.8125rem;
-      font-weight: 600;
-      color: var(--color-text);
+    .translate-panel__close i {
+      width: 18px;
+      height: 18px;
     }
 
-    .return-option__sublabel {
-      font-size: 0.6875rem;
-      color: var(--color-navy-500);
-    }
-
-    /* AI checkbox */
-    .ai-checkbox {
+    .translate-panel__controls {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 8px 26px 14px;
-      font-size: 0.8125rem;
-      color: var(--color-navy-500);
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--color-gray-100);
+      flex-shrink: 0;
     }
 
-    .ai-checkbox input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      accent-color: var(--color-navy-500);
+    .translate-panel__select {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      font-family: inherit;
+      font-size: 0.8125rem;
+      color: var(--color-text);
+      background: var(--color-white);
       cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s ease;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235669A4' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+    }
+
+    .translate-panel__select:focus {
+      border-color: var(--color-navy-500);
+    }
+
+    .translate-panel__generate {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      background: var(--color-navy-800);
+      border: none;
+      color: var(--color-white);
+      font-family: inherit;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: background 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .translate-panel__generate:hover {
+      background: var(--color-navy-700);
+    }
+
+    .translate-panel__generate i {
+      width: 14px;
+      height: 14px;
+    }
+
+    .translate-panel__body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px;
+    }
+
+    .translate-panel__empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 12px;
+      color: var(--color-navy-400);
+    }
+
+    .translate-panel__empty i {
+      width: 36px;
+      height: 36px;
+      opacity: 0.4;
+    }
+
+    .translate-panel__empty span {
+      font-size: 0.8125rem;
+    }
+
+    .translate-panel__output {
+      display: none;
+      font-size: 0.8125rem;
+      line-height: 1.7;
+      color: var(--color-text);
+    }
+
+    .translate-panel__output .notes-label {
+      font-weight: 700;
+      margin-top: 14px;
+      margin-bottom: 3px;
+    }
+
+    .translate-panel__output .notes-label:first-child {
+      margin-top: 0;
+    }
+
+    .translate-panel__footer {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 24px;
+      border-top: 1px solid var(--color-gray-200);
+      flex-shrink: 0;
+    }
+
+    .translate-panel__footer.active {
+      display: flex;
+    }
+
+    .translate-panel__copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      background: var(--gradient-button-primary);
+      border: none;
+      color: var(--color-white);
+      font-family: inherit;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      box-shadow: var(--shadow-button);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .translate-panel__copy:hover {
+      background: linear-gradient(135deg, #2F3D62 0%, #4A5D96 100%);
+      box-shadow: 0 4px 18px rgba(56, 69, 109, 0.3);
+    }
+
+    .translate-panel__copy:active {
+      background: linear-gradient(135deg, #2F3D62 0%, #4A5D96 100%);
+      box-shadow: 0 4px 18px rgba(56, 69, 109, 0.3);
+    }
+
+    .translate-panel__copy i {
+      width: 14px;
+      height: 14px;
+    }
+
+    .translate-panel__print {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      background: var(--color-white);
+      border: 1.5px solid var(--color-gray-200);
+      color: var(--color-navy-500);
+      font-family: inherit;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .translate-panel__print:hover {
+      border-color: var(--color-navy-500);
+      color: var(--color-navy-800);
+    }
+
+    .translate-panel__print i {
+      width: 14px;
+      height: 14px;
+    }
+
+    .translate-panel__disclaimer {
+      flex: 1;
+      font-size: 0.6875rem;
+      color: var(--color-navy-400);
+      line-height: 1.4;
+    }
+
+    .translate-panel__lang-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      background: var(--color-gray-100);
+      border-radius: var(--radius-full);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--color-navy-500);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    /* ──────────────────────────────────────────────
+       PRINT STYLES
+       ────────────────────────────────────────────── */
+    @media print {
+      .topbar, .bottom-nav, .action-bar, .review-sidebar,
+      .rating-overlay, .translate-overlay, .codes-section,
+      .panel-header, .ai-input-section {
+        display: none !important;
+      }
+
+      .platform {
+        display: block;
+      }
+
+      .content-area--full {
+        padding: 0 !important;
+      }
+
+      .review-layout {
+        display: block !important;
+      }
+
+      .consultation-panel {
+        box-shadow: none !important;
+        border: none !important;
+      }
+
+      .panel-content {
+        padding: 0 !important;
+      }
+
+      .review-header {
+        margin-bottom: 16px;
+      }
+
+      .review-header__title {
+        font-size: 1.25rem;
+      }
+
+      body {
+        font-size: 11pt;
+        color: #000;
+      }
     }
 
     /* Responsive */
@@ -476,7 +1544,7 @@
       }
 
       .review-layout {
-        grid-template-columns: 1fr 320px;
+        grid-template-columns: 1fr 420px;
         gap: 16px;
       }
     }
@@ -505,6 +1573,18 @@
   </style>
 </head>
 <body>
+  <!-- Device Blocker (mobile/tablet) -->
+  <div class="device-blocker">
+    <svg class="device-blocker__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="2" y="3" width="20" height="14" rx="2"/>
+      <line x1="8" y1="21" x2="16" y2="21"/>
+      <line x1="12" y1="17" x2="12" y2="21"/>
+    </svg>
+    <h1 class="device-blocker__title">Åbn People's Clinic på din computer</h1>
+    <p class="device-blocker__text">Platformen er designet til desktop og fungerer bedst på en større skærm.</p>
+    <p class="device-blocker__note">Vi arbejder på en mobilversion — stay tuned!</p>
+  </div>
+
   <div class="platform">
     <!-- Top Bar -->
     <header class="topbar">
@@ -537,10 +1617,6 @@
         <!-- Header -->
         <div class="review-header">
           <div class="review-header__left">
-            <a href="platform-preview.html" class="review-header__back">
-              <i data-lucide="arrow-left"></i>
-              Tilbage til oversigt
-            </a>
             <h1 class="review-header__title">Redigér og gem notat</h1>
             <p class="review-header__meta">Nancy Berggren &middot; 25.05.2025 12:18 &middot; 8 min 7 sek</p>
           </div>
@@ -559,10 +1635,27 @@
                     <i data-lucide="sparkles"></i>
                     AI-genereret
                   </span>
-                  <button class="panel-dropdown">
-                    SOAP
-                    <i data-lucide="chevron-down"></i>
-                  </button>
+                  <span class="learning-badge" id="learningBadge">
+                    <i data-lucide="brain"></i>
+                    Tilpasset til din stil
+                  </span>
+                  <div class="panel-dropdown-wrapper">
+                    <button class="panel-dropdown" id="templateDropdownBtn">
+                      <span style="color: var(--color-navy-400); font-weight: 500;">Skabelon</span>
+                      <span style="font-weight: 700;" id="templateDropdownLabel">SOAP</span>
+                      <i data-lucide="chevron-down"></i>
+                    </button>
+                    <div class="panel-dropdown-menu" id="templateDropdownMenu">
+                      <button class="panel-dropdown-menu__item panel-dropdown-menu__item--active" data-template="soap">SOAP</button>
+                      <button class="panel-dropdown-menu__item" data-template="psoap">PSOAP</button>
+                      <button class="panel-dropdown-menu__item" data-template="soap-kort">SOAP - Kort</button>
+                      <button class="panel-dropdown-menu__item" data-template="soap-psykisk">SOAP - Psykisk</button>
+                      <button class="panel-dropdown-menu__item" data-template="soap-baggrund">SOAP med baggrund</button>
+                      <button class="panel-dropdown-menu__item" data-template="fritekst">Fritekst</button>
+                      <button class="panel-dropdown-menu__item" data-template="struktureret">Struktureret</button>
+                      <button class="panel-dropdown-menu__item" data-template="aarskontrol">Årskontrol</button>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="panel-content">
@@ -583,39 +1676,65 @@
                   <div class="notes-content" contenteditable="true">– Bestilling af EKG og blodprøver inkl. lipidprofil, HbA1c og troponin (screening).<br>– Henvisning til kardiologisk vurdering inkl. arbejds-EKG.<br>– Rådgivning om at undgå hård fysisk belastning indtil udredning er afsluttet.</div>
                 </div>
               </div>
-              <div class="ai-input-section">
-                <div class="ai-input-wrapper">
-                  <input type="text" class="ai-input" placeholder="Bed AI'en om at ændre eller tilføje noget...">
-                  <button class="ai-send-btn">
-                    <i data-lucide="send"></i>
-                  </button>
+
+              <!-- ═══════════════════════════════════════
+                   DIAGNOSIS CODES — NEW SECTION
+                   ═══════════════════════════════════════ -->
+              <div class="codes-section">
+                <div class="codes-header">
+                  <span class="codes-title">Diagnosekoder</span>
+                </div>
+
+                <div class="code-chips" id="codeChips">
+                  <div class="code-chip" id="chip-1">
+                    <span class="code-chip__confidence code-chip__confidence--high"></span>
+                    <span class="code-chip__system code-chip__system--icpc">ICPC-2</span>
+                    <span class="code-chip__code">K74</span>
+                    <span class="code-chip__desc">Angina pectoris</span>
+                    <button class="code-chip__btn code-chip__btn--accept" title="Godkend" onclick="acceptCode('chip-1')"><i data-lucide="check"></i></button>
+                    <button class="code-chip__btn code-chip__btn--remove" title="Fjern" onclick="removeCode('chip-1')"><i data-lucide="x"></i></button>
+                  </div>
+                  <div class="code-chip" id="chip-2">
+                    <span class="code-chip__confidence code-chip__confidence--high"></span>
+                    <span class="code-chip__system code-chip__system--icd">ICD-10</span>
+                    <span class="code-chip__code">DI209</span>
+                    <span class="code-chip__desc">Ustabil angina pectoris</span>
+                    <button class="code-chip__btn code-chip__btn--accept" title="Godkend" onclick="acceptCode('chip-2')"><i data-lucide="check"></i></button>
+                    <button class="code-chip__btn code-chip__btn--remove" title="Fjern" onclick="removeCode('chip-2')"><i data-lucide="x"></i></button>
+                  </div>
+                  <div class="code-chip" id="chip-3">
+                    <span class="code-chip__confidence code-chip__confidence--medium"></span>
+                    <span class="code-chip__system code-chip__system--icpc">ICPC-2</span>
+                    <span class="code-chip__code">K85</span>
+                    <span class="code-chip__desc">Forhøjet blodtryk</span>
+                    <button class="code-chip__btn code-chip__btn--accept" title="Godkend" onclick="acceptCode('chip-3')"><i data-lucide="check"></i></button>
+                    <button class="code-chip__btn code-chip__btn--remove" title="Fjern" onclick="removeCode('chip-3')"><i data-lucide="x"></i></button>
+                  </div>
+                  <div class="code-chip" id="chip-4">
+                    <span class="code-chip__confidence code-chip__confidence--medium"></span>
+                    <span class="code-chip__system code-chip__system--icd">ICD-10</span>
+                    <span class="code-chip__code">DZ825</span>
+                    <span class="code-chip__desc">Fam. disp. iskæmisk hjertesygd.</span>
+                    <button class="code-chip__btn code-chip__btn--accept" title="Godkend" onclick="acceptCode('chip-4')"><i data-lucide="check"></i></button>
+                    <button class="code-chip__btn code-chip__btn--remove" title="Fjern" onclick="removeCode('chip-4')"><i data-lucide="x"></i></button>
+                  </div>
+
+                  <!-- Inline search -->
+                  <div class="code-search" id="codeSearch">
+                    <div class="code-search__input-wrapper">
+                      <i data-lucide="plus"></i>
+                      <input type="text" class="code-search__input" id="codeSearchInput" placeholder="Tilføj kode..." autocomplete="off">
+                    </div>
+                    <div class="code-autocomplete" id="codeAutocomplete"></div>
+                  </div>
                 </div>
               </div>
-              <label class="ai-checkbox">
-                <input type="checkbox">
-                AI'en skal lære at generere noter som denne
-              </label>
-            </div>
+
+              </div>
           </div>
 
           <!-- RIGHT: Context sidebar -->
           <div class="review-sidebar">
-
-            <!-- Transskription (compact) -->
-            <div class="consultation-panel" style="flex: 1; min-height: 0;">
-              <div class="panel-header">
-                <h2 class="panel-title">Transskription</h2>
-              </div>
-              <div class="panel-content">
-                <div class="transcript-line"><span class="transcript-speaker">Patient:</span> Jeg har haft trykken midt i brystet de sidste par uger. Det kommer især når jeg går hurtigt eller går på trapper.</div>
-                <div class="transcript-line"><span class="transcript-speaker">Læge:</span> Hvor længe varer det typisk?</div>
-                <div class="transcript-line"><span class="transcript-speaker">Patient:</span> Måske fem minutter. Det går væk, når jeg sætter mig ned.</div>
-                <div class="transcript-line"><span class="transcript-speaker">Læge:</span> Stråler det nogen steder hen?</div>
-                <div class="transcript-line"><span class="transcript-speaker">Patient:</span> Lidt op i venstre skulder nogen gange. Og jeg bliver lidt forpustet.</div>
-                <div class="transcript-line"><span class="transcript-speaker">Læge:</span> Har der været kvalme eller svimmelhed?</div>
-                <div class="transcript-line"><span class="transcript-speaker">Patient:</span> Nej, ikke rigtig. Men jeg har været mere træt end normalt de seneste uger.</div>
-              </div>
-            </div>
 
             <!-- Patientresume -->
             <div class="consultation-panel" style="flex: 1; min-height: 0;">
@@ -638,10 +1757,18 @@
                   </ul>
                 </div>
                 <div class="resume-section">
+                  <div class="resume-label">Risiko- og baggrundsdata</div>
+                  <ul class="resume-list">
+                    <li>Familiær disposition: far med AMI v. 62 år</li>
+                    <li>Ingen aktuelle medicinændringer</li>
+                  </ul>
+                </div>
+                <div class="resume-section">
                   <div class="resume-label">Objektive fund</div>
                   <ul class="resume-list">
                     <li>BT 132/78, puls 78 reg.</li>
                     <li>Cor/pulm: upåfaldende</li>
+                    <li>EKG: uden akutte iskæmitegn</li>
                     <li>Ingen ødemer</li>
                   </ul>
                 </div>
@@ -666,45 +1793,97 @@
           </button>
           <button class="action-btn action-btn--secondary">
             <i data-lucide="copy"></i>
-            Kopier
+            Kopier notat
           </button>
-          <button class="action-btn action-btn--secondary">
+          <button class="action-btn action-btn--secondary" id="btnRegenerate">
             <i data-lucide="refresh-cw"></i>
             Regenerer
           </button>
+          <span class="template-pending-badge" id="templatePendingBadge">
+            <i data-lucide="arrow-right"></i>
+            Ny skabelon valgt
+          </span>
+          <button class="action-btn action-btn--secondary" id="btnTranslate">
+            <i data-lucide="globe"></i>
+            Oversæt
+          </button>
           <div class="action-bar__spacer"></div>
-          <a href="konsultation-aktiv.html" class="action-btn action-btn--accent">
+          <a href="konsultation-aktiv.html" class="action-btn action-btn--secondary" id="resumeBtn">
             <i data-lucide="play"></i>
-            Genoptag
+            Genoptag konsultation
           </a>
         </div>
 
-        <!-- Bottom row -->
-        <div class="bottom-row">
-          <div class="rating">
-            <i data-lucide="star" class="rating__star"></i>
-            <i data-lucide="star" class="rating__star"></i>
-            <i data-lucide="star" class="rating__star"></i>
-            <i data-lucide="star" class="rating__star"></i>
-            <i data-lucide="star" class="rating__star"></i>
-            <i data-lucide="star" class="rating__star"></i>
-            <i data-lucide="star" class="rating__star"></i>
-            <i data-lucide="star" class="rating__star"></i>
-            <i data-lucide="star" class="rating__star"></i>
-            <i data-lucide="star" class="rating__star"></i>
-          </div>
-          <div class="return-option">
-            <div class="return-option__check">
-              <i data-lucide="check"></i>
-            </div>
-            <div>
-              <div class="return-option__label">Gå til start efter gem</div>
-              <div class="return-option__sublabel">Notatet kopieres til udklipsholderen</div>
-            </div>
-          </div>
-        </div>
 
       </main>
+    </div>
+
+    <!-- Rating Modal -->
+    <div class="rating-overlay" id="ratingOverlay">
+      <div class="rating-modal">
+        <div class="rating-modal__title">Hvor præcist var notatet?</div>
+        <div class="rating-modal__subtitle">Vurdér det AI-genererede notat fra 1-10</div>
+        <div class="rating-scale" id="ratingScale"></div>
+        <div class="rating-scale__labels">
+          <span>Dårligt</span>
+          <span>Perfekt</span>
+        </div>
+        <textarea class="rating-comment" id="ratingComment" placeholder="Valgfri kommentar — hvad kunne forbedres?"></textarea>
+        <button class="rating-submit-btn" id="ratingSubmitBtn">
+          <i data-lucide="send"></i>
+          Send feedback
+        </button>
+      </div>
+    </div>
+
+    <!-- Translate Slide-Over Panel -->
+    <div class="translate-overlay" id="translateOverlay">
+      <div class="translate-panel">
+        <div class="translate-panel__header">
+          <div class="translate-panel__title">
+            <i data-lucide="globe"></i>
+            Oversæt notat
+          </div>
+          <button class="translate-panel__close" id="translateClose">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="translate-panel__controls">
+          <select class="translate-panel__select" id="translateLang">
+            <option value="en">English</option>
+            <option value="de">Deutsch</option>
+            <option value="ar">العربية (Arabisk)</option>
+            <option value="tr">Türkçe (Tyrkisk)</option>
+            <option value="pl">Polski (Polsk)</option>
+            <option value="ur">اردو (Urdu)</option>
+            <option value="so">Soomaali (Somalisk)</option>
+            <option value="fa">فارسی (Farsi)</option>
+          </select>
+          <button class="translate-panel__generate" id="translateGenerate">
+            <i data-lucide="sparkles"></i>
+            Generér
+          </button>
+        </div>
+        <div class="translate-panel__body">
+          <div class="translate-panel__empty" id="translateEmpty">
+            <i data-lucide="languages"></i>
+            <span>Vælg sprog og klik Generér</span>
+          </div>
+          <div class="translate-panel__output" id="translateOutput"></div>
+        </div>
+        <div class="translate-panel__footer" id="translateFooter">
+          <button class="translate-panel__copy" id="translateCopy">
+            <i data-lucide="copy"></i>
+            Kopiér oversættelse
+          </button>
+          <button class="translate-panel__print" id="translatePrint">
+            <i data-lucide="printer"></i>
+            Print
+          </button>
+          <span class="translate-panel__lang-badge" id="translateBadge"></span>
+          <span class="translate-panel__disclaimer">AI-oversættelse — bør gennemgås af kvalificeret person</span>
+        </div>
+      </div>
     </div>
 
     <!-- Bottom Navigation (Mobile/Tablet) -->
@@ -736,6 +1915,1251 @@
 
   <script>
     lucide.createIcons();
+
+    // ─── Template Dropdown ──────────────────────────────────────
+    const templateBtn = document.getElementById('templateDropdownBtn');
+    const templateMenu = document.getElementById('templateDropdownMenu');
+    const templateLabel = document.getElementById('templateDropdownLabel');
+    const panelContent = document.querySelector('.panel-content');
+
+    const templateSections = {
+      'soap': [
+        { label: 'Anamnese', content: 'Patient med to ugers tiltagende trykken retrosternalt, udløst af moderat fysisk aktivitet. Varighed ca. 5 min, lindres ved hvile. Let udstråling til venstre skulder. Let dyspnø ved anfald. Ingen kvalme. Familiær disposition til IHS (far med AMI v. 62 år). Øget træthed gennem de seneste uger. Ingen medicinændringer.' },
+        { label: 'Objektivt', content: 'Almen upåvirket, vågen og klar. Normal vejrtrækning i hvile. Ingen ødemer. BT 132/78, puls 78 reg. Cor/pulm uden mislyde eller krepitationer. EKG initialt uden akutte iskæmitegn.' },
+        { label: 'Vurdering', content: 'Brystsmerter forenelige med mulig stabil angina pectoris. Familiær disposition og belastningsudløste symptomer taler for videre kardiologisk udredning. Ingen tegn på akut koronart syndrom aktuelt.' },
+        { label: 'Plan', content: '– Bestilling af EKG og blodprøver inkl. lipidprofil, HbA1c og troponin (screening).<br>– Henvisning til kardiologisk vurdering inkl. arbejds-EKG.<br>– Rådgivning om at undgå hård fysisk belastning indtil udredning er afsluttet.' }
+      ],
+      'psoap': [
+        { label: 'Problem', content: 'Belastningsudløste retrosternale brystsmerter med udstråling til venstre skulder. Familiær disposition til iskæmisk hjertesygdom.' },
+        { label: 'Subjektivt', content: 'Patient med to ugers tiltagende trykken retrosternalt ved moderat fysisk aktivitet. Varighed ca. 5 min, lindres ved hvile. Let dyspnø ved anfald. Ingen kvalme. Øget træthed de seneste uger. Far med AMI v. 62 år. Ingen medicinændringer.' },
+        { label: 'Objektivt', content: 'Almen upåvirket, vågen og klar. Normal vejrtrækning i hvile. Ingen ødemer. BT 132/78, puls 78 reg. Cor/pulm uden mislyde eller krepitationer. EKG initialt uden akutte iskæmitegn.' },
+        { label: 'Vurdering', content: 'Brystsmerter forenelige med mulig stabil angina pectoris. Familiær disposition og belastningsudløste symptomer taler for videre kardiologisk udredning. Ingen tegn på akut koronart syndrom aktuelt.' },
+        { label: 'Plan', content: '– Bestilling af EKG og blodprøver inkl. lipidprofil, HbA1c og troponin (screening).<br>– Henvisning til kardiologisk vurdering inkl. arbejds-EKG.<br>– Rådgivning om at undgå hård fysisk belastning indtil udredning er afsluttet.' }
+      ],
+      'soap-kort': [
+        { label: 'Anamnese', content: 'To ugers tiltagende retrosternal trykken ved fysisk aktivitet, varighed 5 min, lindres ved hvile. Udstråling til venstre skulder. Familiær disposition (far AMI v. 62).' },
+        { label: 'Objektivt', content: 'BT 132/78, puls 78 reg. Cor/pulm ua. EKG uden akutte iskæmitegn.' },
+        { label: 'Plan', content: '– EKG + blodprøver (lipidprofil, HbA1c, troponin).<br>– Henvisning til kardiologisk vurdering.<br>– Undgå hård fysisk belastning indtil udredning.' }
+      ],
+      'soap-psykisk': [
+        { label: 'Anamnese', content: 'Patient med to ugers tiltagende trykken retrosternalt, udløst af moderat fysisk aktivitet. Øget træthed og nedsat overskud de seneste uger.' },
+        { label: 'Objektivt', content: 'Almen upåvirket, vågen og klar. BT 132/78, puls 78 reg. Cor/pulm ua. EKG uden akutte iskæmitegn.' },
+        { label: 'Psykisk status', content: 'Patienten fremstår relevant bekymret for symptomerne. Ingen tegn på angst eller depression. Normalt stemningsleje. God sygdomsindsigt.' },
+        { label: 'Vurdering', content: 'Somatisk: obs. stabil angina pectoris. Psykisk: relevant bekymring, ingen psykopatologi.' },
+        { label: 'Plan', content: '– Kardiologisk udredning som beskrevet.<br>– Opfølgning om 2 uger mhp. resultater og patientens trivsel.' }
+      ],
+      'soap-baggrund': [
+        { label: 'Baggrund', content: 'Mand, ingen tidligere kardiel sygehistorie. Familiær disposition til iskæmisk hjertesygdom (far med AMI v. 62 år). Ingen faste lægemidler. Ikke-ryger. Ingen kendte allergier.' },
+        { label: 'Anamnese', content: 'Patient med to ugers tiltagende trykken retrosternalt, udløst af moderat fysisk aktivitet. Varighed ca. 5 min, lindres ved hvile. Let udstråling til venstre skulder. Let dyspnø ved anfald. Ingen kvalme. Øget træthed de seneste uger.' },
+        { label: 'Objektivt', content: 'Almen upåvirket, vågen og klar. Normal vejrtrækning i hvile. Ingen ødemer. BT 132/78, puls 78 reg. Cor/pulm uden mislyde eller krepitationer. EKG initialt uden akutte iskæmitegn.' },
+        { label: 'Vurdering', content: 'Brystsmerter forenelige med mulig stabil angina pectoris. Familiær disposition og belastningsudløste symptomer taler for videre kardiologisk udredning. Ingen tegn på akut koronart syndrom aktuelt.' },
+        { label: 'Plan', content: '– Bestilling af EKG og blodprøver inkl. lipidprofil, HbA1c og troponin (screening).<br>– Henvisning til kardiologisk vurdering inkl. arbejds-EKG.<br>– Rådgivning om at undgå hård fysisk belastning indtil udredning er afsluttet.' }
+      ],
+      'fritekst': [
+        { label: 'Notat', content: 'Patient med to ugers tiltagende retrosternal trykken ved moderat fysisk aktivitet. Varighed ca. 5 min, lindres ved hvile. Let udstråling til venstre skulder, let dyspnø ved anfald. Familiær disposition til IHS. Obj: BT 132/78, puls 78 reg, cor/pulm ua, EKG ua. Vurderes som obs. stabil angina pectoris. Plan: EKG, blodprøver inkl. lipidprofil, HbA1c og troponin. Henvisning til kardiologisk vurdering inkl. arbejds-EKG. Rådgivet om at undgå hård fysisk belastning.' }
+      ],
+      'struktureret': [
+        { label: 'Baggrund', content: 'Mand, kendt med familiær disposition til iskæmisk hjertesygdom. Ingen tidligere kardiel sygehistorie. Ingen medicinændringer.' },
+        { label: 'Undersøgelse', content: 'BT 132/78, puls 78 regelmæssig. Stetoskopi af cor og pulm uden abnorme fund. EKG uden akutte iskæmitegn.' },
+        { label: 'Konklusion', content: 'Obs. stabil angina pectoris. Belastningsudløste retrosternale trykgener med familiær disposition taler for videre udredning.' },
+        { label: 'Opfølgning', content: '– EKG og blodprøver bestilt (lipidprofil, HbA1c, troponin).<br>– Henvist til kardiologisk vurdering inkl. arbejds-EKG.<br>– Kontrol efter svar, forventet 2-3 uger.' }
+      ],
+      'aarskontrol': [
+        { label: 'Generel status', content: 'Patienten møder til årlig helbredskontrol. Føler sig generelt rask. Rapporterer tiltagende retrosternal trykken de seneste 2 uger.' },
+        { label: 'Vitale parametre', content: 'BT 132/78, puls 78 reg, vægt 82 kg, BMI 26,1. Cor/pulm ua.' },
+        { label: 'Screening & prøver', content: 'EKG: uden akutte iskæmitegn. Blodprøver bestilt: lipidprofil, HbA1c, troponin, TSH, Hgb.' },
+        { label: 'Vurdering & plan', content: 'Fund af belastningsrelaterede brystsmerter kræver kardiologisk vurdering. Henvisning udstedt. Øvrig helbredsstatus tilfredsstillende.' }
+      ]
+    };
+
+    templateBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      templateMenu.classList.toggle('panel-dropdown-menu--open');
+    });
+
+    document.addEventListener('click', function() {
+      templateMenu.classList.remove('panel-dropdown-menu--open');
+    });
+
+    templateMenu.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+
+    // Track current vs pending template
+    var currentActiveTemplate = 'soap';
+    var pendingTemplate = null;
+
+    var btnRegenerate = document.getElementById('btnRegenerate');
+    var templatePendingBadge = document.getElementById('templatePendingBadge');
+
+    function applyTemplate(templateId) {
+      var sections = templateSections[templateId];
+      if (!sections) return;
+
+      // Rebuild notes sections
+      panelContent.innerHTML = sections.map(function(s) {
+        return '<div class="notes-section">' +
+          '<div class="notes-label">' + s.label + '</div>' +
+          '<div class="notes-content" contenteditable="true">' + s.content + '</div>' +
+        '</div>';
+      }).join('');
+
+      currentActiveTemplate = templateId;
+      pendingTemplate = null;
+
+      // Clear regenerate pulse
+      btnRegenerate.classList.remove('action-btn--regenerate-pulse');
+      templatePendingBadge.classList.remove('template-pending-badge--visible');
+    }
+
+    templateMenu.querySelectorAll('.panel-dropdown-menu__item').forEach(function(item) {
+      item.addEventListener('click', function() {
+        var templateId = this.getAttribute('data-template');
+        if (!templateSections[templateId]) return;
+
+        // Update dropdown label
+        templateLabel.textContent = this.textContent;
+
+        // Update active state in dropdown
+        templateMenu.querySelectorAll('.panel-dropdown-menu__item').forEach(function(i) {
+          i.classList.remove('panel-dropdown-menu__item--active');
+        });
+        this.classList.add('panel-dropdown-menu__item--active');
+        templateMenu.classList.remove('panel-dropdown-menu--open');
+
+        // If same as current → apply instantly (no point regenerating)
+        if (templateId === currentActiveTemplate) {
+          pendingTemplate = null;
+          btnRegenerate.classList.remove('action-btn--regenerate-pulse');
+          templatePendingBadge.classList.remove('template-pending-badge--visible');
+          return;
+        }
+
+        // Set pending template and pulse the Regenerer button
+        pendingTemplate = templateId;
+        btnRegenerate.classList.add('action-btn--regenerate-pulse');
+        templatePendingBadge.classList.add('template-pending-badge--visible');
+      });
+    });
+
+    // Regenerer button: applies pending template with loading animation
+    btnRegenerate.addEventListener('click', function() {
+      if (!pendingTemplate) {
+        // No pending change — just do a quick visual "refreshed" feedback
+        btnRegenerate.classList.add('action-btn--regenerating');
+        btnRegenerate.querySelector('i').setAttribute('data-lucide', 'loader');
+        lucide.createIcons();
+        setTimeout(function() {
+          btnRegenerate.classList.remove('action-btn--regenerating');
+          btnRegenerate.querySelector('i').setAttribute('data-lucide', 'refresh-cw');
+          lucide.createIcons();
+        }, 800);
+        return;
+      }
+
+      var targetTemplate = pendingTemplate;
+
+      // Show loading state
+      btnRegenerate.classList.remove('action-btn--regenerate-pulse');
+      btnRegenerate.classList.add('action-btn--regenerating');
+      var btnIcon = btnRegenerate.querySelector('i');
+      btnIcon.setAttribute('data-lucide', 'loader');
+      lucide.createIcons();
+
+      // Simulate AI regeneration delay
+      setTimeout(function() {
+        applyTemplate(targetTemplate);
+
+        // Re-attach phrase buttons & correction buttons
+        addPhraseButtons();
+        snapshotOriginalNotes();
+        addCorrectionButtons();
+        updateLearningBadge();
+
+        // Restore button
+        btnRegenerate.classList.remove('action-btn--regenerating');
+        btnIcon.setAttribute('data-lucide', 'refresh-cw');
+        lucide.createIcons();
+      }, 1200);
+    });
+
+    // Detect video consultation type and update "Genoptag" link
+    if (new URLSearchParams(window.location.search).get('type') === 'video') {
+      document.getElementById('resumeBtn').href = 'konsultation-video.html';
+    }
+
+    // ─── Rating modal ─────────────────────────────────────────────
+    const overlay = document.getElementById('ratingOverlay');
+    const scale = document.getElementById('ratingScale');
+    const colors = [
+      '#e53e3e','#dd6b20','#d69e2e','#b7b027','#97b82a',
+      '#76c02e','#59a84a','#38a169','#2e9455','#278a4a'
+    ];
+    let selectedRating = null;
+    for (let i = 1; i <= 10; i++) {
+      const btn = document.createElement('button');
+      btn.className = 'rating-scale__btn';
+      btn.textContent = i;
+      btn.style.background = colors[i - 1];
+      btn.addEventListener('click', function() {
+        selectedRating = i;
+        // Highlight selected, dim others
+        scale.querySelectorAll('.rating-scale__btn').forEach(b => {
+          b.style.opacity = '0.4';
+          b.style.transform = 'scale(1)';
+        });
+        this.style.opacity = '1';
+        this.style.transform = 'scale(1.2)';
+      });
+      scale.appendChild(btn);
+    }
+
+    // Send feedback button
+    document.getElementById('ratingSubmitBtn').addEventListener('click', function() {
+      if (!selectedRating) {
+        // Pulse the scale to hint user should pick a number
+        scale.style.animation = 'none';
+        scale.offsetHeight;
+        return;
+      }
+      window.location.href = 'platform-preview.html';
+    });
+
+    document.querySelector('.action-btn--primary').addEventListener('click', function() {
+      overlay.classList.add('active');
+    });
+
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) overlay.classList.remove('active');
+    });
+
+    // ─── Diagnosis Code Interactions ──────────────────────────────
+
+    function acceptCode(chipId) {
+      const chip = document.getElementById(chipId);
+      const btn = chip.querySelector('.code-chip__btn--accept');
+      const isAccepted = btn.classList.contains('active');
+
+      if (isAccepted) {
+        btn.classList.remove('active');
+        chip.classList.remove('code-chip--accepted');
+      } else {
+        btn.classList.add('active');
+        chip.classList.add('code-chip--accepted');
+      }
+    }
+
+    function removeCode(chipId) {
+      const chip = document.getElementById(chipId);
+      chip.classList.add('code-chip--removed');
+      setTimeout(() => chip.remove(), 300);
+    }
+
+    // ─── Code Search Autocomplete ─────────────────────────────────
+    const codeDatabase = [
+      { system: 'icpc', code: 'A04', desc: 'Træthed/svaghed, generel' },
+      { system: 'icpc', code: 'K01', desc: 'Hjertesmerter' },
+      { system: 'icpc', code: 'K02', desc: 'Trykkende brystsmerter' },
+      { system: 'icpc', code: 'K74', desc: 'Angina pectoris' },
+      { system: 'icpc', code: 'K75', desc: 'Akut myokardieinfarkt' },
+      { system: 'icpc', code: 'K76', desc: 'Iskæmisk hjertesygdom, kronisk' },
+      { system: 'icpc', code: 'K77', desc: 'Hjertesvigt' },
+      { system: 'icpc', code: 'K78', desc: 'Atrieflimren/-flagren' },
+      { system: 'icpc', code: 'K79', desc: 'Paroksysmal takykardi' },
+      { system: 'icpc', code: 'K80', desc: 'Hjertearytmi NOS' },
+      { system: 'icpc', code: 'K85', desc: 'Forhøjet blodtryk' },
+      { system: 'icpc', code: 'K86', desc: 'Hypertension, ukompliceret' },
+      { system: 'icpc', code: 'K87', desc: 'Hypertension med organpåvirkning' },
+      { system: 'icpc', code: 'K89', desc: 'Forbigående cerebral iskæmi' },
+      { system: 'icpc', code: 'K90', desc: 'Apopleksi/cerebral hæmoragi' },
+      { system: 'icpc', code: 'K92', desc: 'Perifer vaskulær sygdom' },
+      { system: 'icpc', code: 'K99', desc: 'Kardiovaskulær sygdom, anden' },
+      { system: 'icpc', code: 'L04', desc: 'Bryst-/thoraxsymptom' },
+      { system: 'icpc', code: 'R02', desc: 'Dyspnø' },
+      { system: 'icpc', code: 'R29', desc: 'Respirationssymptom, andet' },
+      { system: 'icpc', code: 'T93', desc: 'Lipidstofskifteforstyrrelse' },
+      { system: 'icd', code: 'DI200', desc: 'Ustabil angina pectoris' },
+      { system: 'icd', code: 'DI201', desc: 'Angina pectoris med dokumenteret spasme' },
+      { system: 'icd', code: 'DI208', desc: 'Andre former for angina pectoris' },
+      { system: 'icd', code: 'DI209', desc: 'Angina pectoris, uspecificeret' },
+      { system: 'icd', code: 'DI251', desc: 'Aterosklerotisk hjertesygdom' },
+      { system: 'icd', code: 'DI259', desc: 'Kronisk iskæmisk hjertesygdom, uspecificeret' },
+      { system: 'icd', code: 'DI10',  desc: 'Essentiel hypertension' },
+      { system: 'icd', code: 'DI110', desc: 'Hypertensiv hjertesygdom med hjertesvigt' },
+      { system: 'icd', code: 'DI119', desc: 'Hypertensiv hjertesygdom uden hjertesvigt' },
+      { system: 'icd', code: 'DR072', desc: 'Brystsmerter, uspecificerede' },
+      { system: 'icd', code: 'DZ825', desc: 'Familiær disposition til iskæmisk hjertesygdom' },
+      { system: 'icd', code: 'DE785', desc: 'Hyperlipidæmi, uspecificeret' },
+      { system: 'icd', code: 'DR060', desc: 'Dyspnø' }
+    ];
+
+    const searchInput = document.getElementById('codeSearchInput');
+    const autocomplete = document.getElementById('codeAutocomplete');
+    let chipCounter = 10;
+
+    searchInput.addEventListener('input', function() {
+      const query = this.value.toLowerCase().trim();
+      if (query.length < 1) {
+        autocomplete.classList.remove('active');
+        return;
+      }
+
+      const results = codeDatabase.filter(item =>
+        item.code.toLowerCase().includes(query) ||
+        item.desc.toLowerCase().includes(query)
+      ).slice(0, 6);
+
+      if (results.length === 0) {
+        autocomplete.classList.remove('active');
+        return;
+      }
+
+      autocomplete.innerHTML = results.map(item => `
+        <div class="code-autocomplete__item" data-system="${item.system}" data-code="${item.code}" data-desc="${item.desc}">
+          <span class="code-autocomplete__system code-chip__system--${item.system}">${item.system === 'icpc' ? 'ICPC-2' : 'ICD-10'}</span>
+          <span class="code-autocomplete__code">${item.code}</span>
+          <span class="code-autocomplete__desc">${item.desc}</span>
+        </div>
+      `).join('');
+
+      autocomplete.classList.add('active');
+
+      // Attach click handlers
+      autocomplete.querySelectorAll('.code-autocomplete__item').forEach(el => {
+        el.addEventListener('click', function() {
+          const system = this.dataset.system;
+          const code = this.dataset.code;
+          const desc = this.dataset.desc;
+          addCodeChip(system, code, desc);
+          searchInput.value = '';
+          autocomplete.classList.remove('active');
+        });
+      });
+    });
+
+    // Close autocomplete on outside click
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('#codeSearch')) {
+        autocomplete.classList.remove('active');
+      }
+    });
+
+    function addCodeChip(system, code, desc) {
+      chipCounter++;
+      const chipId = 'chip-' + chipCounter;
+      const systemLabel = system === 'icpc' ? 'ICPC-2' : 'ICD-10';
+      const systemClass = system === 'icpc' ? 'code-chip__system--icpc' : 'code-chip__system--icd';
+
+      const chipHtml = `
+        <div class="code-chip code-chip--accepted" id="${chipId}">
+          <span class="code-chip__confidence code-chip__confidence--high"></span>
+          <span class="code-chip__system ${systemClass}">${systemLabel}</span>
+          <span class="code-chip__code">${code}</span>
+          <span class="code-chip__desc">${desc}</span>
+          <button class="code-chip__btn code-chip__btn--accept active" title="Godkend" onclick="acceptCode('${chipId}')"><i data-lucide="check"></i></button>
+          <button class="code-chip__btn code-chip__btn--remove" title="Fjern" onclick="removeCode('${chipId}')"><i data-lucide="x"></i></button>
+        </div>
+      `;
+
+      // Insert before the search field
+      document.getElementById('codeSearch').insertAdjacentHTML('beforebegin', chipHtml);
+      lucide.createIcons();
+    }
+
+    // ─── Translate Slide-Over ──────────────────────────────────
+    const translateOverlay = document.getElementById('translateOverlay');
+    const translateOutput = document.getElementById('translateOutput');
+    const translateEmpty = document.getElementById('translateEmpty');
+    const translateFooter = document.getElementById('translateFooter');
+    const translateBadge = document.getElementById('translateBadge');
+    const translateLang = document.getElementById('translateLang');
+
+    document.getElementById('btnTranslate').addEventListener('click', function() {
+      translateOverlay.classList.add('active');
+      lucide.createIcons();
+    });
+
+    document.getElementById('translateClose').addEventListener('click', function() {
+      translateOverlay.classList.remove('active');
+    });
+
+    translateOverlay.addEventListener('click', function(e) {
+      if (e.target === translateOverlay) translateOverlay.classList.remove('active');
+    });
+
+    // Demo translations
+    const translations = {
+      en: {
+        label: 'English',
+        sections: [
+          { title: 'History', text: 'Patient with two weeks of increasing retrosternal pressure, triggered by moderate physical activity. Duration approx. 5 min, relieved by rest. Mild radiation to left shoulder. Mild dyspnea during episodes. No nausea. Family history of IHD (father with AMI at age 62). Increased fatigue over recent weeks. No medication changes.' },
+          { title: 'Objective', text: 'Generally unaffected, alert and oriented. Normal breathing at rest. No edema. BP 132/78, pulse 78 regular. Heart/lungs without murmurs or crepitations. Initial ECG without acute ischemic changes.' },
+          { title: 'Assessment', text: 'Chest pain consistent with possible stable angina pectoris. Family history and exertion-triggered symptoms warrant further cardiological investigation. No signs of acute coronary syndrome at present.' },
+          { title: 'Plan', text: '– Order ECG and blood tests incl. lipid profile, HbA1c and troponin (screening).\n– Referral for cardiological evaluation incl. exercise ECG.\n– Advise against strenuous physical activity until evaluation is complete.' }
+        ]
+      },
+      de: {
+        label: 'Deutsch',
+        sections: [
+          { title: 'Anamnese', text: 'Patient mit zwei Wochen zunehmendem retrosternalem Druckgefühl, ausgelöst durch mäßige körperliche Aktivität. Dauer ca. 5 Min., Linderung in Ruhe. Leichte Ausstrahlung in die linke Schulter. Leichte Dyspnoe bei Anfällen. Keine Übelkeit. Familiäre Disposition für KHK (Vater mit AMI im Alter von 62 Jahren). Zunehmende Müdigkeit in den letzten Wochen. Keine Medikamentenänderungen.' },
+          { title: 'Befund', text: 'Allgemein unbeeinträchtigt, wach und orientiert. Normale Atmung in Ruhe. Keine Ödeme. RR 132/78, Puls 78 regelmäßig. Herz/Lunge ohne Geräusche oder Krepitationen. Initial-EKG ohne akute Ischämiezeichen.' },
+          { title: 'Beurteilung', text: 'Brustschmerzen vereinbar mit möglicher stabiler Angina pectoris. Familiäre Disposition und belastungsinduzierte Symptome sprechen für weitere kardiologische Abklärung. Derzeit keine Zeichen eines akuten Koronarsyndroms.' },
+          { title: 'Plan', text: '– EKG und Blutuntersuchungen inkl. Lipidprofil, HbA1c und Troponin (Screening) anordnen.\n– Überweisung zur kardiologischen Beurteilung inkl. Belastungs-EKG.\n– Beratung, intensive körperliche Belastung bis zum Abschluss der Abklärung zu vermeiden.' }
+        ]
+      },
+      ar: {
+        label: 'العربية',
+        sections: [
+          { title: 'السيرة المرضية', text: 'مريض يعاني منذ أسبوعين من ضغط متزايد خلف القص، يُثار بالنشاط البدني المعتدل. المدة حوالي 5 دقائق، يخف بالراحة. انتشار خفيف للكتف الأيسر. ضيق تنفس خفيف أثناء النوبات. لا غثيان. تاريخ عائلي لأمراض القلب الإقفارية (الأب أصيب باحتشاء عضلة القلب في سن 62). إرهاق متزايد خلال الأسابيع الأخيرة. لا تغييرات في الأدوية.' },
+          { title: 'الفحص', text: 'حالة عامة جيدة، واعٍ ومتوجه. تنفس طبيعي أثناء الراحة. لا وذمات. ضغط الدم 132/78، النبض 78 منتظم. القلب والرئتان بدون نفخات أو فرقعات. تخطيط القلب الأولي بدون علامات إقفارية حادة.' },
+          { title: 'التقييم', text: 'ألم صدري متوافق مع ذبحة صدرية مستقرة محتملة. التاريخ العائلي والأعراض المرتبطة بالمجهود تستدعي مزيداً من الفحص القلبي. لا توجد علامات على متلازمة الشريان التاجي الحادة حالياً.' },
+          { title: 'الخطة', text: '– طلب تخطيط قلب وفحوصات دم شاملة بما في ذلك ملف الدهون و HbA1c والتروبونين.\n– تحويل للتقييم القلبي بما في ذلك تخطيط قلب بالجهد.\n– نصح المريض بتجنب المجهود البدني الشديد حتى اكتمال الفحوصات.' }
+        ]
+      },
+      tr: {
+        label: 'Türkçe',
+        sections: [
+          { title: 'Öykü', text: 'İki haftadır artan retrosternal baskı hissi olan hasta, orta düzeyde fiziksel aktiviteyle tetikleniyor. Süre yaklaşık 5 dakika, istirahatte rahatlıyor. Sol omuza hafif yayılım. Atak sırasında hafif nefes darlığı. Bulantı yok. İskemik kalp hastalığı aile öyküsü (babası 62 yaşında AMI geçirmiş). Son haftalarda artan yorgunluk. İlaç değişikliği yok.' },
+          { title: 'Muayene', text: 'Genel durumu iyi, uyanık ve oryante. İstirahatte normal solunum. Ödem yok. TA 132/78, nabız 78 düzenli. Kalp/akciğer üfürüm veya krepitasyon yok. İlk EKG\'de akut iskemik değişiklik yok.' },
+          { title: 'Değerlendirme', text: 'Göğüs ağrısı olası stabil angina pektoris ile uyumlu. Aile öyküsü ve eforla tetiklenen semptomlar ileri kardiyolojik incelemeyi gerektirmektedir. Şu anda akut koroner sendrom bulgusu yok.' },
+          { title: 'Plan', text: '– Lipid profili, HbA1c ve troponin dahil EKG ve kan testleri istenmesi.\n– Efor EKG dahil kardiyolojik değerlendirme için sevk.\n– Değerlendirme tamamlanana kadar ağır fiziksel aktiviteden kaçınması önerilmesi.' }
+        ]
+      },
+      pl: {
+        label: 'Polski',
+        sections: [
+          { title: 'Wywiad', text: 'Pacjent z dwutygodniowym narastającym uciskiem zamostkowym, wywoływanym umiarkowaną aktywnością fizyczną. Czas trwania ok. 5 min, ustępuje w spoczynku. Lekkie promieniowanie do lewego barku. Lekka duszność podczas napadów. Bez nudności. Obciążenie rodzinne chorobą niedokrwienną serca (ojciec z AMI w wieku 62 lat). Narastające zmęczenie w ostatnich tygodniach. Bez zmian w lekach.' },
+          { title: 'Badanie', text: 'Stan ogólny dobry, przytomny i zorientowany. Prawidłowe oddychanie w spoczynku. Bez obrzęków. BP 132/78, tętno 78 miarowe. Serce/płuca bez szmerów i trzeszczeń. Wstępne EKG bez ostrych zmian niedokrwiennych.' },
+          { title: 'Ocena', text: 'Ból w klatce piersiowej odpowiadający możliwej stabilnej dławicy piersiowej. Obciążenie rodzinne i objawy wysiłkowe wskazują na dalszą diagnostykę kardiologiczną. Brak objawów ostrego zespołu wieńcowego.' },
+          { title: 'Plan', text: '– Zlecenie EKG i badań krwi w tym profil lipidowy, HbA1c i troponina.\n– Skierowanie na ocenę kardiologiczną z próbą wysiłkową EKG.\n– Zalecenie unikania intensywnego wysiłku fizycznego do zakończenia diagnostyki.' }
+        ]
+      },
+      ur: { label: 'اردو', sections: [
+        { title: 'تاریخچہ', text: 'مریض کو دو ہفتوں سے سینے کے پیچھے بڑھتا ہوا دباؤ، معتدل جسمانی سرگرمی سے شروع ہوتا ہے۔ دورانیہ تقریباً 5 منٹ، آرام سے بہتر ہوتا ہے۔ بائیں کندھے تک ہلکا پھیلاؤ۔ دوروں کے دوران ہلکی سانس کی تنگی۔ متلی نہیں۔ دل کی بیماری کی خاندانی تاریخ۔' },
+        { title: 'معائنہ', text: 'عمومی حالت اچھی، بیدار اور باخبر۔ آرام میں نارمل سانس۔ سوجن نہیں۔ بلڈ پریشر 132/78، نبض 78 باقاعدہ۔ دل/پھیپھڑے بغیر کسی آواز کے۔' },
+        { title: 'تشخیص', text: 'سینے کا درد ممکنہ مستحکم انجائنا پیکٹوریس سے مطابقت رکھتا ہے۔ خاندانی تاریخ اور محنت سے متعلق علامات مزید قلبی تحقیقات کی ضرورت ہے۔' },
+        { title: 'منصوبہ', text: '– ای سی جی اور خون کے ٹیسٹ بشمول لپڈ پروفائل اور ٹروپونین۔\n– قلبی تشخیص کے لیے ریفرل۔\n– تحقیقات مکمل ہونے تک سخت ورزش سے پرہیز کا مشورہ۔' }
+      ]},
+      so: { label: 'Soomaali', sections: [
+        { title: 'Taariikhda', text: 'Bukaan labo toddobaad ah oo xanuun laabta dambe ah oo sii kordhaya, oo ka dhasha jimicsiga caadiga ah. Muddo 5 daqiiqo, nasashada ayuu ku fiicnaadaa. Garbaha bidix wax yar bay u fidisaa. Neefta oo yar. Qoysku waxay leeyihiin taariikhda cudurka wadnaha.' },
+        { title: 'Baaritaanka', text: 'Xaaladda guud waa fiican tahay. Neefsashada nasashada waa caadi. Dhiig-cadaadis 132/78, garaaca 78. Wadnaha iyo sambabada sanduuq la\'aan.' },
+        { title: 'Qiimaynta', text: 'Xanuunka laabta wuxuu u dhigmaa angina pectoris oo sugan. Taariikhda qoyska iyo astaamaha jimicsiga ayaa u baahan sii baaritaan wadnaha.' },
+        { title: 'Qorshaha', text: '– ECG iyo baaritaanno dhiig oo ay ku jiraan lipid profile iyo troponin.\n– Tixraac baaritaan wadne oo ay ku jirto ECG jimicsi.\n– La taliyo in laga fogaado jimicsi adag ilaa baaritaanka la dhamaystiro.' }
+      ]},
+      fa: { label: 'فارسی', sections: [
+        { title: 'شرح حال', text: 'بیمار با دو هفته فشار فزاینده پشت جناغ، ناشی از فعالیت بدنی متوسط. مدت حدود 5 دقیقه، با استراحت بهبود می‌یابد. انتشار خفیف به شانه چپ. تنگی نفس خفیف حین حملات. بدون تهوع. سابقه خانوادگی بیماری ایسکمیک قلب (پدر با AMI در 62 سالگی). خستگی فزاینده در هفته‌های اخیر. بدون تغییر دارو.' },
+        { title: 'معاینه', text: 'وضعیت عمومی خوب، هوشیار و جهت‌یاب. تنفس طبیعی در استراحت. بدون ادم. فشار خون 132/78، نبض 78 منظم. قلب و ریه بدون سوفل یا کرپیتاسیون. ECG اولیه بدون تغییرات ایسکمیک حاد.' },
+        { title: 'ارزیابی', text: 'درد قفسه سینه سازگار با آنژین صدری پایدار احتمالی. سابقه خانوادگی و علائم مرتبط با فعالیت نیاز به بررسی قلبی بیشتر دارد. در حال حاضر نشانه‌ای از سندرم حاد کرونری وجود ندارد.' },
+        { title: 'برنامه', text: '– درخواست ECG و آزمایش خون شامل پروفایل لیپید، HbA1c و تروپونین.\n– ارجاع برای ارزیابی قلبی شامل ECG ورزشی.\n– توصیه به اجتناب از فعالیت بدنی شدید تا تکمیل بررسی‌ها.' }
+      ]}
+    };
+
+    document.getElementById('translateGenerate').addEventListener('click', function() {
+      const lang = translateLang.value;
+      const t = translations[lang];
+      if (!t) return;
+
+      // Show loading briefly
+      translateEmpty.innerHTML = '<i data-lucide="loader" style="animation: spin 1s linear infinite;"></i><span>Oversætter til ' + t.label + '...</span>';
+      lucide.createIcons();
+
+      setTimeout(function() {
+        // Build output
+        translateOutput.innerHTML = t.sections.map(s =>
+          '<div class="notes-label">' + s.title + '</div><div>' + s.text.replace(/\n/g, '<br>') + '</div>'
+        ).join('');
+
+        translateEmpty.style.display = 'none';
+        translateOutput.style.display = 'block';
+        translateFooter.classList.add('active');
+        translateBadge.textContent = t.label;
+      }, 1200);
+    });
+
+    document.getElementById('translateCopy').addEventListener('click', function() {
+      const text = translateOutput.innerText;
+      navigator.clipboard.writeText(text);
+      // Brief feedback
+      const btn = this;
+      const original = btn.innerHTML;
+      btn.innerHTML = '<i data-lucide="check"></i> Kopieret!';
+      lucide.createIcons();
+      setTimeout(() => { btn.innerHTML = original; lucide.createIcons(); }, 1500);
+    });
+
+    // Print translation
+    document.getElementById('translatePrint').addEventListener('click', function() {
+      const content = translateOutput.innerHTML;
+      const lang = translateBadge.textContent;
+      const printWin = window.open('', '_blank', 'width=700,height=900');
+      printWin.document.write(`
+        <html><head><title>Oversættelse — ${lang}</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 40px; color: #1a1a2e; line-height: 1.7; font-size: 13px; }
+          .notes-label { font-weight: 700; margin-top: 18px; margin-bottom: 4px; }
+          .notes-label:first-child { margin-top: 0; }
+          .header { font-size: 11px; color: #5669A4; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0; }
+        </style></head><body>
+        <div class="header">Oversættelse — ${lang}</div>
+        ${content}
+        </body></html>
+      `);
+      printWin.document.close();
+      printWin.focus();
+      printWin.print();
+    });
+
+    // Reset when language changes
+    translateLang.addEventListener('change', function() {
+      translateEmpty.innerHTML = '<i data-lucide="languages"></i><span>Vælg sprog og klik Generér</span>';
+      translateEmpty.style.display = 'flex';
+      translateOutput.style.display = 'none';
+      translateFooter.classList.remove('active');
+      lucide.createIcons();
+    });
+
+    // ═══════════════════════════════════════════════════════════
+    // STANDARDFRASER — Inline /trigger autocomplete
+    // ═══════════════════════════════════════════════════════════
+
+    var PHRASES_STORAGE_KEY = 'peoplesClinic_standardPhrases';
+
+    // Load phrases from localStorage
+    function loadPhrases() {
+      var stored = localStorage.getItem(PHRASES_STORAGE_KEY);
+      if (stored) {
+        try { return JSON.parse(stored); }
+        catch(e) { return []; }
+      }
+      return [];
+    }
+
+    // Get only visible phrases
+    function getVisiblePhrases() {
+      return loadPhrases().filter(function(p) { return p.visible; });
+    }
+
+    // ─── Autocomplete dropdown ─────────────────────────────
+    var phraseDropdown = document.createElement('div');
+    phraseDropdown.className = 'phrase-autocomplete';
+    phraseDropdown.id = 'phraseAutocomplete';
+    document.body.appendChild(phraseDropdown);
+
+    var phraseToast = document.createElement('div');
+    phraseToast.className = 'phrase-toast';
+    phraseToast.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span id="phraseToastText"></span>';
+    document.body.appendChild(phraseToast);
+
+    var phraseActiveIndex = -1;
+    var phraseMatches = [];
+    var phraseCurrentField = null;
+    var phraseSearching = false;
+
+    // Listen for input in all contenteditable notes fields
+    document.addEventListener('input', function(e) {
+      var target = e.target;
+      if (!target.matches || !target.matches('.notes-content[contenteditable="true"]')) return;
+
+      var sel = window.getSelection();
+      if (!sel.rangeCount) return;
+
+      var range = sel.getRangeAt(0);
+      var textNode = range.startContainer;
+      if (textNode.nodeType !== Node.TEXT_NODE) {
+        hidePhraseDropdown();
+        return;
+      }
+
+      var textBefore = textNode.textContent.substring(0, range.startOffset);
+
+      // Find /trigger pattern: look for "/" followed by alphanumeric+hyphen
+      var match = textBefore.match(/\/([a-zA-ZæøåÆØÅ0-9-]*)$/);
+      if (!match) {
+        hidePhraseDropdown();
+        return;
+      }
+
+      var query = match[1].toLowerCase();
+      phraseCurrentField = target;
+      phraseSearching = true;
+
+      // Filter visible phrases
+      var phrases = getVisiblePhrases();
+      phraseMatches = phrases.filter(function(p) {
+        return p.trigger.toLowerCase().indexOf(query) !== -1 ||
+               p.title.toLowerCase().indexOf(query) !== -1;
+      }).slice(0, 8);
+
+      if (phraseMatches.length === 0) {
+        phraseDropdown.innerHTML = '<div class="phrase-autocomplete__empty">Ingen fraser matcher "/' + query + '"</div>';
+        phraseDropdown.innerHTML += '<div class="phrase-autocomplete__hint"><span><kbd>Esc</kbd> Luk</span></div>';
+        showPhraseDropdown(range);
+        return;
+      }
+
+      phraseActiveIndex = 0;
+      renderPhraseDropdown();
+      showPhraseDropdown(range);
+    });
+
+    function renderPhraseDropdown() {
+      phraseDropdown.innerHTML = phraseMatches.map(function(p, i) {
+        return '<div class="phrase-autocomplete__item' + (i === phraseActiveIndex ? ' phrase-autocomplete__item--active' : '') + '" data-phrase-index="' + i + '">' +
+          '<span class="phrase-autocomplete__trigger">/' + p.trigger + '</span>' +
+          '<div class="phrase-autocomplete__info">' +
+            '<span class="phrase-autocomplete__name">' + p.title + '</span>' +
+            '<span class="phrase-autocomplete__text">' + p.text + '</span>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      phraseDropdown.innerHTML += '<div class="phrase-autocomplete__hint"><span><kbd>↑↓</kbd> Naviger</span><span><kbd>Enter</kbd> Indsæt</span><span><kbd>Esc</kbd> Luk</span></div>';
+
+      // Click handlers
+      phraseDropdown.querySelectorAll('.phrase-autocomplete__item').forEach(function(item) {
+        item.addEventListener('mousedown', function(e) {
+          e.preventDefault();
+          var idx = parseInt(this.getAttribute('data-phrase-index'));
+          insertPhrase(phraseMatches[idx]);
+        });
+      });
+    }
+
+    function showPhraseDropdown(range) {
+      var rect = range.getBoundingClientRect();
+      phraseDropdown.style.left = rect.left + 'px';
+      phraseDropdown.style.top = (rect.bottom + 4) + 'px';
+      phraseDropdown.classList.add('phrase-autocomplete--visible');
+    }
+
+    function hidePhraseDropdown() {
+      phraseDropdown.classList.remove('phrase-autocomplete--visible');
+      phraseSearching = false;
+      phraseActiveIndex = -1;
+      phraseMatches = [];
+      phraseCurrentField = null;
+    }
+
+    // Keyboard navigation in autocomplete
+    document.addEventListener('keydown', function(e) {
+      if (!phraseSearching || phraseMatches.length === 0) return;
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        phraseActiveIndex = Math.min(phraseActiveIndex + 1, phraseMatches.length - 1);
+        renderPhraseDropdown();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        phraseActiveIndex = Math.max(phraseActiveIndex - 1, 0);
+        renderPhraseDropdown();
+      } else if (e.key === 'Enter' || e.key === 'Tab') {
+        if (phraseActiveIndex >= 0 && phraseActiveIndex < phraseMatches.length) {
+          e.preventDefault();
+          insertPhrase(phraseMatches[phraseActiveIndex]);
+        }
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        hidePhraseDropdown();
+      }
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('mousedown', function(e) {
+      if (!e.target.closest('.phrase-autocomplete') && !e.target.closest('.notes-content')) {
+        hidePhraseDropdown();
+      }
+    });
+
+    // Insert phrase text, replacing the /trigger
+    function insertPhrase(phrase) {
+      if (!phraseCurrentField) return;
+
+      var sel = window.getSelection();
+      if (!sel.rangeCount) return;
+
+      var range = sel.getRangeAt(0);
+      var textNode = range.startContainer;
+      if (textNode.nodeType !== Node.TEXT_NODE) return;
+
+      var textBefore = textNode.textContent.substring(0, range.startOffset);
+      var textAfter = textNode.textContent.substring(range.startOffset);
+
+      // Find the /trigger to replace
+      var triggerMatch = textBefore.match(/\/([a-zA-ZæøåÆØÅ0-9-]*)$/);
+      if (!triggerMatch) return;
+
+      var triggerStart = textBefore.length - triggerMatch[0].length;
+      var beforeTrigger = textBefore.substring(0, triggerStart);
+
+      // Replace text
+      textNode.textContent = beforeTrigger + phrase.text + textAfter;
+
+      // Move cursor to end of inserted text
+      var newRange = document.createRange();
+      newRange.setStart(textNode, beforeTrigger.length + phrase.text.length);
+      newRange.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(newRange);
+
+      hidePhraseDropdown();
+      showPhraseToast(phrase.title);
+    }
+
+    // Show toast notification
+    function showPhraseToast(phraseTitle) {
+      var toastText = document.getElementById('phraseToastText');
+      toastText.textContent = 'Frase indsat: ' + phraseTitle;
+      phraseToast.classList.add('phrase-toast--visible');
+      setTimeout(function() {
+        phraseToast.classList.remove('phrase-toast--visible');
+      }, 2000);
+    }
+
+    // ─── Phrase insert buttons per section ──────────────────
+
+    // Phrase popover element
+    var phrasePopover = document.createElement('div');
+    phrasePopover.className = 'phrase-popover';
+    phrasePopover.id = 'phrasePopover';
+    document.body.appendChild(phrasePopover);
+
+    var popoverTargetField = null;
+
+    // Add phrase buttons to each notes-section
+    function addPhraseButtons() {
+      document.querySelectorAll('.notes-section').forEach(function(section) {
+        var label = section.querySelector('.notes-label');
+        if (!label || label.querySelector('.phrase-insert-btn')) return;
+
+        var btn = document.createElement('button');
+        btn.className = 'phrase-insert-btn';
+        btn.title = 'Indsæt standardfrase';
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 6H3"/><path d="M21 12H8"/><path d="M21 18H8"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>';
+
+        // Wrap label in a row
+        var row = document.createElement('div');
+        row.className = 'notes-label-row';
+        label.parentNode.insertBefore(row, label);
+        row.appendChild(label);
+        row.appendChild(btn);
+
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var contentEl = section.querySelector('.notes-content');
+          popoverTargetField = contentEl;
+          showPhrasePopover(btn);
+        });
+      });
+    }
+
+    function showPhrasePopover(anchorBtn) {
+      var phrases = getVisiblePhrases();
+      if (phrases.length === 0) {
+        phrasePopover.innerHTML = '<div class="phrase-autocomplete__empty">Ingen standardfraser konfigureret. <a href="indstillinger.html?tab=phrases" style="color: var(--color-navy-600);">Konfigurer fraser</a></div>';
+        positionPopover(anchorBtn);
+        return;
+      }
+
+      // Group by category
+      var categories = {};
+      var catLabels = {
+        objektiv: 'Objektiv undersøgelse',
+        plan: 'Plan & opfølgning',
+        anamnese: 'Anamnese',
+        vurdering: 'Vurdering / konklusion',
+        custom: 'Brugerdefineret'
+      };
+
+      phrases.forEach(function(p) {
+        if (!categories[p.category]) categories[p.category] = [];
+        categories[p.category].push(p);
+      });
+
+      var html = '';
+      Object.keys(categories).forEach(function(cat) {
+        html += '<div class="phrase-popover__category">' + (catLabels[cat] || cat) + '</div>';
+        categories[cat].forEach(function(p) {
+          html += '<div class="phrase-autocomplete__item" data-phrase-trigger="' + p.trigger + '">' +
+            '<span class="phrase-autocomplete__trigger">/' + p.trigger + '</span>' +
+            '<div class="phrase-autocomplete__info">' +
+              '<span class="phrase-autocomplete__name">' + p.title + '</span>' +
+            '</div>' +
+          '</div>';
+        });
+      });
+
+      phrasePopover.innerHTML = html;
+      positionPopover(anchorBtn);
+
+      // Click handlers
+      phrasePopover.querySelectorAll('.phrase-autocomplete__item').forEach(function(item) {
+        item.addEventListener('mousedown', function(e) {
+          e.preventDefault();
+          var trigger = this.getAttribute('data-phrase-trigger');
+          var phrase = phrases.find(function(p) { return p.trigger === trigger; });
+          if (phrase && popoverTargetField) {
+            // Append to end of field
+            var content = popoverTargetField.textContent;
+            var separator = content.length > 0 ? ' ' : '';
+            popoverTargetField.textContent = content + separator + phrase.text;
+
+            // Move cursor to end
+            var range = document.createRange();
+            var sel = window.getSelection();
+            range.selectNodeContents(popoverTargetField);
+            range.collapse(false);
+            sel.removeAllRanges();
+            sel.addRange(range);
+
+            hidePhrasePopover();
+            showPhraseToast(phrase.title);
+          }
+        });
+      });
+    }
+
+    function positionPopover(anchor) {
+      var rect = anchor.getBoundingClientRect();
+      phrasePopover.style.left = rect.left + 'px';
+      phrasePopover.style.top = (rect.bottom + 4) + 'px';
+      phrasePopover.classList.add('phrase-popover--visible');
+    }
+
+    function hidePhrasePopover() {
+      phrasePopover.classList.remove('phrase-popover--visible');
+      popoverTargetField = null;
+    }
+
+    document.addEventListener('mousedown', function(e) {
+      if (!e.target.closest('.phrase-popover') && !e.target.closest('.phrase-insert-btn')) {
+        hidePhrasePopover();
+      }
+    });
+
+    // Initialize phrase buttons
+    addPhraseButtons();
+
+    /* ══════════════════════════════════════════════════════════════
+       LÆR AF RETTELSER — Adaptive learning from physician corrections
+       ══════════════════════════════════════════════════════════════ */
+
+    var CORRECTIONS_KEY = 'peoplesClinic_corrections';
+    var LEARNING_ENABLED_KEY = 'peoplesClinic_learningEnabled';
+    var ORIGINAL_NOTES_KEY = 'peoplesClinic_originalNotes';
+
+    // ── Section name mapping ──
+    var sectionNameMap = {
+      'anamnese': 'Anamnese',
+      'objektiv': 'Objektivt',
+      'objektivt': 'Objektivt',
+      'vurdering': 'Vurdering',
+      'plan': 'Plan',
+      'subjektivt': 'Subjektivt',
+      'cave': 'Cave'
+    };
+
+    function normalizeSectionName(label) {
+      var lower = label.toLowerCase().trim();
+      // Map common variants
+      if (lower === 'objektivt' || lower === 'objektiv') return 'objektiv';
+      if (lower === 'subjektivt') return 'anamnese';
+      return lower;
+    }
+
+    // ── Demo corrections (seeded on first load) ──
+    var DEMO_CORRECTIONS = [
+      {
+        id: 'corr_demo_1', physician: 'Dr. Anna Nielsen', section: 'objektiv',
+        original: 'Cor auskultes med regelmæssig rytme uden mislyde',
+        corrected: 'Cor: Regelmæssig rytme, ingen mislyde',
+        timestamp: Date.now() - 86400000 * 3, template: 'soap', useCount: 5
+      },
+      {
+        id: 'corr_demo_2', physician: 'Dr. Anna Nielsen', section: 'objektiv',
+        original: 'BT måles til 138/82 mmHg',
+        corrected: 'BT 132/78, puls 78 reg.',
+        timestamp: Date.now() - 86400000 * 2, template: 'soap', useCount: 3
+      },
+      {
+        id: 'corr_demo_3', physician: 'Dr. Anna Nielsen', section: 'objektiv',
+        original: 'Lungerne auskulteres med normal vesikulær respiration bilateralt',
+        corrected: 'Pulm: Vesikulær respiration bilateralt, ingen krepitation',
+        timestamp: Date.now() - 86400000 * 1, template: 'soap', useCount: 4
+      },
+      {
+        id: 'corr_demo_4', physician: 'Dr. Anna Nielsen', section: 'vurdering',
+        original: 'Tilstanden vurderes at være forenelig med',
+        corrected: 'Fund forenelige med',
+        timestamp: Date.now() - 86400000 * 4, template: 'soap', useCount: 7
+      },
+      {
+        id: 'corr_demo_5', physician: 'Dr. Anna Nielsen', section: 'vurdering',
+        original: 'Der er klinisk mistanke om diagnosen',
+        corrected: 'Klinisk mistanke om',
+        timestamp: Date.now() - 86400000 * 5, template: 'soap', useCount: 6
+      },
+      {
+        id: 'corr_demo_6', physician: 'Dr. Anna Nielsen', section: 'plan',
+        original: 'Patienten rådes til at undgå hård fysisk belastning',
+        corrected: 'Aftalt med patient: Undgå hård fysisk belastning',
+        timestamp: Date.now() - 86400000 * 2, template: 'soap', useCount: 4
+      },
+      {
+        id: 'corr_demo_7', physician: 'Dr. Anna Nielsen', section: 'plan',
+        original: 'Der bestilles blodprøver med henblik på vurdering af',
+        corrected: 'Blodprøver bestilt inkl.',
+        timestamp: Date.now() - 86400000 * 1, template: 'soap', useCount: 8
+      },
+      {
+        id: 'corr_demo_8', physician: 'Dr. Anna Nielsen', section: 'anamnese',
+        original: 'Patienten henvender sig grundet tiltagende',
+        corrected: 'Henvendt pga.',
+        timestamp: Date.now() - 86400000 * 6, template: 'soap', useCount: 9
+      }
+    ];
+
+    // ── localStorage helpers ──
+    function isLearningEnabled() {
+      var stored = localStorage.getItem(LEARNING_ENABLED_KEY);
+      if (stored === null) {
+        localStorage.setItem(LEARNING_ENABLED_KEY, 'true');
+        return true;
+      }
+      return stored === 'true';
+    }
+
+    function loadCorrections() {
+      var stored = localStorage.getItem(CORRECTIONS_KEY);
+      if (stored) {
+        try { return JSON.parse(stored); }
+        catch(e) { return []; }
+      }
+      return [];
+    }
+
+    function saveCorrections(corrections) {
+      localStorage.setItem(CORRECTIONS_KEY, JSON.stringify(corrections));
+      window.dispatchEvent(new CustomEvent('learningPreferencesChanged', { detail: corrections }));
+    }
+
+    function getCorrectionsForSection(section) {
+      if (!isLearningEnabled()) return [];
+      var corrections = loadCorrections();
+      var normalized = normalizeSectionName(section);
+      return corrections.filter(function(c) { return c.section === normalized; });
+    }
+
+    // ── Seed demo data if empty ──
+    (function seedDemoCorrections() {
+      var existing = loadCorrections();
+      if (existing.length === 0) {
+        saveCorrections(DEMO_CORRECTIONS);
+      }
+    })();
+
+    // ── Snapshot original notes at page load ──
+    function snapshotOriginalNotes() {
+      var snapshot = {};
+      document.querySelectorAll('.notes-section').forEach(function(section) {
+        var label = section.querySelector('.notes-label');
+        var content = section.querySelector('.notes-content');
+        if (label && content) {
+          var key = normalizeSectionName(label.textContent);
+          snapshot[key] = content.textContent.trim();
+        }
+      });
+      localStorage.setItem(ORIGINAL_NOTES_KEY, JSON.stringify(snapshot));
+    }
+
+    snapshotOriginalNotes();
+
+    // ── Capture corrections on "Godkend & Gem" ──
+    (function interceptGodkendGem() {
+      var primaryBtn = document.querySelector('.action-btn--primary');
+      if (!primaryBtn) return;
+
+      // Store original click handler reference
+      var origClickListeners = primaryBtn.onclick;
+
+      // Add our handler BEFORE existing ones
+      primaryBtn.addEventListener('click', function() {
+        if (!isLearningEnabled()) return;
+
+        var snapshotRaw = localStorage.getItem(ORIGINAL_NOTES_KEY);
+        if (!snapshotRaw) return;
+
+        var snapshot;
+        try { snapshot = JSON.parse(snapshotRaw); }
+        catch(e) { return; }
+
+        var corrections = loadCorrections();
+        var physician = 'Dr. Anna Nielsen';
+        var userNameEl = document.querySelector('.user-name');
+        if (userNameEl) physician = userNameEl.textContent.trim();
+
+        var templateLabel = document.getElementById('templateDropdownLabel');
+        var currentTemplate = templateLabel ? templateLabel.textContent.trim().toLowerCase() : 'soap';
+
+        document.querySelectorAll('.notes-section').forEach(function(section) {
+          var label = section.querySelector('.notes-label');
+          var content = section.querySelector('.notes-content');
+          if (!label || !content) return;
+
+          var sectionKey = normalizeSectionName(label.textContent);
+          var originalText = snapshot[sectionKey] || '';
+          var currentText = content.textContent.trim();
+
+          // Only record if there's a meaningful difference
+          if (originalText && currentText && originalText !== currentText) {
+            // Check it's not just whitespace differences
+            if (originalText.replace(/\s+/g, ' ').trim() !== currentText.replace(/\s+/g, ' ').trim()) {
+              corrections.push({
+                id: 'corr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                physician: physician,
+                section: sectionKey,
+                original: originalText.substring(0, 200),
+                corrected: currentText.substring(0, 200),
+                timestamp: Date.now(),
+                template: currentTemplate,
+                useCount: 0
+              });
+            }
+          }
+        });
+
+        saveCorrections(corrections);
+      }, true); // Use capture phase so it runs before the rating modal handler
+    })();
+
+    // ── Correction popover element ──
+    var correctionPopover = document.createElement('div');
+    correctionPopover.className = 'correction-popover';
+    correctionPopover.id = 'correctionPopover';
+    document.body.appendChild(correctionPopover);
+
+    var correctionPopoverTarget = null; // The contenteditable field to insert into
+
+    function showCorrectionPopover(anchorBtn, sectionName) {
+      var corrections = getCorrectionsForSection(sectionName);
+      if (corrections.length === 0) {
+        hideCorrectionPopover();
+        return;
+      }
+
+      // Sort by useCount (most used first)
+      corrections.sort(function(a, b) { return b.useCount - a.useCount; });
+
+      var html = '<div class="correction-popover__header">' +
+        '<span class="correction-popover__title"><i data-lucide="brain"></i> Lærte formuleringer</span>' +
+        '<span class="correction-popover__subtitle">' + corrections.length + ' rettelse' + (corrections.length !== 1 ? 'r' : '') + '</span>' +
+      '</div>';
+
+      corrections.forEach(function(c, idx) {
+        html += '<div class="correction-item" data-correction-idx="' + idx + '">' +
+          '<div class="correction-item__diff">' +
+            '<div class="correction-item__original">' + escapeHtml(c.original) + '</div>' +
+            '<div class="correction-item__arrow"><i data-lucide="arrow-down"></i> din formulering</div>' +
+            '<div class="correction-item__corrected">' + escapeHtml(c.corrected) + '</div>' +
+          '</div>' +
+          '<div class="correction-item__meta">' +
+            '<span class="correction-item__use-count">Brugt ' + c.useCount + ' gang' + (c.useCount !== 1 ? 'e' : '') + '</span>' +
+            '<button class="correction-item__insert-btn" data-correction-id="' + c.id + '"><i data-lucide="plus"></i> Indsæt</button>' +
+          '</div>' +
+        '</div>';
+      });
+
+      correctionPopover.innerHTML = html;
+
+      // Position relative to anchor button
+      var rect = anchorBtn.getBoundingClientRect();
+      correctionPopover.style.top = (rect.bottom + 6) + 'px';
+      correctionPopover.style.left = Math.max(8, rect.left - 180) + 'px';
+
+      correctionPopover.classList.add('correction-popover--visible');
+      lucide.createIcons({ nodes: correctionPopover.querySelectorAll('[data-lucide]') });
+
+      // Bind insert handlers
+      correctionPopover.querySelectorAll('.correction-item__insert-btn').forEach(function(btn) {
+        btn.addEventListener('mousedown', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var corrId = this.getAttribute('data-correction-id');
+          insertCorrection(corrId);
+        });
+      });
+
+      // Allow clicking the whole item to insert
+      correctionPopover.querySelectorAll('.correction-item').forEach(function(item) {
+        item.addEventListener('mousedown', function(e) {
+          if (e.target.closest('.correction-item__insert-btn')) return;
+          e.preventDefault();
+          var insertBtn = item.querySelector('.correction-item__insert-btn');
+          if (insertBtn) {
+            var corrId = insertBtn.getAttribute('data-correction-id');
+            insertCorrection(corrId);
+          }
+        });
+      });
+    }
+
+    function hideCorrectionPopover() {
+      correctionPopover.classList.remove('correction-popover--visible');
+      correctionPopoverTarget = null;
+    }
+
+    function escapeHtml(str) {
+      var div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function insertCorrection(correctionId) {
+      var corrections = loadCorrections();
+      var corr = corrections.find(function(c) { return c.id === correctionId; });
+      if (!corr || !correctionPopoverTarget) return;
+
+      var content = correctionPopoverTarget;
+      var existingText = content.textContent;
+      var separator = existingText.length > 0 ? ' ' : '';
+      content.textContent = existingText + separator + corr.corrected;
+
+      // Move cursor to end
+      var range = document.createRange();
+      var sel = window.getSelection();
+      range.selectNodeContents(content);
+      range.collapse(false);
+      sel.removeAllRanges();
+      sel.addRange(range);
+
+      // Increment use count
+      corr.useCount = (corr.useCount || 0) + 1;
+      saveCorrections(corrections);
+
+      // Flash animation
+      content.classList.add('phrase-just-inserted');
+      setTimeout(function() { content.classList.remove('phrase-just-inserted'); }, 1000);
+
+      hideCorrectionPopover();
+      showCorrectionToast(corr.corrected);
+
+      // Update buttons (count may have changed)
+      updateCorrectionButtons();
+    }
+
+    // ── Correction toast ──
+    var correctionToast = document.createElement('div');
+    correctionToast.className = 'correction-toast';
+    correctionToast.id = 'correctionToast';
+    correctionToast.innerHTML = '<i data-lucide="brain"></i><span></span>';
+    document.body.appendChild(correctionToast);
+
+    function showCorrectionToast(text) {
+      var span = correctionToast.querySelector('span');
+      var displayText = text.length > 50 ? text.substring(0, 50) + '…' : text;
+      span.textContent = 'Formulering indsat: ' + displayText;
+      lucide.createIcons({ nodes: correctionToast.querySelectorAll('[data-lucide]') });
+      correctionToast.classList.add('correction-toast--visible');
+      setTimeout(function() {
+        correctionToast.classList.remove('correction-toast--visible');
+      }, 2500);
+    }
+
+    // ── Add correction buttons to note sections ──
+    function addCorrectionButtons() {
+      document.querySelectorAll('.notes-section').forEach(function(section) {
+        var labelRow = section.querySelector('.notes-label-row');
+        var label = section.querySelector('.notes-label');
+        if (!label) return;
+
+        // If no label-row exists yet (should have been created by phrase buttons), create one
+        if (!labelRow) {
+          labelRow = document.createElement('div');
+          labelRow.className = 'notes-label-row';
+          label.parentNode.insertBefore(labelRow, label);
+          labelRow.appendChild(label);
+        }
+
+        // Remove existing correction button if any (rebuild)
+        var existingBtn = labelRow.querySelector('.correction-btn');
+        if (existingBtn) existingBtn.remove();
+
+        var sectionName = label.textContent.trim();
+        var corrections = getCorrectionsForSection(sectionName);
+
+        var btn = document.createElement('button');
+        btn.className = 'correction-btn';
+        btn.title = 'Lærte formuleringer';
+        btn.innerHTML = '<i data-lucide="sparkles"></i>';
+
+        if (corrections.length > 0) {
+          btn.classList.add('correction-btn--has-suggestions');
+          btn.innerHTML += '<span class="correction-btn__count">' + corrections.length + '</span>';
+        }
+
+        labelRow.appendChild(btn);
+
+        var contentEl = section.querySelector('.notes-content');
+
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          correctionPopoverTarget = contentEl;
+
+          if (correctionPopover.classList.contains('correction-popover--visible')) {
+            hideCorrectionPopover();
+          } else {
+            showCorrectionPopover(btn, sectionName);
+          }
+        });
+      });
+
+      lucide.createIcons();
+    }
+
+    function updateCorrectionButtons() {
+      addCorrectionButtons();
+    }
+
+    // ── Learning badge visibility ──
+    function updateLearningBadge() {
+      var badge = document.getElementById('learningBadge');
+      if (!badge) return;
+
+      var enabled = isLearningEnabled();
+      var corrections = loadCorrections();
+
+      if (enabled && corrections.length > 0) {
+        badge.classList.add('learning-badge--visible');
+      } else {
+        badge.classList.remove('learning-badge--visible');
+      }
+    }
+
+    // ── Close popover on outside click ──
+    document.addEventListener('mousedown', function(e) {
+      if (correctionPopover.classList.contains('correction-popover--visible')) {
+        if (!correctionPopover.contains(e.target) && !e.target.closest('.correction-btn')) {
+          hideCorrectionPopover();
+        }
+      }
+    });
+
+    // ── Listen for cross-page learning preference changes ──
+    window.addEventListener('learningPreferencesChanged', function() {
+      updateCorrectionButtons();
+      updateLearningBadge();
+    });
+
+    window.addEventListener('storage', function(e) {
+      if (e.key === LEARNING_ENABLED_KEY || e.key === CORRECTIONS_KEY) {
+        updateCorrectionButtons();
+        updateLearningBadge();
+      }
+    });
+
+    // ── Initialize ──
+    addCorrectionButtons();
+    updateLearningBadge();
+
   </script>
 </body>
 </html>

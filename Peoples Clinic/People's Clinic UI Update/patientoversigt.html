@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>People's Clinic - Seneste konsultationer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../Design System/platform.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* ───────────────────────────────────────
+       EXPANDABLE TABLE ROWS
+    ─────────────────────────────────────── */
+    .table--overview { border-collapse: collapse; }
+
+    .table--overview th,
+    .table--overview td { padding: 12px 16px; }
+
+    .row-main {
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .row-main:hover { background: var(--color-gray-100); }
+    .row-main.expanded {
+      background: var(--color-gray-100);
+      border-bottom: none;
+    }
+    .row-main.expanded td { border-bottom: none; }
+
+    /* Expand toggle button */
+    .expand-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--color-gray-200);
+      background: var(--color-white);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .expand-toggle:hover {
+      border-color: var(--color-navy-400);
+      background: var(--color-gray-100);
+    }
+    .row-chevron {
+      width: 18px;
+      height: 18px;
+      color: var(--color-navy-400);
+      transition: transform 0.25s ease;
+      flex-shrink: 0;
+    }
+    .row-main.expanded .row-chevron { transform: rotate(180deg); }
+
+    /* Patient name cell */
+    .patient-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+
+    /* Status badge in table */
+    .status-mini {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .status-mini--pending {
+      background: #FFF7ED;
+      color: #EA580C;
+    }
+    .status-mini--accepted {
+      background: #F0FDF4;
+      color: #16A34A;
+    }
+    .status-mini--dismissed {
+      background: var(--color-gray-100);
+      color: var(--color-navy-400);
+    }
+    .status-mini__dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .status-mini--pending .status-mini__dot { background: #EA580C; }
+    .status-mini--accepted .status-mini__dot { background: #16A34A; }
+    .status-mini--dismissed .status-mini__dot { background: var(--color-navy-400); }
+
+    /* ───────────────────────────────────────
+       EXPANDED PANEL
+    ─────────────────────────────────────── */
+    .row-expand { display: none; }
+    .row-expand.open { display: table-row; }
+    .row-expand td {
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--color-gray-200);
+      background: var(--color-gray-100);
+    }
+
+    .expand-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+
+    .action-section {
+      background: var(--color-white);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      border: 1px solid var(--color-gray-200);
+      transition: box-shadow 0.15s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .action-section:hover {
+      box-shadow: 0 2px 12px rgba(38, 48, 79, 0.06);
+    }
+
+    .action-section__header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--color-gray-100);
+    }
+    .action-section__icon {
+      width: 18px;
+      height: 18px;
+      color: var(--color-navy-400);
+    }
+    .action-section__title {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-text);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .action-section__body {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Action buttons inside expanded panel — matches platform.css */
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--color-navy-500);
+      background: transparent;
+      border: 1px solid var(--color-gray-200);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .action-btn:hover {
+      border-color: var(--color-navy-400);
+      background: var(--color-gray-100);
+    }
+    .action-btn svg {
+      width: 14px;
+      height: 14px;
+      color: var(--color-navy-400);
+      flex-shrink: 0;
+    }
+
+    .action-btn--primary {
+      background: var(--gradient-button-primary);
+      color: var(--color-white);
+      border: none;
+    }
+    .action-btn--primary:hover {
+      box-shadow: var(--shadow-button-hover);
+      background: linear-gradient(135deg, #2F3D62 0%, #4A5D96 100%);
+    }
+    .action-btn--primary svg { color: var(--color-white); }
+
+    /* Honorar info in section */
+    .honorar-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--color-gray-100);
+      border-radius: var(--radius-md);
+      margin-bottom: 4px;
+    }
+    .honorar-info__count {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    /* ───────────────────────────────────────
+       HONORAR MODAL (from honorarforslag)
+    ─────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(19, 16, 44, 0.5); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center; z-index: 1000;
+      opacity: 0; visibility: hidden; transition: all 0.2s ease;
+    }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    .modal {
+      background: var(--color-white); border-radius: var(--radius-2xl); width: 100%; max-height: 90vh;
+      overflow: hidden; display: flex; flex-direction: column; transform: translateY(20px); transition: transform 0.2s ease;
+    }
+    .modal-overlay.active .modal { transform: translateY(0); }
+    .modal__header {
+      display: flex; align-items: center; justify-content: space-between; padding: 24px 28px 20px; border-bottom: 1px solid var(--color-gray-200);
+    }
+    .modal__title { font-size: var(--font-size-3xl); font-weight: 600; color: var(--color-text); }
+    .modal__close {
+      width: 36px; height: 36px; border-radius: var(--radius-full); border: none; background: var(--color-gray-100);
+      cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--color-navy-400); transition: all 0.15s ease;
+    }
+    .modal__close:hover { background: var(--color-gray-200); color: var(--color-text); }
+    .modal__close svg { width: 18px; height: 18px; }
+    .modal__body { padding: 28px; overflow-y: auto; flex: 1; }
+    .modal__footer {
+      padding: 20px 28px; border-top: 1px solid var(--color-gray-100); display: flex; justify-content: flex-end; gap: 12px;
+    }
+
+    /* Modal patient info */
+    .honorar-patient { margin-bottom: 20px; }
+    .honorar-patient__name { font-size: var(--font-size-lg); font-weight: 600; color: var(--color-text); }
+    .honorar-patient__meta { font-size: var(--font-size-sm); color: var(--color-navy-400); margin-top: 2px; }
+
+    /* Code items in modal */
+    .honorar-codes { display: flex; flex-direction: column; gap: 0; }
+    .honorar-code-item {
+      display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--color-gray-100);
+    }
+    .honorar-code-item:last-child { border-bottom: none; }
+    .honorar-code-item--accepted { background: rgba(34, 197, 94, 0.03); border-radius: var(--radius-lg); padding: 12px; margin: 0 -12px; }
+    .honorar-code-item--rejected { opacity: 0.4; text-decoration: line-through; }
+    .honorar-code__info { flex: 1; min-width: 0; }
+    .honorar-code__top { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+    .honorar-code__id {
+      font-size: var(--font-size-sm); font-weight: 700; color: var(--color-text);
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    }
+    .honorar-code__name { font-size: var(--font-size-sm); color: var(--color-navy-400); }
+    .honorar-code__desc { font-size: var(--font-size-xs); color: var(--color-navy-400); }
+    .honorar-code__actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .honorar-code__btn {
+      width: 32px; height: 32px; border-radius: var(--radius-full); border: 1px solid var(--color-gray-200);
+      background: var(--color-white); cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s ease;
+    }
+    .honorar-code__btn svg { width: 16px; height: 16px; }
+    .honorar-code__btn--accept:hover { background: rgba(34, 197, 94, 0.1); border-color: #22C55E; color: #22C55E; }
+    .honorar-code__btn--reject:hover { background: rgba(239, 68, 68, 0.1); border-color: #EF4444; color: #EF4444; }
+    .honorar-code__btn--accepted { background: rgba(34, 197, 94, 0.1); border-color: #22C55E; color: #22C55E; }
+    .honorar-code__btn--rejected { background: rgba(239, 68, 68, 0.1); border-color: #EF4444; color: #EF4444; }
+
+    .honorar-add-code {
+      display: flex; align-items: center; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--color-gray-100);
+    }
+
+    #modalHonorar .modal { max-width: 600px; }
+
+    /* Consultation dropdown in henvisning section */
+    .consult-select {
+      width: 100%;
+      padding: 6px 14px;
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-navy-500);
+      background: transparent;
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235669A4' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 14px;
+      padding-right: 30px;
+      text-transform: none;
+      letter-spacing: normal;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .consult-select:hover {
+      border-color: var(--color-navy-400);
+      background-color: var(--color-gray-100);
+    }
+    .consult-select:focus {
+      outline: none;
+      border-color: var(--color-navy-500);
+    }
+
+    /* CPR under patient name */
+    .patient-cpr {
+      font-size: var(--font-size-xs);
+      color: var(--color-navy-400);
+      font-weight: 400;
+    }
+
+    /* ───────────────────────────────────────
+       PAGE HEADER
+    ─────────────────────────────────────── */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+    }
+    .page-header__left { flex: 1; }
+  </style>
+</head>
+<body>
+  <!-- Device Blocker (mobile/tablet) -->
+  <div class="device-blocker">
+    <svg class="device-blocker__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="2" y="3" width="20" height="14" rx="2"/>
+      <line x1="8" y1="21" x2="16" y2="21"/>
+      <line x1="12" y1="17" x2="12" y2="21"/>
+    </svg>
+    <h1 class="device-blocker__title">Åbn People's Clinic på din computer</h1>
+    <p class="device-blocker__text">Platformen er designet til desktop og fungerer bedst på en større skærm.</p>
+    <p class="device-blocker__note">Vi arbejder på en mobilversion — stay tuned!</p>
+  </div>
+
+  <div class="platform">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar__logo">
+        <a href="platform-preview.html">
+          <img src="../Design System/assets/Peoples Clinic.svg" alt="People's Clinic" class="topbar__logo-img">
+        </a>
+      </div>
+      <div class="topbar__right">
+        <div class="clinic-dropdown">
+          <span>Current clinic: Valby Lægehus</span>
+          <i data-lucide="chevron-down"></i>
+        </div>
+        <div class="flags">
+          <div class="flag flag--dk"></div>
+          <div class="flag flag--uk"></div>
+        </div>
+        <div class="user-menu">
+          <div class="user-avatar">A</div>
+          <span class="user-name">Dr. Anna Nielsen</span>
+          <i data-lucide="chevron-down"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <div class="content-area">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <nav class="sidebar__nav">
+          <a href="platform-preview.html" class="nav-btn nav-btn--primary">
+            <i data-lucide="play"></i>
+            Start Konsultation
+          </a>
+          <a href="patientoversigt.html" class="nav-btn nav-btn--secondary nav-btn--active">
+            <i data-lucide="layout-list"></i>
+            Seneste konsultationer
+          </a>
+          <a href="ai-assistent.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="sparkles"></i>
+            Min Assistent          </a>
+          <a href="beskedassistent.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="inbox"></i>
+            Beskedassistent          </a>
+          <a href="klinikdrift-dashboard.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="activity"></i>
+            Klinikdrift
+          </a>
+        </nav>
+
+        <!-- Bottom Navigation Box -->
+        <div class="sidebar__bottom-box">
+          <div class="bottom-section-label">Brugerpanel</div>
+          <a href="beskeder.html" class="bottom-link">
+            <i data-lucide="alert-circle"></i>
+            Systemnotifikationer
+          </a>
+          <a href="indstillinger.html" class="bottom-link">
+            <i data-lucide="sliders"></i>
+            Brugerindstillinger
+          </a>
+          <a href="admin-dashboard.html" class="bottom-link">
+            <i data-lucide="settings"></i>
+            Klinikadministration
+          </a>
+          <a href="#" class="bottom-link bottom-link--separated">
+            <i data-lucide="log-out"></i>
+            Log ud
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main">
+        <div class="page-header">
+          <div class="page-header__left">
+            <h1 class="page-title">Seneste konsultationer</h1>
+            <p class="page-description">Overblik baseret på seneste konsultationer i People's Clinic</p>
+          </div>
+          <div class="search-box">
+            <input type="text" placeholder="Søg patient, emne eller dato...">
+            <i data-lucide="search"></i>
+          </div>
+        </div>
+
+        <div class="card card--full card--table">
+          <div class="table-scroll">
+            <table class="table table--overview" id="overviewTable">
+              <thead>
+                <tr>
+                  <th>Patient</th>
+                  <th>Seneste konsultation</th>
+                  <th>Emne</th>
+                  <th>Honorar</th>
+                  <th style="width: 48px;"></th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Bottom Navigation (Mobile/Tablet) -->
+    <nav class="bottom-nav">
+      <ul class="bottom-nav__list">
+        <a href="platform-preview.html" class="bottom-nav__item">
+          <i data-lucide="play"></i>
+          <span>Start</span>
+        </a>
+        <a href="patientoversigt.html" class="bottom-nav__item bottom-nav__item--active">
+          <i data-lucide="layout-list"></i>
+          <span>Oversigt</span>
+        </a>
+        <a href="konsultationshistorik.html" class="bottom-nav__item">
+          <i data-lucide="history"></i>
+          <span>Historik</span>
+        </a>
+        <a href="honorarforslag.html" class="bottom-nav__item">
+          <i data-lucide="receipt"></i>
+          <span>Honorar</span>
+        </a>
+        <a href="#" class="bottom-nav__item">
+          <i data-lucide="help-circle"></i>
+          <span>Hjælp</span>
+        </a>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       MODAL: Honorar (ydelseskoder)
+  ═══════════════════════════════════════ -->
+  <div class="modal-overlay" id="modalHonorar">
+    <div class="modal">
+      <div class="modal__header">
+        <h2 class="modal__title">Identificerede ydelseskoder</h2>
+        <button class="modal__close" onclick="closeHonorarModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <div class="honorar-patient">
+          <div class="honorar-patient__name" id="honorarPatientName"></div>
+          <div class="honorar-patient__meta" id="honorarPatientMeta"></div>
+        </div>
+        <div class="honorar-codes" id="honorarCodes"></div>
+        <div class="honorar-add-code">
+          <input type="text" class="form-input" id="addCodeInput" placeholder="Tilføj ydelseskode (f.eks. 0101)...">
+          <button class="table-btn table-btn--outline" onclick="addCustomCode()">Tilføj</button>
+        </div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn-secondary" onclick="closeHonorarModal()">Luk</button>
+        <button class="btn-primary" onclick="saveHonorar()">Gem ændringer</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    // ═══════════════════════════════════════
+    // COMBINED DATA MODEL
+    // ═══════════════════════════════════════
+    var patients = [
+      {
+        patient: 'Nancy Ann Berggren', cpr: '010145-****', date: '24.02.2026 12:18',
+        emne: 'Patienten havde ondt i ørerne', patientId: 1,
+        honorarStatus: 'pending', honorarCount: 3,
+        codes: [
+          { id: '0101', name: 'Konsultation', desc: 'Almindelig konsultation i dagtid', status: 'pending' },
+          { id: '2161', name: 'Øreundersøgelse', desc: 'Otoskopi, bilateral', status: 'pending' },
+          { id: '8601', name: 'Tympanometri', desc: 'Tympanometri, bilateral', status: 'pending' }
+        ]
+      },
+      {
+        patient: 'Peter Hansen', cpr: '150678-****', date: '24.02.2026 11:17',
+        emne: 'Patienten havde knæsmerter', patientId: 2,
+        honorarStatus: 'pending', honorarCount: 2,
+        codes: [
+          { id: '0101', name: 'Konsultation', desc: 'Almindelig konsultation i dagtid', status: 'pending' },
+          { id: '2101', name: 'Ledundersøgelse', desc: 'Undersøgelse af bevægeapparat', status: 'pending' }
+        ]
+      },
+      {
+        patient: 'Maria Jensen', cpr: '220390-****', date: '24.02.2026 9:27',
+        emne: 'Patienten oplevede rygsmerter', patientId: 3,
+        honorarStatus: 'accepted', honorarCount: 1,
+        codes: [
+          { id: '0101', name: 'Konsultation', desc: 'Almindelig konsultation i dagtid', status: 'accepted' }
+        ]
+      },
+      {
+        patient: 'Anne Kristensen', cpr: '030482-****', date: '21.02.2026 14:32',
+        emne: 'Patienten havde hovedpine', patientId: 5,
+        honorarStatus: 'accepted', honorarCount: 4,
+        codes: [
+          { id: '0101', name: 'Konsultation', desc: 'Almindelig konsultation i dagtid', status: 'accepted' },
+          { id: '0120', name: 'Kontrolbesøg', desc: 'Kontrol efter behandling', status: 'accepted' },
+          { id: '2161', name: 'Øreundersøgelse', desc: 'Otoskopi, bilateral', status: 'accepted' },
+          { id: '7403', name: 'Audiometri', desc: 'Audiometri, toneterskel', status: 'accepted' }
+        ]
+      },
+      {
+        patient: 'Lars Sørensen', cpr: '081255-****', date: '21.02.2026 10:05',
+        emne: 'Kontrol af søvnproblemer', patientId: 4,
+        honorarStatus: 'pending', honorarCount: 2,
+        codes: [
+          { id: '0101', name: 'Konsultation', desc: 'Almindelig konsultation i dagtid', status: 'pending' },
+          { id: '2451', name: 'Blodtryksmåling', desc: 'Blodtryksmåling', status: 'pending' }
+        ]
+      },
+      {
+        patient: 'Sofie Møller', cpr: '140695-****', date: '19.02.2026 11:30',
+        emne: 'Patienten oplevede svimmelhed', patientId: 6,
+        honorarStatus: 'pending', honorarCount: 2,
+        codes: [
+          { id: '0101', name: 'Konsultation', desc: 'Almindelig konsultation i dagtid', status: 'pending' },
+          { id: '2451', name: 'Blodtryksmåling', desc: 'Blodtryksmåling, ortostatisk', status: 'pending' }
+        ]
+      },
+      {
+        patient: 'Henrik Thomsen', cpr: '280858-****', date: '18.02.2026 14:45',
+        emne: 'Hoste og forkølelse', patientId: 7,
+        honorarStatus: 'dismissed', honorarCount: 3,
+        codes: [
+          { id: '0101', name: 'Konsultation', desc: 'Almindelig konsultation i dagtid', status: 'rejected' },
+          { id: '7109', name: 'CRP', desc: 'CRP-måling, kapillær', status: 'rejected' },
+          { id: '7136', name: 'Strep A', desc: 'Strep A hurtigtest', status: 'rejected' }
+        ]
+      },
+      {
+        patient: 'Camilla Lund', cpr: '110792-****', date: '18.02.2026 9:30',
+        emne: 'Patienten havde mavesmerter', patientId: 8,
+        honorarStatus: 'accepted', honorarCount: 2,
+        codes: [
+          { id: '0101', name: 'Konsultation', desc: 'Almindelig konsultation i dagtid', status: 'accepted' },
+          { id: '2401', name: 'Abdomenundersøgelse', desc: 'Undersøgelse af abdomen', status: 'accepted' }
+        ]
+      }
+    ];
+
+    // ═══════════════════════════════════════
+    // MOCK CONSULTATIONS (for dropdown)
+    // ═══════════════════════════════════════
+    var patientConsultations = {
+      'Nancy Ann Berggren': [
+        { date: '24.02.2026', snippet: 'Øresmerter bilateralt. Otoskopi: rødme hø. tromme.' },
+        { date: '12.02.2026', snippet: 'Brystsmerter ved anstrengelse. BT 144/88.' },
+        { date: '15.01.2026', snippet: 'Diabeteskontrol. HbA1c 58. Insulin justeret.' }
+      ],
+      'Peter Hansen': [
+        { date: '24.02.2026', snippet: 'Knæsmerter venstre side efter løb.' },
+        { date: '10.02.2026', snippet: 'Diabeteskontrol. HbA1c 49. Metformin 500mg.' },
+        { date: '12.12.2025', snippet: 'Årskontrol. BT 128/82. Lipidprofil ua.' }
+      ],
+      'Maria Jensen': [
+        { date: '24.02.2026', snippet: 'Rygsmerter lumbalt. VAS 6. Ibuprofen ordineret.' },
+        { date: '05.01.2026', snippet: 'Kontrolbesøg. Bedring i symptomer.' }
+      ],
+      'Anne Kristensen': [
+        { date: '21.02.2026', snippet: 'Hovedpine. Spændingstype. Paracetamol anbefalet.' },
+        { date: '14.01.2026', snippet: 'Øresmerter. Otitis media. Antibiotika.' },
+        { date: '20.11.2025', snippet: 'Svimmelhed og kvalme. Vestibulær neuritis.' }
+      ],
+      'Lars Sørensen': [
+        { date: '21.02.2026', snippet: 'Søvnproblemer. Søvnhygiejne gennemgået.' },
+        { date: '20.02.2026', snippet: 'Blodprøver alle normale.' },
+        { date: '18.12.2025', snippet: 'Årskontrol. Kolesterol let forhøjet.' }
+      ],
+      'Sofie Møller': [
+        { date: '19.02.2026', snippet: 'Svimmelhed ved oprejsning. Ortostatisk hypotension.' },
+        { date: '10.01.2026', snippet: 'Træthed og energiløshed. Blodprøver bestilt.' }
+      ],
+      'Henrik Thomsen': [
+        { date: '18.02.2026', snippet: 'Hoste og forkølelse i 5 dage. CRP 12.' },
+        { date: '03.01.2026', snippet: 'Rygsmerter. Fysioterapi henvist.' }
+      ],
+      'Camilla Lund': [
+        { date: '18.02.2026', snippet: 'Mavesmerter epigastrisk. Abdomen blød, diffus ømhed.' },
+        { date: '22.12.2025', snippet: 'Kontrolbesøg. Jernmangel behandlet.' }
+      ]
+    };
+
+    function getPatientConsultations(patientName) {
+      return patientConsultations[patientName] || [];
+    }
+
+    // ═══════════════════════════════════════
+    // RENDER TABLE
+    // ═══════════════════════════════════════
+    var expandedIndex = -1;
+
+    function getStatusLabel(status) {
+      if (status === 'pending') return 'Afventer';
+      if (status === 'accepted') return 'Accepteret';
+      if (status === 'dismissed') return 'Afvist';
+      return '';
+    }
+
+    function renderTable() {
+      var tbody = document.getElementById('tableBody');
+      var html = '';
+
+      patients.forEach(function(p, i) {
+        var isExpanded = (i === expandedIndex);
+
+        // Main row
+        html += '<tr class="row-main' + (isExpanded ? ' expanded' : '') + '" onclick="toggleRow(' + i + ')">';
+        html += '<td><span class="patient-cell"><span>' + p.patient + '<br><span class="patient-cpr">' + p.cpr + '</span></span></span></td>';
+        html += '<td>' + p.date + '</td>';
+        html += '<td>' + p.emne + '</td>';
+        html += '<td><span class="status-mini status-mini--' + p.honorarStatus + '"><span class="status-mini__dot"></span>' + p.honorarCount + ' koder &middot; ' + getStatusLabel(p.honorarStatus) + '</span></td>';
+        html += '<td><button class="expand-toggle" title="' + (isExpanded ? 'Luk' : 'Udvid') + '"><svg class="row-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button></td>';
+        html += '</tr>';
+
+        // Expand row
+        html += '<tr class="row-expand' + (isExpanded ? ' open' : '') + '">';
+        html += '<td colspan="5">';
+        html += '<div class="expand-panel">';
+
+        // Section 1: Konsultation
+        html += '<div class="action-section">';
+        html += '  <div class="action-section__header">';
+        html += '    <svg class="action-section__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>';
+        html += '    <span class="action-section__title">Konsultation</span>';
+        html += '  </div>';
+        html += '  <div class="action-section__body">';
+        html += '    <a href="#" class="action-btn" onclick="copyNote(' + i + '); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Kopier notat</a>';
+        html += '    <a href="#" class="action-btn" onclick="return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Vis & Rediger</a>';
+        html += '  </div>';
+        html += '</div>';
+
+        // Section 2: Henvisning
+        html += '<div class="action-section">';
+        html += '  <div class="action-section__header">';
+        html += '    <svg class="action-section__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>';
+        html += '    <span class="action-section__title">Henvisning</span>';
+        html += '  </div>';
+        html += '  <div class="action-section__body">';
+        var consultOpts = getPatientConsultations(p.patient);
+        html += '    <select class="consult-select" id="consultSelect_' + i + '">';
+        html += '      <option value="">' + (consultOpts.length > 0 ? 'Vælg konsultation...' : 'Ingen konsultationer') + '</option>';
+        consultOpts.forEach(function(c, ci) {
+          html += '<option value="' + ci + '"' + (ci === 0 ? ' selected' : '') + '>' + c.date + ' — ' + c.snippet.substring(0, 50) + '</option>';
+        });
+        html += '    </select>';
+        html += '    <a href="#" class="action-btn action-btn--primary" onclick="generateReferral(' + i + '); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>Generer henvisning</a>';
+        html += '  </div>';
+        html += '</div>';
+
+        // Section 3: Honorar
+        html += '<div class="action-section">';
+        html += '  <div class="action-section__header">';
+        html += '    <svg class="action-section__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>';
+        html += '    <span class="action-section__title">Honorar</span>';
+        html += '  </div>';
+        html += '  <div class="action-section__body">';
+        html += '    <div class="honorar-info"><span class="honorar-info__count">' + p.honorarCount + ' ydelseskoder</span><span class="status-mini status-mini--' + p.honorarStatus + '"><span class="status-mini__dot"></span>' + getStatusLabel(p.honorarStatus) + '</span></div>';
+        html += '    <a href="#" class="action-btn' + (p.honorarStatus === 'pending' ? ' action-btn--primary' : '') + '" onclick="openHonorarModal(' + i + '); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>' + (p.honorarStatus === 'pending' ? 'Gennemgå forslag' : 'Vis forslag') + '</a>';
+        html += '  </div>';
+        html += '</div>';
+
+        html += '</div>'; // expand-panel
+        html += '</td>';
+        html += '</tr>';
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    // ═══════════════════════════════════════
+    // EXPAND / COLLAPSE
+    // ═══════════════════════════════════════
+    function toggleRow(index) {
+      expandedIndex = (expandedIndex === index) ? -1 : index;
+      renderTable();
+    }
+
+    // ═══════════════════════════════════════
+    // KONSULTATION ACTIONS
+    // ═══════════════════════════════════════
+    function copyNote(index) {
+      var p = patients[index];
+      var noteText = 'Patient: ' + p.patient + '\nDato: ' + p.date + '\nEmne: ' + p.emne;
+      navigator.clipboard.writeText(noteText).then(function() {
+        // Brief visual feedback
+        var btn = event.currentTarget;
+        var original = btn.innerHTML;
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;color:#16A34A"><polyline points="20 6 9 17 4 12"/></svg>Kopieret!';
+        btn.style.color = '#16A34A';
+        setTimeout(function() {
+          btn.innerHTML = original;
+          btn.style.color = '';
+        }, 1500);
+      });
+    }
+
+    function generateReferral(index) {
+      var p = patients[index];
+      var referralData = {
+        patientName: p.patient,
+        patientCpr: p.cpr,
+        consultationDate: p.date,
+        soapContent: 'Konsultation: ' + p.date + '\nPatient: ' + p.patient + '\n\nEmne: ' + p.emne
+      };
+      localStorage.setItem('peoplesClinic_referralContext', JSON.stringify(referralData));
+      window.location.href = 'ai-assistent.html?type=henvisning&from=patientoversigt';
+    }
+
+    // ═══════════════════════════════════════
+    // HONORAR MODAL
+    // ═══════════════════════════════════════
+    var currentHonorarIndex = null;
+
+    function openHonorarModal(index) {
+      currentHonorarIndex = index;
+      var p = patients[index];
+      document.getElementById('honorarPatientName').textContent = p.patient;
+      document.getElementById('honorarPatientMeta').textContent = p.date + ' — ' + p.emne;
+      renderCodes();
+      document.getElementById('modalHonorar').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeHonorarModal() {
+      document.getElementById('modalHonorar').classList.remove('active');
+      document.body.style.overflow = '';
+      // Update status in table
+      if (currentHonorarIndex !== null) {
+        var p = patients[currentHonorarIndex];
+        var allAccepted = p.codes.every(function(c) { return c.status === 'accepted'; });
+        var allRejected = p.codes.every(function(c) { return c.status === 'rejected'; });
+        var anyPending = p.codes.some(function(c) { return c.status === 'pending'; });
+        if (allAccepted) p.honorarStatus = 'accepted';
+        else if (allRejected) p.honorarStatus = 'dismissed';
+        else if (anyPending) p.honorarStatus = 'pending';
+        else p.honorarStatus = 'accepted';
+        renderTable();
+      }
+    }
+
+    function renderCodes() {
+      var p = patients[currentHonorarIndex];
+      var html = '';
+      p.codes.forEach(function(code, i) {
+        var itemClass = 'honorar-code-item';
+        if (code.status === 'accepted') itemClass += ' honorar-code-item--accepted';
+        if (code.status === 'rejected') itemClass += ' honorar-code-item--rejected';
+
+        var acceptClass = 'honorar-code__btn honorar-code__btn--accept' + (code.status === 'accepted' ? ' honorar-code__btn--accepted' : '');
+        var rejectClass = 'honorar-code__btn honorar-code__btn--reject' + (code.status === 'rejected' ? ' honorar-code__btn--rejected' : '');
+
+        html += '<div class="' + itemClass + '">' +
+          '<div class="honorar-code__info">' +
+            '<div class="honorar-code__top">' +
+              '<span class="honorar-code__id">' + code.id + '</span>' +
+              '<span class="honorar-code__name">' + code.name + '</span>' +
+            '</div>' +
+            '<div class="honorar-code__desc">' + code.desc + '</div>' +
+          '</div>' +
+          '<div class="honorar-code__actions">' +
+            '<button class="' + acceptClass + '" title="Godkend" onclick="toggleCode(' + i + ', \'accepted\')">' +
+              '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' +
+            '</button>' +
+            '<button class="' + rejectClass + '" title="Afvis" onclick="toggleCode(' + i + ', \'rejected\')">' +
+              '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>' +
+            '</button>' +
+          '</div>' +
+        '</div>';
+      });
+      document.getElementById('honorarCodes').innerHTML = html;
+    }
+
+    function toggleCode(codeIndex, newStatus) {
+      var code = patients[currentHonorarIndex].codes[codeIndex];
+      code.status = (code.status === newStatus) ? 'pending' : newStatus;
+      renderCodes();
+    }
+
+    function addCustomCode() {
+      var input = document.getElementById('addCodeInput');
+      var val = input.value.trim();
+      if (!val) return;
+      patients[currentHonorarIndex].codes.push({
+        id: val, name: 'Manuelt tilføjet', desc: 'Tilføjet af bruger', status: 'accepted'
+      });
+      patients[currentHonorarIndex].honorarCount = patients[currentHonorarIndex].codes.length;
+      input.value = '';
+      renderCodes();
+    }
+
+    document.getElementById('addCodeInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); addCustomCode(); }
+    });
+
+    function saveHonorar() { closeHonorarModal(); }
+
+    document.getElementById('modalHonorar').addEventListener('click', function(e) {
+      if (e.target === this) closeHonorarModal();
+    });
+
+    // ═══════════════════════════════════════
+    // KEYBOARD SHORTCUTS
+    // ═══════════════════════════════════════
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        if (document.getElementById('modalHonorar').classList.contains('active')) {
+          closeHonorarModal();
+        }
+      }
+    });
+
+    // ═══════════════════════════════════════
+    // INIT
+    // ═══════════════════════════════════════
+    renderTable();
+  </script>
+</body>
+</html>

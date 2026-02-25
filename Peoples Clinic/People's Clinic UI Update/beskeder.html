@@ -204,6 +204,18 @@
   </style>
 </head>
 <body>
+  <!-- Device Blocker (mobile/tablet) -->
+  <div class="device-blocker">
+    <svg class="device-blocker__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="2" y="3" width="20" height="14" rx="2"/>
+      <line x1="8" y1="21" x2="16" y2="21"/>
+      <line x1="12" y1="17" x2="12" y2="21"/>
+    </svg>
+    <h1 class="device-blocker__title">Åbn People's Clinic på din computer</h1>
+    <p class="device-blocker__text">Platformen er designet til desktop og fungerer bedst på en større skærm.</p>
+    <p class="device-blocker__note">Vi arbejder på en mobilversion — stay tuned!</p>
+  </div>
+
   <div class="platform">
     <!-- Top Bar -->
     <header class="topbar">
@@ -228,8 +240,8 @@
           <div class="user-dropdown">
             <div class="user-dropdown__label">Brugerpanel</div>
             <a href="beskeder.html" class="user-dropdown__item">
-              <svg><use href="#message-square"/></svg>
-              Dine beskeder
+              <svg><use href="#alert-circle"/></svg>
+              Systemnotifikationer
             </a>
             <a href="indstillinger.html" class="user-dropdown__item">
               <svg><use href="#sliders"/></svg>
@@ -237,13 +249,9 @@
             </a>
             <div class="user-dropdown__divider"></div>
             <div class="user-dropdown__label">Klinikadministration</div>
-            <a href="admin-klinik-admin.html" class="user-dropdown__item">
-              <svg><use href="#users"/></svg>
+            <a href="admin-dashboard.html" class="user-dropdown__item">
+              <svg><use href="#settings"/></svg>
               Klinikadministration
-            </a>
-            <a href="admin-klinik.html" class="user-dropdown__item">
-              <svg><use href="#building-2"/></svg>
-              Klinikindstillinger
             </a>
             <div class="user-dropdown__divider"></div>
             <a href="#" class="user-dropdown__item">
@@ -264,18 +272,16 @@
             <i data-lucide="play"></i>
             Start Konsultation
           </a>
-          <a href="konsultationshistorik.html" class="nav-btn nav-btn--secondary">
-            <svg><use href="#history"/></svg>
-            Konsultationshistorik
+          <a href="patientoversigt.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="layout-list"></i>
+            Seneste konsultationer
           </a>
-          <a href="journalresume.html" class="nav-btn nav-btn--secondary">
-            <svg><use href="#file-text"/></svg>
-            Journalresume
-          </a>
-          <a href="honorarforslag.html" class="nav-btn nav-btn--secondary">
-            <svg><use href="#receipt"/></svg>
-            Honorarforslag
-          </a>
+          <a href="ai-assistent.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="sparkles"></i>
+            Min Assistent          </a>
+          <a href="beskedassistent.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="inbox"></i>
+            Beskedassistent          </a>
           <a href="klinikdrift-dashboard.html" class="nav-btn nav-btn--secondary">
             <i data-lucide="activity"></i>
             Klinikdrift
@@ -283,26 +289,21 @@
         </nav>
         <div class="sidebar__bottom-box">
           <div class="bottom-section-label">Brugerpanel</div>
-          <a href="beskeder.html" class="bottom-link">
-            <svg><use href="#message-square"/></svg>
-            Dine beskeder
+          <a href="beskeder.html" class="bottom-link bottom-link--active">
+            <svg><use href="#alert-circle"/></svg>
+            Systemnotifikationer
           </a>
           <a href="indstillinger.html" class="bottom-link">
             <svg><use href="#sliders"/></svg>
             Brugerindstillinger
           </a>
 
-          <div class="bottom-section-label">Klinikadministration</div>
-          <a href="admin-klinik-admin.html" class="bottom-link">
-            <svg><use href="#users"/></svg>
+          <a href="admin-dashboard.html" class="bottom-link">
+            <svg><use href="#settings"/></svg>
             Klinikadministration
           </a>
-          <a href="admin-klinik.html" class="bottom-link">
-            <svg><use href="#building-2"/></svg>
-            Klinikindstillinger
-          </a>
 
-          <a href="#" class="bottom-link" style="margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--color-gray-100);">
+          <a href="#" class="bottom-link bottom-link--separated">
             <svg><use href="#log-out"/></svg>
             Log ud
           </a>
@@ -522,6 +523,7 @@
     <symbol id="message-square" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
     </symbol>
+    <symbol id="alert-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
     <symbol id="mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
       <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>

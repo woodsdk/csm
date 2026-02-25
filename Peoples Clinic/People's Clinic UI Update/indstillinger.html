@@ -29,17 +29,6 @@
       flex-shrink: 0;
     }
 
-    .page-header__title {
-      font-size: 32px;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-
-    .page-header__subtitle {
-      font-size: var(--font-size-md);
-      color: var(--color-text);
-    }
-
     /* Tabs */
     .settings-tabs {
       display: flex;
@@ -388,16 +377,333 @@
       opacity: 1;
     }
 
+    /* ==========================================
+       STANDARDFRASER STYLES
+       ========================================== */
+
+    .phrase-category {
+      margin-bottom: 0;
+    }
+
+    .phrase-category__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 0 12px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .phrase-category__title {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .phrase-category__count {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--color-navy-400);
+      text-transform: none;
+      letter-spacing: normal;
+    }
+
+    .phrase-category__chevron {
+      color: var(--color-navy-300);
+      transition: transform 0.2s ease;
+      width: 16px;
+      height: 16px;
+    }
+
+    .phrase-category--collapsed .phrase-category__chevron {
+      transform: rotate(-90deg);
+    }
+
+    .phrase-category--collapsed .phrase-list {
+      display: none;
+    }
+
+    .phrase-item {
+      display: grid;
+      grid-template-columns: 110px 1fr auto;
+      align-items: center;
+      padding: 12px 16px;
+      margin: 0;
+      border-radius: 0;
+      background: var(--color-white);
+      border-bottom: 1px solid var(--color-gray-100);
+      transition: background 0.15s ease;
+      gap: 16px;
+    }
+
+    .phrase-item:last-child {
+      border-bottom: none;
+    }
+
+    .phrase-item:hover {
+      background: var(--color-gray-50);
+    }
+
+    .phrase-item__left {
+      display: contents;
+    }
+
+    .phrase-item__trigger {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 10px;
+      background: var(--color-navy-800);
+      color: var(--color-white);
+      font-size: 11.5px;
+      font-weight: 600;
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      border-radius: var(--radius-md);
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+      height: 26px;
+    }
+
+    .phrase-item__info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .phrase-item__name {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-text);
+      line-height: 1.3;
+    }
+
+    .phrase-item__text {
+      font-size: var(--font-size-xs);
+      color: var(--color-navy-400);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .phrase-item__actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .phrase-item__btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: none;
+      color: var(--color-navy-300);
+      cursor: pointer;
+      border-radius: var(--radius-md);
+      transition: all 0.15s ease;
+      opacity: 0;
+    }
+
+    .phrase-item:hover .phrase-item__btn {
+      opacity: 1;
+    }
+
+    .phrase-item__btn:hover {
+      background: var(--color-gray-100);
+      color: var(--color-navy-600);
+    }
+
+    .phrase-item__btn--danger:hover {
+      background: rgba(229, 62, 62, 0.1);
+      color: #e53e3e;
+    }
+
+    .phrase-item__btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .phrase-item__system-badge {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--color-navy-400);
+      background: var(--color-gray-100);
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* Add phrase button */
+    .phrase-add-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      background: var(--color-white);
+      color: var(--color-navy-500);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      margin-top: 8px;
+    }
+
+    .phrase-add-btn:hover {
+      border-color: var(--color-navy-400);
+      color: var(--color-navy-700);
+      background: var(--color-gray-50);
+    }
+
+    .phrase-add-btn svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    /* Phrase modal */
+    .phrase-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(19, 16, 44, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .phrase-modal-overlay--visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .phrase-modal {
+      background: var(--color-white);
+      border-radius: var(--radius-xl);
+      width: 520px;
+      max-width: 90vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 48px rgba(19, 16, 44, 0.2);
+      transform: translateY(12px);
+      transition: transform 0.2s ease;
+    }
+
+    .phrase-modal-overlay--visible .phrase-modal {
+      transform: translateY(0);
+    }
+
+    .phrase-modal__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--color-gray-100);
+    }
+
+    .phrase-modal__title {
+      font-size: var(--font-size-xl);
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .phrase-modal__close {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: none;
+      color: var(--color-navy-400);
+      cursor: pointer;
+      border-radius: var(--radius-md);
+      transition: all 0.15s ease;
+    }
+
+    .phrase-modal__close:hover {
+      background: var(--color-gray-100);
+      color: var(--color-text);
+    }
+
+    .phrase-modal__body {
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .phrase-modal__footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 16px 24px 20px;
+      border-top: 1px solid var(--color-gray-100);
+    }
+
+    .phrase-hint {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 14px 18px;
+      background: var(--color-gray-50);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-gray-200);
+    }
+
+    .phrase-hint__icon {
+      flex-shrink: 0;
+      color: var(--color-navy-400);
+      width: 16px;
+      height: 16px;
+      margin-top: 1px;
+    }
+
+    .phrase-hint__text {
+      font-size: var(--font-size-sm);
+      color: var(--color-navy-500);
+      line-height: 1.5;
+    }
+
+    .phrase-hint__text code {
+      display: inline-flex;
+      align-items: center;
+      background: var(--color-navy-800);
+      color: var(--color-white);
+      padding: 1px 7px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-weight: 600;
+      vertical-align: middle;
+    }
+
     @media (max-width: 768px) {
       .form-row {
         grid-template-columns: 1fr;
       }
 
-      .page-header__title {
-        font-size: 24px;
+      .template-item__description {
+        display: none;
       }
 
-      .template-item__description {
+      .phrase-item__text {
         display: none;
       }
     }
@@ -493,6 +799,18 @@
   </style>
 </head>
 <body>
+  <!-- Device Blocker (mobile/tablet) -->
+  <div class="device-blocker">
+    <svg class="device-blocker__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="2" y="3" width="20" height="14" rx="2"/>
+      <line x1="8" y1="21" x2="16" y2="21"/>
+      <line x1="12" y1="17" x2="12" y2="21"/>
+    </svg>
+    <h1 class="device-blocker__title">Åbn People's Clinic på din computer</h1>
+    <p class="device-blocker__text">Platformen er designet til desktop og fungerer bedst på en større skærm.</p>
+    <p class="device-blocker__note">Vi arbejder på en mobilversion — stay tuned!</p>
+  </div>
+
   <div class="platform">
     <!-- Top Bar -->
     <header class="topbar">
@@ -517,8 +835,8 @@
           <div class="user-dropdown">
             <div class="user-dropdown__label">Brugerpanel</div>
             <a href="beskeder.html" class="user-dropdown__item">
-              <svg><use href="#message-square"/></svg>
-              Dine beskeder
+              <svg><use href="#alert-circle"/></svg>
+              Systemnotifikationer
             </a>
             <a href="indstillinger.html" class="user-dropdown__item">
               <svg><use href="#sliders"/></svg>
@@ -526,13 +844,9 @@
             </a>
             <div class="user-dropdown__divider"></div>
             <div class="user-dropdown__label">Klinikadministration</div>
-            <a href="admin-klinik-admin.html" class="user-dropdown__item">
-              <svg><use href="#users"/></svg>
+            <a href="admin-dashboard.html" class="user-dropdown__item">
+              <svg><use href="#settings"/></svg>
               Klinikadministration
-            </a>
-            <a href="admin-klinik.html" class="user-dropdown__item">
-              <svg><use href="#building-2"/></svg>
-              Klinikindstillinger
             </a>
             <div class="user-dropdown__divider"></div>
             <a href="#" class="user-dropdown__item">
@@ -553,18 +867,16 @@
             <i data-lucide="play"></i>
             Start Konsultation
           </a>
-          <a href="konsultationshistorik.html" class="nav-btn nav-btn--secondary">
-            <svg><use href="#history"/></svg>
-            Konsultationshistorik
+          <a href="patientoversigt.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="layout-list"></i>
+            Seneste konsultationer
           </a>
-          <a href="journalresume.html" class="nav-btn nav-btn--secondary">
-            <svg><use href="#file-text"/></svg>
-            Journalresume
-          </a>
-          <a href="honorarforslag.html" class="nav-btn nav-btn--secondary">
-            <svg><use href="#receipt"/></svg>
-            Honorarforslag
-          </a>
+          <a href="ai-assistent.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="sparkles"></i>
+            Min Assistent          </a>
+          <a href="beskedassistent.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="inbox"></i>
+            Beskedassistent          </a>
           <a href="klinikdrift-dashboard.html" class="nav-btn nav-btn--secondary">
             <i data-lucide="activity"></i>
             Klinikdrift
@@ -574,27 +886,21 @@
           <!-- Brugerpanel — alle brugere -->
           <div class="bottom-section-label">Brugerpanel</div>
           <a href="beskeder.html" class="bottom-link">
-            <svg><use href="#message-square"/></svg>
-            Dine beskeder
+            <svg><use href="#alert-circle"/></svg>
+            Systemnotifikationer
           </a>
           <a href="indstillinger.html" class="bottom-link bottom-link--active">
             <svg><use href="#sliders"/></svg>
             Brugerindstillinger
           </a>
 
-          <!-- Klinikadministration — kun klinikejer -->
-          <div class="bottom-section-label">Klinikadministration</div>
-          <a href="admin-klinik-admin.html" class="bottom-link">
-            <svg><use href="#users"/></svg>
+          <a href="admin-dashboard.html" class="bottom-link">
+            <svg><use href="#settings"/></svg>
             Klinikadministration
-          </a>
-          <a href="admin-klinik.html" class="bottom-link">
-            <svg><use href="#building-2"/></svg>
-            Klinikindstillinger
           </a>
 
           <!-- Log ud -->
-          <a href="#" class="bottom-link" style="margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--color-gray-100);">
+          <a href="#" class="bottom-link bottom-link--separated">
             <svg><use href="#log-out"/></svg>
             Log ud
           </a>
@@ -612,6 +918,7 @@
         <!-- Tabs -->
         <div class="settings-tabs">
           <button class="settings-tab settings-tab--active" data-tab="templates">Notatskabeloner</button>
+          <button class="settings-tab" data-tab="phrases">Standardfraser</button>
           <button class="settings-tab" data-tab="profile">Rediger profil</button>
           <button class="settings-tab" data-tab="settings">Indstillinger</button>
           <button class="settings-tab" data-tab="security">Sikkerhed & Compliance</button>
@@ -678,6 +985,43 @@
 
         <!-- Tab 2: Indstillinger -->
         <div class="settings-tab-panel" data-panel="settings">
+
+          <!-- AI Tilpasning -->
+          <div class="card settings-list" id="aiAdaptationCard">
+            <h2 class="settings-section__title" style="display: flex; align-items: center; gap: 8px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-navy-500);"><path d="M12 2a8 8 0 0 0-8 8c0 3.4 2.1 6.3 5 7.4V20a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-2.6c2.9-1.1 5-4 5-7.4a8 8 0 0 0-8-8z"/><path d="M9 22h6"/><path d="M12 2v4"/><path d="M4.9 7.1l2.8 2.8"/><path d="M16.3 9.9l2.8-2.8"/></svg>
+              AI Tilpasning
+            </h2>
+            <div class="settings-row">
+              <div class="settings-row__label">
+                <span class="settings-row__title">Lær af mine rettelser</span>
+                <span class="settings-row__description">AI'en tilpasser sig din foretrukne formulerings- og skrivestil baseret på dine rettelser til genererede notater</span>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" class="toggle__input" id="learningToggle" checked>
+                <span class="toggle__slider"></span>
+              </label>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row__label">
+                <span class="settings-row__title">Registrerede rettelser</span>
+                <span class="settings-row__description" id="learningStatsText">Indlæser...</span>
+              </div>
+              <div id="learningSectionBadges" style="display: flex; gap: 6px; flex-wrap: wrap;"></div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row__label">
+                <span class="settings-row__title">Nulstil til standard</span>
+                <span class="settings-row__description">Slet alle gemte stilpræferencer og start forfra med standard AI-formuleringer</span>
+              </div>
+              <button class="btn-danger" id="resetLearningBtn" style="white-space: nowrap;">Nulstil rettelser</button>
+            </div>
+            <div style="padding: 12px 0 4px; display: flex; align-items: flex-start; gap: 8px; font-size: 0.75rem; color: var(--color-navy-400); line-height: 1.5;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              <span>Stilpræferencer er knyttet til din læge-ID og indeholder ingen patientdata. Dine præferencer bruges udelukkende til at tilpasse AI-genereringens formuleringsmønster.</span>
+            </div>
+          </div>
+
           <!-- General settings -->
           <div class="card settings-list">
             <h2 class="settings-section__title">Generelt</h2>
@@ -744,28 +1088,30 @@
         <div class="settings-tab-panel settings-tab-panel--active" data-panel="templates">
           <!-- Default template selector -->
           <div class="card settings-list">
-            <h2 class="settings-section__title">Standard notatskabelon</h2>
+            <h2 class="settings-section__title">Min standardskabelon</h2>
             <div class="settings-row">
               <div class="settings-row__label">
                 <span class="settings-row__title">Standardskabelon</span>
-                <span class="settings-row__description">Denne skabelon bruges som standard ved nye konsultationer</span>
+                <span class="settings-row__description">Denne skabelon vælges automatisk når du starter en ny konsultation</span>
               </div>
-              <select class="settings-select">
+              <select class="settings-select" id="defaultTemplateDropdown">
                 <option>SOAP</option>
+                <option>PSOAP</option>
                 <option>SOAP - Kort</option>
                 <option>SOAP - Psykisk</option>
                 <option>SOAP med baggrund</option>
+                <option>Årskontrol</option>
                 <option>Fritekst</option>
                 <option>Struktureret</option>
               </select>
             </div>
           </div>
 
-          <!-- Template visibility & ordering -->
+          <!-- Template visibility & ordering (personal) -->
           <div class="card">
             <div class="template-list-header">
-              <h2 class="template-list__title">Skabelon-synlighed & rækkefølge</h2>
-              <p class="template-list-description">Træk for at ændre rækkefølge. Brug kontakten for at skjule eller vise skabeloner.</p>
+              <h2 class="template-list__title">Min rækkefølge & synlighed</h2>
+              <p class="template-list-description">Tilpas din personlige visning. Træk for at ændre rækkefølge. Skjul skabeloner du ikke bruger. Tilgængelige skabeloner styres af klinikadministrator.</p>
             </div>
             <div class="template-list">
               <div class="template-item">
@@ -776,6 +1122,21 @@
                   <div class="template-item__info">
                     <span class="template-item__name">SOAP</span>
                     <span class="template-item__description">Subjektiv, Objektiv, Analyse, Plan</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <span class="template-item__drag">
+                    <svg><use href="#grip-vertical"/></svg>
+                  </span>
+                  <div class="template-item__info">
+                    <span class="template-item__name">PSOAP</span>
+                    <span class="template-item__description">Problem, Subjektiv, Objektiv, Analyse, Plan</span>
                   </div>
                 </div>
                 <label class="toggle">
@@ -849,36 +1210,6 @@
                     <svg><use href="#grip-vertical"/></svg>
                   </span>
                   <div class="template-item__info">
-                    <span class="template-item__name">Kiropraktor Notat</span>
-                    <span class="template-item__description">Tilpasset kiropraktisk behandling</span>
-                  </div>
-                </div>
-                <label class="toggle">
-                  <input type="checkbox" class="toggle__input">
-                  <span class="toggle__slider"></span>
-                </label>
-              </div>
-              <div class="template-item">
-                <div class="template-item__left">
-                  <span class="template-item__drag">
-                    <svg><use href="#grip-vertical"/></svg>
-                  </span>
-                  <div class="template-item__info">
-                    <span class="template-item__name">Fysioterapeut Notat</span>
-                    <span class="template-item__description">Tilpasset fysioterapeutisk behandling</span>
-                  </div>
-                </div>
-                <label class="toggle">
-                  <input type="checkbox" class="toggle__input">
-                  <span class="toggle__slider"></span>
-                </label>
-              </div>
-              <div class="template-item">
-                <div class="template-item__left">
-                  <span class="template-item__drag">
-                    <svg><use href="#grip-vertical"/></svg>
-                  </span>
-                  <div class="template-item__info">
                     <span class="template-item__name">Fritekst</span>
                     <span class="template-item__description">Frit format uden sektioner</span>
                   </div>
@@ -903,6 +1234,265 @@
                   <span class="toggle__slider"></span>
                 </label>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Standardfraser -->
+        <div class="settings-tab-panel" data-panel="phrases">
+          <!-- Hint box -->
+          <div class="card">
+            <div class="phrase-hint">
+              <svg class="phrase-hint__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
+              </svg>
+              <div class="phrase-hint__text">
+                Standardfraser indsættes mens du skriver i konsultationsnotater. Skriv <code>/</code> efterfulgt af triggerordet (fx <code>/abd-ia</code>) for at se og indsætte fraser hurtigt. Du kan oprette egne fraser og tilpasse de foruddefinerede.
+              </div>
+            </div>
+          </div>
+
+          <!-- Category: Objektiv undersøgelse -->
+          <div class="card">
+            <div class="phrase-category" data-category="objektiv">
+              <div class="phrase-category__header">
+                <div class="phrase-category__title">
+                  Objektiv undersøgelse
+                  <span class="phrase-category__count" data-phrase-count="objektiv">4 fraser</span>
+                </div>
+                <svg class="phrase-category__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+              <div class="phrase-list" data-phrase-list="objektiv">
+                <div class="phrase-item" data-phrase-id="abd-ia">
+                      <span class="phrase-item__trigger">/abd-ia</span>
+                    <div class="phrase-item__info">
+                      <span class="phrase-item__name">Abdomen upåfaldende</span>
+                      <span class="phrase-item__text">Abdomen: Blødt, uømt, ingen hepato-/splenomegali. Ingen ømhed svarende til galdeblære, appendix eller nyreloger. Ingen udvidelse af aorta abdominalis. Normale tarmlyde.</span>
+                    </div>
+                  <div class="phrase-item__actions">
+                    <span class="phrase-item__system-badge">System</span>
+                    <button class="phrase-item__btn" title="Rediger" onclick="openPhraseModal('abd-ia')">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                    </button>
+                    <label class="toggle">
+                      <input type="checkbox" class="toggle__input phrase-toggle" data-phrase-id="abd-ia" checked>
+                      <span class="toggle__slider"></span>
+                    </label>
+                  </div>
+                </div>
+                <div class="phrase-item" data-phrase-id="thorax-ia">
+                      <span class="phrase-item__trigger">/thorax-ia</span>
+                    <div class="phrase-item__info">
+                      <span class="phrase-item__name">Thorax upåfaldende</span>
+                      <span class="phrase-item__text">Thorax: Symmetrisk respirationsbevægelse. Vesikulær respiration bilateralt, ingen krepitation eller ronchi. Normale hjertetoner, ingen mislyde.</span>
+                    </div>
+                  <div class="phrase-item__actions">
+                    <span class="phrase-item__system-badge">System</span>
+                    <button class="phrase-item__btn" title="Rediger" onclick="openPhraseModal('thorax-ia')">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                    </button>
+                    <label class="toggle">
+                      <input type="checkbox" class="toggle__input phrase-toggle" data-phrase-id="thorax-ia" checked>
+                      <span class="toggle__slider"></span>
+                    </label>
+                  </div>
+                </div>
+                <div class="phrase-item" data-phrase-id="neuro-ia">
+                      <span class="phrase-item__trigger">/neuro-ia</span>
+                    <div class="phrase-item__info">
+                      <span class="phrase-item__name">Neurologisk upåfaldende</span>
+                      <span class="phrase-item__text">Neurologisk: Vågen, klar, orienteret i tid, sted og egne data. Normale pupilreflekser. Ingen meningisme. Kraftig i alle fire ekstremiteter. Normal gang.</span>
+                    </div>
+                  <div class="phrase-item__actions">
+                    <span class="phrase-item__system-badge">System</span>
+                    <button class="phrase-item__btn" title="Rediger" onclick="openPhraseModal('neuro-ia')">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                    </button>
+                    <label class="toggle">
+                      <input type="checkbox" class="toggle__input phrase-toggle" data-phrase-id="neuro-ia" checked>
+                      <span class="toggle__slider"></span>
+                    </label>
+                  </div>
+                </div>
+                <div class="phrase-item" data-phrase-id="au-ia">
+                      <span class="phrase-item__trigger">/au-ia</span>
+                    <div class="phrase-item__info">
+                      <span class="phrase-item__name">Almen upåfaldende</span>
+                      <span class="phrase-item__text">Almen tilstand: Upåvirket, velernæret, i habituelt udseende. Normal farve, ingen cyanose eller ikterus.</span>
+                    </div>
+                  <div class="phrase-item__actions">
+                    <span class="phrase-item__system-badge">System</span>
+                    <button class="phrase-item__btn" title="Rediger" onclick="openPhraseModal('au-ia')">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                    </button>
+                    <label class="toggle">
+                      <input type="checkbox" class="toggle__input phrase-toggle" data-phrase-id="au-ia" checked>
+                      <span class="toggle__slider"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category: Plan & opfølgning -->
+          <div class="card">
+            <div class="phrase-category" data-category="plan">
+              <div class="phrase-category__header">
+                <div class="phrase-category__title">
+                  Plan & opfølgning
+                  <span class="phrase-category__count" data-phrase-count="plan">3 fraser</span>
+                </div>
+                <svg class="phrase-category__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+              <div class="phrase-list" data-phrase-list="plan">
+                <div class="phrase-item" data-phrase-id="plan-kontrol">
+                      <span class="phrase-item__trigger">/plan-kontrol</span>
+                    <div class="phrase-item__info">
+                      <span class="phrase-item__name">Kontrol</span>
+                      <span class="phrase-item__text">Plan: Kontrol om 3 måneder. Patienten informeret om at henvende sig ved forværring.</span>
+                    </div>
+                  <div class="phrase-item__actions">
+                    <span class="phrase-item__system-badge">System</span>
+                    <button class="phrase-item__btn" title="Rediger" onclick="openPhraseModal('plan-kontrol')">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                    </button>
+                    <label class="toggle">
+                      <input type="checkbox" class="toggle__input phrase-toggle" data-phrase-id="plan-kontrol" checked>
+                      <span class="toggle__slider"></span>
+                    </label>
+                  </div>
+                </div>
+                <div class="phrase-item" data-phrase-id="plan-blod">
+                      <span class="phrase-item__trigger">/plan-blod</span>
+                    <div class="phrase-item__info">
+                      <span class="phrase-item__name">Blodprøvekontrol</span>
+                      <span class="phrase-item__text">Plan: Blodprøver bestilt. Svar forventet inden for 3-5 hverdage. Patienten kontaktes ved afvigende fund.</span>
+                    </div>
+                  <div class="phrase-item__actions">
+                    <span class="phrase-item__system-badge">System</span>
+                    <button class="phrase-item__btn" title="Rediger" onclick="openPhraseModal('plan-blod')">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                    </button>
+                    <label class="toggle">
+                      <input type="checkbox" class="toggle__input phrase-toggle" data-phrase-id="plan-blod" checked>
+                      <span class="toggle__slider"></span>
+                    </label>
+                  </div>
+                </div>
+                <div class="phrase-item" data-phrase-id="plan-hen">
+                      <span class="phrase-item__trigger">/plan-hen</span>
+                    <div class="phrase-item__info">
+                      <span class="phrase-item__name">Henvisning planlagt</span>
+                      <span class="phrase-item__text">Plan: Henvisning sendes. Patienten informeret om ventetid og forløb.</span>
+                    </div>
+                  <div class="phrase-item__actions">
+                    <span class="phrase-item__system-badge">System</span>
+                    <button class="phrase-item__btn" title="Rediger" onclick="openPhraseModal('plan-hen')">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                    </button>
+                    <label class="toggle">
+                      <input type="checkbox" class="toggle__input phrase-toggle" data-phrase-id="plan-hen" checked>
+                      <span class="toggle__slider"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category: Anamnese -->
+          <div class="card">
+            <div class="phrase-category" data-category="anamnese">
+              <div class="phrase-category__header">
+                <div class="phrase-category__title">
+                  Anamnese
+                  <span class="phrase-category__count" data-phrase-count="anamnese">2 fraser</span>
+                </div>
+                <svg class="phrase-category__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+              <div class="phrase-list" data-phrase-list="anamnese">
+                <div class="phrase-item" data-phrase-id="anm-cave">
+                      <span class="phrase-item__trigger">/anm-cave</span>
+                    <div class="phrase-item__info">
+                      <span class="phrase-item__name">Cave / allergi</span>
+                      <span class="phrase-item__text">Cave: Ingen kendte allergier. Ingen tidligere bivirkninger ved medicinsk behandling.</span>
+                    </div>
+                  <div class="phrase-item__actions">
+                    <span class="phrase-item__system-badge">System</span>
+                    <button class="phrase-item__btn" title="Rediger" onclick="openPhraseModal('anm-cave')">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                    </button>
+                    <label class="toggle">
+                      <input type="checkbox" class="toggle__input phrase-toggle" data-phrase-id="anm-cave" checked>
+                      <span class="toggle__slider"></span>
+                    </label>
+                  </div>
+                </div>
+                <div class="phrase-item" data-phrase-id="anm-rp">
+                      <span class="phrase-item__trigger">/anm-rp</span>
+                    <div class="phrase-item__info">
+                      <span class="phrase-item__name">Rygning / alkohol</span>
+                      <span class="phrase-item__text">Rygestatus: Aldrig ryger. Alkohol: Under Sundhedsstyrelsens genstandsgrænser.</span>
+                    </div>
+                  <div class="phrase-item__actions">
+                    <span class="phrase-item__system-badge">System</span>
+                    <button class="phrase-item__btn" title="Rediger" onclick="openPhraseModal('anm-rp')">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                    </button>
+                    <label class="toggle">
+                      <input type="checkbox" class="toggle__input phrase-toggle" data-phrase-id="anm-rp" checked>
+                      <span class="toggle__slider"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add new phrase button -->
+          <button class="phrase-add-btn" onclick="openPhraseModal(null)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            Opret ny standardfrase
+          </button>
+        </div>
+
+        <!-- Phrase Create/Edit Modal -->
+        <div class="phrase-modal-overlay" id="phraseModal">
+          <div class="phrase-modal">
+            <div class="phrase-modal__header">
+              <h3 class="phrase-modal__title" id="phraseModalTitle">Opret ny frase</h3>
+              <button class="phrase-modal__close" onclick="closePhraseModal()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              </button>
+            </div>
+            <div class="phrase-modal__body">
+              <div class="form-group">
+                <label class="form-label">Triggerord</label>
+                <input type="text" class="form-input" id="phraseModalTrigger" placeholder="fx abd-ia (uden /)">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Titel</label>
+                <input type="text" class="form-input" id="phraseModalName" placeholder="fx Abdomen upåfaldende">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Kategori</label>
+                <select class="form-input" id="phraseModalCategory">
+                  <option value="objektiv">Objektiv undersøgelse</option>
+                  <option value="plan">Plan & opfølgning</option>
+                  <option value="anamnese">Anamnese</option>
+                  <option value="vurdering">Vurdering / konklusion</option>
+                  <option value="custom">Brugerdefineret</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Frasetekst</label>
+                <textarea class="form-input" id="phraseModalText" rows="4" placeholder="Den fulde tekst der indsættes i notatet..." style="resize: vertical;"></textarea>
+              </div>
+            </div>
+            <div class="phrase-modal__footer">
+              <button class="btn-secondary" onclick="closePhraseModal()">Annuller</button>
+              <button class="btn-secondary btn-secondary--primary" id="phraseModalSave" onclick="savePhraseFromModal()">Gem frase</button>
             </div>
           </div>
         </div>
@@ -995,20 +1585,23 @@
         <div class="card support-card">
           <div class="support-avatars">
             <div class="support-avatar">
-              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face" alt="Support">
+              <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=face" alt="Support">
             </div>
             <div class="support-avatar">
               <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" alt="Support">
-              <div class="support-badge">4</div>
             </div>
           </div>
-          <div class="support-title">Brug for hjælp?</div>
-          <div class="support-phone">+45 5251 5025</div>
-          <div class="support-email">support@peoplesdoctor.com</div>
+          <div class="support-title">Vil du vises rundt?</div>
+          <div class="support-subtitle">Book en kort intro — vi hjælper dig trygt i gang med platformen.</div>
+          <a href="#" class="support-cta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.05 5A5 5 0 0 1 19 8.95M15.05 1A9 9 0 0 1 23 8.94M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Book introduktion
+          </a>
+          <div class="support-note">30 min · gratis · videomøde</div>
         </div>
 
         <div class="card ai-card">
-          <div class="ai-card__title">AI Assistent</div>
+          <div class="ai-card__title">Min Assistent</div>
           <div class="ai-suggestions">
             <div class="ai-suggestion">Hvordan bruger jeg People's Clinic?</div>
             <div class="ai-suggestion">Hvordan gemmes mine patientdata?</div>
@@ -1134,6 +1727,7 @@
     <symbol id="message-square" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
     </symbol>
+    <symbol id="alert-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
     <symbol id="mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
       <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
@@ -1508,7 +2102,7 @@
 
     // Also update the default template dropdown
     function updateDefaultTemplateDropdown() {
-      const dropdown = document.querySelector('.settings-select');
+      const dropdown = document.getElementById('defaultTemplateDropdown');
       if (!dropdown) return;
 
       const visibleTemplates = getVisibleTemplates();
@@ -1518,9 +2112,11 @@
         `<option value="${t.id}">${t.name}</option>`
       ).join('');
 
-      // Try to restore previous selection
-      if (visibleTemplates.some(t => t.name === currentValue)) {
+      // Try to restore previous selection, default to first
+      if (visibleTemplates.some(t => t.id === currentValue)) {
         dropdown.value = currentValue;
+      } else if (visibleTemplates.length > 0) {
+        dropdown.value = visibleTemplates[0].id;
       }
     }
 
@@ -1528,6 +2124,415 @@
 
     // Update dropdown when preferences change
     window.addEventListener('templatePreferencesChanged', updateDefaultTemplateDropdown);
+
+    // ==========================================
+    // STANDARDFRASER (Standard Phrases)
+    // ==========================================
+
+    const PHRASES_STORAGE_KEY = 'peoplesClinic_standardPhrases';
+
+    // Default system phrases
+    const defaultPhrases = [
+      { id: 'abd-ia', trigger: 'abd-ia', title: 'Abdomen upåfaldende', text: 'Abdomen: Blødt, uømt, ingen hepato-/splenomegali. Ingen ømhed svarende til galdeblære, appendix eller nyreloger. Ingen udvidelse af aorta abdominalis. Normale tarmlyde.', category: 'objektiv', isSystem: true, visible: true, order: 0 },
+      { id: 'thorax-ia', trigger: 'thorax-ia', title: 'Thorax upåfaldende', text: 'Thorax: Symmetrisk respirationsbevægelse. Vesikulær respiration bilateralt, ingen krepitation eller ronchi. Normale hjertetoner, ingen mislyde.', category: 'objektiv', isSystem: true, visible: true, order: 1 },
+      { id: 'neuro-ia', trigger: 'neuro-ia', title: 'Neurologisk upåfaldende', text: 'Neurologisk: Vågen, klar, orienteret i tid, sted og egne data. Normale pupilreflekser. Ingen meningisme. Kraftig i alle fire ekstremiteter. Normal gang.', category: 'objektiv', isSystem: true, visible: true, order: 2 },
+      { id: 'au-ia', trigger: 'au-ia', title: 'Almen upåfaldende', text: 'Almen tilstand: Upåvirket, velernæret, i habituelt udseende. Normal farve, ingen cyanose eller ikterus.', category: 'objektiv', isSystem: true, visible: true, order: 3 },
+      { id: 'plan-kontrol', trigger: 'plan-kontrol', title: 'Kontrol', text: 'Plan: Kontrol om 3 måneder. Patienten informeret om at henvende sig ved forværring.', category: 'plan', isSystem: true, visible: true, order: 4 },
+      { id: 'plan-blod', trigger: 'plan-blod', title: 'Blodprøvekontrol', text: 'Plan: Blodprøver bestilt. Svar forventet inden for 3-5 hverdage. Patienten kontaktes ved afvigende fund.', category: 'plan', isSystem: true, visible: true, order: 5 },
+      { id: 'plan-hen', trigger: 'plan-hen', title: 'Henvisning planlagt', text: 'Plan: Henvisning sendes. Patienten informeret om ventetid og forløb.', category: 'plan', isSystem: true, visible: true, order: 6 },
+      { id: 'anm-cave', trigger: 'anm-cave', title: 'Cave / allergi', text: 'Cave: Ingen kendte allergier. Ingen tidligere bivirkninger ved medicinsk behandling.', category: 'anamnese', isSystem: true, visible: true, order: 7 },
+      { id: 'anm-rp', trigger: 'anm-rp', title: 'Rygning / alkohol', text: 'Rygestatus: Aldrig ryger. Alkohol: Under Sundhedsstyrelsens genstandsgrænser.', category: 'anamnese', isSystem: true, visible: true, order: 8 }
+    ];
+
+    // Load phrases from localStorage
+    function loadPhrases() {
+      const stored = localStorage.getItem(PHRASES_STORAGE_KEY);
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch (e) {
+          console.error('Error parsing standard phrases:', e);
+          return JSON.parse(JSON.stringify(defaultPhrases));
+        }
+      }
+      return JSON.parse(JSON.stringify(defaultPhrases));
+    }
+
+    // Save phrases to localStorage
+    function savePhrases(phrases) {
+      localStorage.setItem(PHRASES_STORAGE_KEY, JSON.stringify(phrases));
+      window.dispatchEvent(new CustomEvent('standardPhrasesChanged', { detail: phrases }));
+    }
+
+    // Rebuild the phrase list UI from stored data
+    function renderPhraseList() {
+      var phrases = loadPhrases();
+      var categories = { objektiv: [], plan: [], anamnese: [], vurdering: [], custom: [] };
+
+      phrases.forEach(function(p) {
+        var cat = categories[p.category] || categories['custom'];
+        cat.push(p);
+      });
+
+      // Update each category's phrase list
+      Object.keys(categories).forEach(function(catKey) {
+        var listEl = document.querySelector('[data-phrase-list="' + catKey + '"]');
+        var countEl = document.querySelector('[data-phrase-count="' + catKey + '"]');
+        var catItems = categories[catKey].sort(function(a, b) { return a.order - b.order; });
+
+        if (countEl) {
+          countEl.textContent = catItems.length + (catItems.length === 1 ? ' frase' : ' fraser');
+        }
+
+        if (listEl) {
+          listEl.innerHTML = catItems.map(function(p) {
+            return '<div class="phrase-item" data-phrase-id="' + p.id + '">' +
+              '<span class="phrase-item__trigger">/' + p.trigger + '</span>' +
+              '<div class="phrase-item__info">' +
+                '<span class="phrase-item__name">' + p.title + '</span>' +
+                '<span class="phrase-item__text">' + p.text + '</span>' +
+              '</div>' +
+              '<div class="phrase-item__actions">' +
+                (p.isSystem ? '<span class="phrase-item__system-badge">System</span>' : '') +
+                '<button class="phrase-item__btn" title="Rediger" onclick="openPhraseModal(\'' + p.id + '\')">' +
+                  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>' +
+                '</button>' +
+                (!p.isSystem ? '<button class="phrase-item__btn phrase-item__btn--danger" title="Slet" onclick="deletePhrase(\'' + p.id + '\')">' +
+                  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>' +
+                '</button>' : '') +
+                '<label class="toggle">' +
+                  '<input type="checkbox" class="toggle__input phrase-toggle" data-phrase-id="' + p.id + '" ' + (p.visible ? 'checked' : '') + '>' +
+                  '<span class="toggle__slider"></span>' +
+                '</label>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+
+          // Attach toggle listeners
+          listEl.querySelectorAll('.phrase-toggle').forEach(function(toggle) {
+            toggle.addEventListener('change', function() {
+              var phraseId = this.getAttribute('data-phrase-id');
+              var allPhrases = loadPhrases();
+              var phrase = allPhrases.find(function(p) { return p.id === phraseId; });
+              if (phrase) {
+                phrase.visible = this.checked;
+                savePhrases(allPhrases);
+                showSaveNotification();
+              }
+            });
+          });
+        }
+      });
+
+      // Handle dynamic categories (vurdering, custom) — show/hide cards
+      ['vurdering', 'custom'].forEach(function(catKey) {
+        var catCard = document.querySelector('[data-category="' + catKey + '"]');
+        if (catCard) {
+          var parentCard = catCard.closest('.card');
+          if (parentCard) {
+            parentCard.style.display = categories[catKey].length > 0 ? '' : 'none';
+          }
+        }
+      });
+    }
+
+    // Category collapse/expand
+    document.querySelectorAll('.phrase-category__header').forEach(function(header) {
+      header.addEventListener('click', function() {
+        var category = this.closest('.phrase-category');
+        category.classList.toggle('phrase-category--collapsed');
+      });
+    });
+
+    // Phrase toggle listeners (for initial static HTML)
+    document.querySelectorAll('.phrase-toggle').forEach(function(toggle) {
+      toggle.addEventListener('change', function() {
+        var phraseId = this.getAttribute('data-phrase-id');
+        var phrases = loadPhrases();
+        var phrase = phrases.find(function(p) { return p.id === phraseId; });
+        if (phrase) {
+          phrase.visible = this.checked;
+          savePhrases(phrases);
+          showSaveNotification();
+        }
+      });
+    });
+
+    // ==========================================
+    // PHRASE MODAL (Create / Edit)
+    // ==========================================
+
+    var editingPhraseId = null;
+
+    function openPhraseModal(phraseId) {
+      var modal = document.getElementById('phraseModal');
+      var title = document.getElementById('phraseModalTitle');
+      var triggerInput = document.getElementById('phraseModalTrigger');
+      var nameInput = document.getElementById('phraseModalName');
+      var categorySelect = document.getElementById('phraseModalCategory');
+      var textArea = document.getElementById('phraseModalText');
+
+      editingPhraseId = phraseId;
+
+      if (phraseId) {
+        // Edit mode
+        var phrases = loadPhrases();
+        var phrase = phrases.find(function(p) { return p.id === phraseId; });
+        if (phrase) {
+          title.textContent = 'Rediger frase';
+          triggerInput.value = phrase.trigger;
+          nameInput.value = phrase.title;
+          categorySelect.value = phrase.category;
+          textArea.value = phrase.text;
+          triggerInput.disabled = phrase.isSystem;
+        }
+      } else {
+        // Create mode
+        title.textContent = 'Opret ny frase';
+        triggerInput.value = '';
+        nameInput.value = '';
+        categorySelect.value = 'objektiv';
+        textArea.value = '';
+        triggerInput.disabled = false;
+      }
+
+      modal.classList.add('phrase-modal-overlay--visible');
+    }
+
+    function closePhraseModal() {
+      var modal = document.getElementById('phraseModal');
+      modal.classList.remove('phrase-modal-overlay--visible');
+      editingPhraseId = null;
+    }
+
+    function savePhraseFromModal() {
+      var triggerInput = document.getElementById('phraseModalTrigger');
+      var nameInput = document.getElementById('phraseModalName');
+      var categorySelect = document.getElementById('phraseModalCategory');
+      var textArea = document.getElementById('phraseModalText');
+
+      var trigger = triggerInput.value.trim().replace(/^\//, '');
+      var name = nameInput.value.trim();
+      var category = categorySelect.value;
+      var text = textArea.value.trim();
+
+      if (!trigger || !name || !text) {
+        alert('Udfyld venligst alle felter.');
+        return;
+      }
+
+      var phrases = loadPhrases();
+
+      if (editingPhraseId) {
+        // Update existing
+        var phrase = phrases.find(function(p) { return p.id === editingPhraseId; });
+        if (phrase) {
+          if (!phrase.isSystem) {
+            phrase.trigger = trigger;
+          }
+          phrase.title = name;
+          phrase.category = category;
+          phrase.text = text;
+        }
+      } else {
+        // Check for duplicate trigger
+        if (phrases.some(function(p) { return p.trigger === trigger; })) {
+          alert('Triggerordet "/' + trigger + '" er allerede i brug. Vælg et andet.');
+          return;
+        }
+
+        // Create new phrase
+        phrases.push({
+          id: trigger,
+          trigger: trigger,
+          title: name,
+          text: text,
+          category: category,
+          isSystem: false,
+          visible: true,
+          order: phrases.length
+        });
+      }
+
+      savePhrases(phrases);
+      renderPhraseList();
+      closePhraseModal();
+      showSaveNotification();
+    }
+
+    function deletePhrase(phraseId) {
+      if (!confirm('Er du sikker på at du vil slette denne frase?')) return;
+      var phrases = loadPhrases();
+      phrases = phrases.filter(function(p) { return p.id !== phraseId; });
+      savePhrases(phrases);
+      renderPhraseList();
+      showSaveNotification();
+    }
+
+    // Close modal on overlay click
+    document.getElementById('phraseModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closePhraseModal();
+      }
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closePhraseModal();
+      }
+    });
+
+    // Initialize phrases from localStorage on page load
+    (function() {
+      var stored = localStorage.getItem(PHRASES_STORAGE_KEY);
+      if (!stored) {
+        // First time: save defaults to localStorage
+        savePhrases(defaultPhrases);
+      }
+    })();
+
+
+    /* ══════════════════════════════════════════════════════════════
+       LÆR AF RETTELSER — Settings panel for adaptive learning
+       ══════════════════════════════════════════════════════════════ */
+
+    var CORRECTIONS_KEY = 'peoplesClinic_corrections';
+    var LEARNING_ENABLED_KEY = 'peoplesClinic_learningEnabled';
+
+    var learningToggle = document.getElementById('learningToggle');
+    var learningStatsText = document.getElementById('learningStatsText');
+    var learningSectionBadges = document.getElementById('learningSectionBadges');
+    var resetLearningBtn = document.getElementById('resetLearningBtn');
+
+    // Section display names
+    var sectionDisplayNames = {
+      'objektiv': 'Objektivt',
+      'vurdering': 'Vurdering',
+      'plan': 'Plan',
+      'anamnese': 'Anamnese',
+      'subjektivt': 'Subjektivt'
+    };
+
+    var sectionColors = {
+      'objektiv': '#4f46e5',
+      'vurdering': '#7c3aed',
+      'plan': '#0891b2',
+      'anamnese': '#c2410c',
+      'subjektivt': '#b91c1c'
+    };
+
+    // Load learning state
+    function loadLearningEnabled() {
+      var stored = localStorage.getItem(LEARNING_ENABLED_KEY);
+      if (stored === null) return true; // Default ON for demo
+      return stored === 'true';
+    }
+
+    function saveLearningEnabled(enabled) {
+      localStorage.setItem(LEARNING_ENABLED_KEY, enabled ? 'true' : 'false');
+      window.dispatchEvent(new CustomEvent('learningPreferencesChanged', { detail: { enabled: enabled } }));
+    }
+
+    function loadCorrectionsSettings() {
+      var stored = localStorage.getItem(CORRECTIONS_KEY);
+      if (stored) {
+        try { return JSON.parse(stored); }
+        catch(e) { return []; }
+      }
+      return [];
+    }
+
+    // Render statistics
+    function renderLearningStats() {
+      var corrections = loadCorrectionsSettings();
+      var enabled = loadLearningEnabled();
+
+      if (!enabled) {
+        learningStatsText.textContent = 'Adaptiv læring er deaktiveret';
+        learningSectionBadges.innerHTML = '';
+        return;
+      }
+
+      if (corrections.length === 0) {
+        learningStatsText.textContent = 'Ingen rettelser registreret endnu. Begynd at redigere AI-genererede notater.';
+        learningSectionBadges.innerHTML = '';
+        return;
+      }
+
+      // Group by section
+      var sections = {};
+      corrections.forEach(function(c) {
+        if (!sections[c.section]) sections[c.section] = 0;
+        sections[c.section]++;
+      });
+
+      var sectionCount = Object.keys(sections).length;
+      var totalUseCount = corrections.reduce(function(sum, c) { return sum + (c.useCount || 0); }, 0);
+
+      // Find most recent
+      var latest = corrections.reduce(function(a, b) { return a.timestamp > b.timestamp ? a : b; });
+      var daysAgo = Math.floor((Date.now() - latest.timestamp) / 86400000);
+      var recencyText = daysAgo === 0 ? 'senest i dag' : daysAgo === 1 ? 'senest i går' : 'senest for ' + daysAgo + ' dage siden';
+
+      learningStatsText.textContent = corrections.length + ' rettelse' + (corrections.length !== 1 ? 'r' : '') +
+        ' · ' + sectionCount + ' sektion' + (sectionCount !== 1 ? 'er' : '') +
+        ' · ' + recencyText +
+        ' · genbrugt ' + totalUseCount + ' gange';
+
+      // Section badges
+      var badgesHtml = '';
+      Object.keys(sections).forEach(function(key) {
+        var color = sectionColors[key] || '#6b7280';
+        var name = sectionDisplayNames[key] || key;
+        badgesHtml += '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; ' +
+          'background: ' + color + '12; color: ' + color + '; border-radius: 999px; font-size: 0.6875rem; font-weight: 600;">' +
+          name + ' <span style="opacity: 0.7;">(' + sections[key] + ')</span></span>';
+      });
+      learningSectionBadges.innerHTML = badgesHtml;
+    }
+
+    // Toggle handler
+    if (learningToggle) {
+      learningToggle.checked = loadLearningEnabled();
+      learningToggle.addEventListener('change', function() {
+        saveLearningEnabled(this.checked);
+        renderLearningStats();
+      });
+    }
+
+    // Reset handler
+    if (resetLearningBtn) {
+      resetLearningBtn.addEventListener('click', function() {
+        localStorage.removeItem(CORRECTIONS_KEY);
+        saveLearningEnabled(true); // Keep it enabled, just clear data
+        renderLearningStats();
+
+        // Show confirmation
+        var btn = this;
+        var originalText = btn.textContent;
+        btn.textContent = '✓ Nulstillet';
+        btn.style.background = '#047857';
+        btn.style.borderColor = '#047857';
+        setTimeout(function() {
+          btn.textContent = originalText;
+          btn.style.background = '';
+          btn.style.borderColor = '';
+        }, 2000);
+      });
+    }
+
+    // Listen for changes from other pages
+    window.addEventListener('storage', function(e) {
+      if (e.key === CORRECTIONS_KEY || e.key === LEARNING_ENABLED_KEY) {
+        if (learningToggle) learningToggle.checked = loadLearningEnabled();
+        renderLearningStats();
+      }
+    });
+
+    // Initialize
+    renderLearningStats();
+
   </script>
 </body>
 </html>

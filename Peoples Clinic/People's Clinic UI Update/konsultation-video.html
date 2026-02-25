@@ -3,27 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>People's Doctor - Aktiv Konsultation</title>
+  <title>People's Doctor - Videokonsultation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../Design System/platform.css">
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    /* Page-specific styles for active consultation */
+    /* Page-specific styles for video consultation
+       Based on konsultation-aktiv.html with minimal changes */
 
     /* Top header with patient info and recording */
     .consultation-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 30px;
+      margin-bottom: 16px;
       animation: fadeUp 0.4s ease-out forwards;
       flex-shrink: 0;
       overflow: visible;
       position: relative;
-      padding-top: 10px;
-      padding-bottom: 20px;
+      padding-top: 6px;
+      padding-bottom: 12px;
     }
 
     .patient-info {
@@ -48,6 +49,29 @@
 
     .patient-info__time strong {
       font-weight: 600;
+    }
+
+    /* Video consultation badge */
+    .consultation-type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: rgba(86, 105, 164, 0.1);
+      border: 1px solid rgba(86, 105, 164, 0.2);
+      border-radius: var(--radius-full);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--color-navy-500);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-bottom: 6px;
+      width: fit-content;
+    }
+
+    .consultation-type-badge svg {
+      width: 12px;
+      height: 12px;
     }
 
     /* Recording section - centered */
@@ -212,7 +236,7 @@
       height: 18px;
     }
 
-    /* Recording status label - moved inside record-wrapper */
+    /* Recording status label */
     .recording-status {
       font-size: 0.75rem;
       font-weight: 700;
@@ -227,37 +251,74 @@
       color: #6B7280;
     }
 
-    /* Microphone section */
-    .mic-section {
+    /* Audio source section (replaces mic-section for video) */
+    .audio-source-section {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
       align-self: center;
       margin-top: 20px;
     }
 
-    .mic-dropdown {
+    .audio-source-indicator {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 10px 16px;
-      background: var(--color-white);
-      border: 1px solid var(--color-gray-200);
-      border-radius: var(--radius-lg);
-      font-family: inherit;
-      font-size: 0.875rem;
-      color: var(--color-text);
-      cursor: pointer;
-      min-width: 240px;
+      gap: 10px;
+      padding: 6px 12px 6px 6px;
+      background: var(--color-gray-50);
+      border-radius: 100px;
+      font-size: 0.8125rem;
     }
 
-    .mic-dropdown svg {
-      width: 16px;
-      height: 16px;
+    .audio-source-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--color-white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    }
+
+    .audio-source-icon svg {
+      width: 14px;
+      height: 14px;
       color: var(--color-navy-500);
-      margin-left: auto;
+    }
+
+    .audio-source-value {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--color-text);
+    }
+
+    .audio-source-status {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      color: var(--color-navy-400);
+      padding-left: 6px;
+      border-left: 1px solid var(--color-gray-200);
+    }
+
+    .audio-source-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22C55E;
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
     }
 
     .mic-test {
@@ -287,7 +348,7 @@
       background: #22C55E;
     }
 
-    /* Three column layout */
+    /* Three column layout - identical to konsultation-aktiv */
     .consultation-grid {
       display: grid;
       grid-template-columns: 1fr 1.2fr 1fr;
@@ -410,7 +471,6 @@
       margin-bottom: 18px;
     }
 
-    /* Countdown SVG ring around the orb */
     .transcript-waiting__orb svg.orb-ring {
       position: absolute;
       inset: 0;
@@ -430,12 +490,11 @@
       stroke: #C62828;
       stroke-width: 2.5;
       stroke-linecap: round;
-      stroke-dasharray: 188.5; /* 2π × 30 */
+      stroke-dasharray: 188.5;
       stroke-dashoffset: 0;
       transition: stroke-dashoffset 1s linear;
     }
 
-    /* Inner mic circle */
     .transcript-waiting__orb-inner {
       position: absolute;
       top: 8px;
@@ -736,55 +795,7 @@
       background: #22C55E;
     }
 
-    /* Template dropdown for notes panel (matches konsultation-rediger) */
-    .panel-dropdown-wrapper {
-      position: relative;
-    }
-
-    .panel-dropdown-menu {
-      display: none;
-      position: absolute;
-      top: calc(100% + 4px);
-      right: 0;
-      z-index: 100;
-      min-width: 200px;
-      background: var(--color-white);
-      border: 1px solid var(--color-gray-200);
-      border-radius: var(--radius-xl);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-      padding: 6px;
-    }
-
-    .panel-dropdown-menu--open {
-      display: block;
-    }
-
-    .panel-dropdown-menu__item {
-      display: block;
-      width: 100%;
-      padding: 8px 12px;
-      border: none;
-      background: none;
-      text-align: left;
-      font-family: inherit;
-      font-size: 0.75rem;
-      color: var(--color-text);
-      cursor: pointer;
-      border-radius: var(--radius-lg);
-      transition: background var(--transition-fast);
-    }
-
-    .panel-dropdown-menu__item:hover {
-      background: var(--color-gray-50);
-    }
-
-    .panel-dropdown-menu__item--active {
-      font-weight: 600;
-      color: var(--color-navy-700);
-      background: var(--color-gray-50);
-    }
-
-    /* AI input at bottom of patient resume */
+    /* AI input at bottom of panels */
     .ai-input-section {
       padding: 12px 30px;
       border-top: 1px solid var(--color-gray-200);
@@ -834,6 +845,7 @@
       color: var(--color-white);
     }
 
+    /* Bottom action bar */
     /* Page-specific action bar overrides */
     .action-bar {
       justify-content: flex-end;
@@ -861,7 +873,7 @@
       box-shadow: none;
     }
 
-    /* Main content override for this page */
+    /* Main content override */
     .main {
       display: flex;
       flex-direction: column;
@@ -870,9 +882,10 @@
     /* Full width content area without sidebar */
     .content-area--full {
       display: flex;
-      padding: 30px 100px 12px 100px;
-      height: 100vh;
-      overflow: visible;
+      padding: 20px 100px 12px 100px;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
       box-sizing: border-box;
     }
 
@@ -881,9 +894,12 @@
       display: none;
     }
 
-    /* Allow pulse animation to overflow */
+    /* Allow pulse animation to overflow + flex layout for banner + content */
     .platform {
       overflow: visible;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
     }
 
     .content-area--full .main {
@@ -891,8 +907,9 @@
       max-width: 100%;
       display: flex;
       flex-direction: column;
-      overflow: visible;
+      overflow: hidden;
       gap: 16px;
+      min-height: 0;
     }
 
     /* Ensure grid fills available space without overflow */
@@ -917,11 +934,86 @@
       padding-bottom: 20px;
     }
 
+    /* Video reminder banner */
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .video-reminder-banner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 100px;
+      background: var(--color-white);
+      border-bottom: 1px solid var(--color-gray-200);
+      font-size: 0.8125rem;
+      color: var(--color-navy-600);
+      flex-shrink: 0;
+    }
+
+    .video-reminder-banner__indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px 3px 8px;
+      background: rgba(239, 68, 68, 0.06);
+      border: 1px solid rgba(239, 68, 68, 0.15);
+      border-radius: 100px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: #DC2626;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+    }
+
+    .video-reminder-banner__dot {
+      width: 6px;
+      height: 6px;
+      background: #DC2626;
+      border-radius: 50%;
+      animation: pulse-dot 1.5s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    .video-reminder-banner svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      color: var(--color-navy-400);
+    }
+
+    .video-reminder-banner__dismiss {
+      margin-left: auto;
+      padding: 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--color-navy-300);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .video-reminder-banner__dismiss:hover {
+      background: var(--color-gray-100);
+      color: var(--color-navy-500);
+    }
+
+    .video-reminder-banner__dismiss svg {
+      width: 14px;
+      height: 14px;
+    }
 
     /* Responsive */
     @media (max-width: 1280px) {
       .content-area--full {
         padding: 16px 48px;
+      }
+
+      .video-reminder-banner {
+        padding: 10px 48px;
       }
 
       .consultation-grid {
@@ -953,16 +1045,23 @@
         overflow: auto;
       }
 
+      .video-reminder-banner {
+        padding: 10px 24px;
+      }
+
       .consultation-header {
         flex-direction: column;
         gap: 16px;
       }
 
       .recording-section {
+        position: relative;
+        left: auto;
+        transform: none;
         width: 100%;
       }
 
-      .mic-section {
+      .audio-source-section {
         align-items: center;
         width: 100%;
       }
@@ -1015,7 +1114,7 @@
   </div>
 
   <div class="platform">
-    <!-- Top Bar -->
+    <!-- Top Bar (hidden) -->
     <header class="topbar">
       <div class="topbar__logo">
         <a href="platform-preview.html" style="text-decoration: none; display: flex; align-items: baseline; gap: 4px;">
@@ -1040,6 +1139,18 @@
       </div>
     </header>
 
+    <!-- Video Reminder Banner -->
+    <div class="video-reminder-banner" id="reminderBanner">
+      <div class="video-reminder-banner__indicator">
+        <div class="video-reminder-banner__dot"></div>
+        LYTTER
+      </div>
+      <span>Lytter til videokonsultation — People's Clinic optager lyden og transskriberer automatisk.</span>
+      <button class="video-reminder-banner__dismiss" onclick="document.getElementById('reminderBanner').style.display='none'">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
     <!-- Content Area (No Sidebar) -->
     <div class="content-area content-area--full">
       <!-- Main Content -->
@@ -1048,6 +1159,10 @@
         <div class="consultation-header">
           <!-- Patient Info -->
           <div class="patient-info">
+            <div class="consultation-type-badge">
+              <i data-lucide="video"></i>
+              Videokonsultation
+            </div>
             <div class="patient-info__name"><strong>Fornavn:</strong> Nancy</div>
             <div class="patient-info__time"><strong>Starttidspunkt:</strong> 25-10-2026 10:47</div>
           </div>
@@ -1075,12 +1190,18 @@
             </div>
           </div>
 
-          <!-- Microphone Section -->
-          <div class="mic-section">
-            <button class="mic-dropdown">
-              Mikrofon i computer (indbygget)
-              <i data-lucide="chevron-down"></i>
-            </button>
+          <!-- Audio Source Section (replaces Microphone Section) -->
+          <div class="audio-source-section">
+            <div class="audio-source-indicator">
+              <div class="audio-source-icon">
+                <i data-lucide="audio-lines"></i>
+              </div>
+              <span class="audio-source-value">Systemlyd + Mikrofon</span>
+              <div class="audio-source-status">
+                <span class="audio-source-dot"></span>
+                Aktiv
+              </div>
+            </div>
             <div class="mic-test">
               <span>Mikrofon-signal</span>
               <div class="mic-bars" id="micBars">
@@ -1159,23 +1280,10 @@
           <div class="consultation-panel">
             <div class="panel-header">
               <h2 class="panel-title">Notater</h2>
-              <div class="panel-dropdown-wrapper">
-                <button class="panel-dropdown" id="templateDropdownBtn">
-                  <span style="color: var(--color-navy-400); font-weight: 500;">Skabelon</span>
-                  <span style="font-weight: 700;" id="templateDropdownLabel">SOAP</span>
-                  <i data-lucide="chevron-down"></i>
-                </button>
-                <div class="panel-dropdown-menu" id="templateDropdownMenu">
-                  <button class="panel-dropdown-menu__item panel-dropdown-menu__item--active" data-template="soap">SOAP</button>
-                  <button class="panel-dropdown-menu__item" data-template="psoap">PSOAP</button>
-                  <button class="panel-dropdown-menu__item" data-template="soap-kort">SOAP - Kort</button>
-                  <button class="panel-dropdown-menu__item" data-template="soap-psykisk">SOAP - Psykisk</button>
-                  <button class="panel-dropdown-menu__item" data-template="soap-baggrund">SOAP med baggrund</button>
-                  <button class="panel-dropdown-menu__item" data-template="fritekst">Fritekst</button>
-                  <button class="panel-dropdown-menu__item" data-template="struktureret">Struktureret</button>
-                  <button class="panel-dropdown-menu__item" data-template="aarskontrol">Årskontrol</button>
-                </div>
-              </div>
+              <button class="panel-dropdown">
+                SOAP uden baggrund
+                <i data-lucide="chevron-down"></i>
+              </button>
             </div>
             <div class="panel-content" id="notesContent">
               <!-- Placeholder shown while waiting for transcription -->
@@ -1195,12 +1303,12 @@
                 <div class="notes-content" data-original="Almen upåvirket, vågen og klar. Normal vejrtrækning i hvile. Ingen ødemer. BT 132/78, puls 78 reg. Cor/pulm uden mislyde eller krepitationer. EKG initialt uden akutte iskæmitegn (fiktivt)."></div>
               </div>
               <div class="notes-section notes-section--hidden" id="noteSection2">
-                <div class="notes-label">Vurdering:</div>
+                <div class="notes-label">Vurdering</div>
                 <div class="notes-content" data-original="Brystsmerter forenelige med mulig stabil angina pectoris. Familiær disposition og belastningsudløste symptomer taler for videre kardiologisk udredning. Ingen tegn på akut koronart syndrom aktuelt."></div>
               </div>
               <div class="notes-section notes-section--hidden" id="noteSection3">
-                <div class="notes-label">Plan:</div>
-                <div class="notes-content" data-original="– Bestilling af EKG og blodprøver inkl. lipidprofil, HbA1c og troponin (screening). – Henvisning til kardiologisk vurdering inkl. arbejdsekg. – Rådgivning om at undgå hård fysisk belastning indtil"></div>
+                <div class="notes-label">Plan</div>
+                <div class="notes-content" data-original="– Bestilling af EKG og blodprøver inkl. lipidprofil, HbA1c og troponin (screening). – Henvisning til kardiologisk vurdering inkl. arbejds-EKG. – Rådgivning om at undgå hård fysisk belastning indtil udredning er afsluttet."></div>
               </div>
             </div>
             <div class="ai-input-section">
@@ -1269,7 +1377,7 @@
         <!-- Action Bar -->
         <div class="action-bar">
           <button class="action-btn action-btn--secondary action-btn--disabled" id="copyBtn">Kopier notat</button>
-          <a href="konsultation-rediger.html" class="action-btn action-btn--primary action-btn--disabled" id="saveBtn" style="text-decoration: none;">Afslut & rediger notat</a>
+          <a href="konsultation-rediger.html?type=video" class="action-btn action-btn--primary action-btn--disabled" id="saveBtn" style="text-decoration: none;">Afslut & rediger notat</a>
         </div>
       </main>
     </div>
@@ -1353,7 +1461,6 @@
     // Audio meter simulation
     let currentLevel = 6;
     function updateMicMeter() {
-      // Smoothly vary between 5-7 bars (subtle movement)
       const change = Math.random() < 0.5 ? -1 : 1;
       currentLevel = Math.max(5, Math.min(7, currentLevel + change));
 
@@ -1379,7 +1486,6 @@
         clearInterval(micMeterInterval);
         micMeterInterval = null;
       }
-      // Set all bars to inactive when paused
       micBars.forEach(bar => bar.classList.remove('mic-bar--active'));
     }
 
@@ -1413,7 +1519,6 @@
       if (isPaused) {
         // Paused state
         stopTimer();
-        // Mic meter keeps running even when paused
         recordCircle.classList.remove('record-circle--active');
         recordCircle.classList.add('record-circle--paused');
         pauseBtnText.textContent = 'Start igen';
@@ -1423,7 +1528,6 @@
       } else {
         // Active state
         startTimer();
-        // Mic meter keeps running continuously
         recordCircle.classList.remove('record-circle--paused');
         recordCircle.classList.add('record-circle--active');
         pauseBtnText.textContent = 'Sæt på pause';
@@ -1439,10 +1543,10 @@
     pauseBtn.addEventListener('click', toggleRecording);
     recordCircle.addEventListener('click', toggleRecording);
 
-    // Save and finish - navigate back to start screen
+    // Save and finish
     saveBtn.addEventListener('click', function() {
       if (!saveBtn.classList.contains('action-btn--disabled')) {
-        window.location.href = 'platform-preview.html';
+        window.location.href = 'konsultation-rediger.html?type=video';
       }
     });
 
@@ -1451,7 +1555,7 @@
     startMicMeter();
 
     // ==========================================
-    // TRANSCRIPTION WAITING STATE WITH COUNTDOWN
+    // TRANSCRIPTION WAITING STATE
     // ==========================================
     (function() {
       var waitingEl = document.getElementById('transcriptWaiting');
@@ -1543,39 +1647,6 @@
         setTimeout(function() {
           span.classList.add('notes-word--visible');
         }, i * wordDelay);
-      });
-    }
-
-    // ==========================================
-    // TEMPLATE DROPDOWN FUNCTIONALITY
-    // ==========================================
-
-    var templateBtn = document.getElementById('templateDropdownBtn');
-    var templateMenu = document.getElementById('templateDropdownMenu');
-    var templateLabel = document.getElementById('templateDropdownLabel');
-
-    if (templateBtn && templateMenu) {
-      templateBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        templateMenu.classList.toggle('panel-dropdown-menu--open');
-      });
-
-      document.addEventListener('click', function() {
-        templateMenu.classList.remove('panel-dropdown-menu--open');
-      });
-
-      templateMenu.querySelectorAll('.panel-dropdown-menu__item').forEach(function(item) {
-        item.addEventListener('click', function() {
-          var templateId = this.getAttribute('data-template');
-          templateLabel.textContent = this.textContent;
-
-          // Update active state
-          templateMenu.querySelectorAll('.panel-dropdown-menu__item').forEach(function(i) {
-            i.classList.remove('panel-dropdown-menu__item--active');
-          });
-          this.classList.add('panel-dropdown-menu__item--active');
-          templateMenu.classList.remove('panel-dropdown-menu--open');
-        });
       });
     }
 

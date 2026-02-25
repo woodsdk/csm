@@ -1,0 +1,2680 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>People's Clinic - Min Assistent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../Design System/platform.css">
+  <style>
+    /* ═══════════════════════════════════════
+       AI LAYOUT — chat + sidebar
+       ═══════════════════════════════════════ */
+    .ai-layout {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      gap: 20px;
+    }
+    .ai-chat {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    /* ═══════════════════════════════════════
+       CHAT HEADER
+       ═══════════════════════════════════════ */
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 0 16px 0;
+      flex-shrink: 0;
+    }
+    .chat-header__left { flex: 1; }
+    .chat-header__right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chat-patient-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px 5px 8px;
+      background: var(--color-gray-100);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-sm);
+      color: var(--color-text);
+    }
+    .chat-patient-badge i { width: 14px; height: 14px; color: var(--color-navy-400); }
+    .chat-patient-badge__cpr {
+      color: var(--color-navy-400);
+      font-size: var(--font-size-xs);
+    }
+
+    /* Chat history dropdown */
+    .chat-history-dropdown { position: relative; }
+    .btn-history-toggle {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 14px;
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-full); background: var(--color-white);
+      cursor: pointer; font-family: inherit; font-size: var(--font-size-xs);
+      font-weight: 600; color: var(--color-navy-500);
+      transition: all var(--transition-fast);
+    }
+    .btn-history-toggle:hover { border-color: var(--color-navy-400); background: var(--color-gray-100); }
+    .btn-history-toggle i { width: 14px; height: 14px; }
+    .btn-history-toggle__chevron { transition: transform 0.2s ease; }
+    .btn-history-toggle--open .btn-history-toggle__chevron { transform: rotate(180deg); }
+
+    .chat-history-menu {
+      position: absolute; top: calc(100% + 8px); right: 0;
+      width: 300px;
+      background: var(--color-white);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-card);
+      z-index: 50;
+      display: none;
+      animation: fadeInUp 0.2s ease;
+    }
+    .chat-history-menu--open { display: block; }
+
+    .chat-history-menu__new {
+      display: flex; align-items: center; gap: 8px;
+      width: 100%; padding: 12px 16px;
+      border: none; background: none;
+      font-weight: 600; color: var(--color-navy-500);
+      cursor: pointer; font-family: inherit; font-size: var(--font-size-sm);
+      transition: background var(--transition-fast);
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    }
+    .chat-history-menu__new:hover { background: var(--color-gray-100); }
+    .chat-history-menu__new i { width: 16px; height: 16px; }
+
+    .chat-history-menu__divider { height: 1px; background: var(--color-gray-200); }
+    .chat-history-menu__label {
+      padding: 10px 16px 6px;
+      font-size: var(--font-size-xs); font-weight: 700;
+      color: var(--color-navy-400);
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .chat-history-menu__list { max-height: 280px; overflow-y: auto; }
+    .chat-history-menu__empty {
+      padding: 16px; text-align: center;
+      font-size: var(--font-size-sm); color: var(--color-navy-300);
+    }
+
+    .chat-history-item {
+      display: block; width: 100%; padding: 10px 16px;
+      border: none; background: none; text-align: left;
+      cursor: pointer; font-family: inherit;
+      transition: background var(--transition-fast);
+    }
+    .chat-history-item:hover { background: var(--color-gray-100); }
+    .chat-history-item:last-child { border-radius: 0 0 var(--radius-xl) var(--radius-xl); }
+    .chat-history-item--active { background: rgba(86,105,164,0.06); }
+    .chat-history-item__name {
+      font-size: var(--font-size-sm); font-weight: 600; color: var(--color-text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .chat-history-item__meta {
+      font-size: var(--font-size-xs); color: var(--color-navy-400);
+      display: flex; align-items: center; gap: 6px; margin-top: 2px;
+    }
+
+    .btn-demo-header {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 14px; border: 1px dashed var(--color-navy-400);
+      border-radius: var(--radius-full); background: var(--color-white);
+      cursor: pointer; font-family: inherit; font-size: var(--font-size-xs);
+      font-weight: 600; color: var(--color-navy-500);
+      transition: all var(--transition-fast);
+    }
+    .btn-demo-header:hover { background: rgba(86,105,164,0.04); border-style: solid; }
+    .btn-demo-header i { width: 14px; height: 14px; }
+
+    .ai-sidebar-toggle {
+      display: none;
+      width: 34px; height: 34px; border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-full); background: var(--color-white);
+      cursor: pointer; color: var(--color-navy-500);
+      align-items: center; justify-content: center;
+      transition: all var(--transition-fast);
+    }
+    .ai-sidebar-toggle:hover { border-color: var(--color-navy-400); background: var(--color-gray-100); }
+    .ai-sidebar-toggle i { width: 16px; height: 16px; }
+
+    /* ═══════════════════════════════════════
+       CHAT MESSAGES AREA
+       ═══════════════════════════════════════ */
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 0 0 20px 0;
+      min-height: 0;
+      scroll-behavior: smooth;
+    }
+
+    /* ═══════════════════════════════════════
+       WELCOME STATE (simplified)
+       ═══════════════════════════════════════ */
+    .chat-welcome {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 24px;
+      gap: 16px;
+      animation: fadeInUp 0.4s ease;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chat-welcome__icon {
+      width: 56px; height: 56px;
+      border-radius: var(--radius-2xl);
+      background: linear-gradient(135deg, rgba(86,105,164,0.08) 0%, rgba(86,105,164,0.15) 100%);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-navy-500);
+    }
+    .chat-welcome__icon i { width: 26px; height: 26px; }
+
+    .chat-welcome__title {
+      font-size: var(--font-size-3xl);
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .chat-welcome__text {
+      font-size: var(--font-size-lg);
+      color: var(--color-navy-400);
+      max-width: 460px;
+      line-height: 1.5;
+    }
+
+    .chat-welcome__footer {
+      margin-top: 8px;
+      display: flex; align-items: center; gap: 6px;
+      font-size: var(--font-size-xs); color: var(--color-navy-300);
+    }
+    .chat-welcome__footer i { width: 12px; height: 12px; }
+
+    /* ═══════════════════════════════════════
+       QUICK PROMPT CHIPS (always visible)
+       ═══════════════════════════════════════ */
+    .chat-quick-prompts {
+      flex-shrink: 0;
+      padding: 0 0 10px 0;
+    }
+    .chat-quick-prompts__row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chat-suggestion-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--color-gray-200);
+      background: var(--color-white);
+      font-family: inherit; font-size: var(--font-size-xs);
+      color: var(--color-text); cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+    }
+    .chat-suggestion-chip:hover {
+      border-color: var(--color-navy-400);
+      background: rgba(86,105,164,0.04);
+      color: var(--color-navy-700);
+    }
+    .chat-suggestion-chip i, .chat-suggestion-chip svg { width: 13px; height: 13px; color: var(--color-navy-400); }
+    .chat-suggestion-chip--active {
+      border-color: var(--color-navy-500);
+      background: rgba(86,105,164,0.08);
+      color: var(--color-navy-700);
+      font-weight: 600;
+    }
+    .chat-suggestion-chip--clinical::after {
+      content: 'SDU'; font-size: 9px; font-weight: 700;
+      color: var(--color-navy-500);
+      background: rgba(86,105,164,0.1);
+      padding: 1px 5px; border-radius: var(--radius-full);
+      margin-left: 2px;
+    }
+
+    /* ═══════════════════════════════════════
+       CHAT MESSAGES
+       ═══════════════════════════════════════ */
+    .chat-msg {
+      display: flex;
+      gap: 12px;
+      animation: msgFadeIn 0.3s ease;
+    }
+    @keyframes msgFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes msgFadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-8px); }
+    }
+
+    /* User message */
+    .chat-msg--user { justify-content: flex-end; }
+    .chat-msg--user .chat-msg__content {
+      background: var(--color-navy-800);
+      color: var(--color-text-inverse);
+      border-radius: var(--radius-2xl) var(--radius-2xl) 6px var(--radius-2xl);
+      padding: 14px 18px;
+      max-width: 70%;
+    }
+    .chat-msg--user .chat-msg__text {
+      font-size: var(--font-size-md);
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+    .chat-msg--user .chat-msg__meta {
+      margin-top: 8px;
+      display: flex; gap: 6px; flex-wrap: wrap;
+    }
+    .chat-msg__template-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; font-weight: 600;
+      color: rgba(255,255,255,0.6);
+      background: rgba(255,255,255,0.1);
+      padding: 2px 8px; border-radius: var(--radius-full);
+    }
+    .chat-msg__template-badge i { width: 10px; height: 10px; }
+
+    .chat-msg__files {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
+    }
+    .chat-msg-file {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 8px;
+      background: rgba(255,255,255,0.1);
+      border-radius: var(--radius-md);
+      font-size: 11px; color: rgba(255,255,255,0.8);
+    }
+    .chat-msg-file i { width: 12px; height: 12px; }
+    .chat-msg-file__size { color: rgba(255,255,255,0.5); margin-left: 2px; }
+
+    /* AI message */
+    .chat-msg--ai .chat-msg__avatar {
+      width: 30px; height: 30px; min-width: 30px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, rgba(86,105,164,0.1) 0%, rgba(86,105,164,0.18) 100%);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-navy-500); flex-shrink: 0; margin-top: 2px;
+    }
+    .chat-msg--ai .chat-msg__avatar i { width: 14px; height: 14px; }
+
+    .chat-msg--ai .chat-msg__content {
+      background: var(--color-white);
+      border: 1px solid var(--color-gray-200);
+      border-radius: 6px var(--radius-2xl) var(--radius-2xl) var(--radius-2xl);
+      max-width: 85%;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(38,48,79,0.04);
+    }
+
+    .chat-msg__draft {
+      padding: 18px 20px;
+      font-size: var(--font-size-md);
+      line-height: 1.7;
+      color: var(--color-text);
+    }
+    .chat-msg__draft[contenteditable="true"] { cursor: text; outline: none; }
+    .chat-msg__draft[contenteditable="true"]:focus {
+      box-shadow: inset 0 0 0 2px rgba(86,105,164,0.08);
+    }
+    .chat-msg__draft p { margin-bottom: 12px; }
+    .chat-msg__draft p:last-child { margin-bottom: 0; }
+    .chat-msg__draft ul { margin: 6px 0 12px 0; padding-left: 20px; }
+    .chat-msg__draft li { margin-bottom: 4px; }
+    .chat-msg__draft hr { border: none; border-top: 1px solid var(--color-gray-200); margin: 14px 0; }
+
+    /* Search results */
+    .search-result-item {
+      display: flex; gap: 12px; padding: 14px 16px; margin-bottom: 10px;
+      border-radius: var(--radius-lg); background: var(--color-gray-100);
+      border: 1px solid var(--color-gray-200);
+    }
+    .search-result-item:last-child { margin-bottom: 0; }
+    .search-result-item__page {
+      flex-shrink: 0; min-width: 48px; height: 28px;
+      background: rgba(86,105,164,0.08); border-radius: var(--radius-md);
+      font-size: 11px; font-weight: 600; color: var(--color-navy-600);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .search-result-item__text {
+      font-size: var(--font-size-sm); line-height: 1.6; color: var(--color-text);
+    }
+    .search-result-item__text mark {
+      background: rgba(245,158,11,0.2); color: inherit;
+      padding: 0 2px; border-radius: 2px;
+    }
+
+    /* AI message actions */
+    .chat-msg__actions {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 14px;
+      border-top: 1px solid var(--color-gray-200);
+      background: var(--color-gray-100);
+    }
+    .chat-msg__actions-left, .chat-msg__actions-right {
+      display: flex; align-items: center; gap: 4px;
+    }
+    .chat-msg-action {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 5px 10px; border: none; background: none;
+      border-radius: var(--radius-full); font-family: inherit;
+      font-size: var(--font-size-xs); font-weight: 500;
+      color: var(--color-navy-500); cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .chat-msg-action:hover { background: var(--color-white); color: var(--color-navy-700); }
+    .chat-msg-action i { width: 13px; height: 13px; }
+    .chat-msg-action--primary {
+      background: var(--gradient-button-primary);
+      color: var(--color-white); padding: 5px 14px;
+      box-shadow: 0 2px 8px rgba(56,69,109,0.15);
+    }
+    .chat-msg-action--primary:hover {
+      background: linear-gradient(135deg, #2F3D62 0%, #4A5D96 100%);
+      color: var(--color-white);
+    }
+    .chat-msg-action--primary i { color: var(--color-white); }
+    .chat-msg-action--danger { color: var(--color-navy-400); }
+    .chat-msg-action--danger:hover { color: #EF4444; background: rgba(239,68,68,0.04); }
+
+    .chat-msg__approved {
+      display: flex; align-items: center; gap: 6px;
+      font-size: var(--font-size-xs); font-weight: 600;
+      color: var(--color-success); padding: 4px 0;
+    }
+    .chat-msg__approved i { width: 14px; height: 14px; }
+
+    /* Typing indicator */
+    .chat-typing-indicator {
+      display: flex; align-items: center; gap: 12px; padding: 16px 20px;
+    }
+    .generating-dots { display: flex; gap: 4px; }
+    .generating-dots span {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--color-navy-400);
+      animation: dotPulse 1.4s ease-in-out infinite;
+    }
+    .generating-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .generating-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dotPulse {
+      0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+      40% { opacity: 1; transform: scale(1); }
+    }
+    .generating-text { font-size: var(--font-size-sm); color: var(--color-navy-400); }
+
+    /* ═══════════════════════════════════════
+       CHAT INPUT AREA
+       ═══════════════════════════════════════ */
+    .chat-input-area {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+    }
+
+    .clinical-warning {
+      display: none;
+      align-items: flex-start; gap: 10px;
+      padding: 10px 14px;
+      background: rgba(245,158,11,0.06);
+      border: 1px solid rgba(245,158,11,0.2);
+      border-radius: var(--radius-lg);
+      font-size: var(--font-size-sm);
+      color: #92400E; line-height: 1.4;
+    }
+    .clinical-warning.active { display: flex; }
+    .clinical-warning i { width: 16px; height: 16px; flex-shrink: 0; color: #F59E0B; margin-top: 1px; }
+
+    .transfer-banner {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 16px;
+      background: var(--color-navy-50, #F0F1F5);
+      border-radius: var(--radius-lg);
+      font-size: var(--font-size-sm); font-weight: 500;
+      color: var(--color-navy-600);
+      animation: fadeInUp 0.4s ease;
+    }
+    .transfer-banner__dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--color-navy-500);
+      animation: dotPulseTransfer 1.2s ease-in-out infinite; flex-shrink: 0;
+    }
+    @keyframes dotPulseTransfer {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    @keyframes transferFadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-8px); }
+    }
+
+    .chat-attachments {
+      display: flex; flex-wrap: wrap; gap: 6px; padding: 0 4px;
+    }
+    .chat-attachment-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px 4px 8px;
+      background: var(--color-gray-100);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-xs); color: var(--color-text);
+    }
+    .chat-attachment-chip svg, .chat-attachment-chip i { width: 14px; height: 14px; flex-shrink: 0; }
+    .chat-attachment-chip--pdf svg, .chat-attachment-chip--pdf i { color: #EF4444; }
+    .chat-attachment-chip--docx svg, .chat-attachment-chip--docx i { color: #3B82F6; }
+    .chat-attachment-chip__remove {
+      width: 16px; height: 16px; border: none; background: none;
+      cursor: pointer; color: var(--color-navy-400);
+      display: flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-full); margin-left: 2px;
+    }
+    .chat-attachment-chip__remove:hover { color: #EF4444; }
+    .chat-attachment-chip__remove svg { width: 12px; height: 12px; }
+
+    /* Main input bar */
+    .chat-input-bar {
+      display: flex;
+      align-items: flex-end;
+      gap: 0;
+      padding: 8px 8px 8px 8px;
+      background: var(--color-white);
+      border: 1.5px solid var(--color-gray-200);
+      border-radius: var(--radius-2xl);
+      box-shadow: 0 2px 12px rgba(38,48,79,0.06);
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    .chat-input-bar:focus-within {
+      border-color: var(--color-navy-400);
+      box-shadow: 0 2px 20px rgba(86,105,164,0.1);
+    }
+
+    .chat-textarea {
+      flex: 1; min-width: 0;
+      border: none; background: none;
+      font-family: inherit; font-size: var(--font-size-md);
+      line-height: 1.5; color: var(--color-text);
+      outline: none; resize: none;
+      max-height: 200px; padding: 8px 4px;
+      overflow-y: auto;
+    }
+    .chat-textarea::placeholder { color: var(--color-navy-300); }
+
+    .chat-input-btn {
+      width: 36px; height: 36px; min-width: 36px;
+      border: none; background: none;
+      border-radius: var(--radius-full);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--color-navy-400);
+      transition: all var(--transition-fast); flex-shrink: 0;
+    }
+    .chat-input-btn:hover { color: var(--color-navy-600); background: var(--color-gray-100); }
+    .chat-input-btn i { width: 18px; height: 18px; }
+
+    .chat-send-btn {
+      width: 36px; height: 36px; min-width: 36px;
+      border: none; border-radius: var(--radius-full);
+      background: var(--gradient-button-primary);
+      color: var(--color-white);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all var(--transition-fast);
+      box-shadow: var(--shadow-button); flex-shrink: 0;
+    }
+    .chat-send-btn:hover { background: linear-gradient(135deg, #2F3D62 0%, #4A5D96 100%); }
+    .chat-send-btn:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
+    .chat-send-btn i { width: 18px; height: 18px; }
+
+    /* ═══════════════════════════════════════
+       CONTEXT SIDEBAR
+       ═══════════════════════════════════════ */
+    .ai-context-sidebar {
+      width: 300px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--color-white);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-card);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .ctx-section {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--color-gray-200);
+    }
+    .ctx-section:last-child { border-bottom: none; }
+    .ctx-section--grow { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+
+    .ctx-section__header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .ctx-section__header > i { width: 16px; height: 16px; color: var(--color-navy-500); }
+    .ctx-section__title {
+      font-size: var(--font-size-xs);
+      font-weight: 700;
+      color: var(--color-navy-500);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      flex: 1;
+    }
+    .ctx-section__clear {
+      width: 22px; height: 22px; border: none; background: none;
+      cursor: pointer; color: var(--color-navy-400); border-radius: var(--radius-full);
+      display: none; align-items: center; justify-content: center;
+      transition: all var(--transition-fast);
+    }
+    .ctx-section__clear.visible { display: flex; }
+    .ctx-section__clear:hover { color: #EF4444; background: rgba(239,68,68,0.06); }
+    .ctx-section__clear i { width: 14px; height: 14px; }
+
+    /* Patient fields */
+    .ctx-field { margin-bottom: 10px; }
+    .ctx-field:last-child { margin-bottom: 0; }
+    .ctx-field__label {
+      display: block;
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+      color: var(--color-navy-400);
+      margin-bottom: 4px;
+    }
+    .ctx-field__input {
+      width: 100%;
+      padding: 8px 12px;
+      font-family: inherit;
+      font-size: var(--font-size-sm);
+      color: var(--color-text);
+      background: var(--color-gray-100);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      transition: border-color var(--transition-fast);
+      box-sizing: border-box;
+    }
+    .ctx-field__input:focus {
+      outline: none;
+      border-color: var(--color-navy-500);
+      background: var(--color-white);
+    }
+
+    /* Active patient display */
+    .ctx-patient-active {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: rgba(86,105,164,0.04);
+      border: 1px solid rgba(86,105,164,0.15);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .ctx-patient-active:hover { background: rgba(86,105,164,0.08); }
+    .ctx-patient-active__icon {
+      width: 32px; height: 32px; border-radius: var(--radius-full);
+      background: rgba(86,105,164,0.1);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-navy-500); flex-shrink: 0;
+    }
+    .ctx-patient-active__icon i { width: 16px; height: 16px; }
+    .ctx-patient-active__info { flex: 1; min-width: 0; }
+    .ctx-patient-active__name {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .ctx-patient-active__cpr {
+      font-size: var(--font-size-xs);
+      color: var(--color-navy-400);
+    }
+
+    /* File drop zone */
+    .ctx-file-drop {
+      background: var(--color-gray-100);
+      border: 1px dashed var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      text-align: center;
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+    .ctx-file-drop:hover,
+    .ctx-file-drop--dragover {
+      border-color: var(--color-navy-400);
+      background: rgba(86,105,164,0.04);
+    }
+    .ctx-file-drop__content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--color-navy-400);
+      font-size: var(--font-size-sm);
+    }
+    .ctx-file-drop__content > i { width: 20px; height: 20px; }
+    .ctx-file-drop__hint {
+      font-size: var(--font-size-xs);
+      color: var(--color-navy-300);
+    }
+    .ctx-file-drop__browse {
+      background: none; border: none; color: var(--color-navy-500);
+      font-weight: 600; cursor: pointer; font-family: inherit;
+      font-size: var(--font-size-xs);
+      text-decoration: underline;
+    }
+
+    .ctx-file-list {
+      display: flex; flex-direction: column; gap: 6px; margin-top: 8px;
+    }
+    .ctx-file-list:empty { display: none; margin-top: 0; }
+
+    .ctx-file-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 8px;
+      background: var(--color-gray-100);
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-xs);
+    }
+    .ctx-file-item i { width: 14px; height: 14px; flex-shrink: 0; }
+    .ctx-file-item__name {
+      flex: 1; min-width: 0; overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap;
+      color: var(--color-text);
+    }
+    .ctx-file-item__size { color: var(--color-navy-400); font-size: 10px; flex-shrink: 0; }
+    .ctx-file-item__remove {
+      width: 18px; height: 18px; border: none; background: none;
+      cursor: pointer; color: var(--color-navy-400);
+      display: flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-full); flex-shrink: 0;
+    }
+    .ctx-file-item__remove:hover { color: #EF4444; }
+    .ctx-file-item__remove i { width: 12px; height: 12px; }
+
+    /* Consultation list */
+    .ctx-section__body--scroll {
+      flex: 1;
+      overflow-y: auto;
+      min-height: 0;
+    }
+    .ctx-consult-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .ctx-consult-item {
+      padding: 10px 12px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-gray-200);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      background: var(--color-white);
+    }
+    .ctx-consult-item:hover {
+      border-color: var(--color-navy-300);
+      background: var(--color-gray-100);
+    }
+    .ctx-consult-item--selected {
+      border-color: var(--color-navy-500);
+      background: rgba(86,105,164,0.10);
+    }
+    .ctx-consult-item--selected:hover {
+      border-color: var(--color-navy-500);
+      background: rgba(86,105,164,0.14);
+    }
+    .ctx-consult-item__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .ctx-consult-item__date {
+      font-size: var(--font-size-xs);
+      color: var(--color-navy-400);
+      font-weight: 500;
+    }
+    .ctx-consult-item__type {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--color-navy-500);
+      background: rgba(86,105,164,0.08);
+      padding: 1px 6px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+    }
+    .ctx-consult-item__snippet {
+      font-size: var(--font-size-xs);
+      color: var(--color-text);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .ctx-consult-empty {
+      font-size: var(--font-size-sm);
+      color: var(--color-navy-300);
+      text-align: center;
+      padding: 20px 12px;
+    }
+
+    /* ═══════════════════════════════════════
+       TOAST
+       ═══════════════════════════════════════ */
+    .toast {
+      position: fixed; bottom: 80px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      opacity: 0; pointer-events: none;
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 20px;
+      background: var(--color-navy-800);
+      color: var(--color-white); border-radius: var(--radius-full);
+      font-size: var(--font-size-sm); font-weight: 500;
+      box-shadow: 0 8px 30px rgba(38,48,79,0.2);
+      transition: all 0.3s ease; z-index: 100;
+      white-space: nowrap;
+    }
+    .toast.active { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+    .toast i { width: 16px; height: 16px; }
+
+    /* ═══════════════════════════════════════
+       RESPONSIVE
+       ═══════════════════════════════════════ */
+    @media (max-width: 1280px) {
+      .ai-sidebar-toggle { display: flex; }
+      .ai-context-sidebar {
+        position: fixed;
+        right: 0;
+        top: var(--topbar-height, 56px);
+        bottom: 0;
+        z-index: 90;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        border-radius: 0;
+        box-shadow: -4px 0 20px rgba(38,48,79,0.1);
+      }
+      .ai-context-sidebar--open { transform: translateX(0); }
+    }
+    .ai-sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      top: var(--topbar-height, 56px);
+      background: rgba(0,0,0,0.2);
+      z-index: 89;
+    }
+    .ai-sidebar-overlay--visible { display: block; }
+
+    @media (max-width: 768px) {
+      .chat-msg--user .chat-msg__content, .chat-msg--ai .chat-msg__content { max-width: 92%; }
+      .chat-msg__actions { flex-wrap: wrap; gap: 4px; }
+    }
+
+    /* ═══════════════════════════════════════
+       MODE TABS (inside input bar)
+       ═══════════════════════════════════════ */
+    .chat-mode-tabs {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 2px;
+      background: var(--color-gray-100);
+      border-radius: var(--radius-full);
+      margin-right: 4px;
+      flex-shrink: 0;
+    }
+    .chat-mode-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border: none;
+      background: none;
+      border-radius: var(--radius-full);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-navy-400);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+    }
+    .chat-mode-tab i, .chat-mode-tab svg { width: 12px; height: 12px; }
+    .chat-mode-tab:hover { color: var(--color-navy-600); }
+    .chat-mode-tab--active {
+      background: var(--color-white);
+      color: var(--color-navy-700);
+      box-shadow: 0 1px 3px rgba(38, 48, 79, 0.1);
+    }
+    .chat-mode-tab--support.chat-mode-tab--active {
+      color: #A34840;
+    }
+
+    /* ═══════════════════════════════════════
+       SUPPORT MODE OVERRIDES
+       (activated by .mode-support on .ai-layout)
+       Full coral theme: #D4655C accent, #A34840 dark, #8B3B34 deeper
+       ═══════════════════════════════════════ */
+
+    /* — Input bar — */
+    .mode-support .chat-input-bar {
+      border-color: rgba(212, 101, 92, 0.35);
+    }
+    .mode-support .chat-input-bar:focus-within {
+      border-color: #D4655C;
+      box-shadow: 0 2px 20px rgba(212, 101, 92, 0.12);
+    }
+
+    /* — Send button — */
+    .mode-support .chat-send-btn {
+      background: linear-gradient(135deg, #A34840 0%, #D4655C 100%);
+    }
+    .mode-support .chat-send-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, #8B3B34 0%, #C4534A 100%);
+    }
+
+    /* — Attach icon in input — */
+    .mode-support .chat-attach-btn { color: #D4655C; }
+    .mode-support .chat-attach-btn:hover { background: rgba(212, 101, 92, 0.08); color: #A34840; }
+
+    /* — AI messages — */
+    .mode-support .chat-msg--ai .chat-msg__content {
+      background: rgba(212, 101, 92, 0.04);
+      border-color: rgba(212, 101, 92, 0.15);
+    }
+    .mode-support .chat-msg--ai .chat-msg__avatar {
+      background: linear-gradient(135deg, rgba(212, 101, 92, 0.1) 0%, rgba(212, 101, 92, 0.18) 100%);
+      color: #D4655C;
+    }
+    .mode-support .chat-msg__actions { display: none; }
+
+    /* — Quick prompt chips — default state coral — */
+    .mode-support .chat-suggestion-chip {
+      border-color: rgba(212, 101, 92, 0.25);
+      color: #A34840;
+    }
+    .mode-support .chat-suggestion-chip i,
+    .mode-support .chat-suggestion-chip svg { color: #D4655C; }
+    .mode-support .chat-suggestion-chip:hover {
+      border-color: #D4655C;
+      background: rgba(212, 101, 92, 0.06);
+      color: #8B3B34;
+    }
+    .mode-support .chat-suggestion-chip--active {
+      border-color: #D4655C;
+      background: rgba(212, 101, 92, 0.1);
+      color: #8B3B34;
+      font-weight: 600;
+    }
+
+    /* — Welcome screen — */
+    .mode-support .chat-welcome__icon {
+      background: linear-gradient(135deg, rgba(212, 101, 92, 0.08) 0%, rgba(212, 101, 92, 0.15) 100%);
+      color: #D4655C;
+    }
+    .mode-support .chat-welcome__text { color: #A34840; }
+    .mode-support .chat-welcome__footer { color: #D4655C; }
+
+    /* — Welcome mode tabs in support — */
+    .mode-support .chat-welcome__mode-tabs { background: rgba(212, 101, 92, 0.06); }
+    .mode-support .chat-welcome__mode-tab:hover { color: #A34840; }
+    .mode-support .chat-welcome__mode-tab--active {
+      background: var(--color-white);
+      color: #A34840;
+    }
+
+    /* — Input-bar mode tabs in support — */
+    .mode-support .chat-mode-tabs { background: rgba(212, 101, 92, 0.06); }
+    .mode-support .chat-mode-tab--active { color: #A34840; }
+
+    /* — Typing indicator — */
+    .mode-support .generating-dots span { background: #D4655C; }
+
+    /* — Sidebar hidden — */
+    .mode-support .ai-context-sidebar { display: none; }
+    .mode-support .ai-sidebar-toggle { display: none !important; }
+
+    /* — Header buttons (Historik + Demo) — */
+    .mode-support .btn-history-toggle {
+      color: #A34840;
+      border-color: rgba(212, 101, 92, 0.3);
+    }
+    .mode-support .btn-history-toggle:hover {
+      color: #8B3B34;
+      border-color: #D4655C;
+      background: rgba(212, 101, 92, 0.06);
+    }
+    .mode-support .btn-demo-header {
+      color: #A34840;
+      border-color: rgba(212, 101, 92, 0.4);
+    }
+    .mode-support .btn-demo-header:hover {
+      color: #8B3B34;
+      border-color: #D4655C;
+      background: rgba(212, 101, 92, 0.04);
+    }
+
+    /* — Inactive mode tabs (both input bar + welcome) — */
+    .mode-support .chat-mode-tab {
+      color: #B87570;
+    }
+    .mode-support .chat-mode-tab:hover {
+      color: #A34840;
+    }
+    .mode-support .chat-welcome__mode-tab {
+      color: #B87570;
+    }
+    .mode-support .chat-welcome__mode-tab:hover {
+      color: #A34840;
+    }
+
+    /* — Input area buttons — */
+    .mode-support .chat-input-btn {
+      color: #D4655C;
+    }
+    .mode-support .chat-input-btn:hover {
+      color: #A34840;
+      background: rgba(212, 101, 92, 0.08);
+    }
+    .mode-support .chat-textarea::placeholder {
+      color: rgba(163, 72, 64, 0.45);
+    }
+
+    /* — History menu in support — */
+    .mode-support .chat-history-menu__new {
+      color: #A34840;
+    }
+    .mode-support .chat-history-menu__label {
+      color: #B87570;
+    }
+    .mode-support .chat-history-item__meta {
+      color: #B87570;
+    }
+
+    /* — History mode dot — */
+    .mode-support .chat-history-item__mode-dot { background: #D4655C; }
+
+    /* History mode dots */
+    .chat-history-item__name {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .chat-history-item__mode-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .chat-history-item__mode-dot--assistant { background: var(--color-navy-500); }
+    .chat-history-item__mode-dot--support { background: #D4655C; }
+
+    /* ═══════════════════════════════════════
+       WELCOME MODE TABS (large, centered)
+       ═══════════════════════════════════════ */
+    .chat-welcome__mode-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      background: var(--color-gray-100);
+      border-radius: var(--radius-full);
+      margin-top: 16px;
+    }
+    .chat-welcome__mode-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 20px;
+      border: none;
+      background: none;
+      border-radius: var(--radius-full);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-navy-400);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+    }
+    .chat-welcome__mode-tab i, .chat-welcome__mode-tab svg { width: 16px; height: 16px; }
+    .chat-welcome__mode-tab:hover { color: var(--color-navy-600); }
+    .chat-welcome__mode-tab--active {
+      background: var(--color-white);
+      color: var(--color-navy-700);
+      box-shadow: 0 1px 4px rgba(38, 48, 79, 0.12);
+    }
+    .chat-welcome__mode-tab--support.chat-welcome__mode-tab--active {
+      color: #A34840;
+    }
+  </style>
+</head>
+<body>
+  <!-- Device blocker (mobile) -->
+  <div class="device-blocker">
+    <div class="device-blocker__content">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      <h2>Åbn People's Clinic på din computer</h2>
+      <p>Platformen er designet til desktop og fungerer bedst<br>på en større skærm.</p>
+      <span class="device-blocker__note">Vi arbejder på en mobilversion — stay tuned!</span>
+    </div>
+  </div>
+
+  <!-- SVG Sprites -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none;">
+    <symbol id="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="message-square" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="alert-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+    <symbol id="sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></symbol>
+    <symbol id="settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="log-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></symbol>
+    <symbol id="current-clinic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></symbol>
+  </svg>
+
+  <div class="platform">
+
+  <!-- ════════════════════════════════════════
+       TOP BAR
+       ════════════════════════════════════════ -->
+  <header class="topbar">
+    <div class="topbar__logo">
+      <a href="platform-preview.html">
+        <img src="../Design System/assets/Peoples Clinic.svg" alt="People's Clinic" class="topbar__logo-img">
+      </a>
+    </div>
+    <div class="topbar__right">
+      <div class="clinic-dropdown">
+        <span>Current clinic: Valby Lægehus</span>
+        <svg><use href="#chevron-down"/></svg>
+      </div>
+      <div class="flags">
+        <div class="flag flag--dk"></div>
+        <div class="flag flag--uk"></div>
+      </div>
+      <div class="user-menu" id="userMenu">
+        <span class="user-name">Dr. Anna Nielsen</span>
+        <div class="user-avatar">A</div>
+        <div class="user-dropdown">
+          <div class="user-dropdown__label">Brugerpanel</div>
+          <a href="beskeder.html" class="user-dropdown__item"><svg><use href="#alert-circle"/></svg>Systemnotifikationer</a>
+          <a href="indstillinger.html" class="user-dropdown__item"><svg><use href="#sliders"/></svg>Brugerindstillinger</a>
+          <div class="user-dropdown__divider"></div>
+          <div class="user-dropdown__label">Klinikadministration</div>
+          <a href="admin-dashboard.html" class="user-dropdown__item"><svg><use href="#settings"/></svg>Klinikadministration</a>
+          <div class="user-dropdown__divider"></div>
+          <a href="#" class="user-dropdown__item"><svg><use href="#log-out"/></svg>Log ud</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ════════════════════════════════════════
+       MAIN CONTENT AREA
+       ════════════════════════════════════════ -->
+  <div class="content-area">
+    <aside class="sidebar">
+      <nav class="sidebar__nav">
+        <a href="platform-preview.html" class="nav-btn nav-btn--primary">
+          <i data-lucide="play"></i>
+          Start Konsultation
+        </a>
+        <a href="patientoversigt.html" class="nav-btn nav-btn--secondary">
+          <i data-lucide="layout-list"></i>
+          Seneste konsultationer
+        </a>
+        <a href="ai-assistent.html" class="nav-btn nav-btn--secondary nav-btn--active">
+          <i data-lucide="sparkles"></i>
+          Min Assistent        </a>
+        <a href="beskedassistent.html" class="nav-btn nav-btn--secondary">
+          <i data-lucide="inbox"></i>
+          Beskedassistent        </a>
+        <a href="klinikdrift-dashboard.html" class="nav-btn nav-btn--secondary">
+          <i data-lucide="activity"></i>
+          Klinikdrift
+        </a>
+      </nav>
+      <div class="sidebar__bottom-box">
+        <div class="bottom-section-label">Brugerpanel</div>
+        <a href="beskeder.html" class="bottom-link"><svg><use href="#alert-circle"/></svg>Systemnotifikationer</a>
+        <a href="indstillinger.html" class="bottom-link"><svg><use href="#sliders"/></svg>Brugerindstillinger</a>
+        <a href="admin-dashboard.html" class="bottom-link"><svg><use href="#settings"/></svg>Klinikadministration</a>
+        <a href="#" class="bottom-link bottom-link--separated"><svg><use href="#log-out"/></svg>Log ud</a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="ai-layout">
+        <!-- ═══════ CHAT AREA ═══════ -->
+        <div class="ai-chat">
+          <!-- Chat header -->
+          <div class="chat-header">
+            <div class="chat-header__left">
+              <h1 class="page-header__title">Min Assistent</h1>
+              <p class="page-header__subtitle">Din personlige assistent til skrivning, analyse og rådgivning</p>
+            </div>
+            <div class="chat-header__right">
+              <div class="chat-patient-badge" id="patientBadge" style="display: none;">
+                <i data-lucide="user"></i>
+                <span id="patientBadgeName"></span>
+                <span class="chat-patient-badge__cpr" id="patientBadgeCpr"></span>
+              </div>
+              <div class="chat-history-dropdown" id="chatHistoryDropdown">
+                <button class="btn-history-toggle" id="btnHistoryToggle">
+                  <i data-lucide="clock"></i>
+                  <span>Historik</span>
+                  <i data-lucide="chevron-down" class="btn-history-toggle__chevron"></i>
+                </button>
+                <div class="chat-history-menu" id="chatHistoryMenu">
+                  <button class="chat-history-menu__new" id="btnNewSession">
+                    <i data-lucide="plus"></i>Ny session
+                  </button>
+                  <div class="chat-history-menu__divider"></div>
+                  <div class="chat-history-menu__label">Seneste sessioner</div>
+                  <div class="chat-history-menu__list" id="historyList">
+                    <div class="chat-history-menu__empty">Ingen tidligere sessioner</div>
+                  </div>
+                </div>
+              </div>
+              <button class="btn-demo-header" id="btnDemo"><i data-lucide="play-circle"></i>Demo</button>
+              <button class="ai-sidebar-toggle" id="aiSidebarToggle" title="Kontekstpanel"><i data-lucide="panel-right"></i></button>
+            </div>
+          </div>
+
+          <!-- Chat messages -->
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-welcome" id="chatWelcome">
+              <div class="chat-welcome__icon"><i data-lucide="sparkles"></i></div>
+              <div class="chat-welcome__mode-tabs" id="welcomeModeTabs">
+                <button class="chat-welcome__mode-tab chat-welcome__mode-tab--assistant chat-welcome__mode-tab--active" data-mode="assistant"><i data-lucide="sparkles"></i>Assistent</button>
+                <button class="chat-welcome__mode-tab chat-welcome__mode-tab--support" data-mode="support"><i data-lucide="life-buoy"></i>Support</button>
+              </div>
+              <p class="chat-welcome__text">Skriv frit eller vælg et quick prompt nedenfor. Tilføj patient og filer i panelet til højre.</p>
+              <div class="chat-welcome__footer">
+                <i data-lucide="shield-check"></i>
+                Kliniske skabeloner (SDU) kræver aktivt forskningssamarbejde
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick prompt chips (always visible) -->
+          <div class="chat-quick-prompts" id="quickPrompts">
+            <div class="chat-quick-prompts__row">
+              <button class="chat-suggestion-chip" data-template="resume"><i data-lucide="file-text"></i>Journalresumé</button>
+              <button class="chat-suggestion-chip" data-template="booking"><i data-lucide="calendar"></i>Tidsbestilling</button>
+              <button class="chat-suggestion-chip" data-template="recept"><i data-lucide="pill"></i>Receptfornyelse</button>
+              <button class="chat-suggestion-chip" data-template="proevesvar"><i data-lucide="flask-conical"></i>Prøvesvar</button>
+              <button class="chat-suggestion-chip" data-template="henvisning"><i data-lucide="arrow-right-circle"></i>Henvisning</button>
+              <button class="chat-suggestion-chip chat-suggestion-chip--clinical" data-template="attest"><i data-lucide="file-signature"></i>Attest</button>
+              <button class="chat-suggestion-chip chat-suggestion-chip--clinical" data-template="klinisk"><i data-lucide="stethoscope"></i>Klinisk rådgivning</button>
+              <button class="chat-suggestion-chip" data-template="soeg"><i data-lucide="search"></i>Søg i indhold</button>
+              <button class="chat-suggestion-chip" data-template="frit"><i data-lucide="message-circle"></i>Frit spørgsmål</button>
+            </div>
+          </div>
+
+          <!-- Chat input area -->
+          <div class="chat-input-area" id="chatInputArea">
+            <div class="clinical-warning" id="clinicalWarning">
+              <i data-lucide="alert-triangle"></i>
+              <div><strong>Klinisk skabelon</strong> — Kliniske udkast er tilgængelige via forskningssamarbejdet med SDU og underlagt EU MDR.</div>
+            </div>
+            <div class="transfer-banner" id="transferBanner" style="display: none;">
+              <div class="transfer-banner__dot"></div>
+              <span id="transferText">Notat overført fra konsultation</span>
+            </div>
+            <div class="chat-attachments" id="chatAttachments" style="display: none;"></div>
+            <div class="chat-input-bar" id="chatInputBar">
+              <button class="chat-input-btn" id="btnAttach" title="Vedhæft filer"><i data-lucide="paperclip"></i></button>
+              <input type="file" id="fileInput" style="display:none;" multiple accept=".fnx,.pdf,.doc,.docx,.txt,.xlsx,.pptx,.png,.jpg,.jpeg">
+              <textarea class="chat-textarea" id="chatTextarea" placeholder="Beskriv hvad du har brug for..." rows="1"></textarea>
+              <div class="chat-mode-tabs" id="chatModeTabs">
+                <button class="chat-mode-tab chat-mode-tab--assistant chat-mode-tab--active" data-mode="assistant" id="tabAssistant"><i data-lucide="sparkles"></i>Assistent</button>
+                <button class="chat-mode-tab chat-mode-tab--support" data-mode="support" id="tabSupport"><i data-lucide="life-buoy"></i>Support</button>
+              </div>
+              <button class="chat-send-btn" id="btnSend" disabled title="Send"><i data-lucide="arrow-up"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════ CONTEXT SIDEBAR ═══════ -->
+        <aside class="ai-context-sidebar" id="aiContextSidebar">
+          <!-- Section: Patient -->
+          <div class="ctx-section">
+            <div class="ctx-section__header">
+              <i data-lucide="user"></i>
+              <span class="ctx-section__title">Patient</span>
+              <button class="ctx-section__clear" id="clearPatientSidebar" title="Fjern patient"><i data-lucide="x"></i></button>
+            </div>
+            <div class="ctx-section__body">
+              <div id="patientFields">
+                <div class="ctx-field">
+                  <label class="ctx-field__label">CPR-nummer</label>
+                  <input type="text" class="ctx-field__input" placeholder="DDMMÅÅ-XXXX" id="sidebarPatientCpr" maxlength="11">
+                </div>
+                <div class="ctx-field">
+                  <label class="ctx-field__label">Patientnavn</label>
+                  <input type="text" class="ctx-field__input" placeholder="Søg patient..." id="sidebarPatientName">
+                </div>
+              </div>
+              <div class="ctx-patient-active" id="patientActive" style="display:none;">
+                <div class="ctx-patient-active__icon"><i data-lucide="user"></i></div>
+                <div class="ctx-patient-active__info">
+                  <div class="ctx-patient-active__name" id="sidebarPatientActiveName"></div>
+                  <div class="ctx-patient-active__cpr" id="sidebarPatientActiveCpr"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: Files -->
+          <div class="ctx-section">
+            <div class="ctx-section__header">
+              <i data-lucide="paperclip"></i>
+              <span class="ctx-section__title">Filer</span>
+            </div>
+            <div class="ctx-section__body">
+              <div class="ctx-file-drop" id="sidebarFileDrop">
+                <div class="ctx-file-drop__content">
+                  <i data-lucide="upload-cloud"></i>
+                  <span>Træk filer hertil</span>
+                  <span class="ctx-file-drop__hint">eller <button class="ctx-file-drop__browse" id="sidebarBrowse">gennemse</button></span>
+                </div>
+              </div>
+              <div class="ctx-file-list" id="sidebarFileList"></div>
+            </div>
+          </div>
+
+          <!-- Section: Consultations -->
+          <div class="ctx-section ctx-section--grow">
+            <div class="ctx-section__header">
+              <i data-lucide="clock"></i>
+              <span class="ctx-section__title">Seneste konsultationer</span>
+            </div>
+            <div class="ctx-section__body ctx-section__body--scroll">
+              <div class="ctx-consult-list" id="consultList">
+                <div class="ctx-consult-empty">Vælg en patient for at se konsultationer</div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  </div><!-- /.platform -->
+
+  <!-- Sidebar overlay (responsive) -->
+  <div class="ai-sidebar-overlay" id="aiSidebarOverlay"></div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"><i data-lucide="check-circle"></i><span id="toastText"></span></div>
+
+  <script>
+    lucide.createIcons();
+
+    // ═══════════════════════════════════════
+    // STATE
+    // ═══════════════════════════════════════
+    var state = {
+      currentTemplate: null,
+      patientContext: null,
+      messages: [],
+      uploadedFiles: [],
+      isGenerating: false,
+      referralContext: null,
+      selectedConsultation: null,
+      sidebarOpen: false,
+      sessions: [],
+      currentSessionId: null,
+      historyOpen: false,
+      chatMode: 'assistant'
+    };
+
+    // ═══════════════════════════════════════
+    // TEMPLATE CONFIG
+    // ═══════════════════════════════════════
+    var templateLabels = {
+      booking: 'Tidsbestilling', recept: 'Receptfornyelse', proevesvar: 'Prøvesvar',
+      henvisning: 'Henvisning', attest: 'Attest', klinisk: 'Klinisk rådgivning',
+      resume: 'Journalresumé', soeg: 'Søg i indhold', frit: 'Frit spørgsmål'
+    };
+    var templateIcons = {
+      booking: 'calendar', recept: 'pill', proevesvar: 'flask-conical',
+      henvisning: 'arrow-right-circle', attest: 'file-signature', klinisk: 'stethoscope',
+      resume: 'file-text', soeg: 'search', frit: 'message-circle'
+    };
+    var generatingTexts = {
+      booking: 'Skriver tidsbestilling...', recept: 'Skriver receptsvar...', proevesvar: 'Skriver prøvesvar...',
+      henvisning: 'Genererer henvisning...', attest: 'Genererer attestudkast...', klinisk: 'Genererer klinisk udkast...',
+      resume: 'Genererer resumé...', soeg: 'Søger i dokumenter...', frit: 'Analyserer og besvarer...'
+    };
+    var templatePlaceholders = {
+      booking: 'Beskriv tidsbestillingen eller indsæt patientens besked...',
+      recept: 'Beskriv receptfornyelsen...',
+      proevesvar: 'Beskriv prøvesvarene eller indsæt patientens forespørgsel...',
+      henvisning: 'Beskriv henvisningen — hvem, hvortil og hvorfor...',
+      attest: 'Beskriv attesttype og relevant klinisk baggrund...',
+      klinisk: 'Beskriv den kliniske kontekst (SDU forskningssamarbejde)...',
+      resume: 'Beskriv hvad resuméet skal fokusere på...',
+      soeg: 'Hvad leder du efter i dokumentet?',
+      frit: 'Stil et spørgsmål til dokumentet...'
+    };
+
+    // ═══════════════════════════════════════
+    // AUTO-PROMPT TEMPLATES
+    // ═══════════════════════════════════════
+    var autoPromptTemplates = {
+      booking:    'Skriv et svar til {patient} vedrørende tidsbestilling{context}',
+      recept:     'Skriv et receptfornyelsessvar til {patient}{context}',
+      proevesvar: 'Skriv et prøvesvar til {patient}{context}',
+      henvisning: 'Skriv en henvisning for {patient}{context}',
+      attest:     'Generér en attest for {patient}{context}',
+      klinisk:    'Generér klinisk rådgivning for {patient}{context}',
+      resume:     'Lav et struktureret resumé af det vedhæftede dokument{file_hint}',
+      soeg:       'Søg i det vedhæftede dokument efter: ',
+      frit:       ''
+    };
+
+    // ═══════════════════════════════════════
+    // SUPPORT MODE CONFIG
+    // ═══════════════════════════════════════
+    var supportChips = [
+      { key: 'support_help',    label: 'Hvordan bruger jeg...?', icon: 'help-circle' },
+      { key: 'support_gdpr',    label: 'GDPR & datasikkerhed',  icon: 'shield' },
+      { key: 'support_ai',      label: 'AI & pålidelighed',     icon: 'cpu' },
+      { key: 'support_contact', label: 'Kontakt support',        icon: 'headphones' }
+    ];
+    var supportPlaceholders = {
+      support_help:    'Hvad vil du gerne vide mere om?',
+      support_gdpr:    'Stil et spørgsmål om GDPR eller datasikkerhed...',
+      support_ai:      'Spørg om AI-funktionaliteten...',
+      support_contact: 'Beskriv dit problem eller spørgsmål...'
+    };
+    var supportGeneratingTexts = {
+      support_help:    'Finder svar...',
+      support_gdpr:    'Slår op i sikkerhedsdokumentation...',
+      support_ai:      'Forbereder svar...',
+      support_contact: 'Finder kontaktoplysninger...'
+    };
+    var supportLabels = {
+      support_help: 'Platformhjælp',
+      support_gdpr: 'GDPR & sikkerhed',
+      support_ai: 'AI & pålidelighed',
+      support_contact: 'Kontakt support'
+    };
+    var supportIcons = {
+      support_help: 'help-circle',
+      support_gdpr: 'shield',
+      support_ai: 'cpu',
+      support_contact: 'headphones'
+    };
+    var supportDraftResponses = {
+      support_help: '<p><strong>Velkommen til People\'s Clinic</strong></p>' +
+        '<p>Her er en oversigt over de vigtigste funktioner:</p>' +
+        '<ul>' +
+        '<li><strong>Min Assistent</strong> — Din AI-assistent til at skrive journalnotater, besvarelser, henvisninger og attester. Vælg en skabelon, tilføj patientkontekst og få et udkast du kan redigere.</li>' +
+        '<li><strong>Beskedassistent</strong> — Automatisk sortering og prioritering af indgående patientbeskeder med forslag til svar.</li>' +
+        '<li><strong>Konsultation</strong> — Start og dokumentér konsultationer med automatisk SOAP-notat baseret på optagelse.</li>' +
+        '<li><strong>Klinikdrift</strong> — Overblik over klinikkens nøgletal, økonomi og bemanding.</li>' +
+        '</ul>' +
+        '<p>Du kan altid bruge <strong>quick prompts</strong> nedenfor eller skrive frit i chatfeltet.</p>',
+      support_gdpr: '<p><strong>GDPR & Datasikkerhed i People\'s Clinic</strong></p>' +
+        '<p>People\'s Clinic er bygget med databeskyttelse som fundament:</p>' +
+        '<ul>' +
+        '<li><strong>Datavært:</strong> Alle data hostes på EU-baserede servere i overensstemmelse med GDPR og den danske databeskyttelseslov.</li>' +
+        '<li><strong>Kryptering:</strong> End-to-end kryptering (AES-256) for data i transit og i hvile. TLS 1.3 for alle forbindelser.</li>' +
+        '<li><strong>Adgangsstyring:</strong> Rollebaseret adgang (RBAC) sikrer at kun autoriseret sundhedspersonale kan tilgå patientdata.</li>' +
+        '<li><strong>Databehandleraftale:</strong> Der foreligger databehandleraftale (DPA) i henhold til GDPR art. 28.</li>' +
+        '<li><strong>AI-behandling:</strong> Patientdata sendes ikke til tredjeparter. AI-modellen kører i et isoleret miljø inden for EU.</li>' +
+        '<li><strong>Logning:</strong> Alle handlinger logges i en audit trail, som opbevares i minimum 5 år jf. sundhedsloven.</li>' +
+        '</ul>' +
+        '<p>For yderligere information, se vores <strong>sikkerhedsdokumentation</strong> eller kontakt vores DPO.</p>',
+      support_ai: '<p><strong>AI & Pålidelighed i People\'s Clinic</strong></p>' +
+        '<p>Sådan fungerer AI-assistenten:</p>' +
+        '<ul>' +
+        '<li><strong>Rolle:</strong> AI\'en genererer <em>udkast</em> — aldrig færdige dokumenter. Lægen gennemgår, redigerer og godkender altid inden afsendelse.</li>' +
+        '<li><strong>Human-in-the-loop:</strong> Intet AI-genereret indhold forlader systemet uden eksplicit lægegodkendelse.</li>' +
+        '<li><strong>Transparens:</strong> Alle AI-udkast er markeret tydeligt og kan redigeres direkte i chatvinduet.</li>' +
+        '<li><strong>Kliniske skabeloner (SDU):</strong> Skabeloner mærket "SDU" er udviklet i forskningssamarbejde med Syddansk Universitet.</li>' +
+        '<li><strong>Nøjagtighed:</strong> Modellen er trænet på dansk medicinsk fagsprog, men kan lave fejl. Lægens faglige vurdering er altid afgørende.</li>' +
+        '<li><strong>Kontekst:</strong> AI\'en bruger kun den information du aktivt giver den (patient, filer, konsultation). Den har ikke adgang til hele journalsystemet.</li>' +
+        '</ul>',
+      support_contact: '<p><strong>Kontakt People\'s Clinic Support</strong></p>' +
+        '<p>Vi er her for at hjælpe:</p>' +
+        '<ul>' +
+        '<li><strong>Email:</strong> support@peoplesclinic.dk</li>' +
+        '<li><strong>Telefon:</strong> +45 70 20 30 40</li>' +
+        '<li><strong>Åbningstider:</strong> Mandag\u2013fredag 08:00\u201317:00</li>' +
+        '</ul>' +
+        '<p><strong>Akut teknisk support</strong> (uden for åbningstid):</p>' +
+        '<ul>' +
+        '<li>Ring +45 70 20 30 41 (kun kritiske systemfejl)</li>' +
+        '</ul>' +
+        '<p>Du kan også oprette en supportsag direkte fra <strong>Klinikadministration \u2192 Support</strong> i menuen.</p>' +
+        '<p>Gennemsnitlig svartid: Under 4 timer på hverdage.</p>'
+    };
+
+    function generateAutoPrompt(templateKey) {
+      var template = autoPromptTemplates[templateKey];
+      if (template === undefined) return '';
+
+      // Patient name
+      var patientStr = 'patienten';
+      if (state.patientContext && state.patientContext.name) {
+        patientStr = state.patientContext.name;
+      }
+      template = template.replace('{patient}', patientStr);
+
+      // Consultation context
+      var ctxStr = '';
+      if (state.selectedConsultation !== null) {
+        var pKey = getPatientKey();
+        if (pKey && mockConsultations[pKey]) {
+          var c = mockConsultations[pKey][state.selectedConsultation];
+          if (c) {
+            ctxStr = ' baseret på konsultation fra ' + c.date + ' (' + c.type + ': ' + c.snippet.substring(0, 60) + '...)';
+          }
+        }
+      }
+      template = template.replace('{context}', ctxStr);
+
+      // File hint for document templates
+      var fileHint = '';
+      if (state.uploadedFiles.length > 0) {
+        fileHint = ' (' + state.uploadedFiles.map(function(f) { return f.name; }).join(', ') + ')';
+      }
+      template = template.replace('{file_hint}', fileHint);
+
+      return template;
+    }
+
+    function getPatientKey() {
+      if (!state.patientContext || !state.patientContext.name) return null;
+      var name = state.patientContext.name.toLowerCase().trim();
+      for (var key in mockConsultations) {
+        if (key.toLowerCase() === name) return key;
+      }
+      return null;
+    }
+
+    // ═══════════════════════════════════════
+    // MOCK CONSULTATIONS
+    // ═══════════════════════════════════════
+    var mockConsultations = {
+      'Karen Møller': [
+        { date: '18.02.2025', type: 'Kontrol', snippet: 'Blodtryksregulering. Amlodipin 5mg. Rapporterer svimmelhed. BT 148/92.' },
+        { date: '22.01.2025', type: 'Kontrol', snippet: 'Årskontrol. BT 142/88. Lipidprofil bestilt. BMI 27.3.' },
+        { date: '05.11.2024', type: 'Akut', snippet: 'Hoste og feber i 5 dage. Lyt: krepitation basalt hø. Antibiotika ordineret.' },
+        { date: '15.09.2024', type: 'Kontrol', snippet: 'Diabeteskontrol. HbA1c 52. Metformin 1000mg x2 fortsættes.' },
+        { date: '03.06.2024', type: 'Telefon', snippet: 'Receptfornyelse Amlodipin. Bivirkninger gennemgået. Fortsæt uændret.' }
+      ],
+      'Peter Hansen': [
+        { date: '10.02.2025', type: 'Kontrol', snippet: 'Diabeteskontrol. HbA1c 49. Metformin 500mg x2 godt tolereret.' },
+        { date: '12.12.2024', type: 'Kontrol', snippet: 'Årskontrol. BT 128/82. Lipidprofil ua. Vaccination influenza givet.' },
+        { date: '01.10.2024', type: 'Akut', snippet: 'Urinvejsinfektion. Nitrofurantoin 50mg x3 i 5 dage.' },
+        { date: '20.07.2024', type: 'Telefon', snippet: 'Receptfornyelse Metformin. Blodprøve bestilt til november.' },
+        { date: '14.04.2024', type: 'Kontrol', snippet: 'HbA1c 54. Livsstilsrådgivning. Kostvejledning henvist.' }
+      ],
+      'Mette Andersen': [
+        { date: '10.01.2025', type: 'Akut', snippet: 'Synsforstyrrelser i højre øje. Flydende pletter og lysflash over 3 mdr. Henvist øjenlæge.' },
+        { date: '28.11.2024', type: 'Kontrol', snippet: 'Fødselsforberedelse. Gravid uge 32. BT 118/72. Urin ua. Vækst normal.' },
+        { date: '05.09.2024', type: 'Kontrol', snippet: 'Graviditet uge 20-scanning. Alting normalt. Jern ordineret.' },
+        { date: '20.06.2024', type: 'Akut', snippet: 'Migræne med aura. Sumatriptan ordineret. MR-scanning afvent.' },
+        { date: '10.03.2024', type: 'Kontrol', snippet: 'Prækonceptionel rådgivning. Folinsyre 400mcg påbegyndt.' }
+      ],
+      'Henrik Madsen': [
+        { date: '05.02.2025', type: 'Kontrol', snippet: 'Sygemelding forlænget. Lænderygssmerter VAS 5-6. Sertralin 100mg. Psykolog fortsat.' },
+        { date: '08.01.2025', type: 'Kontrol', snippet: 'Depression i bedring. Søvnkvalitet bedret. Fysioterapi 2x/uge.' },
+        { date: '20.10.2024', type: 'Akut', snippet: 'MR-scanning: Diskusprolaps L4/L5 med let rodpåvirkning. Fysioterapi henvist.' },
+        { date: '15.09.2024', type: 'Akut', snippet: 'Tiltagende lænderygssmerter. Sygemelding fra sept 2024. Tramadol ordineret.' },
+        { date: '01.07.2024', type: 'Kontrol', snippet: 'Årskontrol. BT 136/84. Overvægt. Livsstilsrådgivning givet.' }
+      ],
+      'Lars Sørensen': [
+        { date: '20.02.2025', type: 'Kontrol', snippet: 'Blodprøver alle inden for normalområdet. Skriftligt svar sendt til patient.' },
+        { date: '18.12.2024', type: 'Kontrol', snippet: 'Årskontrol. BT 130/80. Kolesterol let forhøjet. Kostrådgivning.' },
+        { date: '05.10.2024', type: 'Akut', snippet: 'Ondt i halsen. Strep-test negativ. Symptombehandling anbefalet.' },
+        { date: '12.08.2024', type: 'Telefon', snippet: 'Spørger til blodprøveresultater. HbA1c 44. Alt normalt.' },
+        { date: '22.05.2024', type: 'Kontrol', snippet: 'Første besøg. Anamneseoptagelse. Blodprøvepakke bestilt.' }
+      ],
+      'Nancy Ann Berggren': [
+        { date: '12.02.2025', type: 'Akut', snippet: 'Tiltagende brystsmerter ved anstrengelse. 2 uger. Kendt hypertension og T2D.' },
+        { date: '15.01.2025', type: 'Kontrol', snippet: 'Diabeteskontrol. HbA1c 58. Insulin justeret. Blodtryk 144/88.' },
+        { date: '20.11.2024', type: 'Kontrol', snippet: 'Årskontrol. Nyrefunktion let nedsat. eGFR 52. Nefrolog overvejes.' },
+        { date: '08.09.2024', type: 'Telefon', snippet: 'Svimmelhed ved oprejsning. Amlodipin dosisreduktion aftalt.' },
+        { date: '15.06.2024', type: 'Kontrol', snippet: 'Øjenlægekontrol: Begyndende diabetisk retinopati. Kontrol 6 mdr.' }
+      ]
+    };
+
+    // ═══════════════════════════════════════
+    // DRAFT RESPONSES
+    // ═══════════════════════════════════════
+    var draftResponses = {
+      booking: '<p>Kære Karen,</p><p>Tak for din henvendelse vedrørende tidsbestilling til blodtrykskontrol.</p><p>Vi har noteret, at du oplever svimmelhed som mulig bivirkning af din nuværende medicinering. Vi anbefaler, at du bestiller en konsultation, hvor vi kan vurdere dit blodtryk og tage stilling til eventuel justering af din behandling.</p><p>Du er velkommen til at ringe til klinikken på tlf. 33 12 34 56 eller booke direkte via vores online booking. Vi har ledige tider i denne og næste uge.</p><p>Husk at medbringe din medicinliste samt eventuelle egne blodtryksmålinger.</p><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Valby Lægehus</p>',
+      recept: '<p>Kære Peter,</p><p>Tak for din henvendelse om receptfornyelse.</p><p>Vi har fornyet din recept på Metformin 500 mg (2 tabletter dagligt) og sendt den elektronisk til dit sædvanlige apotek. Recepten bør være tilgængelig inden for få timer.</p><p>Bemærk venligst, at vi anbefaler en kontrolblodprøve (HbA1c) inden din næste fornyelse. Kontakt os gerne for at bestille denne.</p><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Valby Lægehus</p>',
+      henvisning: '<p><strong>Henvisning til øjenlæge</strong></p><p><strong>Patient:</strong> Mette Andersen, CPR 080492-****</p><p><strong>Henvisende læge:</strong> Dr. Anna Nielsen, Valby Lægehus</p><p><strong>Henvisningsdiagnose:</strong> Synsforstyrrelser, obs. corpus vitreum-forandringer (DH433)</p><p><strong>Anamnese:</strong> 32-årig kvinde med tilbagevendende synsforstyrrelser i form af flydende pletter og lysflash i højre øje over de seneste 3 måneder. Ingen tidligere øjensygdom. Ingen familiær disposition til nethindeløsning. Ingen traume.</p><p><strong>Objektiv undersøgelse:</strong> Visus normal bilateralt. Ingen påfaldende fund ved ekstern inspektion.</p><p><strong>Ønsket vurdering:</strong> Vurdering mhp. nethindepathologi. Fundoskopi og evt. OCT ønskes.</p><p><strong>Prioritet:</strong> Subakut (inden for 4 uger)</p><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Valby Lægehus<br>Tlf. 33 12 34 56</p>',
+      attest: '<p><strong>Statusattest (LÆ 125)</strong></p><p><strong>Rekvirent:</strong> Valby Jobcenter, Sygedagpengeafdelingen</p><p><strong>Patient:</strong> Henrik Madsen, CPR 220765-****</p><p><strong>Dato:</strong> 25.02.2026</p><hr><p><strong>Diagnoser:</strong></p><ul><li>Kroniske lænderygsmerter med diskusprolaps L4/L5 (DM545)</li><li>Moderat depressiv enkeltepisode (DF329)</li></ul><p><strong>Forløb og behandling:</strong></p><p>Patienten har været sygemeldt siden september 2025. MR-skanning (oktober 2025) viste diskusprolaps med let rodpåvirkning. Aktuel behandling: fysioterapi 2x/uge, Sertralin 100 mg dagligt, psykologforløb påbegyndt januar 2026.</p><p><strong>Aktuel status:</strong></p><p>Fortsat smerter ved belastning (VAS 5-6 ved aktivitet). Den depressive tilstand er i bedring med forbedret søvnkvalitet. Nedsat energi og koncentrationsbesvær persisterer.</p><p><strong>Vurdering:</strong></p><p>Tilstanden vurderes ikke stationær. Der forventes yderligere bedring over de kommende 2-3 måneder. Gradvis tilbagevenden til arbejde med skånehensyn vurderes realistisk inden for denne tidshorisont.</p><hr><p><strong>Dr. Anna Nielsen</strong><br>Aut.ID: XXXXX<br>Valby Lægehus</p>',
+      proevesvar: '<p>Kære Lars,</p><p>Tak for din henvendelse om prøvesvar.</p><p>Dine blodprøveresultater er nu klar. Alle værdier ligger inden for normalområdet, og der er ingen umiddelbar anledning til bekymring.</p><p>Du er velkommen til at bestille en opfølgende konsultation, hvis du ønsker en nærmere gennemgang af resultaterne.</p><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Valby Lægehus</p>',
+      klinisk: '<p><em>Denne skabelon genererer kliniske udkast baseret på konsultationsdata og er tilgængelig som led i forskningssamarbejdet med SDU.</em></p><p>Det kliniske udkast vil her tage afsæt i den specifikke konsultationshistorik og tilgængelig patientdata for at sikre et præcist og kontekstuelt relevant svar.</p><p>Funktionaliteten frigives i takt med igangsættelse af relaterede forskningsprojekter under ordnede og lovlige rammer.</p>',
+      resume: '<p><strong>Resumé: Klinisk vejledning — Type 2 Diabetes i almen praksis</strong></p><p>Vejledningen beskriver de aktuelle nationale anbefalinger for diagnostik, behandling og opfølgning af type 2 diabetes.</p><p><strong>Diagnostik</strong></p><ul><li>HbA1c ≥ 48 mmol/mol eller fastende plasma-glukose ≥ 7,0 mmol/L</li><li>Diagnosen bør bekræftes med mindst to målinger på forskellige dage</li></ul><p><strong>Behandlingsmål</strong></p><ul><li>HbA1c &lt; 53 mmol/mol for de fleste patienter</li><li>Individualiseret mål for ældre og komorbide patienter</li><li>BT-mål: &lt; 130/80 mmHg</li></ul><p><strong>Farmakologisk behandling</strong></p><ul><li>Førstevalg: Metformin som monoterapi (startdosis 500 mg dagligt)</li><li>Ved insufficient effekt: Tillæg af SGLT2-hæmmer eller GLP-1-receptoragonist</li><li>Insulin overvejes ved HbA1c &gt; 70 mmol/mol trods kombinationsbehandling</li></ul><p><strong>Opfølgning</strong></p><ul><li>Minimum årlig kontrol inkl. HbA1c, nyrefunktion, lipidprofil</li><li>Årlig screening for diabetisk retinopati</li><li>Fodundersøgelse mindst én gang årligt</li></ul>',
+      soeg: '<p><strong>Søgeresultater i "Klinisk vejledning: Type 2 Diabetes"</strong></p><p>Fundet 3 relevante afsnit for søgningen "<em>Metformin</em>":</p><div class="search-result-item"><div class="search-result-item__page">Side 4</div><div class="search-result-item__text">...<mark>Metformin</mark> anbefales som førstevalg ved farmakologisk behandling af type 2 diabetes. Startdosis er typisk 500 mg dagligt, som kan øges til 2000 mg dagligt fordelt på 2-3 doser...</div></div><div class="search-result-item"><div class="search-result-item__page">Side 8</div><div class="search-result-item__text">...ved gastrointestinale bivirkninger af <mark>Metformin</mark> kan depottabletter forsøges. Ved fortsat intolerance overvejes skift til SGLT2-hæmmer som monoterapi...</div></div><div class="search-result-item"><div class="search-result-item__page">Side 12</div><div class="search-result-item__text">...ved insufficient effekt af <mark>Metformin</mark>-monoterapi (HbA1c &gt; 53 mmol/mol efter 3-6 mdr.) suppleres med SGLT2-hæmmer eller GLP-1-receptoragonist afhængig af komorbiditet...</div></div>',
+      frit: '<p><strong>Svar baseret på vedlagte dokumenter:</strong></p><p>Ifølge den kliniske vejledning er <strong>Metformin førstevalgsbehandling</strong> ved type 2 diabetes. Her er de centrale anbefalinger:</p><ul><li><strong>Startdosis:</strong> 500 mg dagligt, som gradvist øges til maks. 2000 mg/dag</li><li><strong>Optitrering:</strong> Dosis øges med 500 mg hver 1-2 uge for at minimere gastrointestinale bivirkninger</li><li><strong>Ved intolerance:</strong> Forsøg depottabletter. Ved fortsat intolerance kan SGLT2-hæmmer anvendes som alternativ monoterapi</li><li><strong>Kombination:</strong> Hvis HbA1c fortsat er &gt; 53 mmol/mol efter 3-6 måneders Metformin-monoterapi, tillægges SGLT2-hæmmer eller GLP-1-receptoragonist</li></ul><p>Bemærk at vejledningen anbefaler individualiseret behandlingsmål baseret på patientens alder, komorbiditet og risiko for hypoglykæmi.</p>',
+      andet: '<p>Kære patient,</p><p>Tak for din henvendelse.</p><p>Vi har modtaget din besked og vender tilbage med et svar hurtigst muligt. Hvis din henvendelse er akut, bedes du kontakte os telefonisk på tlf. 33 12 34 56.</p><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Valby Lægehus</p>'
+    };
+
+    // ═══════════════════════════════════════
+    // DEMO DATA
+    // ═══════════════════════════════════════
+    var demoData = {
+      booking: { name: 'Karen Møller', cpr: '120356-****', message: 'Patient ønsker kontroltid vedr. blodtryk. Tager Amlodipin 5mg dagligt — rapporterer svimmelhed de seneste dage.' },
+      recept: { name: 'Peter Hansen', cpr: '150678-****', message: 'Receptfornyelse: Metformin 500mg, 2 tabl. dagligt. Sendes til sædvanligt apotek.' },
+      henvisning: { name: 'Mette Andersen', cpr: '080492-****', message: '32-årig kvinde med tilbagevendende synsforstyrrelser. Flydende pletter og lysflash i hø. øje over 3 mdr. Ønskes vurderet af øjenlæge.' },
+      attest: { name: 'Henrik Madsen', cpr: '220765-****', message: 'LÆ 125 statusattest til Valby Jobcenter. Kronisk lumbago og moderat depression. Sygemeldt siden sept. 2025.' },
+      proevesvar: { name: 'Lars Sørensen', cpr: '081255-****', message: 'Blodprøver fra 20.01 er klar. Alle værdier inden for normalområdet. Patienten ønsker skriftligt svar.' },
+      klinisk: { name: 'Nancy Ann Berggren', cpr: '010145-****', message: '80-årig kvinde. Tiltagende brystsmerter ved anstrengelse de seneste 2 uger. Kendt med hypertension og T2D.' },
+      resume: { name: null, cpr: null, files: [{ name: 'Klinisk-vejledning-T2D.pdf', size: '2.4 MB', type: 'pdf' }], message: 'Lav et struktureret resumé med fokus på diagnostik og behandling.' },
+      soeg: { name: null, cpr: null, files: [{ name: 'Klinisk-vejledning-T2D.pdf', size: '2.4 MB', type: 'pdf' }], message: 'Find alle steder der nævner Metformin' },
+      frit: { name: null, cpr: null, files: [{ name: 'Klinisk-vejledning-T2D.pdf', size: '2.4 MB', type: 'pdf' }], message: 'Hvad er anbefalingen for førstevalgsbehandling?' }
+    };
+
+    // ═══════════════════════════════════════
+    // DOM ELEMENTS
+    // ═══════════════════════════════════════
+    var chatMessages = document.getElementById('chatMessages');
+    var chatWelcome = document.getElementById('chatWelcome');
+    var chatTextarea = document.getElementById('chatTextarea');
+    var btnSend = document.getElementById('btnSend');
+    var chatAttachments = document.getElementById('chatAttachments');
+    var fileInput = document.getElementById('fileInput');
+    var clinicalWarning = document.getElementById('clinicalWarning');
+    var toast = document.getElementById('toast');
+    var toastText = document.getElementById('toastText');
+
+    // ═══════════════════════════════════════
+    // AUTO-EXPANDING TEXTAREA
+    // ═══════════════════════════════════════
+    chatTextarea.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 200) + 'px';
+      btnSend.disabled = !this.value.trim();
+    });
+    chatTextarea.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        if (this.value.trim()) sendMessage();
+      }
+    });
+
+    // ═══════════════════════════════════════
+    // QUICK PROMPT CHIPS (mode-aware)
+    // ═══════════════════════════════════════
+    function setTemplate(key) {
+      if (state.currentTemplate === key) {
+        state.currentTemplate = null;
+      } else {
+        state.currentTemplate = key;
+      }
+
+      document.querySelectorAll('.chat-suggestion-chip').forEach(function(chip) {
+        chip.classList.toggle('chat-suggestion-chip--active', chip.dataset.template === state.currentTemplate);
+      });
+
+      // Mode-aware placeholder
+      if (state.currentTemplate) {
+        if (state.chatMode === 'support') {
+          chatTextarea.placeholder = supportPlaceholders[state.currentTemplate] || 'Stil et spørgsmål om People\'s Clinic...';
+        } else {
+          chatTextarea.placeholder = templatePlaceholders[state.currentTemplate] || 'Beskriv hvad du har brug for...';
+        }
+      } else {
+        chatTextarea.placeholder = state.chatMode === 'support'
+          ? 'Stil et spørgsmål om People\'s Clinic...'
+          : 'Beskriv hvad du har brug for...';
+      }
+
+      // Clinical warning (assistant mode only)
+      if (state.chatMode === 'assistant' && (state.currentTemplate === 'klinisk' || state.currentTemplate === 'attest')) {
+        clinicalWarning.classList.add('active');
+      } else {
+        clinicalWarning.classList.remove('active');
+      }
+
+      // Auto-prompt
+      if (state.currentTemplate) {
+        if (state.chatMode === 'support') {
+          var chip = supportChips.find(function(c) { return c.key === state.currentTemplate; });
+          chatTextarea.value = chip ? chip.label : '';
+        } else {
+          var prompt = generateAutoPrompt(state.currentTemplate);
+          chatTextarea.value = prompt;
+        }
+        chatTextarea.dispatchEvent(new Event('input'));
+        chatTextarea.focus();
+        chatTextarea.selectionStart = chatTextarea.selectionEnd = chatTextarea.value.length;
+      } else {
+        chatTextarea.value = '';
+        chatTextarea.dispatchEvent(new Event('input'));
+      }
+    }
+
+    function bindChipClicks() {
+      document.querySelectorAll('.chat-suggestion-chip').forEach(function(chip) {
+        chip.addEventListener('click', function() {
+          setTemplate(this.dataset.template);
+        });
+      });
+    }
+    bindChipClicks();
+
+    // ═══════════════════════════════════════
+    // MODE SWITCHING
+    // ═══════════════════════════════════════
+    function switchMode(newMode) {
+      if (newMode === state.chatMode) return;
+
+      // Auto-save current session if there are messages
+      if (state.messages.length > 0) {
+        saveCurrentSession();
+      }
+
+      state.chatMode = newMode;
+
+      // Toggle .mode-support on .ai-layout (parent of both chat and sidebar)
+      var aiLayout = document.querySelector('.ai-layout');
+      if (newMode === 'support') {
+        aiLayout.classList.add('mode-support');
+      } else {
+        aiLayout.classList.remove('mode-support');
+      }
+
+      // Update tab visuals
+      document.querySelectorAll('.chat-mode-tab').forEach(function(tab) {
+        tab.classList.toggle('chat-mode-tab--active', tab.dataset.mode === newMode);
+      });
+
+      // Reset chat UI (mode-aware)
+      resetChatUI();
+
+      // Rebuild quick prompt chips
+      rebuildQuickPrompts();
+
+      // Render history with mode dots
+      renderHistory();
+    }
+
+    function rebuildQuickPrompts() {
+      var row = document.querySelector('.chat-quick-prompts__row');
+      if (state.chatMode === 'support') {
+        row.innerHTML = supportChips.map(function(chip) {
+          return '<button class="chat-suggestion-chip" data-template="' + chip.key + '">' +
+            '<i data-lucide="' + chip.icon + '"></i>' + chip.label + '</button>';
+        }).join('');
+      } else {
+        row.innerHTML =
+          '<button class="chat-suggestion-chip" data-template="resume"><i data-lucide="file-text"></i>Journalresumé</button>' +
+          '<button class="chat-suggestion-chip" data-template="booking"><i data-lucide="calendar"></i>Tidsbestilling</button>' +
+          '<button class="chat-suggestion-chip" data-template="recept"><i data-lucide="pill"></i>Receptfornyelse</button>' +
+          '<button class="chat-suggestion-chip" data-template="proevesvar"><i data-lucide="flask-conical"></i>Prøvesvar</button>' +
+          '<button class="chat-suggestion-chip" data-template="henvisning"><i data-lucide="arrow-right-circle"></i>Henvisning</button>' +
+          '<button class="chat-suggestion-chip chat-suggestion-chip--clinical" data-template="attest"><i data-lucide="file-signature"></i>Attest</button>' +
+          '<button class="chat-suggestion-chip chat-suggestion-chip--clinical" data-template="klinisk"><i data-lucide="stethoscope"></i>Klinisk rådgivning</button>' +
+          '<button class="chat-suggestion-chip" data-template="soeg"><i data-lucide="search"></i>Søg i indhold</button>' +
+          '<button class="chat-suggestion-chip" data-template="frit"><i data-lucide="message-circle"></i>Frit spørgsmål</button>';
+      }
+      lucide.createIcons();
+      bindChipClicks();
+    }
+
+    // Mode tab clicks (input bar tabs)
+    document.querySelectorAll('.chat-mode-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        switchMode(this.dataset.mode);
+      });
+    });
+
+    // Welcome mode tabs (large, centered — sync with input bar tabs)
+    function bindWelcomeModeTabs() {
+      var welcomeTabs = document.querySelectorAll('.chat-welcome__mode-tab');
+      welcomeTabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          switchMode(this.dataset.mode);
+        });
+      });
+    }
+    bindWelcomeModeTabs();
+
+    // ═══════════════════════════════════════
+    // FILE UPLOAD
+    // ═══════════════════════════════════════
+    document.getElementById('btnAttach').addEventListener('click', function(e) {
+      e.stopPropagation();
+      fileInput.click();
+    });
+    fileInput.addEventListener('change', function() {
+      handleFiles(this.files);
+      this.value = '';
+    });
+
+    // Drag & drop on input bar
+    var inputBar = document.querySelector('.chat-input-bar');
+    inputBar.addEventListener('dragover', function(e) { e.preventDefault(); inputBar.style.borderColor = 'var(--color-navy-500)'; });
+    inputBar.addEventListener('dragleave', function() { inputBar.style.borderColor = ''; });
+    inputBar.addEventListener('drop', function(e) {
+      e.preventDefault();
+      inputBar.style.borderColor = '';
+      handleFiles(e.dataTransfer.files);
+    });
+
+    function handleFiles(files) {
+      Array.from(files).forEach(function(f) {
+        if (state.uploadedFiles.some(function(uf) { return uf.name === f.name; })) return;
+        state.uploadedFiles.push(f);
+      });
+      renderAttachments();
+      renderSidebarFiles();
+    }
+
+    function renderAttachments() {
+      if (state.uploadedFiles.length === 0) {
+        chatAttachments.style.display = 'none';
+        return;
+      }
+      chatAttachments.style.display = 'flex';
+      chatAttachments.innerHTML = state.uploadedFiles.map(function(f, i) {
+        var ext = (f.name || '').split('.').pop().toLowerCase();
+        var cls = ext === 'pdf' ? 'chat-attachment-chip--pdf' : ext === 'docx' || ext === 'doc' ? 'chat-attachment-chip--docx' : '';
+        var size = f._demoSize || formatFileSize(f.size || 0);
+        return '<div class="chat-attachment-chip ' + cls + '">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' +
+          '<span>' + f.name + '</span>' +
+          '<span style="color:var(--color-navy-400);font-size:10px;">' + size + '</span>' +
+          '<button class="chat-attachment-chip__remove" onclick="removeFile(' + i + ')">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+          '</button></div>';
+      }).join('');
+    }
+
+    function removeFile(i) {
+      state.uploadedFiles.splice(i, 1);
+      renderAttachments();
+      renderSidebarFiles();
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    function clearAttachments() {
+      state.uploadedFiles = [];
+      chatAttachments.style.display = 'none';
+      chatAttachments.innerHTML = '';
+      renderSidebarFiles();
+    }
+
+    // ═══════════════════════════════════════
+    // SIDEBAR: FILE UPLOAD
+    // ═══════════════════════════════════════
+    var sidebarFileDrop = document.getElementById('sidebarFileDrop');
+    var sidebarBrowse = document.getElementById('sidebarBrowse');
+
+    sidebarFileDrop.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      sidebarFileDrop.classList.add('ctx-file-drop--dragover');
+    });
+    sidebarFileDrop.addEventListener('dragleave', function() {
+      sidebarFileDrop.classList.remove('ctx-file-drop--dragover');
+    });
+    sidebarFileDrop.addEventListener('drop', function(e) {
+      e.preventDefault();
+      sidebarFileDrop.classList.remove('ctx-file-drop--dragover');
+      handleFiles(e.dataTransfer.files);
+    });
+    sidebarBrowse.addEventListener('click', function(e) {
+      e.stopPropagation();
+      fileInput.click();
+    });
+    sidebarFileDrop.addEventListener('click', function() {
+      fileInput.click();
+    });
+
+    function renderSidebarFiles() {
+      var list = document.getElementById('sidebarFileList');
+      if (state.uploadedFiles.length === 0) {
+        list.innerHTML = '';
+        return;
+      }
+      list.innerHTML = state.uploadedFiles.map(function(f, i) {
+        var ext = (f.name || '').split('.').pop().toLowerCase();
+        var iconColor = ext === 'pdf' ? '#EF4444' : (ext === 'docx' || ext === 'doc') ? '#3B82F6' : 'var(--color-navy-400)';
+        var size = f._demoSize || formatFileSize(f.size || 0);
+        return '<div class="ctx-file-item">' +
+          '<i data-lucide="file-text" style="color:' + iconColor + '"></i>' +
+          '<span class="ctx-file-item__name">' + f.name + '</span>' +
+          '<span class="ctx-file-item__size">' + size + '</span>' +
+          '<button class="ctx-file-item__remove" onclick="removeFile(' + i + ')"><i data-lucide="x"></i></button>' +
+        '</div>';
+      }).join('');
+      lucide.createIcons();
+    }
+
+    // ═══════════════════════════════════════
+    // SIDEBAR: PATIENT CONTEXT
+    // ═══════════════════════════════════════
+    var sidebarNameInput = document.getElementById('sidebarPatientName');
+    var sidebarCprInput = document.getElementById('sidebarPatientCpr');
+
+    function confirmPatient() {
+      var name = sidebarNameInput.value.trim();
+      var cpr = sidebarCprInput.value.trim();
+      if (name) {
+        state.patientContext = { name: name, cpr: cpr };
+        showPatientActive();
+        loadConsultations();
+      }
+    }
+
+    sidebarNameInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') confirmPatient();
+    });
+    sidebarCprInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') confirmPatient();
+    });
+
+    function showPatientActive() {
+      if (!state.patientContext) return;
+      document.getElementById('patientFields').style.display = 'none';
+      document.getElementById('patientActive').style.display = 'flex';
+      document.getElementById('sidebarPatientActiveName').textContent = state.patientContext.name;
+      document.getElementById('sidebarPatientActiveCpr').textContent = state.patientContext.cpr || '';
+      document.getElementById('clearPatientSidebar').classList.add('visible');
+      showPatientBadge();
+    }
+
+    function hidePatientActive() {
+      document.getElementById('patientFields').style.display = 'block';
+      document.getElementById('patientActive').style.display = 'none';
+      document.getElementById('clearPatientSidebar').classList.remove('visible');
+      document.getElementById('patientBadge').style.display = 'none';
+      sidebarNameInput.value = '';
+      sidebarCprInput.value = '';
+    }
+
+    function showPatientBadge() {
+      if (!state.patientContext) return;
+      document.getElementById('patientBadgeName').textContent = state.patientContext.name;
+      document.getElementById('patientBadgeCpr').textContent = state.patientContext.cpr ? '(' + state.patientContext.cpr + ')' : '';
+      document.getElementById('patientBadge').style.display = 'inline-flex';
+    }
+
+    document.getElementById('clearPatientSidebar').addEventListener('click', function() {
+      state.patientContext = null;
+      state.selectedConsultation = null;
+      hidePatientActive();
+      clearConsultations();
+    });
+
+    // Click active patient to edit
+    document.getElementById('patientActive').addEventListener('click', function() {
+      document.getElementById('patientFields').style.display = 'block';
+      document.getElementById('patientActive').style.display = 'none';
+      sidebarNameInput.value = state.patientContext ? state.patientContext.name : '';
+      sidebarCprInput.value = state.patientContext ? (state.patientContext.cpr || '') : '';
+      sidebarNameInput.focus();
+    });
+
+    // ═══════════════════════════════════════
+    // SIDEBAR: CONSULTATIONS
+    // ═══════════════════════════════════════
+    function loadConsultations() {
+      var key = getPatientKey();
+      var list = document.getElementById('consultList');
+      state.selectedConsultation = null;
+
+      if (!key || !mockConsultations[key]) {
+        list.innerHTML = '<div class="ctx-consult-empty">' +
+          (key ? 'Ingen konsultationer fundet' : 'Vælg en patient for at se konsultationer') +
+          '</div>';
+        return;
+      }
+
+      var consultations = mockConsultations[key];
+      list.innerHTML = consultations.map(function(c, i) {
+        return '<div class="ctx-consult-item" data-consult-index="' + i + '">' +
+          '<div class="ctx-consult-item__top">' +
+            '<span class="ctx-consult-item__date">' + c.date + '</span>' +
+            '<span class="ctx-consult-item__type">' + c.type + '</span>' +
+          '</div>' +
+          '<div class="ctx-consult-item__snippet">' + c.snippet + '</div>' +
+        '</div>';
+      }).join('');
+
+      bindConsultationClicks();
+    }
+
+    function bindConsultationClicks() {
+      document.querySelectorAll('.ctx-consult-item').forEach(function(item) {
+        item.addEventListener('click', function() {
+          var idx = parseInt(this.dataset.consultIndex);
+          // Toggle selection
+          if (state.selectedConsultation === idx) {
+            state.selectedConsultation = null;
+          } else {
+            state.selectedConsultation = idx;
+          }
+          // Update visuals
+          document.querySelectorAll('.ctx-consult-item').forEach(function(el) {
+            el.classList.toggle('ctx-consult-item--selected', parseInt(el.dataset.consultIndex) === state.selectedConsultation);
+          });
+          // Regenerate auto-prompt if a template is active
+          if (state.currentTemplate) {
+            chatTextarea.value = generateAutoPrompt(state.currentTemplate);
+            chatTextarea.dispatchEvent(new Event('input'));
+          }
+        });
+      });
+    }
+
+    function clearConsultations() {
+      state.selectedConsultation = null;
+      document.getElementById('consultList').innerHTML =
+        '<div class="ctx-consult-empty">Vælg en patient for at se konsultationer</div>';
+    }
+
+    // ═══════════════════════════════════════
+    // SIDEBAR: RESPONSIVE TOGGLE
+    // ═══════════════════════════════════════
+    var sidebarToggle = document.getElementById('aiSidebarToggle');
+    var sidebar = document.getElementById('aiContextSidebar');
+    var sidebarOverlay = document.getElementById('aiSidebarOverlay');
+
+    sidebarToggle.addEventListener('click', function() {
+      state.sidebarOpen = !state.sidebarOpen;
+      sidebar.classList.toggle('ai-context-sidebar--open', state.sidebarOpen);
+      sidebarOverlay.classList.toggle('ai-sidebar-overlay--visible', state.sidebarOpen);
+    });
+    sidebarOverlay.addEventListener('click', function() {
+      state.sidebarOpen = false;
+      sidebar.classList.remove('ai-context-sidebar--open');
+      sidebarOverlay.classList.remove('ai-sidebar-overlay--visible');
+    });
+
+    // ═══════════════════════════════════════
+    // SEND MESSAGE
+    // ═══════════════════════════════════════
+    function sendMessage() {
+      var text = chatTextarea.value.trim();
+      if (!text && state.uploadedFiles.length === 0) return;
+      if (state.isGenerating) return;
+
+      // Validate: Analysér templates require files (assistant mode only)
+      if (state.chatMode === 'assistant' && ['resume', 'soeg', 'frit'].indexOf(state.currentTemplate) >= 0 && state.uploadedFiles.length === 0) {
+        showToast('Upload venligst mindst ét dokument for denne opgavetype');
+        return;
+      }
+
+      var userMsg = {
+        id: 'msg_' + Date.now(),
+        role: 'user',
+        content: text,
+        template: state.currentTemplate,
+        files: state.uploadedFiles.map(function(f) { return { name: f.name, size: f._demoSize || formatFileSize(f.size || 0) }; }),
+        timestamp: new Date()
+      };
+      state.messages.push(userMsg);
+      renderUserMessage(userMsg);
+
+      chatTextarea.value = '';
+      chatTextarea.style.height = 'auto';
+      btnSend.disabled = true;
+      clearAttachments();
+
+      chatWelcome.style.display = 'none';
+      showTypingIndicator();
+      scrollToBottom();
+
+      state.isGenerating = true;
+      var delay = state.currentTemplate === 'soeg' ? 2200 : 1800;
+
+      setTimeout(function() {
+        hideTypingIndicator();
+        var aiMsg = {
+          id: 'msg_' + Date.now(),
+          role: 'ai',
+          content: getResponseForTemplate(state.currentTemplate, userMsg),
+          template: state.currentTemplate,
+          timestamp: new Date()
+        };
+        state.messages.push(aiMsg);
+        renderAiMessage(aiMsg);
+        scrollToBottom();
+        state.isGenerating = false;
+      }, delay);
+    }
+
+    btnSend.addEventListener('click', sendMessage);
+
+    function getResponseForTemplate(template, userMsg) {
+      // Support mode responses
+      if (state.chatMode === 'support') {
+        if (template && supportDraftResponses[template]) return supportDraftResponses[template];
+        return '<p>Tak for dit spørgsmål. Vores supportteam vil gennemgå din henvendelse.</p>' +
+          '<p>Du kan også kontakte os direkte:</p>' +
+          '<ul><li><strong>Email:</strong> support@peoplesclinic.dk</li>' +
+          '<li><strong>Telefon:</strong> +45 70 20 30 40</li></ul>' +
+          '<p>Forventet svartid: Under 4 timer på hverdage.</p>';
+      }
+      // Assistant mode
+      if (template === 'henvisning' && state.referralContext) {
+        var html = buildContextualReferral(state.referralContext);
+        state.referralContext = null;
+        return html;
+      }
+      return draftResponses[template] || draftResponses['andet'];
+    }
+
+    function buildContextualReferral(ctx) {
+      var name = ctx.patientName || 'Patient';
+      var cpr = ctx.patientCpr || '';
+      var date = ctx.consultationDate || new Date().toLocaleDateString('da-DK');
+      return '<p><strong>Henvisning til kardiologisk vurdering</strong></p>' +
+        '<p><strong>Patient:</strong> ' + name + (cpr ? ', CPR ' + cpr : '') + '</p>' +
+        '<p><strong>Henvisende læge:</strong> Dr. Anna Nielsen, Valby Lægehus</p>' +
+        '<p><strong>Dato:</strong> ' + date + '</p>' +
+        '<p><strong>Henvisningsdiagnose:</strong> Obs. stabil angina pectoris (DI209)</p>' +
+        '<hr>' +
+        '<p><strong>Anamnese:</strong> Patient med to ugers tiltagende trykken retrosternalt, udløst af moderat fysisk aktivitet. Varighed ca. 5 min, lindres ved hvile. Let udstråling til venstre skulder.</p>' +
+        '<p><strong>Objektiv undersøgelse:</strong> BT 132/78, puls 78 regelmæssig. Cor/pulm ua. EKG uden akutte iskæmitegn.</p>' +
+        '<p><strong>Ønsket vurdering:</strong> Arbejds-EKG og kardiologisk vurdering mhp. koronar iskæmi.</p>' +
+        '<p><strong>Prioritet:</strong> Subakut (inden for 2 uger)</p>' +
+        '<hr><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Valby Lægehus<br>Tlf. 33 12 34 56</p>';
+    }
+
+    // ═══════════════════════════════════════
+    // RENDER MESSAGES
+    // ═══════════════════════════════════════
+    function renderUserMessage(msg) {
+      var html = '<div class="chat-msg chat-msg--user" data-msg-id="' + msg.id + '">';
+      html += '<div class="chat-msg__content">';
+      html += '<div class="chat-msg__text">' + escapeHtml(msg.content) + '</div>';
+
+      if (msg.files && msg.files.length > 0) {
+        html += '<div class="chat-msg__files">';
+        msg.files.forEach(function(f) {
+          html += '<div class="chat-msg-file"><i data-lucide="file-text"></i><span>' + f.name + '</span><span class="chat-msg-file__size">' + f.size + '</span></div>';
+        });
+        html += '</div>';
+      }
+
+      if (msg.template) {
+        var badgeIcon = (supportIcons[msg.template] || templateIcons[msg.template] || 'sparkles');
+        var badgeLabel = (supportLabels[msg.template] || templateLabels[msg.template] || '');
+        html += '<div class="chat-msg__meta"><span class="chat-msg__template-badge"><i data-lucide="' + badgeIcon + '"></i>' + badgeLabel + '</span></div>';
+      }
+
+      html += '</div></div>';
+      chatMessages.insertAdjacentHTML('beforeend', html);
+      lucide.createIcons();
+    }
+
+    function renderAiMessage(msg) {
+      var isSearch = msg.template === 'soeg';
+      var avatarIcon = state.chatMode === 'support' ? 'life-buoy' : 'sparkles';
+      var html = '<div class="chat-msg chat-msg--ai" data-msg-id="' + msg.id + '">';
+      html += '<div class="chat-msg__avatar"><i data-lucide="' + avatarIcon + '"></i></div>';
+      html += '<div class="chat-msg__content">';
+      html += '<div class="chat-msg__draft" contenteditable="true">' + msg.content + '</div>';
+      html += '<div class="chat-msg__actions">';
+      html += '<div class="chat-msg__actions-left">';
+      html += '<button class="chat-msg-action chat-msg-action--danger" data-action="discard"><i data-lucide="trash-2"></i></button>';
+      html += '</div>';
+      html += '<div class="chat-msg__actions-right">';
+      html += '<button class="chat-msg-action" data-action="regenerate"><i data-lucide="refresh-cw"></i>Ny version</button>';
+      html += '<button class="chat-msg-action chat-msg-action--primary" data-action="copy"><i data-lucide="copy"></i>Kopiér</button>';
+      html += '</div></div>';
+      html += '</div></div>';
+      chatMessages.insertAdjacentHTML('beforeend', html);
+      lucide.createIcons();
+    }
+
+    function showTypingIndicator() {
+      var text;
+      if (state.chatMode === 'support') {
+        text = state.currentTemplate ? (supportGeneratingTexts[state.currentTemplate] || 'Finder svar...') : 'Finder svar...';
+      } else {
+        text = state.currentTemplate ? (generatingTexts[state.currentTemplate] || 'Genererer...') : 'Genererer...';
+      }
+      var avatarIcon = state.chatMode === 'support' ? 'life-buoy' : 'sparkles';
+      var html = '<div class="chat-msg chat-msg--ai" id="typingIndicator">';
+      html += '<div class="chat-msg__avatar"><i data-lucide="' + avatarIcon + '"></i></div>';
+      html += '<div class="chat-msg__content">';
+      html += '<div class="chat-typing-indicator"><div class="generating-dots"><span></span><span></span><span></span></div><span class="generating-text">' + text + '</span></div>';
+      html += '</div></div>';
+      chatMessages.insertAdjacentHTML('beforeend', html);
+      lucide.createIcons();
+    }
+
+    function hideTypingIndicator() {
+      var el = document.getElementById('typingIndicator');
+      if (el) el.remove();
+    }
+
+    function scrollToBottom() {
+      setTimeout(function() { chatMessages.scrollTop = chatMessages.scrollHeight; }, 50);
+    }
+
+    function escapeHtml(text) {
+      var div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML.replace(/\n/g, '<br>');
+    }
+
+    // ═══════════════════════════════════════
+    // MESSAGE ACTIONS
+    // ═══════════════════════════════════════
+    chatMessages.addEventListener('click', function(e) {
+      var actionBtn = e.target.closest('.chat-msg-action');
+      if (!actionBtn) return;
+
+      var action = actionBtn.dataset.action;
+      var msgEl = actionBtn.closest('.chat-msg');
+      var draftEl = msgEl.querySelector('.chat-msg__draft');
+
+      if (action === 'copy') {
+        navigator.clipboard.writeText(draftEl.innerText).then(function() { showToast('Kopieret til udklipsholder'); });
+      } else if (action === 'regenerate') {
+        msgEl.style.animation = 'msgFadeOut 0.2s ease forwards';
+        setTimeout(function() {
+          msgEl.remove();
+          showTypingIndicator();
+          scrollToBottom();
+          setTimeout(function() {
+            hideTypingIndicator();
+            var aiMsg = { id: 'msg_' + Date.now(), role: 'ai', content: getResponseForTemplate(state.currentTemplate), template: state.currentTemplate, timestamp: new Date() };
+            state.messages.push(aiMsg);
+            renderAiMessage(aiMsg);
+            scrollToBottom();
+          }, 1800);
+        }, 200);
+      } else if (action === 'discard') {
+        msgEl.style.animation = 'msgFadeOut 0.25s ease forwards';
+        setTimeout(function() { msgEl.remove(); showToast('Svar kasseret'); }, 250);
+      }
+    });
+
+    // ═══════════════════════════════════════
+    // DEMO MODE
+    // ═══════════════════════════════════════
+    // Helper: type text into an input char by char
+    function typeIntoInput(input, text, speed, callback) {
+      input.value = '';
+      input.focus();
+      var i = 0;
+      var _demoRunning = true;
+      function next() {
+        if (!_demoRunning) return;
+        if (i < text.length) {
+          input.value += text.charAt(i);
+          input.dispatchEvent(new Event('input'));
+          i++;
+          setTimeout(next, speed);
+        } else if (callback) {
+          callback();
+        }
+      }
+      next();
+      return { stop: function() { _demoRunning = false; } };
+    }
+
+    document.getElementById('btnDemo').addEventListener('click', function() {
+      if (state.chatMode === 'support') {
+        runSupportDemo();
+      } else {
+        runAssistantDemo();
+      }
+    });
+
+    // ── ASSISTANT DEMO ──
+    function runAssistantDemo() {
+      clearConversation();
+      var template = state.currentTemplate || 'henvisning';
+      var demo = demoData[template] || demoData.henvisning;
+      var demoRunning = true;
+
+      var cpr = demo.cpr || '120356-****';
+      var name = demo.name || 'Karen Møller';
+
+      // Step 1: Type CPR slowly
+      setTimeout(function() {
+        if (!demoRunning) return;
+        typeIntoInput(sidebarCprInput, cpr, 120, function() {
+          // Step 2: Auto-populate patient name
+          setTimeout(function() {
+            if (!demoRunning) return;
+            if (name) {
+              sidebarNameInput.value = name;
+              sidebarNameInput.dispatchEvent(new Event('input'));
+            }
+            // Step 3: Confirm patient
+            setTimeout(function() {
+              if (!demoRunning) return;
+              confirmPatient();
+              // Step 4: Select first consultation
+              setTimeout(function() {
+                if (!demoRunning) return;
+                var firstConsult = document.querySelector('.ctx-consult-item');
+                if (firstConsult) firstConsult.click();
+                // Step 5: Select template chip
+                setTimeout(function() {
+                  if (!demoRunning) return;
+                  setTemplate(template);
+                  // Step 6: Add files if needed
+                  setTimeout(function() {
+                    if (!demoRunning) return;
+                    if (demo.files) {
+                      demo.files.forEach(function(f) {
+                        state.uploadedFiles.push({ name: f.name, size: 0, _demoSize: f.size });
+                      });
+                      renderAttachments();
+                      renderSidebarFiles();
+                    }
+                    // Step 7: Type the demo message
+                    setTimeout(function() {
+                      if (!demoRunning) return;
+                      chatTextarea.value = '';
+                      chatTextarea.dispatchEvent(new Event('input'));
+                      typeIntoInput(chatTextarea, demo.message, 40, function() {
+                        chatTextarea.style.height = 'auto';
+                        chatTextarea.style.height = Math.min(chatTextarea.scrollHeight, 200) + 'px';
+                        btnSend.disabled = false;
+                        // Step 8: Send
+                        setTimeout(function() {
+                          if (!demoRunning) return;
+                          sendMessage();
+                        }, 2500);
+                      });
+                    }, 2000);
+                  }, 2500);
+                }, 3000);
+              }, 3000);
+            }, 2500);
+          }, 2500);
+        });
+      }, 2000);
+    }
+
+    // ── SUPPORT DEMO ──
+    function runSupportDemo() {
+      clearConversation();
+      // Ensure we're in support mode
+      if (state.chatMode !== 'support') switchMode('support');
+
+      var supportDemoMessage = 'Hvordan fungerer beskedassistenten? Og hvordan sikrer I, at AI-svarene er korrekte?';
+
+      // Step 1: Pause, then click a support chip to show interaction
+      setTimeout(function() {
+        var chip = document.querySelector('.chat-suggestion-chip[data-template="support_help"]');
+        if (chip) chip.click();
+
+        // Step 2: Pause, then clear the auto-text and type a custom message
+        setTimeout(function() {
+          chatTextarea.value = '';
+          chatTextarea.dispatchEvent(new Event('input'));
+          typeIntoInput(chatTextarea, supportDemoMessage, 35, function() {
+            chatTextarea.style.height = 'auto';
+            chatTextarea.style.height = Math.min(chatTextarea.scrollHeight, 200) + 'px';
+            btnSend.disabled = false;
+
+            // Step 3: Pause, then send
+            setTimeout(function() {
+              sendMessage();
+            }, 2000);
+          });
+        }, 2500);
+      }, 1500);
+    }
+
+    // ═══════════════════════════════════════
+    // SESSION MANAGEMENT & HISTORY
+    // ═══════════════════════════════════════
+
+    // Pre-populate mock sessions for demo
+    state.sessions = [
+      {
+        id: 'session_mock1',
+        patientName: 'Karen Møller',
+        patientCpr: '120356-****',
+        template: 'booking',
+        firstMessage: 'Patient ønsker kontroltid vedr. blodtryk. Tager Amlodipin 5mg dagligt.',
+        timestamp: new Date(Date.now() - 2 * 3600000),
+        messageCount: 2
+      },
+      {
+        id: 'session_mock2',
+        patientName: 'Mette Andersen',
+        patientCpr: '080492-****',
+        template: 'henvisning',
+        firstMessage: 'Henvisning til øjenlæge pga. synsforstyrrelser i højre øje.',
+        timestamp: new Date(Date.now() - 5 * 3600000),
+        messageCount: 2
+      },
+      {
+        id: 'session_mock3',
+        patientName: null,
+        patientCpr: null,
+        template: 'resume',
+        firstMessage: 'Lav et struktureret resumé af Klinisk-vejledning-T2D.pdf',
+        timestamp: new Date(Date.now() - 24 * 3600000),
+        messageCount: 2
+      }
+    ];
+
+    function saveCurrentSession() {
+      if (state.messages.length === 0) return;
+      var session = {
+        id: 'session_' + Date.now(),
+        patientName: state.patientContext ? state.patientContext.name : null,
+        patientCpr: state.patientContext ? state.patientContext.cpr : null,
+        template: state.currentTemplate || (state.messages[0] ? state.messages[0].template : null),
+        firstMessage: state.messages[0] ? state.messages[0].content : '',
+        timestamp: new Date(),
+        messageCount: state.messages.length,
+        mode: state.chatMode
+      };
+      // Remove mock sessions on first real save
+      state.sessions = state.sessions.filter(function(s) { return s.id.indexOf('session_mock') !== 0 || s._kept; });
+      state.sessions.unshift(session);
+      // Keep max 10
+      if (state.sessions.length > 10) state.sessions = state.sessions.slice(0, 10);
+    }
+
+    function formatSessionTime(date) {
+      var now = new Date();
+      var diff = now - date;
+      if (diff < 60000) return 'Lige nu';
+      if (diff < 3600000) return Math.floor(diff / 60000) + ' min siden';
+      if (diff < 86400000) {
+        var h = date.getHours();
+        var m = date.getMinutes();
+        return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+      }
+      if (diff < 172800000) return 'I går';
+      return date.toLocaleDateString('da-DK', { day: 'numeric', month: 'short' });
+    }
+
+    function renderHistory() {
+      var list = document.getElementById('historyList');
+      if (state.sessions.length === 0) {
+        list.innerHTML = '<div class="chat-history-menu__empty">Ingen tidligere sessioner</div>';
+        return;
+      }
+      list.innerHTML = state.sessions.map(function(s) {
+        var name = s.patientName || '(Dokument)';
+        var templateName = s.template ? (supportLabels[s.template] || templateLabels[s.template] || '') : '';
+        var time = formatSessionTime(s.timestamp instanceof Date ? s.timestamp : new Date(s.timestamp));
+        var isActive = s.id === state.currentSessionId;
+        var modeDotClass = (s.mode === 'support') ? 'chat-history-item__mode-dot--support' : 'chat-history-item__mode-dot--assistant';
+        return '<button class="chat-history-item' + (isActive ? ' chat-history-item--active' : '') + '" data-session-id="' + s.id + '">' +
+          '<div class="chat-history-item__name"><span class="chat-history-item__mode-dot ' + modeDotClass + '"></span>' + name + '</div>' +
+          '<div class="chat-history-item__meta">' +
+            (templateName ? '<span>' + templateName + '</span><span>&middot;</span>' : '') +
+            '<span>' + time + '</span>' +
+          '</div>' +
+        '</button>';
+      }).join('');
+
+      // Bind clicks
+      list.querySelectorAll('.chat-history-item').forEach(function(item) {
+        item.addEventListener('click', function() {
+          var sid = this.dataset.sessionId;
+          loadSession(sid);
+          closeHistory();
+        });
+      });
+    }
+
+    function loadSession(sessionId) {
+      var session = state.sessions.find(function(s) { return s.id === sessionId; });
+      if (!session) return;
+
+      // Save current first
+      saveCurrentSession();
+
+      // Restore mode if different
+      var sessionMode = session.mode || 'assistant';
+      if (sessionMode !== state.chatMode) {
+        state.chatMode = sessionMode;
+        var aiLayout = document.querySelector('.ai-layout');
+        aiLayout.classList.toggle('mode-support', sessionMode === 'support');
+        document.querySelectorAll('.chat-mode-tab').forEach(function(tab) {
+          tab.classList.toggle('chat-mode-tab--active', tab.dataset.mode === sessionMode);
+        });
+        rebuildQuickPrompts();
+      }
+
+      // Reset UI
+      resetChatUI();
+      state.currentSessionId = sessionId;
+
+      // Restore patient context
+      if (session.patientName) {
+        state.patientContext = { name: session.patientName, cpr: session.patientCpr || '' };
+        sidebarNameInput.value = session.patientName;
+        sidebarCprInput.value = session.patientCpr || '';
+        showPatientActive();
+        loadConsultations();
+      }
+
+      // Restore template
+      if (session.template) {
+        setTemplate(session.template);
+      }
+
+      // Show a mock restored conversation
+      chatWelcome.style.display = 'none';
+      var userMsg = {
+        id: 'msg_restored_u',
+        role: 'user',
+        content: session.firstMessage,
+        template: session.template,
+        files: [],
+        timestamp: session.timestamp
+      };
+      state.messages.push(userMsg);
+      renderUserMessage(userMsg);
+
+      var draftKey = session.template || 'andet';
+      var aiMsg = {
+        id: 'msg_restored_ai',
+        role: 'ai',
+        content: draftResponses[draftKey] || draftResponses['andet'],
+        template: session.template,
+        timestamp: session.timestamp
+      };
+      state.messages.push(aiMsg);
+      renderAiMessage(aiMsg);
+      scrollToBottom();
+      showToast('Session genindlæst');
+    }
+
+    function resetChatUI() {
+      state.messages = [];
+      state.uploadedFiles = [];
+      state.referralContext = null;
+      state.isGenerating = false;
+      state.currentTemplate = null;
+      state.currentSessionId = null;
+
+      chatMessages.innerHTML = '';
+      var welcomeTabsHtml = '<div class="chat-welcome__mode-tabs" id="welcomeModeTabs">' +
+        '<button class="chat-welcome__mode-tab chat-welcome__mode-tab--assistant' + (state.chatMode === 'assistant' ? ' chat-welcome__mode-tab--active' : '') + '" data-mode="assistant"><i data-lucide="sparkles"></i>Assistent</button>' +
+        '<button class="chat-welcome__mode-tab chat-welcome__mode-tab--support' + (state.chatMode === 'support' ? ' chat-welcome__mode-tab--active' : '') + '" data-mode="support"><i data-lucide="life-buoy"></i>Support</button>' +
+      '</div>';
+      if (state.chatMode === 'support') {
+        chatMessages.innerHTML = '<div class="chat-welcome" id="chatWelcome">' +
+          '<div class="chat-welcome__icon"><i data-lucide="help-circle"></i></div>' +
+          welcomeTabsHtml +
+          '<p class="chat-welcome__text">Stil et spørgsmål om platformen, datasikkerhed eller brug af AI-funktionerne.</p>' +
+          '<div class="chat-welcome__footer"><i data-lucide="life-buoy"></i>People\'s Clinic Support</div>' +
+        '</div>';
+      } else {
+        chatMessages.innerHTML = '<div class="chat-welcome" id="chatWelcome">' +
+          '<div class="chat-welcome__icon"><i data-lucide="sparkles"></i></div>' +
+          welcomeTabsHtml +
+          '<p class="chat-welcome__text">Skriv frit eller vælg et quick prompt nedenfor. Tilføj patient og filer i panelet til højre.</p>' +
+          '<div class="chat-welcome__footer"><i data-lucide="shield-check"></i>Kliniske skabeloner (SDU) kræver aktivt forskningssamarbejde</div>' +
+        '</div>';
+      }
+      bindWelcomeModeTabs();
+      chatWelcome = document.getElementById('chatWelcome');
+
+      clearAttachments();
+      chatTextarea.value = '';
+      chatTextarea.style.height = 'auto';
+      btnSend.disabled = true;
+      clinicalWarning.classList.remove('active');
+
+      document.querySelectorAll('.chat-suggestion-chip').forEach(function(chip) {
+        chip.classList.remove('chat-suggestion-chip--active');
+      });
+      chatTextarea.placeholder = state.chatMode === 'support'
+        ? 'Stil et spørgsmål om People\'s Clinic...'
+        : 'Beskriv hvad du har brug for...';
+      lucide.createIcons();
+    }
+
+    function clearConversation() {
+      saveCurrentSession();
+      resetChatUI();
+      renderHistory();
+    }
+
+    // History dropdown toggle
+    var historyToggle = document.getElementById('btnHistoryToggle');
+    var historyMenu = document.getElementById('chatHistoryMenu');
+
+    historyToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      state.historyOpen = !state.historyOpen;
+      historyMenu.classList.toggle('chat-history-menu--open', state.historyOpen);
+      historyToggle.classList.toggle('btn-history-toggle--open', state.historyOpen);
+      if (state.historyOpen) renderHistory();
+    });
+
+    function closeHistory() {
+      state.historyOpen = false;
+      historyMenu.classList.remove('chat-history-menu--open');
+      historyToggle.classList.remove('btn-history-toggle--open');
+    }
+
+    document.addEventListener('click', function(e) {
+      if (state.historyOpen && !document.getElementById('chatHistoryDropdown').contains(e.target)) {
+        closeHistory();
+      }
+    });
+
+    // "Ny session" button
+    document.getElementById('btnNewSession').addEventListener('click', function(e) {
+      e.stopPropagation();
+      clearConversation();
+      closeHistory();
+      showToast('Ny session startet');
+    });
+
+    // ═══════════════════════════════════════
+    // CONSULTATION TRANSFER
+    // ═══════════════════════════════════════
+    var urlParams = new URLSearchParams(window.location.search);
+    var templateParam = urlParams.get('type');
+    var fromParam = urlParams.get('from');
+    var modeParam = urlParams.get('mode');
+
+    if (modeParam === 'support') switchMode('support');
+    if (templateParam) setTemplate(templateParam);
+
+    if (fromParam === 'konsultation' || fromParam === 'patientoversigt') {
+      try {
+        var stored = localStorage.getItem('peoplesClinic_referralContext');
+        if (stored) {
+          var refData = JSON.parse(stored);
+          localStorage.removeItem('peoplesClinic_referralContext');
+          state.referralContext = refData;
+          if (refData.patientName || refData.patientCpr) {
+            state.patientContext = { name: refData.patientName || '', cpr: refData.patientCpr || '' };
+            sidebarNameInput.value = refData.patientName || '';
+            sidebarCprInput.value = refData.patientCpr || '';
+            showPatientActive();
+            loadConsultations();
+          }
+          var banner = document.getElementById('transferBanner');
+          banner.style.display = 'flex';
+          if (refData.soapContent) {
+            chatTextarea.value = refData.soapContent;
+            chatTextarea.dispatchEvent(new Event('input'));
+            setTimeout(function() {
+              sendMessage();
+              setTimeout(function() {
+                banner.style.animation = 'transferFadeOut 0.4s ease forwards';
+                setTimeout(function() { banner.style.display = 'none'; }, 400);
+              }, 2000);
+            }, 800);
+          }
+        }
+      } catch (e) {}
+    }
+
+    // ═══════════════════════════════════════
+    // TOAST
+    // ═══════════════════════════════════════
+    function showToast(message) {
+      toastText.textContent = message;
+      toast.classList.add('active');
+      setTimeout(function() { toast.classList.remove('active'); }, 2800);
+    }
+
+    // ═══════════════════════════════════════
+    // KEYBOARD SHORTCUTS
+    // ═══════════════════════════════════════
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        if (state.sidebarOpen) {
+          state.sidebarOpen = false;
+          sidebar.classList.remove('ai-context-sidebar--open');
+          sidebarOverlay.classList.remove('ai-sidebar-overlay--visible');
+        }
+      }
+    });
+  </script>
+</body>
+</html>

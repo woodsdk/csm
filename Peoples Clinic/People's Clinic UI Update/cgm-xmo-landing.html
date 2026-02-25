@@ -73,11 +73,11 @@
       text-transform: uppercase;
       letter-spacing: 0.04em;
       box-shadow: 0 4px 20px rgba(34, 197, 94, 0.35);
-      transition: transform 0.15s, box-shadow 0.15s;
+      transition: box-shadow 0.15s;
     }
 
-    .hero-banner .btn-primary:hover {
-      transform: translateY(-1px);
+    .hero-banner .btn-primary:hover,
+    .hero-banner .btn-primary:active {
       box-shadow: 0 6px 28px rgba(34, 197, 94, 0.45);
     }
 
@@ -224,12 +224,13 @@
       border: 1px solid #e2e4ea;
       border-radius: 10px;
       padding: 22px 24px;
-      transition: box-shadow 0.2s, transform 0.2s;
+      transition: border-color 0.2s, background 0.2s;
     }
 
-    .security-card:hover {
-      box-shadow: 0 4px 16px rgba(26, 39, 68, 0.08);
-      transform: translateY(-2px);
+    .security-card:hover,
+    .security-card:active {
+      border-color: #c0c5d4;
+      background: rgba(86, 105, 164, 0.05);
     }
 
     .security-card .card-icon {
@@ -397,11 +398,11 @@
       text-transform: uppercase;
       letter-spacing: 0.04em;
       box-shadow: 0 4px 20px rgba(34, 197, 94, 0.35);
-      transition: transform 0.15s, box-shadow 0.15s;
+      transition: box-shadow 0.15s;
     }
 
-    .cta-banner .btn-primary:hover {
-      transform: translateY(-1px);
+    .cta-banner .btn-primary:hover,
+    .cta-banner .btn-primary:active {
       box-shadow: 0 6px 28px rgba(34, 197, 94, 0.45);
     }
 

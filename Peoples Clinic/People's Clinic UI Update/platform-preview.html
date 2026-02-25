@@ -7,1497 +7,22 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../Design System/platform.css?v=7">
   <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    /* ==========================================
-       CSS VARIABLES / TOKENS
-       ========================================== */
-    :root {
-      /* Navy Scale */
-      --color-navy-900: #13102C;
-      --color-navy-800: #26304F;
-      --color-navy-700: #323E63;
-      --color-navy-600: #38456D;
-      --color-navy-500: #5669A4;
-      --color-navy-400: #A3B0D9;
-
-      /* Text Color - All text uses this */
-      --color-text: #13102C;
-
-      /* Icon Color */
-      --color-icon: #2E395A;
-
-      /* Placeholder Color */
-      --color-placeholder: rgba(0, 0, 0, 0.05);
-
-      /* Neutral Scale */
-      --color-gray-200: #DADAEC;
-      --color-gray-100: #F8F8FD;
-      --color-white: #FFFFFF;
-
-      /* Gradients */
-      --gradient-page-bg: linear-gradient(135deg, #EBEBF4 0%, #FFFFFF 100%);
-      --gradient-button-primary: linear-gradient(135deg, #38456D 0%, #5669A4 100%);
-
-      /* Shadows */
-      --shadow-card: 0 0 25px rgba(38, 48, 79, 0.05);
-      --shadow-topbar: 0 2px 10px rgba(0, 0, 0, 0.08);
-      --shadow-button: 0 10px 25px rgba(0, 0, 0, 0.05);
-
-      /* Border Radius */
-      --radius-md: 8px;
-      --radius-lg: 12px;
-      --radius-2xl: 20px;
-      --radius-full: 9999px;
-    }
-
-    /* ==========================================
-       BASE STYLES
-       ========================================== */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html, body {
-      width: 100%;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--gradient-page-bg);
-      color: var(--color-text);
-      line-height: 1.5;
-    }
-
-    /* ==========================================
-       LAYOUT - Using exact pixel calculations
-       Total: 1080px
-       Topbar: 64px
-       Content: 1016px (with 24px padding = 968px usable)
-       ========================================== */
-    .platform {
-      width: 100%;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    /* ==========================================
-       TOP BAR - 64px
-       ========================================== */
-    .topbar {
-      background: var(--color-white);
-      box-shadow: var(--shadow-topbar);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 32px;
-      height: 64px;
-      flex-shrink: 0;
-      position: relative;
-      z-index: 100;
-    }
-
-    .topbar__logo {
-      display: flex;
-      align-items: center;
-    }
-
-    .topbar__logo a {
-      display: flex;
-      align-items: center;
-      text-decoration: none;
-    }
-
-    .topbar__logo-img {
-      height: 35px;
-      width: auto;
-    }
-
-    .topbar__right {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-    }
-
-    .clinic-dropdown {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 20px;
-      background: var(--color-white);
-      border: 1px solid var(--color-gray-200);
-      border-radius: var(--radius-full);
-      font-size: 0.875rem;
-      color: var(--color-text);
-      cursor: pointer;
-    }
-
-    .clinic-dropdown svg {
-      width: 16px;
-      height: 16px;
-      color: var(--color-navy-500);
-    }
-
-    .flags {
-      display: flex;
-      gap: 8px;
-    }
-
-    .flag {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      overflow: hidden;
-      background-size: cover;
-      background-position: center;
-    }
-
-    .flag--dk {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 37 28'%3E%3Crect fill='%23C8102E' width='37' height='28'/%3E%3Crect fill='%23FFF' x='12' width='4' height='28'/%3E%3Crect fill='%23FFF' y='12' width='37' height='4'/%3E%3C/svg%3E");
-    }
-
-    .flag--uk {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 30'%3E%3CclipPath id='a'%3E%3Cpath d='M0 0v30h60V0z'/%3E%3C/clipPath%3E%3CclipPath id='b'%3E%3Cpath d='M30 15h30v15zv15H0zH0V0zV0h30z'/%3E%3C/clipPath%3E%3Cg clip-path='url(%23a)'%3E%3Cpath d='M0 0v30h60V0z' fill='%23012169'/%3E%3Cpath d='M0 0l60 30m0-30L0 30' stroke='%23fff' stroke-width='6'/%3E%3Cpath d='M0 0l60 30m0-30L0 30' clip-path='url(%23b)' stroke='%23C8102E' stroke-width='4'/%3E%3Cpath d='M30 0v30M0 15h60' stroke='%23fff' stroke-width='10'/%3E%3Cpath d='M30 0v30M0 15h60' stroke='%23C8102E' stroke-width='6'/%3E%3C/g%3E%3C/svg%3E");
-    }
-
-    .user-menu {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      position: relative;
-    }
-
-    .user-dropdown {
-      position: absolute;
-      top: calc(100% + 8px);
-      right: 0;
-      min-width: 220px;
-      background: var(--color-white);
-      border-radius: var(--radius-lg);
-      box-shadow: 0 4px 20px rgba(38, 48, 79, 0.12);
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-8px);
-      transition: all 0.2s ease;
-      z-index: 1000;
-      padding: 8px 0;
-    }
-
-    .user-menu--open .user-dropdown {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    .user-dropdown__item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 20px;
-      font-size: 0.875rem;
-      color: var(--color-text);
-      text-decoration: none;
-      transition: background 0.2s ease;
-    }
-
-    .user-dropdown__item:hover {
-      background: var(--color-gray-100);
-    }
-
-    .user-dropdown__item svg {
-      width: 18px;
-      height: 18px;
-      color: var(--color-navy-500);
-    }
-
-    .user-dropdown__divider {
-      height: 1px;
-      background: var(--color-gray-100);
-      margin: 8px 0;
-    }
-
-    .user-dropdown__label {
-      font-size: 0.688rem;
-      font-weight: 700;
-      color: var(--color-gray-200);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      padding: 4px 16px 2px;
-    }
-
-    .user-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: var(--radius-full);
-      background: var(--color-navy-900);
-      color: var(--color-white);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    .user-name {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--color-text);
-    }
-
-    .user-menu svg {
-      width: 16px;
-      height: 16px;
-      color: var(--color-navy-500);
-    }
-
-    /* ==========================================
-       CONTENT AREA - Flexbox based
-       ========================================== */
-    .content-area {
-      flex: 1;
-      display: flex;
-      padding: 24px 40px 24px 40px;
-      gap: 40px;
-      min-height: 0;
-      overflow: hidden;
-    }
-
-    /* ==========================================
-       SIDEBAR - Flexbox based
-       ========================================== */
-    .sidebar {
-      width: 260px;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 0;
-    }
-
-    .sidebar__nav {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .nav-btn {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 20px;
-      border-radius: var(--radius-full);
-      font-size: 0.875rem;  /* 14px */
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                  box-shadow 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      will-change: transform, box-shadow;
-    }
-
-    .nav-btn svg {
-      width: 16px;
-      height: 16px;
-    }
-
-    .nav-btn--primary {
-      background: var(--gradient-button-primary);
-      color: var(--color-white);
-      box-shadow: 0 4px 15px rgba(56, 69, 109, 0.2);
-    }
-
-    .nav-btn--primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(56, 69, 109, 0.25);
-    }
-
-    .nav-btn--primary:active {
-      transform: translateY(0);
-      box-shadow: 0 4px 15px rgba(56, 69, 109, 0.2);
-    }
-
-    .nav-btn--primary svg {
-      color: var(--color-white);
-    }
-
-    .nav-btn--secondary {
-      background: var(--color-white);
-      border: none;
-      color: var(--color-text);
-      box-shadow: 0 2px 10px rgba(38, 48, 79, 0.05);
-    }
-
-    .nav-btn--secondary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px rgba(38, 48, 79, 0.08);
-    }
-
-    .nav-btn--secondary:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 10px rgba(38, 48, 79, 0.05);
-    }
-
-    .nav-btn--secondary svg {
-      color: var(--color-icon);
-    }
-
-    .sidebar__bottom-box {
-      margin-top: auto;
-      background: var(--color-white);
-      border-radius: var(--radius-2xl);
-      padding: 16px;
-      box-shadow: var(--shadow-card);
-      flex-shrink: 0;
-    }
-
-    .bottom-link {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 10px;
-      font-size: 0.813rem;
-      color: var(--color-text);
-      text-decoration: none;
-      border-radius: 8px;
-      transition: background 0.2s;
-    }
-
-    .bottom-link:hover {
-      background: var(--color-gray-100);
-    }
-
-    .bottom-link svg {
-      width: 18px;
-      height: 18px;
-      color: var(--color-icon);
-    }
-
-    .bottom-section-label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.688rem;
-      font-weight: 700;
-      color: var(--color-gray-200);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      padding: 4px 10px 2px;
-    }
-
-    .bottom-section-label:not(:first-child) {
-      margin-top: 6px;
-      padding-top: 10px;
-      border-top: 1px solid var(--color-gray-100);
-    }
-
-    /* ==========================================
-       MAIN CONTENT - Flexbox based
-       ========================================== */
-    .main {
-      flex: 1;
-      min-width: 0;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      overflow: hidden;
-    }
-
-    /* TOP SECTION: fills remaining space */
-    .main__top {
-      flex: 1;
-      min-height: 0;
-      display: flex;
-      gap: 40px;
-    }
-
-    .main__left {
-      width: 420px;
-      min-width: 320px;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .main__left .card {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: visible;
-    }
-
-    .main__left .card__title {
-      font-size: 26px;
-      font-weight: 500;
-    }
-
-    .main__center {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .main__center .card {
-      flex: 1;
-      overflow: hidden;
-      padding: 0;
-    }
-
-    .main__center .card__title {
-      font-size: 26px;
-      font-weight: 500;
-    }
-
-    /* BOTTOM SECTION: auto height, aligned to bottom */
-    .main__bottom {
-      flex-shrink: 0;
-      display: flex;
-      gap: 22px;
-      justify-content: flex-end;
-      align-items: stretch;
-    }
-
-    /* ==========================================
-       CARDS
-       ========================================== */
-    .card {
-      background: var(--color-white);
-      border-radius: var(--radius-2xl);
-      padding: 20px;
-      box-shadow: var(--shadow-card);
-    }
-
-    .card__title {
-      font-size: 1.125rem;
-      font-weight: 500;
-      color: var(--color-text);
-      margin-bottom: 12px;
-      flex-shrink: 0;
-    }
-
-    .card__content {
-      flex: 1;
-      overflow: visible;
-      min-height: 0;
-    }
-
-    /* ==========================================
-       START KONSULTATION FORM
-       ========================================== */
-    .form-group {
-      margin-bottom: 6px;
-    }
-
-    .form-label {
-      display: block;
-      font-size: 0.813rem;
-      font-weight: 500;
-      color: var(--color-text);
-      margin-bottom: 4px;
-    }
-
-    .form-row {
-      display: flex;
-      gap: 12px;
-    }
-
-    .form-input {
-      flex: 1;
-      padding: 8px 12px;
-      font-family: inherit;
-      font-size: 0.813rem;
-      color: var(--color-text);
-      background: var(--color-white);
-      border: 1px solid var(--color-gray-200);
-      border-radius: var(--radius-lg);
-      transition: border-color 0.15s ease;
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: var(--color-navy-300);
-    }
-
-    .form-input::placeholder {
-      color: #DADAEC;
-    }
-
-    .form-input--short {
-      flex: 0 0 130px;
-    }
-
-    .form-textarea {
-      width: 100%;
-      min-height: 50px;
-      padding: 8px 12px;
-      font-family: inherit;
-      font-size: 0.813rem;
-      color: var(--color-text);
-      background: var(--color-white);
-      border: 1px solid var(--color-gray-200);
-      border-radius: var(--radius-lg);
-      resize: none;
-      transition: border-color 0.15s ease;
-    }
-
-    .form-textarea:focus {
-      outline: none;
-      border-color: var(--color-navy-300);
-    }
-
-    .form-textarea::placeholder {
-      color: #DADAEC;
-    }
-
-    .file-upload {
-      position: relative;
-      background: var(--color-gray-100);
-      border: 1px dashed var(--color-gray-200);
-      border-radius: var(--radius-lg);
-      padding: 8px;
-      text-align: center;
-      margin-bottom: 6px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .file-upload:hover {
-      border-color: var(--color-gray-300);
-    }
-
-    .file-upload--dragover {
-      background: rgba(86, 105, 164, 0.08);
-      border-color: var(--color-primary);
-    }
-
-    .file-upload__input {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      cursor: pointer;
-    }
-
-    .file-upload__content {
-      pointer-events: none;
-    }
-
-    .file-upload__icon {
-      display: none;
-    }
-
-    .file-upload__text {
-      font-size: 0.813rem;
-      color: var(--color-text);
-      margin-bottom: 2px;
-    }
-
-    .file-upload__link {
-      color: var(--color-primary);
-      font-weight: 500;
-    }
-
-    .file-upload__hint {
-      font-size: 0.75rem;
-      color: var(--color-navy-400);
-    }
-
-    .file-upload__files {
-      margin-top: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .file-upload__files:empty {
-      display: none;
-    }
-
-    .file-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
-      background: var(--color-white);
-      border: 1px solid var(--color-gray-200);
-      border-radius: var(--radius-md);
-      font-size: 0.75rem;
-      text-align: left;
-    }
-
-    .file-item__icon {
-      width: 16px;
-      height: 16px;
-      color: var(--color-navy-400);
-      flex-shrink: 0;
-    }
-
-    .file-item__info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .file-item__name {
-      color: var(--color-text);
-      font-weight: 500;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .file-item__size {
-      color: var(--color-navy-400);
-    }
-
-    .file-item__remove {
-      width: 18px;
-      height: 18px;
-      padding: 0;
-      border: none;
-      background: none;
-      color: var(--color-navy-400);
-      cursor: pointer;
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s ease;
-      flex-shrink: 0;
-    }
-
-    .file-item__remove:hover {
-      background: var(--color-gray-100);
-      color: #e53e3e;
-    }
-
-    .file-item__remove svg {
-      width: 14px;
-      height: 14px;
-    }
-
-    .form-select {
-      width: 100%;
-      padding: 8px 12px;
-      font-family: inherit;
-      font-size: 0.813rem;
-      color: var(--color-text);
-      background: var(--color-white);
-      border: 1px solid var(--color-gray-200);
-      border-radius: var(--radius-lg);
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235669A4' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      padding-right: 40px;
-      cursor: pointer;
-    }
-
-    /* Custom Dropdown */
-    .custom-dropdown {
-      position: relative;
-      width: 100%;
-    }
-
-    .custom-dropdown__trigger {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      padding: 8px 12px;
-      font-family: inherit;
-      font-size: 0.813rem;
-      color: var(--color-text);
-      background: var(--color-white);
-      border: 1px solid var(--color-gray-200);
-      border-radius: var(--radius-lg);
-      cursor: pointer;
-      transition: all 0.15s ease;
-      text-align: left;
-    }
-
-    .custom-dropdown__trigger:hover {
-      border-color: var(--color-gray-300);
-    }
-
-    .custom-dropdown__trigger:focus {
-      outline: none;
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 2px rgba(86, 105, 164, 0.15);
-    }
-
-    .custom-dropdown--open .custom-dropdown__trigger {
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 2px rgba(86, 105, 164, 0.15);
-    }
-
-    .custom-dropdown__value {
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .custom-dropdown__icon {
-      width: 16px;
-      height: 16px;
-      color: var(--color-navy-400);
-      transition: transform 0.15s ease;
-      flex-shrink: 0;
-      margin-left: 8px;
-    }
-
-    .custom-dropdown--open .custom-dropdown__icon {
-      transform: rotate(180deg);
-    }
-
-    .custom-dropdown__menu {
-      position: absolute;
-      top: calc(100% + 4px);
-      left: 0;
-      right: 0;
-      background: var(--color-white);
-      border: 1px solid var(--color-gray-200);
-      border-radius: var(--radius-lg);
-      box-shadow: 0 4px 20px rgba(19, 16, 44, 0.12), 0 2px 8px rgba(19, 16, 44, 0.08);
-      z-index: 100;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-8px);
-      transition: all 0.2s ease;
-      max-height: 200px;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
-
-    /* Custom scrollbar styling */
-    .custom-dropdown__menu::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .custom-dropdown__menu::-webkit-scrollbar-track {
-      background: transparent;
-      margin: 8px 0;
-    }
-
-    .custom-dropdown__menu::-webkit-scrollbar-thumb {
-      background: var(--color-gray-300);
-      border-radius: 3px;
-    }
-
-    .custom-dropdown__menu::-webkit-scrollbar-thumb:hover {
-      background: var(--color-gray-400);
-    }
-
-    .custom-dropdown--open .custom-dropdown__menu {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    .custom-dropdown__option {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      font-size: 0.813rem;
-      color: var(--color-text);
-      cursor: pointer;
-      transition: all 0.15s ease;
-      border: none;
-      background: none;
-      width: 100%;
-      text-align: left;
-    }
-
-    .custom-dropdown__option:hover {
-      background: var(--color-gray-100);
-      padding-left: 14px;
-    }
-
-    .custom-dropdown__option--selected {
-      background: rgba(86, 105, 164, 0.1);
-      color: var(--color-primary);
-    }
-
-    .custom-dropdown__option--selected:hover {
-      background: rgba(86, 105, 164, 0.15);
-      padding-left: 14px;
-    }
-
-    .custom-dropdown__check {
-      width: 16px;
-      height: 16px;
-      color: var(--color-primary);
-      opacity: 0;
-      flex-shrink: 0;
-    }
-
-    .custom-dropdown__option--selected .custom-dropdown__check {
-      opacity: 1;
-    }
-
-    .custom-dropdown__option-text {
-      color: var(--color-text);
-    }
-
-    .mic-test {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin: 4px 0;
-      font-size: 0.75rem;
-      color: var(--color-text);
-    }
-
-    .mic-bars {
-      display: flex;
-      align-items: flex-end;
-      gap: 2px;
-      height: 16px;
-    }
-
-    .mic-bar {
-      width: 4px;
-      height: 14px;
-      background: var(--color-gray-300);
-      border-radius: 2px;
-      transition: background-color 0.1s ease;
-    }
-
-    .mic-bar--active {
-      background: #22C55E;
-    }
-
-    .btn-primary {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 44px;
-      padding: 2px 0;
-      background: var(--gradient-button-primary);
-      color: var(--color-white);
-      font-family: inherit;
-      font-size: 0.9375rem;  /* 15px */
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-      border: none;
-      border-radius: 100px;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(56, 69, 109, 0.2);
-      margin-top: auto;
-      flex-shrink: 0;
-      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                  box-shadow 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      will-change: transform, box-shadow;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(56, 69, 109, 0.25);
-    }
-
-    .btn-primary:active {
-      transform: translateY(0);
-      box-shadow: 0 4px 15px rgba(56, 69, 109, 0.2);
-    }
-
-    .btn-secondary {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      width: 100%;
-      height: 44px;
-      padding: 2px 0;
-      background: linear-gradient(180deg, #F0F1F4 0%, #FFFFFF 100%);
-      color: var(--color-text);
-      font-family: inherit;
-      font-size: 0.9375rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-      border: none;
-      border-radius: 100px;
-      cursor: pointer;
-      text-decoration: none;
-      flex-shrink: 0;
-      white-space: nowrap;
-      box-shadow: 0 4px 15px rgba(56, 69, 109, 0.12);
-      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                  box-shadow 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      will-change: transform, box-shadow;
-    }
-
-    .btn-secondary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(56, 69, 109, 0.18);
-    }
-
-    .btn-secondary:active {
-      transform: translateY(0);
-      box-shadow: 0 4px 15px rgba(56, 69, 109, 0.12);
-    }
-
-    /* ==========================================
-       TABLE
-       ========================================== */
-    .table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .table tr {
-      height: 52px;
-    }
-
-    .table th {
-      text-align: left;
-      padding: 8px 12px;
-      font-size: 0.688rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #13102C;
-      background: var(--color-gray-100);
-      border-bottom: 1px solid var(--color-gray-200);
-    }
-
-    .table th:first-child {
-      border-radius: var(--radius-md) 0 0 0;
-    }
-
-    .table th:last-child {
-      border-radius: 0 var(--radius-md) 0 0;
-    }
-
-    .table td {
-      padding: 8px 12px;
-      font-size: 0.813rem;
-      color: var(--color-text);
-      border-bottom: 1px solid var(--color-gray-200);
-      vertical-align: middle;
-    }
-
-    .table-actions {
-      display: flex;
-      gap: 6px;
-      flex-wrap: nowrap;
-    }
-
-    .table-btn {
-      padding: 6px 14px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-      border-radius: var(--radius-full);
-      cursor: pointer;
-      text-decoration: none;
-      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                  box-shadow 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      will-change: transform, box-shadow;
-      white-space: nowrap;
-    }
-
-    .table-btn--outline {
-      background: transparent;
-      border: 1px solid var(--color-gray-200);
-      color: var(--color-navy-500);
-      box-shadow: 0 2px 6px rgba(38, 48, 79, 0.03);
-    }
-
-    .table-btn--outline:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(38, 48, 79, 0.06);
-    }
-
-    .table-btn--outline:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 6px rgba(38, 48, 79, 0.03);
-    }
-
-    /* ==========================================
-       SUPPORT CARD
-       ========================================== */
-    .support-card {
-      text-align: center;
-      padding: 16px 24px;
-      width: 280px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .support-card .support-title {
-      font-size: 20px;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-
-    .support-avatars {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 12px;
-    }
-
-    .support-avatar {
-      width: 52px;
-      height: 52px;
-      border-radius: var(--radius-full);
-      border: 3px solid var(--color-white);
-      margin-left: -12px;
-      background: var(--color-gray-200);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .support-avatar:first-child {
-      margin-left: 0;
-    }
-
-    .support-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .support-badge {
-      position: absolute;
-      top: 0px;
-      right: 0px;
-      width: 24px;
-      height: 24px;
-      border-radius: var(--radius-full);
-      background: #EC4899;
-      color: var(--color-white);
-      font-size: 0.75rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .support-title {
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--color-text);
-      margin-bottom: 4px;
-    }
-
-    .support-phone {
-      font-size: 0.813rem;
-      color: var(--color-navy-500);
-      margin-bottom: 2px;
-    }
-
-    .support-email {
-      font-size: 0.813rem;
-      color: var(--color-navy-500);
-    }
-
-    /* ==========================================
-       AI ASSISTANT CARD
-       ========================================== */
-    .ai-card {
-      width: 340px;
-      padding: 24px;
-    }
-
-    .ai-card__title {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--color-text);
-      margin-bottom: 8px;
-    }
-
-    .ai-suggestions {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      margin-bottom: 12px;
-    }
-
-    .ai-suggestion {
-      font-size: 14px;
-      color: var(--color-navy-500);
-      cursor: pointer;
-      line-height: 1.3;
-    }
-
-    .ai-suggestion:hover {
-      color: var(--color-navy-800);
-    }
-
-    .ai-input-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      height: 42px;
-      padding: 6px 6px 6px 12px;
-      background: var(--color-white);
-      border: 1px solid rgba(218, 218, 236, 0.85);
-      border-radius: 10px;
-      box-sizing: border-box;
-    }
-
-    .ai-input {
-      flex: 1;
-      min-width: 0;
-      border: none;
-      background: none;
-      font-family: inherit;
-      font-size: 14px;
-      color: var(--color-text);
-      outline: none;
-    }
-
-    .ai-input::placeholder {
-      color: #DADAEC;
-    }
-
-    .ai-btn {
-      width: 28px;
-      height: 28px;
-      min-width: 28px;
-      border-radius: 100px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border: none;
-      background: #F0F0F9;
-      color: var(--color-navy-500);
-      flex-shrink: 0;
-    }
-
-    .ai-btn--send {
-      background: #5669A4;
-      color: var(--color-white);
-    }
-
-    .ai-btn svg {
-      width: 14px;
-      height: 14px;
-    }
-
-    /* ==========================================
-       BOTTOM NAVIGATION (Tablet/Mobile)
-       ========================================== */
-    .bottom-nav {
-      display: none;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: var(--color-white);
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
-      padding: 8px 16px;
-      padding-bottom: calc(8px + env(safe-area-inset-bottom));
-      z-index: 100;
-    }
-
-    .bottom-nav__list {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    .bottom-nav__item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      padding: 8px 12px;
-      color: var(--color-navy-400);
-      text-decoration: none;
-      font-size: 0.625rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-      border-radius: var(--radius-md);
-      transition: all 0.2s;
-    }
-
-    .bottom-nav__item--active {
-      color: var(--color-navy-600);
-      background: var(--color-gray-100);
-    }
-
-    .bottom-nav__item svg {
-      width: 20px;
-      height: 20px;
-    }
-
-    /* ==========================================
-       RESPONSIVE - Tablet (768px - 1280px)
-       ========================================== */
-    @media (max-width: 1280px) {
-      .content-area {
-        padding: 20px;
-        gap: 20px;
-      }
-
-      .main__top {
-        gap: 32px;
-      }
-
-      .main__left {
-        width: 380px;
-      }
-
-      .support-card {
-        width: 240px;
-        padding: 20px 24px;
-      }
-
-      .ai-card {
-        width: 300px;
-        padding: 20px;
-      }
-    }
-
-    /* ==========================================
-       RESPONSIVE - Small Tablet (< 1024px)
-       ========================================== */
-    @media (max-width: 1024px) {
-      html, body {
-        overflow-x: hidden;
-        overflow-y: auto;
-      }
-
-      .platform {
-        min-height: auto;
-        max-width: 100%;
-        overflow-x: hidden;
-      }
-
-      .sidebar {
-        display: none;
-      }
-
-      .bottom-nav {
-        display: block;
-      }
-
-      .content-area {
-        flex: none;
-        overflow: visible;
-        padding: 20px;
-        padding-bottom: calc(100px + env(safe-area-inset-bottom));
-        max-width: 100%;
-        box-sizing: border-box;
-      }
-
-      .main {
-        flex: none;
-        width: 100%;
-        max-width: 100%;
-      }
-
-      .main__top {
-        flex: none;
-        flex-direction: column;
-        gap: 20px;
-        width: 100%;
-      }
-
-      .main__left {
-        width: 100%;
-        min-width: unset;
-      }
-
-      .main__left .card__title {
-        font-size: 22px;
-      }
-
-      .main__center .card__title {
-        font-size: 22px;
-      }
-
-      .main__bottom {
-        display: none;
-      }
-
-      .topbar__right {
-        gap: 16px;
-      }
-
-      .clinic-dropdown span {
-        max-width: 150px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-    }
-
-    /* ==========================================
-       RESPONSIVE - Mobile (< 768px)
-       ========================================== */
-    @media (max-width: 768px) {
-      .topbar {
-        padding: 0 16px;
-        height: 56px;
-      }
-
-      .topbar__logo-img {
-        height: 35px;
-      }
-
-      .clinic-dropdown {
-        display: none;
-      }
-
-      .flags {
-        display: none;
-      }
-
-      .user-name {
-        display: none;
-      }
-
-      .content-area {
-        padding: 16px;
-        gap: 16px;
-      }
-
-      .main {
-        width: 100%;
-        max-width: 100%;
-      }
-
-      .main__left,
-      .main__center {
-        width: 100%;
-        max-width: 100%;
-      }
-
-      .card {
-        padding: 20px;
-        border-radius: var(--radius-lg);
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-      }
-
-      .main__left .card__title,
-      .main__center .card__title {
-        font-size: 20px;
-        margin-bottom: 12px;
-      }
-
-      .main__top {
-        gap: 16px;
-        width: 100%;
-      }
-
-      .main__bottom {
-        gap: 12px;
-      }
-
-      .btn-primary {
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-      }
-
-      .table-wrapper {
-        overflow-x: auto;
-        margin: 0 -20px;
-        padding: 0 20px;
-      }
-
-      .table {
-        min-width: auto;
-      }
-
-      .table th:last-child,
-      .table td:last-child {
-        display: none;
-      }
-
-      .form-row {
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      .form-input--short {
-        flex: 1;
-      }
-
-      .btn-primary {
-        height: 48px;
-        font-size: 0.875rem;
-      }
-
-      .ai-suggestions {
-        display: none;
-      }
-
-      .support-card {
-        padding: 16px;
-      }
-
-      .support-card .support-title {
-        font-size: 18px;
-      }
-
-      .support-avatar {
-        width: 44px;
-        height: 44px;
-      }
-    }
-
-    /* ==========================================
-       RESPONSIVE - Small Mobile (< 480px)
-       ========================================== */
-    @media (max-width: 480px) {
-      .content-area {
-        padding: 12px;
-      }
-
-      .card {
-        padding: 16px;
-      }
-
-      .main__left .card__title,
-      .main__center .card__title {
-        font-size: 18px;
-      }
-
-      .bottom-nav__item {
-        padding: 6px 8px;
-        font-size: 0.5625rem;
-      }
-
-      .bottom-nav__item svg {
-        width: 18px;
-        height: 18px;
-      }
-    }
-
-  </style>
 </head>
 <body>
+  <!-- Device Blocker (mobile/tablet) -->
+  <div class="device-blocker">
+    <svg class="device-blocker__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="2" y="3" width="20" height="14" rx="2"/>
+      <line x1="8" y1="21" x2="16" y2="21"/>
+      <line x1="12" y1="17" x2="12" y2="21"/>
+    </svg>
+    <h1 class="device-blocker__title">Åbn People's Clinic på din computer</h1>
+    <p class="device-blocker__text">Platformen er designet til desktop og fungerer bedst på en større skærm.</p>
+    <p class="device-blocker__note">Vi arbejder på en mobilversion — stay tuned!</p>
+  </div>
+
   <div class="platform">
     <!-- Top Bar -->
     <header class="topbar">
@@ -1523,8 +48,8 @@
           <div class="user-dropdown">
             <div class="user-dropdown__label">Brugerpanel</div>
             <a href="beskeder.html" class="user-dropdown__item">
-              <i data-lucide="message-square"></i>
-              Dine beskeder
+              <i data-lucide="alert-circle"></i>
+              Systemnotifikationer
             </a>
             <a href="indstillinger.html" class="user-dropdown__item">
               <i data-lucide="sliders"></i>
@@ -1532,13 +57,9 @@
             </a>
             <div class="user-dropdown__divider"></div>
             <div class="user-dropdown__label">Klinikadministration</div>
-            <a href="admin-klinik-admin.html" class="user-dropdown__item">
-              <i data-lucide="users"></i>
+            <a href="admin-dashboard.html" class="user-dropdown__item">
+              <i data-lucide="settings"></i>
               Klinikadministration
-            </a>
-            <a href="admin-klinik.html" class="user-dropdown__item">
-              <i data-lucide="building-2"></i>
-              Klinikindstillinger
             </a>
             <div class="user-dropdown__divider"></div>
             <a href="#" class="user-dropdown__item">
@@ -1559,18 +80,16 @@
             <i data-lucide="play"></i>
             Start Konsultation
           </a>
-          <a href="konsultationshistorik.html" class="nav-btn nav-btn--secondary">
-            <i data-lucide="history"></i>
-            Konsultationshistorik
+          <a href="patientoversigt.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="layout-list"></i>
+            Seneste konsultationer
           </a>
-          <a href="journalresume.html" class="nav-btn nav-btn--secondary">
-            <i data-lucide="file-text"></i>
-            Journalresume
-          </a>
-          <a href="honorarforslag.html" class="nav-btn nav-btn--secondary">
-            <i data-lucide="receipt"></i>
-            Honorarforslag
-          </a>
+          <a href="ai-assistent.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="sparkles"></i>
+            Min Assistent          </a>
+          <a href="beskedassistent.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="inbox"></i>
+            Beskedassistent          </a>
           <a href="klinikdrift-dashboard.html" class="nav-btn nav-btn--secondary">
             <i data-lucide="activity"></i>
             Klinikdrift
@@ -1582,27 +101,21 @@
           <!-- Brugerpanel — alle brugere -->
           <div class="bottom-section-label">Brugerpanel</div>
           <a href="beskeder.html" class="bottom-link">
-            <i data-lucide="message-square"></i>
-            Dine beskeder
+            <i data-lucide="alert-circle"></i>
+            Systemnotifikationer
           </a>
           <a href="indstillinger.html" class="bottom-link">
             <i data-lucide="sliders"></i>
             Brugerindstillinger
           </a>
 
-          <!-- Klinikadministration — kun klinikejer -->
-          <div class="bottom-section-label">Klinikadministration</div>
-          <a href="admin-klinik-admin.html" class="bottom-link">
-            <i data-lucide="users"></i>
+          <a href="admin-dashboard.html" class="bottom-link">
+            <i data-lucide="settings"></i>
             Klinikadministration
-          </a>
-          <a href="admin-klinik.html" class="bottom-link">
-            <i data-lucide="building-2"></i>
-            Klinikindstillinger
           </a>
 
           <!-- Log ud -->
-          <a href="#" class="bottom-link" style="margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--color-gray-100);">
+          <a href="#" class="bottom-link bottom-link--separated">
             <i data-lucide="log-out"></i>
             Log ud
           </a>
@@ -1615,7 +128,7 @@
         <div class="main__top">
           <!-- Left Column: Start Konsultation -->
           <div class="main__left">
-            <h2 class="card__title">Start konsultation</h2>
+            <h1 class="card__title">Start konsultation</h1>
             <div class="card">
               <div class="card__content">
                 <div class="form-group">
@@ -1646,7 +159,7 @@
 
                 <div class="form-group">
                   <label class="form-label">Vælg notattype</label>
-                  <div class="custom-dropdown" id="templateDropdown">
+                  <div class="custom-dropdown custom-dropdown--compact" id="templateDropdown">
                     <button type="button" class="custom-dropdown__trigger" aria-haspopup="listbox">
                       <span class="custom-dropdown__value">Vælg skabelon...</span>
                       <svg class="custom-dropdown__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1661,7 +174,7 @@
 
                 <div class="form-group">
                   <label class="form-label">Vælg mikrofon</label>
-                  <div class="custom-dropdown" id="micDropdown">
+                  <div class="custom-dropdown custom-dropdown--compact" id="micDropdown">
                     <button type="button" class="custom-dropdown__trigger" aria-haspopup="listbox">
                       <span class="custom-dropdown__value">Mikrofon i computer (indbygget)</span>
                       <svg class="custom-dropdown__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1706,32 +219,34 @@
                 </div>
               </div>
 
-              <a href="konsultation-aktiv.html" class="btn-primary" style="text-decoration: none; gap: 10px;">
-                <i data-lucide="play" style="width: 18px; height: 18px;"></i>
+              <a href="konsultation-aktiv.html" class="btn-primary">
+                <i data-lucide="play"></i>
                 Start konsultation
               </a>
-              <a href="#" class="btn-secondary" style="text-decoration: none; margin-top: 8px;">
-                <i data-lucide="video" style="width: 18px; height: 18px;"></i>
+              <button class="btn-secondary" style="margin-top: 8px;" onclick="document.getElementById('videoConfirmModal').classList.add('active')">
+                <i data-lucide="video"></i>
                 Start videokonsultation
-              </a>
+              </button>
             </div>
           </div>
 
-          <!-- Center Column: Samtalehistorik -->
+          <!-- Center Column: Seneste konsultationer + Onboarding nudge -->
           <div class="main__center">
-            <h2 class="card__title">Samtalehistorik</h2>
-            <div class="card">
-              <table class="table">
+            <h1 class="card__title">Seneste konsultationer</h1>
+            <div class="card card--full card--table">
+              <table class="table table--history">
                 <thead>
                   <tr>
                     <th>Patient</th>
+                    <th>Dato</th>
                     <th>Emne</th>
                     <th>Handlinger</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Nancy Berggren</td>
+                    <td>Nancy Ann Berggren</td>
+                    <td>24.02.2026 12:18</td>
                     <td>Patienten havde ondt i ørerne</td>
                     <td class="table-actions">
                       <a href="#" class="table-btn table-btn--outline">Kopier notat</a>
@@ -1739,7 +254,8 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>Ukendt patient</td>
+                    <td>Peter Hansen</td>
+                    <td>24.02.2026 11:17</td>
                     <td>Patienten havde knæsmerter</td>
                     <td class="table-actions">
                       <a href="#" class="table-btn table-btn--outline">Kopier notat</a>
@@ -1747,8 +263,36 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>Ukendt patient</td>
-                    <td>Patienten oplevede søvnproblemer</td>
+                    <td>Maria Jensen</td>
+                    <td>24.02.2026 9:27</td>
+                    <td>Patienten oplevede rygsmerter</td>
+                    <td class="table-actions">
+                      <a href="#" class="table-btn table-btn--outline">Kopier notat</a>
+                      <a href="#" class="table-btn table-btn--outline">Vis & Rediger</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Lars Christensen</td>
+                    <td>23.02.2026 15:44</td>
+                    <td>Opfølgning på blodtryksbehandling</td>
+                    <td class="table-actions">
+                      <a href="#" class="table-btn table-btn--outline">Kopier notat</a>
+                      <a href="#" class="table-btn table-btn--outline">Vis & Rediger</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Sofie Andersen</td>
+                    <td>23.02.2026 13:10</td>
+                    <td>Patienten havde hoste og feber</td>
+                    <td class="table-actions">
+                      <a href="#" class="table-btn table-btn--outline">Kopier notat</a>
+                      <a href="#" class="table-btn table-btn--outline">Vis & Rediger</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Henrik Møller</td>
+                    <td>23.02.2026 10:05</td>
+                    <td>Årlig helbredscheck</td>
                     <td class="table-actions">
                       <a href="#" class="table-btn table-btn--outline">Kopier notat</a>
                       <a href="#" class="table-btn table-btn--outline">Vis & Rediger</a>
@@ -1757,48 +301,62 @@
                 </tbody>
               </table>
             </div>
+
           </div>
         </div>
 
-        <!-- Bottom Section: Support & AI Cards -->
+        <!-- Bottom Section: AI Support CTA -->
         <div class="main__bottom">
-          <!-- Support Card -->
-          <div class="card support-card">
-            <div class="support-avatars">
-              <div class="support-avatar">
-                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face" alt="Support">
+          <!-- Onboarding nudge — hidden, appears after 3s -->
+          <div class="card onboarding-nudge" id="onboardingNudge">
+            <div class="onboarding-nudge__avatars">
+              <div class="onboarding-nudge__avatar">
+                <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=face" alt="Support">
               </div>
-              <div class="support-avatar">
+              <div class="onboarding-nudge__avatar">
                 <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" alt="Support">
-                <div class="support-badge">4</div>
               </div>
             </div>
-            <div class="support-title">Brug for hjælp?</div>
-            <div class="support-phone">+45 5251 5025</div>
-            <div class="support-email">support@peoplesdoctor.com</div>
-          </div>
-
-          <!-- AI Assistant Card -->
-          <div class="card ai-card">
-            <div class="ai-card__title">AI Assistent</div>
-            <div class="ai-suggestions">
-              <div class="ai-suggestion">Hvordan bruger jeg People's Clinic?</div>
-              <div class="ai-suggestion">Hvordan gemmes mine patientdata?</div>
-              <div class="ai-suggestion">Er mine data 100% GDPR compliant?</div>
-              <div class="ai-suggestion">Hvordan virker journal-resumeet?</div>
-              <div class="ai-suggestion">Hvordan tilpasser jeg min notestil?</div>
+            <div class="onboarding-nudge__content">
+              <div class="onboarding-nudge__title">Vil du vises rundt?</div>
+              <div class="onboarding-nudge__sub">Book en kort intro — vi hjælper dig trygt i gang.</div>
             </div>
-            <div class="ai-input-wrapper">
-              <input type="text" class="ai-input" placeholder="Spørg om hvad som helst...">
-              <button class="ai-btn">
-                <i data-lucide="mic"></i>
-              </button>
-              <button class="ai-btn ai-btn--send">
-                <i data-lucide="send"></i>
-              </button>
-            </div>
+            <a href="#" class="onboarding-nudge__btn">Book intro</a>
+            <button class="onboarding-nudge__close" onclick="document.getElementById('onboardingNudge').style.display='none'" title="Luk">
+              <i data-lucide="x"></i>
+            </button>
           </div>
+          <!-- AI Support CTA -->
+          <a href="ai-assistent.html?mode=support" class="card ai-support-cta" style="text-decoration: none;">
+            <div class="ai-support-cta__icon">
+              <i data-lucide="life-buoy"></i>
+            </div>
+            <div class="ai-support-cta__text">
+              <div class="ai-support-cta__title">Har du brug for hjælp?</div>
+              <div class="ai-support-cta__desc">Spørg vores AI-assistent om platformen, GDPR, sikkerhed m.m.</div>
+            </div>
+            <div class="ai-support-cta__arrow">
+              <i data-lucide="arrow-right"></i>
+            </div>
+          </a>
         </div>
+
+        <script>
+          // Show onboarding nudge after 3 seconds with elegant fade-up
+          // Uses double rAF to ensure display:none → display:flex transition
+          // is painted before the animation class is applied
+          setTimeout(function() {
+            var nudge = document.getElementById('onboardingNudge');
+            if (nudge) {
+              nudge.style.display = 'flex';
+              requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                  nudge.classList.add('onboarding-nudge--visible');
+                });
+              });
+            }
+          }, 3000);
+        </script>
       </main>
     </div>
 
@@ -2026,14 +584,15 @@
 
     const defaultTemplates = [
       { id: 'soap', name: 'SOAP', description: 'Subjektiv, Objektiv, Analyse, Plan', visible: true, order: 0 },
-      { id: 'soap-kort', name: 'SOAP - Kort', description: 'Kortfattet SOAP-format', visible: true, order: 1 },
-      { id: 'soap-psykisk', name: 'SOAP - Psykisk', description: 'SOAP tilpasset psykiske lidelser', visible: true, order: 2 },
-      { id: 'soap-baggrund', name: 'SOAP med baggrund', description: 'SOAP med udvidet baggrundssektion', visible: true, order: 3 },
-      { id: 'aarskontrol', name: 'Årskontrol', description: 'Skabelon til årlig helbredskontrol', visible: true, order: 4 },
-      { id: 'kiropraktor', name: 'Kiropraktor Notat', description: 'Tilpasset kiropraktisk behandling', visible: false, order: 5 },
-      { id: 'fysioterapeut', name: 'Fysioterapeut Notat', description: 'Tilpasset fysioterapeutisk behandling', visible: false, order: 6 },
-      { id: 'fritekst', name: 'Fritekst', description: 'Frit format uden sektioner', visible: true, order: 7 },
-      { id: 'struktureret', name: 'Struktureret', description: 'Struktureret format med faste felter', visible: true, order: 8 }
+      { id: 'psoap', name: 'PSOAP', description: 'Problem, Subjektiv, Objektiv, Analyse, Plan', visible: true, order: 1 },
+      { id: 'soap-kort', name: 'SOAP - Kort', description: 'Kortfattet SOAP-format', visible: true, order: 2 },
+      { id: 'soap-psykisk', name: 'SOAP - Psykisk', description: 'SOAP tilpasset psykiske lidelser', visible: true, order: 3 },
+      { id: 'soap-baggrund', name: 'SOAP med baggrund', description: 'SOAP med udvidet baggrundssektion', visible: true, order: 4 },
+      { id: 'aarskontrol', name: 'Årskontrol', description: 'Skabelon til årlig helbredskontrol', visible: true, order: 5 },
+      { id: 'kiropraktor', name: 'Kiropraktor Notat', description: 'Tilpasset kiropraktisk behandling', visible: false, order: 6 },
+      { id: 'fysioterapeut', name: 'Fysioterapeut Notat', description: 'Tilpasset fysioterapeutisk behandling', visible: false, order: 7 },
+      { id: 'fritekst', name: 'Fritekst', description: 'Frit format uden sektioner', visible: true, order: 8 },
+      { id: 'struktureret', name: 'Struktureret', description: 'Struktureret format med faste felter', visible: true, order: 9 }
     ];
 
     function loadTemplatePreferences() {
@@ -2111,5 +670,110 @@
       }
     });
   </script>
+
+  <!-- Video Consultation Confirmation Modal -->
+  <style>
+    .video-confirm-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(19, 16, 44, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .video-confirm-overlay.active { display: flex; opacity: 1; }
+    .video-confirm {
+      background: var(--color-white);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-modal);
+      width: 100%;
+      max-width: 440px;
+      padding: 32px;
+      text-align: center;
+      transform: translateY(20px);
+      transition: transform 0.2s ease;
+    }
+    .video-confirm-overlay.active .video-confirm { transform: translateY(0); }
+    .video-confirm__icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(86, 105, 164, 0.08);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .video-confirm__icon svg { width: 24px; height: 24px; color: var(--color-navy-500); }
+    .video-confirm__title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 8px;
+    }
+    .video-confirm__desc {
+      font-size: 0.875rem;
+      color: var(--color-navy-400);
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+    .video-confirm__actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+    .video-confirm__cancel {
+      padding: 10px 24px;
+      border: 1px solid var(--color-gray-200);
+      background: var(--color-white);
+      border-radius: var(--radius-lg);
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--color-navy-500);
+      cursor: pointer;
+    }
+    .video-confirm__cancel:hover { background: var(--color-gray-50); }
+    .video-confirm__start {
+      padding: 10px 24px;
+      border: none;
+      background: var(--color-navy-500);
+      border-radius: var(--radius-lg);
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .video-confirm__start:hover { background: var(--color-navy-600); }
+    .video-confirm__start svg { width: 16px; height: 16px; }
+  </style>
+
+  <div class="video-confirm-overlay" id="videoConfirmModal" onclick="if(event.target===this)this.classList.remove('active')">
+    <div class="video-confirm">
+      <div class="video-confirm__icon">
+        <i data-lucide="video"></i>
+      </div>
+      <div class="video-confirm__title">Start videokonsultation?</div>
+      <div class="video-confirm__desc">
+        People's Clinic vil lytte til din eksterne videokonsultation og automatisk transskribere samtalen. Sørg for at dit videoopkald kører i en anden app.
+      </div>
+      <div class="video-confirm__actions">
+        <button class="video-confirm__cancel" onclick="document.getElementById('videoConfirmModal').classList.remove('active')">Annuller</button>
+        <a href="konsultation-video.html" class="video-confirm__start" style="text-decoration: none;">
+          <i data-lucide="video"></i>
+          Start videokonsultation
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>lucide.createIcons();</script>
 </body>
 </html>

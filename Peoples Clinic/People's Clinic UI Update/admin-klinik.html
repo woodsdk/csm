@@ -25,20 +25,6 @@
       gap: 12px;
     }
 
-    .page-header {
-      margin-bottom: 0;
-    }
-
-    .page-header__title {
-      font-size: 32px;
-      font-weight: 500;
-      margin-bottom: 4px;
-    }
-
-    .page-header__subtitle {
-      font-size: var(--font-size-md);
-      color: var(--color-text);
-    }
 
     /* Tab panels */
     .clinic-tab-panel {
@@ -52,6 +38,73 @@
       min-height: 0;
       overflow-y: auto;
       gap: 20px;
+    }
+
+    /* Template list styles */
+    .template-list-header { padding: 0; }
+    .template-list__title {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 0;
+    }
+    .template-list-description {
+      font-size: var(--font-size-sm);
+      color: var(--color-navy-400);
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+    .template-list { padding: 8px 0; }
+    .template-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      margin: 4px 0;
+      border-radius: var(--radius-lg);
+      background: var(--color-white);
+      border: 1px solid var(--color-gray-100);
+    }
+    .template-item:hover {
+      background: var(--color-gray-50);
+      border-color: var(--color-gray-200);
+    }
+    .template-item__left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 0;
+    }
+    .template-item__info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .template-item__name {
+      font-size: var(--font-size-md);
+      font-weight: 500;
+      color: var(--color-text);
+    }
+    .template-item__description {
+      font-size: var(--font-size-sm);
+      color: var(--color-navy-400);
+    }
+    .template-item__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      font-size: 0.625rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-navy-500);
+      background: rgba(86, 105, 164, 0.08);
+      border-radius: var(--radius-full);
+      margin-left: 8px;
     }
 
     /* Settings list card */
@@ -318,10 +371,6 @@
 
     /* Responsive */
     @media (max-width: 768px) {
-      .page-header__title {
-        font-size: 24px;
-      }
-
       .epj-grid {
         grid-template-columns: 1fr;
       }
@@ -357,6 +406,18 @@
   </style>
 </head>
 <body>
+  <!-- Device Blocker (mobile/tablet) -->
+  <div class="device-blocker">
+    <svg class="device-blocker__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="2" y="3" width="20" height="14" rx="2"/>
+      <line x1="8" y1="21" x2="16" y2="21"/>
+      <line x1="12" y1="17" x2="12" y2="21"/>
+    </svg>
+    <h1 class="device-blocker__title">Åbn People's Clinic på din computer</h1>
+    <p class="device-blocker__text">Platformen er designet til desktop og fungerer bedst på en større skærm.</p>
+    <p class="device-blocker__note">Vi arbejder på en mobilversion — stay tuned!</p>
+  </div>
+
   <div class="platform">
     <!-- Top Bar -->
     <header class="topbar">
@@ -381,8 +442,8 @@
           <div class="user-dropdown">
             <div class="user-dropdown__label">Brugerpanel</div>
             <a href="beskeder.html" class="user-dropdown__item">
-              <svg><use href="#message-square"/></svg>
-              Dine beskeder
+              <svg><use href="#alert-circle"/></svg>
+              Systemnotifikationer
             </a>
             <a href="indstillinger.html" class="user-dropdown__item">
               <svg><use href="#sliders"/></svg>
@@ -390,13 +451,9 @@
             </a>
             <div class="user-dropdown__divider"></div>
             <div class="user-dropdown__label">Klinikadministration</div>
-            <a href="admin-klinik-admin.html" class="user-dropdown__item">
-              <svg><use href="#users"/></svg>
+            <a href="admin-dashboard.html" class="user-dropdown__item">
+              <svg><use href="#settings"/></svg>
               Klinikadministration
-            </a>
-            <a href="admin-klinik.html" class="user-dropdown__item">
-              <svg><use href="#building-2"/></svg>
-              Klinikindstillinger
             </a>
             <div class="user-dropdown__divider"></div>
             <a href="#" class="user-dropdown__item">
@@ -417,18 +474,16 @@
             <i data-lucide="play"></i>
             Start Konsultation
           </a>
-          <a href="konsultationshistorik.html" class="nav-btn nav-btn--secondary">
-            <svg><use href="#history"/></svg>
-            Konsultationshistorik
+          <a href="patientoversigt.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="layout-list"></i>
+            Seneste konsultationer
           </a>
-          <a href="journalresume.html" class="nav-btn nav-btn--secondary">
-            <svg><use href="#file-text"/></svg>
-            Journalresume
-          </a>
-          <a href="honorarforslag.html" class="nav-btn nav-btn--secondary">
-            <svg><use href="#receipt"/></svg>
-            Honorarforslag
-          </a>
+          <a href="ai-assistent.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="sparkles"></i>
+            Min Assistent          </a>
+          <a href="beskedassistent.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="inbox"></i>
+            Beskedassistent          </a>
           <a href="klinikdrift-dashboard.html" class="nav-btn nav-btn--secondary">
             <i data-lucide="activity"></i>
             Klinikdrift
@@ -438,27 +493,21 @@
           <!-- Brugerpanel — alle brugere -->
           <div class="bottom-section-label">Brugerpanel</div>
           <a href="beskeder.html" class="bottom-link">
-            <svg><use href="#message-square"/></svg>
-            Dine beskeder
+            <svg><use href="#alert-circle"/></svg>
+            Systemnotifikationer
           </a>
           <a href="indstillinger.html" class="bottom-link">
             <svg><use href="#sliders"/></svg>
             Brugerindstillinger
           </a>
 
-          <!-- Klinikadministration — kun klinikejer -->
-          <div class="bottom-section-label">Klinikadministration</div>
-          <a href="admin-klinik-admin.html" class="bottom-link">
-            <svg><use href="#users"/></svg>
+          <a href="admin-dashboard.html" class="bottom-link">
+            <svg><use href="#settings"/></svg>
             Klinikadministration
-          </a>
-          <a href="admin-klinik.html" class="bottom-link bottom-link--active">
-            <svg><use href="#building-2"/></svg>
-            Klinikindstillinger
           </a>
 
           <!-- Log ud -->
-          <a href="#" class="bottom-link" style="margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--color-gray-100);">
+          <a href="#" class="bottom-link bottom-link--separated">
             <svg><use href="#log-out"/></svg>
             Log ud
           </a>
@@ -493,6 +542,7 @@
         <div class="tabs">
           <button class="tab tab--active" data-tab="klinikprofil">Klinikprofil</button>
           <button class="tab" data-tab="epj">EPJ-integration</button>
+          <button class="tab" data-tab="skabeloner">Skabeloner</button>
         </div>
 
         <!-- ========================================== -->
@@ -805,6 +855,373 @@
           </div>
         </div>
 
+        <!-- ========================================== -->
+        <!-- Tab 3: Skabeloner                          -->
+        <!-- ========================================== -->
+        <div class="clinic-tab-panel" data-panel="skabeloner">
+
+          <!-- Section 1: Konsultationsskabeloner -->
+          <div class="card settings-list">
+            <h2 class="settings-section__title">Standard notatskabelon</h2>
+            <div class="settings-row">
+              <div class="settings-row__label">
+                <span class="settings-row__title">Standard for nye brugere</span>
+                <span class="settings-row__description">Denne skabelon vælges automatisk for nye brugere i klinikken</span>
+              </div>
+              <select class="settings-select">
+                <option selected>SOAP</option>
+                <option>PSOAP</option>
+                <option>SOAP - Kort</option>
+                <option>SOAP - Psykisk</option>
+                <option>SOAP med baggrund</option>
+                <option>Fritekst</option>
+                <option>Struktureret</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="template-list-header">
+              <h2 class="template-list__title">Konsultationsskabeloner</h2>
+              <p class="template-list-description">Aktivér eller deaktivér skabeloner for hele klinikken. Deaktiverede skabeloner er ikke tilgængelige for nogen brugere.</p>
+            </div>
+            <div class="template-list">
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name">SOAP</span>
+                    <span class="template-item__description">Subjektiv, Objektiv, Analyse, Plan</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name">PSOAP</span>
+                    <span class="template-item__description">Problem, Subjektiv, Objektiv, Analyse, Plan</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name">SOAP - Kort</span>
+                    <span class="template-item__description">Kortfattet SOAP-format</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name">SOAP - Psykisk</span>
+                    <span class="template-item__description">SOAP tilpasset psykiske lidelser</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name">SOAP med baggrund</span>
+                    <span class="template-item__description">SOAP med udvidet baggrundssektion</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name">Årskontrol</span>
+                    <span class="template-item__description">Skabelon til årlig helbredskontrol</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name">Kiropraktor Notat</span>
+                    <span class="template-item__description">Tilpasset kiropraktisk behandling</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input">
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name">Fysioterapeut Notat</span>
+                    <span class="template-item__description">Tilpasset fysioterapeutisk behandling</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input">
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name">Fritekst</span>
+                    <span class="template-item__description">Frit format uden sektioner</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name">Struktureret</span>
+                    <span class="template-item__description">Struktureret format med faste felter</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Skriveassistent-skabeloner -->
+          <div class="card">
+            <div class="template-list-header">
+              <h2 class="template-list__title">Min Assistent-skabeloner</h2>
+              <p class="template-list-description">Aktivér eller deaktivér skabeloner i Min Assistenten for hele klinikken.</p>
+            </div>
+            <div class="template-list">
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name">Tidsbestilling</span>
+                    <span class="template-item__description">Svar på forespørgsler om tidsbestilling</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name">Receptfornyelse</span>
+                    <span class="template-item__description">Svar på receptfornyelser</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name">Henvisning</span>
+                    <span class="template-item__description">Generér udkast til speciallæge-henvisninger</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name">Attest <span class="template-item__badge">SDU</span></span>
+                    <span class="template-item__description">Udkast til attester og lægeerklæringer (EU MDR)</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name">Prøvesvar</span>
+                    <span class="template-item__description">Svar vedr. prøveresultater</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name">Klinisk rådgivning <span class="template-item__badge">SDU</span></span>
+                    <span class="template-item__description">Kliniske udkast baseret på konsultationsdata (EU MDR)</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name">Andet</span>
+                    <span class="template-item__description">Generelt fritekst-udkast</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Standardfraser (klinikdækkende) -->
+          <div class="card">
+            <div class="template-list-header">
+              <h2 class="template-list__title">Klinikdækkende standardfraser</h2>
+              <p class="template-list-description">Standardfraser der er tilgængelige for alle brugere i klinikken. Individuelle brugere kan deaktivere fraser og tilføje egne under Brugerindstillinger → Standardfraser.</p>
+            </div>
+            <div class="template-list">
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name" style="font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.75rem; color: var(--color-navy-600);">/abd-ia</span>
+                    <span class="template-item__description">Abdomen upåfaldende — Objektiv undersøgelse</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name" style="font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.75rem; color: var(--color-navy-600);">/thorax-ia</span>
+                    <span class="template-item__description">Thorax upåfaldende — Objektiv undersøgelse</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name" style="font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.75rem; color: var(--color-navy-600);">/neuro-ia</span>
+                    <span class="template-item__description">Neurologisk upåfaldende — Objektiv undersøgelse</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name" style="font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.75rem; color: var(--color-navy-600);">/au-ia</span>
+                    <span class="template-item__description">Almen upåfaldende — Objektiv undersøgelse</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name" style="font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.75rem; color: var(--color-navy-600);">/plan-kontrol</span>
+                    <span class="template-item__description">Kontrol — Plan & opfølgning</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name" style="font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.75rem; color: var(--color-navy-600);">/plan-blod</span>
+                    <span class="template-item__description">Blodprøvekontrol — Plan & opfølgning</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name" style="font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.75rem; color: var(--color-navy-600);">/plan-hen</span>
+                    <span class="template-item__description">Henvisning planlagt — Plan & opfølgning</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name" style="font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.75rem; color: var(--color-navy-600);">/anm-cave</span>
+                    <span class="template-item__description">Cave / allergi — Anamnese</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+              <div class="template-item">
+                <div class="template-item__left">
+                  <div class="template-item__info">
+                    <span class="template-item__name" style="font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.75rem; color: var(--color-navy-600);">/anm-rp</span>
+                    <span class="template-item__description">Rygning / alkohol — Anamnese</span>
+                  </div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" class="toggle__input" checked>
+                  <span class="toggle__slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </main>
 
       <!-- Right Sidebar -->
@@ -812,20 +1229,23 @@
         <div class="card support-card">
           <div class="support-avatars">
             <div class="support-avatar">
-              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face" alt="Support">
+              <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=face" alt="Support">
             </div>
             <div class="support-avatar">
               <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" alt="Support">
-              <div class="support-badge">4</div>
             </div>
           </div>
-          <div class="support-title">Brug for hjælp?</div>
-          <div class="support-phone">+45 5251 5025</div>
-          <div class="support-email">support@peoplesdoctor.com</div>
+          <div class="support-title">Vil du vises rundt?</div>
+          <div class="support-subtitle">Book en kort intro — vi hjælper dig trygt i gang med platformen.</div>
+          <a href="#" class="support-cta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15.05 5A5 5 0 0 1 19 8.95M15.05 1A9 9 0 0 1 23 8.94M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Book introduktion
+          </a>
+          <div class="support-note">30 min · gratis · videomøde</div>
         </div>
 
         <div class="card ai-card">
-          <div class="ai-card__title">AI Assistent</div>
+          <div class="ai-card__title">Min Assistent</div>
           <div class="ai-suggestions">
             <div class="ai-suggestion">Hvordan opsætter jeg EPJ-integration?</div>
             <div class="ai-suggestion">Hvordan ændrer jeg klinikprofil?</div>
@@ -942,6 +1362,7 @@
     <symbol id="message-square" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
     </symbol>
+    <symbol id="alert-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
     <symbol id="sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <line x1="4" x2="4" y1="21" y2="14"/>
       <line x1="4" x2="4" y1="10" y2="3"/>
