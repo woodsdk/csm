@@ -234,7 +234,7 @@
           <div class="main__center">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
               <h1 class="card__title" style="margin-bottom:0;">Seneste konsultationer</h1>
-              <button class="demo-launch-inline" id="demoLaunchInline" onclick="window.location.href='platform-preview.html?demo'">
+              <button class="demo-launch-inline" id="demoLaunchInline" onclick="window.location.href='/?demo'">
                 <span class="demo-launch-inline__pulse"></span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                 Se demo
@@ -998,7 +998,7 @@
 
     // ── Close button — dismiss demo entirely ──
     document.getElementById('demoCloseBtn').addEventListener('click', function() {
-      window.location.href = 'platform-preview.html';
+      window.location.href = '/';
     });
 
     // ── Demo sequence ──
