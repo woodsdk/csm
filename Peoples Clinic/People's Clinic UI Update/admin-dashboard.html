@@ -10,6 +10,28 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="../Design System/platform.css">
   <style>
+    /* Inline demo button */
+    .demo-launch-inline {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 20px; background: linear-gradient(135deg, #3B4D7A, #5669A4);
+      color: white; border: none; border-radius: 50px;
+      font-family: inherit; font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; box-shadow: 0 4px 16px rgba(59, 77, 122, 0.25);
+      transition: all 0.2s ease; letter-spacing: 0.01em; flex-shrink: 0;
+    }
+    .demo-launch-inline:hover {
+      background: linear-gradient(135deg, #2F3D62, #4A5D96);
+      transform: translateY(-1px); box-shadow: 0 6px 20px rgba(59, 77, 122, 0.35);
+    }
+    .demo-launch-inline svg { width: 14px; height: 14px; }
+    .demo-launch-inline__pulse {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #34D399; animation: demoInlinePulse 2s ease-in-out infinite;
+    }
+    @keyframes demoInlinePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.5); }
+    }
     /* Page-specific overrides */
     .card {
       padding: 24px;
@@ -1211,8 +1233,13 @@
       <!-- Main Content + Right Sidebar -->
       <div class="content-with-aside">
       <main class="settings-container">
-        <div class="page-header">
+        <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;">
           <h1 class="page-header__title">Klinikadministration</h1>
+          <button class="demo-launch-inline" onclick="window.location.href='admin-klinik.html?demo'">
+            <span class="demo-launch-inline__pulse"></span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Se demo
+          </button>
         </div>
 
         <!-- 4-Tab Navigation -->

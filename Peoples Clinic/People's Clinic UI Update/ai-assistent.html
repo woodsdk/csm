@@ -134,15 +134,26 @@
     }
 
     .btn-demo-header {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 6px 14px; border: 1px dashed var(--color-navy-400);
-      border-radius: var(--radius-full); background: var(--color-white);
-      cursor: pointer; font-family: inherit; font-size: var(--font-size-xs);
-      font-weight: 600; color: var(--color-navy-500);
-      transition: all var(--transition-fast);
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 20px; background: linear-gradient(135deg, #3B4D7A, #5669A4);
+      color: white; border: none; border-radius: 50px;
+      font-family: inherit; font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; box-shadow: 0 4px 16px rgba(59, 77, 122, 0.25);
+      transition: all 0.2s ease; letter-spacing: 0.01em;
     }
-    .btn-demo-header:hover { background: rgba(86,105,164,0.04); border-style: solid; }
+    .btn-demo-header:hover {
+      background: linear-gradient(135deg, #2F3D62, #4A5D96);
+      transform: translateY(-1px); box-shadow: 0 6px 20px rgba(59, 77, 122, 0.35);
+    }
     .btn-demo-header i { width: 14px; height: 14px; }
+    .btn-demo-header__pulse {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #34D399; animation: demoInlinePulse 2s ease-in-out infinite;
+    }
+    @keyframes demoInlinePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.5); }
+    }
 
     .ai-sidebar-toggle {
       display: none;
@@ -977,15 +988,7 @@
       border-color: #D4655C;
       background: rgba(212, 101, 92, 0.06);
     }
-    .mode-support .btn-demo-header {
-      color: #A34840;
-      border-color: rgba(212, 101, 92, 0.4);
-    }
-    .mode-support .btn-demo-header:hover {
-      color: #8B3B34;
-      border-color: #D4655C;
-      background: rgba(212, 101, 92, 0.04);
-    }
+    /* Demo button stays consistent in support mode */
 
     /* — Inactive mode tabs (both input bar + welcome) — */
     .mode-support .chat-mode-tab {
@@ -1207,7 +1210,7 @@
                   </div>
                 </div>
               </div>
-              <button class="btn-demo-header" id="btnDemo"><i data-lucide="play-circle"></i>Demo</button>
+              <button class="btn-demo-header" id="btnDemo"><span class="btn-demo-header__pulse"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polygon points="5 3 19 12 5 21 5 3"/></svg>Se demo</button>
               <button class="ai-sidebar-toggle" id="aiSidebarToggle" title="Kontekstpanel"><i data-lucide="panel-right"></i></button>
             </div>
           </div>
