@@ -124,14 +124,6 @@
 
       <!-- Main Content -->
       <main class="main">
-        <!-- Demo launch header -->
-        <div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:8px;">
-          <button class="demo-launch-inline" id="demoLaunchInline" onclick="window.location.href='platform-preview.html?demo'">
-            <span class="demo-launch-inline__pulse"></span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            Se demo
-          </button>
-        </div>
         <!-- Top Section: Form + Table side by side -->
         <div class="main__top">
           <!-- Left Column: Start Konsultation -->
@@ -240,7 +232,14 @@
 
           <!-- Center Column: Seneste konsultationer + Onboarding nudge -->
           <div class="main__center">
-            <h1 class="card__title">Seneste konsultationer</h1>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0;">
+              <h1 class="card__title" style="margin-bottom:0;">Seneste konsultationer</h1>
+              <button class="demo-launch-inline" id="demoLaunchInline" onclick="window.location.href='platform-preview.html?demo'">
+                <span class="demo-launch-inline__pulse"></span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Se demo
+              </button>
+            </div>
             <div class="card card--full card--table">
               <table class="table table--history">
                 <thead>
