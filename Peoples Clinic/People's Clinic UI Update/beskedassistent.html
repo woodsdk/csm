@@ -1181,6 +1181,454 @@
     // ═══════════════════════════════════════
     initChat();
     renderMessageList();
+
+    // ═══════════════════════════════════════
+    // INTERACTIVE DEMO MODE (?demo)
+    // ═══════════════════════════════════════
+    (function() {
+      if (!window.location.search.includes('demo')) return;
+
+      // ── Demo CSS ──
+      var demoStyle = document.createElement('style');
+      demoStyle.textContent = `
+        /* Overlay & Modal */
+        .demo-overlay {
+          position: fixed; inset: 0; z-index: 9000;
+          background: rgba(15, 23, 42, 0.70);
+          backdrop-filter: blur(6px);
+          display: flex; align-items: center; justify-content: center;
+          opacity: 0; transition: opacity 0.4s ease;
+        }
+        .demo-overlay.visible { opacity: 1; }
+        .demo-overlay.hidden { pointer-events: none; opacity: 0; }
+
+        .demo-modal {
+          background: white; border-radius: 20px;
+          max-width: 560px; width: 90%; padding: 48px 44px 40px;
+          box-shadow: 0 25px 80px rgba(0,0,0,0.25);
+          transform: translateY(20px) scale(0.97);
+          transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          text-align: center;
+        }
+        .demo-overlay.visible .demo-modal {
+          transform: translateY(0) scale(1);
+        }
+        .demo-modal__icon {
+          width: 64px; height: 64px; margin: 0 auto 20px;
+          border-radius: 16px;
+          background: linear-gradient(135deg, #3B4D7A, #5669A4);
+          display: flex; align-items: center; justify-content: center;
+        }
+        .demo-modal__icon svg { width: 30px; height: 30px; color: white; }
+        .demo-modal__title {
+          font-size: 22px; font-weight: 700; color: #1a202c;
+          margin-bottom: 8px; line-height: 1.3;
+        }
+        .demo-modal__subtitle {
+          font-size: 14px; color: #64748b; margin-bottom: 28px; line-height: 1.6;
+        }
+        .demo-modal__features {
+          text-align: left; margin-bottom: 32px;
+          display: flex; flex-direction: column; gap: 14px;
+        }
+        .demo-feature {
+          display: flex; gap: 14px; align-items: flex-start;
+        }
+        .demo-feature__num {
+          width: 28px; height: 28px; min-width: 28px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #3B4D7A, #5669A4);
+          color: white; font-size: 13px; font-weight: 700;
+          display: flex; align-items: center; justify-content: center;
+        }
+        .demo-feature__text {
+          font-size: 14px; line-height: 1.55; color: #334155;
+        }
+        .demo-feature__text strong { color: #1a202c; font-weight: 600; }
+        .demo-btn {
+          display: inline-flex; align-items: center; gap: 8px;
+          padding: 14px 36px; border-radius: 12px; border: none;
+          background: linear-gradient(135deg, #3B4D7A, #5669A4);
+          color: white; font-size: 15px; font-weight: 600;
+          cursor: pointer; font-family: inherit;
+          transition: all 0.2s ease;
+          box-shadow: 0 4px 16px rgba(59, 77, 122, 0.3);
+        }
+        .demo-btn:hover {
+          background: linear-gradient(135deg, #2F3D62, #4A5D96);
+          transform: translateY(-1px);
+          box-shadow: 0 6px 20px rgba(59, 77, 122, 0.4);
+        }
+        .demo-btn svg { width: 18px; height: 18px; }
+
+        /* Spotlight & Tooltip */
+        .demo-spotlight {
+          position: fixed; z-index: 8500;
+          border: 3px solid #5669A4;
+          border-radius: 12px;
+          box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.55), 0 0 30px rgba(86, 105, 164, 0.3);
+          transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+          pointer-events: none;
+          opacity: 0;
+        }
+        .demo-spotlight.visible { opacity: 1; }
+
+        .demo-tooltip {
+          position: fixed; z-index: 8600;
+          background: white; border-radius: 14px;
+          padding: 18px 22px; max-width: 340px;
+          box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+          opacity: 0; transform: translateY(8px);
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          pointer-events: none;
+        }
+        .demo-tooltip.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .demo-tooltip__step {
+          display: inline-flex; align-items: center; gap: 6px;
+          font-size: 11px; font-weight: 700; color: #5669A4;
+          text-transform: uppercase; letter-spacing: 0.5px;
+          margin-bottom: 6px;
+        }
+        .demo-tooltip__text {
+          font-size: 14px; line-height: 1.6; color: #334155;
+        }
+        .demo-tooltip__text strong { color: #1a202c; }
+
+        /* Typing cursor */
+        .demo-typing-cursor {
+          display: inline-block; width: 2px; height: 16px;
+          background: #5669A4; margin-left: 1px;
+          animation: demoBlink 0.8s step-end infinite;
+          vertical-align: text-bottom;
+        }
+        @keyframes demoBlink { 50% { opacity: 0; } }
+
+        /* Progress bar at top */
+        .demo-progress {
+          position: fixed; top: 0; left: 0; right: 0;
+          height: 4px; z-index: 9500;
+          background: rgba(86, 105, 164, 0.15);
+        }
+        .demo-progress__fill {
+          height: 100%; width: 0%;
+          background: linear-gradient(90deg, #3B4D7A, #5669A4);
+          transition: width 0.8s ease;
+          border-radius: 0 2px 2px 0;
+        }
+      `;
+      document.head.appendChild(demoStyle);
+
+      // ── Create DOM elements ──
+      var overlay = document.createElement('div');
+      overlay.className = 'demo-overlay';
+      overlay.innerHTML = `
+        <div class="demo-modal">
+          <div class="demo-modal__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </div>
+          <div class="demo-modal__title">Beskedassistenten</div>
+          <div class="demo-modal__subtitle">AI-drevet beskedhåndtering for sundhedspersonale</div>
+          <div class="demo-modal__features">
+            <div class="demo-feature">
+              <div class="demo-feature__num">1</div>
+              <div class="demo-feature__text"><strong>Centraliser alle patientbeskeder</strong> — Beskedassistenten forbinder til sundhedspersonalens eksisterende beskedsystemer (Min Læge, e-mail m.fl.) og samler alle henvendelser ét sted.</div>
+            </div>
+            <div class="demo-feature">
+              <div class="demo-feature__num">2</div>
+              <div class="demo-feature__text"><strong>AI-genererede svarudkast</strong> — Gennem simple chat-prompts kan du bede People's Clinic om at generere korrekte, fagligt funderede svar tilpasset den enkelte patient.</div>
+            </div>
+            <div class="demo-feature">
+              <div class="demo-feature__num">3</div>
+              <div class="demo-feature__text"><strong>Rediger, godkend og kopier</strong> — Udkast kan redigeres, godkendes som journalnotat, eller kopieres direkte tilbage til patientens beskedsystem.</div>
+            </div>
+          </div>
+          <button class="demo-btn" id="demoStartBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Se demo
+          </button>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      var spotlight = document.createElement('div');
+      spotlight.className = 'demo-spotlight';
+      document.body.appendChild(spotlight);
+
+      var tooltip = document.createElement('div');
+      tooltip.className = 'demo-tooltip';
+      document.body.appendChild(tooltip);
+
+      var progressBar = document.createElement('div');
+      progressBar.className = 'demo-progress';
+      progressBar.innerHTML = '<div class="demo-progress__fill" id="demoProgressFill"></div>';
+      document.body.appendChild(progressBar);
+
+      // Show intro modal
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          overlay.classList.add('visible');
+        });
+      });
+
+      // ── Utility functions ──
+      function wait(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
+
+      function setProgress(pct) {
+        document.getElementById('demoProgressFill').style.width = pct + '%';
+      }
+
+      function showSpotlight(el, padding) {
+        padding = padding || 8;
+        var r = el.getBoundingClientRect();
+        spotlight.style.top = (r.top - padding) + 'px';
+        spotlight.style.left = (r.left - padding) + 'px';
+        spotlight.style.width = (r.width + padding * 2) + 'px';
+        spotlight.style.height = (r.height + padding * 2) + 'px';
+        spotlight.classList.add('visible');
+      }
+
+      function hideSpotlight() { spotlight.classList.remove('visible'); }
+
+      function showTooltip(el, stepNum, text, position) {
+        position = position || 'right';
+        var r = el.getBoundingClientRect();
+        tooltip.innerHTML =
+          '<div class="demo-tooltip__step">Trin ' + stepNum + '</div>' +
+          '<div class="demo-tooltip__text">' + text + '</div>';
+        tooltip.classList.remove('visible');
+
+        if (position === 'right') {
+          tooltip.style.top = r.top + 'px';
+          tooltip.style.left = (r.right + 16) + 'px';
+          tooltip.style.bottom = 'auto';
+        } else if (position === 'left') {
+          tooltip.style.top = r.top + 'px';
+          tooltip.style.left = (r.left - 360) + 'px';
+          tooltip.style.bottom = 'auto';
+        } else if (position === 'top') {
+          tooltip.style.top = (r.top - 110) + 'px';
+          tooltip.style.left = r.left + 'px';
+          tooltip.style.bottom = 'auto';
+        } else if (position === 'bottom') {
+          tooltip.style.top = (r.bottom + 16) + 'px';
+          tooltip.style.left = r.left + 'px';
+          tooltip.style.bottom = 'auto';
+        }
+
+        requestAnimationFrame(function() { tooltip.classList.add('visible'); });
+      }
+
+      function hideTooltip() { tooltip.classList.remove('visible'); }
+
+      function typeText(inputEl, text, speed) {
+        speed = speed || 45;
+        return new Promise(function(resolve) {
+          var i = 0;
+          inputEl.value = '';
+          inputEl.focus();
+          var interval = setInterval(function() {
+            if (i < text.length) {
+              inputEl.value += text[i];
+              inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+              i++;
+            } else {
+              clearInterval(interval);
+              resolve();
+            }
+          }, speed);
+        });
+      }
+
+      // ── Demo sequence ──
+      document.getElementById('demoStartBtn').addEventListener('click', async function() {
+        // Close modal
+        overlay.classList.remove('visible');
+        overlay.classList.add('hidden');
+        await wait(500);
+
+        // ══════════════════════════════
+        // DEMO PATIENT 1: Karen Møller
+        // ══════════════════════════════
+        setProgress(5);
+
+        // Step 1: Highlight inbox
+        var inboxEl = document.querySelector('.ba-inbox');
+        showSpotlight(inboxEl, 4);
+        showTooltip(inboxEl, 1, '<strong>Indbakken</strong> samler automatisk alle beskeder fra patienternes kontaktkanaler — Min Læge, e-mail og andre systemer.', 'right');
+        await wait(4000);
+
+        // Step 2: Click Karen Møller
+        setProgress(15);
+        hideTooltip();
+        await wait(300);
+        var firstMsg = document.querySelector('.ba-msg[data-id="1"]');
+        showSpotlight(firstMsg, 4);
+        showTooltip(firstMsg, 2, '<strong>Karen Møller</strong> har skrevet om svimmelhed efter medicinændring. Lad os se hendes besked.', 'right');
+        await wait(3000);
+
+        // Auto-click
+        firstMsg.click();
+        await wait(800);
+
+        // Step 3: Show original message
+        setProgress(25);
+        hideTooltip();
+        await wait(300);
+        var originalMsg = document.querySelector('.ba-original');
+        showSpotlight(originalMsg, 6);
+        showTooltip(originalMsg, 3, 'Her ser du <strong>den originale patientbesked</strong>. Karen er bekymret over svimmelhed som bivirkning af Amlodipin 5mg.', 'left');
+        await wait(5000);
+
+        // Step 4: Focus on chat input
+        setProgress(35);
+        hideTooltip();
+        await wait(300);
+        var chatInput = document.getElementById('chatInput');
+        var chatBar = document.querySelector('.ba-chat__input-bar');
+        showSpotlight(chatBar, 4);
+        showTooltip(chatBar, 4, 'Nu skriver du en <strong>instruktion til AI\'en</strong> — f.eks. hvad svaret skal indeholde, tone, eller specifikke anbefalinger.', 'top');
+        await wait(4000);
+
+        // Step 5: Type prompt
+        setProgress(45);
+        hideTooltip();
+        hideSpotlight();
+        await wait(400);
+        await typeText(chatInput, 'Skriv et professionelt svar. Forklar at svimmelhed er en kendt bivirkning, hun skal ikke stoppe medicinen, og bestille kontroltid.', 35);
+        await wait(1500);
+
+        // Step 6: Send prompt
+        setProgress(55);
+        document.getElementById('chatSend').click();
+        await wait(600);
+
+        // Show generating state
+        var chatHistory = document.getElementById('chatHistory');
+        showSpotlight(chatHistory, 4);
+        showTooltip(chatHistory, 5, 'People\'s Clinic <strong>genererer et udkast</strong> baseret på din instruktion, patientens besked og klinisk viden.', 'top');
+        await wait(2500);
+
+        // Wait for draft to appear
+        hideTooltip();
+        hideSpotlight();
+        await wait(1000);
+
+        // Step 7: Highlight generated draft
+        setProgress(65);
+        var draftEl = document.querySelector('.ba-draft');
+        if (draftEl) {
+          showSpotlight(draftEl, 6);
+          showTooltip(draftEl, 6, 'Her er det <strong>AI-genererede svarudkast</strong>. Det er redigerbart — du kan justere teksten direkte. Udkastet kan <strong>kopieres</strong> tilbage til Min Læge eller <strong>godkendes som journalnotat</strong>.', 'left');
+          await wait(6000);
+        }
+
+        // Step 8: Highlight action buttons
+        setProgress(72);
+        hideTooltip();
+        await wait(300);
+        var actionBtns = document.getElementById('actionButtons');
+        showSpotlight(actionBtns, 6);
+        showTooltip(actionBtns, 7, '<strong>Godkend</strong> gemmer som journalnotat. <strong>Kopier</strong> lader dig indsætte svaret direkte i patientens beskedsystem.', 'top');
+        await wait(4500);
+
+        // Approve Karen
+        hideTooltip();
+        hideSpotlight();
+        await wait(300);
+        document.getElementById('btnApprove').click();
+        await wait(1500);
+
+        // ══════════════════════════════
+        // DEMO PATIENT 2: Peter Hansen
+        // ══════════════════════════════
+        setProgress(80);
+
+        // Click Peter Hansen
+        var secondMsg = document.querySelector('.ba-msg[data-id="2"]');
+        if (secondMsg) {
+          showSpotlight(secondMsg, 4);
+          showTooltip(secondMsg, 8, 'Videre til <strong>Peter Hansen</strong> — en simpel receptfornyelse. Lad os se hvor hurtigt det kan håndteres.', 'right');
+          await wait(3000);
+
+          secondMsg.click();
+          await wait(800);
+
+          hideTooltip();
+          hideSpotlight();
+          await wait(500);
+
+          // Show original
+          setProgress(85);
+          var originalMsg2 = document.querySelector('.ba-original');
+          showSpotlight(originalMsg2, 6);
+          showTooltip(originalMsg2, 9, 'Peter beder simpelthen om <strong>fornyelse af Metformin</strong> og ønsker recepten sendt til et specifikt apotek.', 'left');
+          await wait(4000);
+
+          // Type prompt
+          setProgress(90);
+          hideTooltip();
+          hideSpotlight();
+          await wait(400);
+          var chatInput2 = document.getElementById('chatInput');
+          await typeText(chatInput2, 'Bekræft receptfornyelse af Metformin 500mg, sendt til Apoteket Valby Langgade. Nævn at kontrolblodprøve anbefales.', 35);
+          await wait(1200);
+
+          // Send
+          setProgress(95);
+          document.getElementById('chatSend').click();
+          await wait(2500);
+
+          // Highlight draft
+          var draftEl2 = document.querySelector('.ba-draft');
+          if (draftEl2) {
+            showSpotlight(draftEl2, 6);
+            showTooltip(draftEl2, 10, 'Igen et <strong>komplet, professionelt svar</strong> — klar til at kopieres til Min Læge med ét klik.', 'left');
+            await wait(5000);
+          }
+        }
+
+        // ══════════════════════════════
+        // DEMO COMPLETE
+        // ══════════════════════════════
+        setProgress(100);
+        hideTooltip();
+        hideSpotlight();
+        await wait(600);
+
+        // Show completion modal
+        overlay.classList.remove('hidden');
+        overlay.querySelector('.demo-modal').innerHTML = `
+          <div class="demo-modal__icon" style="background: linear-gradient(135deg, #059669, #10B981);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div class="demo-modal__title">Demo afsluttet</div>
+          <div class="demo-modal__subtitle">Beskedassistenten gør det muligt for sundhedspersonale at håndtere patientbeskeder på minutter i stedet for timer — med AI-genererede, fagligt korrekte svar.</div>
+          <div class="demo-modal__features">
+            <div class="demo-feature">
+              <div class="demo-feature__num" style="background: linear-gradient(135deg, #059669, #10B981);">✓</div>
+              <div class="demo-feature__text">Integrerer med eksisterende beskedsystemer (Min Læge, e-mail, EPJ)</div>
+            </div>
+            <div class="demo-feature">
+              <div class="demo-feature__num" style="background: linear-gradient(135deg, #059669, #10B981);">✓</div>
+              <div class="demo-feature__text">AI-genererede svar baseret på klinisk viden og patientkontext</div>
+            </div>
+            <div class="demo-feature">
+              <div class="demo-feature__num" style="background: linear-gradient(135deg, #059669, #10B981);">✓</div>
+              <div class="demo-feature__text">Lægen har altid fuld kontrol — rediger, godkend eller kassér</div>
+            </div>
+          </div>
+          <button class="demo-btn" onclick="window.location.href='beskedassistent.html'" style="background: linear-gradient(135deg, #059669, #10B981); box-shadow: 0 4px 16px rgba(5, 150, 105, 0.3);">
+            Prøv selv
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+        `;
+        overlay.classList.add('visible');
+      });
+    })();
   </script>
 </body>
 </html>
