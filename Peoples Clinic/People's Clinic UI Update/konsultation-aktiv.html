@@ -1733,12 +1733,25 @@
         showTooltip(huskePanel, 13, '<strong>Huskeliste</strong> — Din personlige huskeliste med ting du skal huske under konsultationer. Gemmes automatisk mellem sessioner.', 'right');
         await wait(6500);
 
-        // Trin 14: Action bar
+        // Trin 14: Action buttons (not full bar, just the buttons)
         setProgress(77);
         hideTooltip(); await wait(500);
-        var actionBar = document.querySelector('.action-bar');
-        showSpotlight(actionBar, 4);
-        showTooltip(actionBar, 14, '<strong>Afslut</strong> — Når konsultationen er færdig, pauser du optagelsen og klikker her for at gennemgå og redigere notatet.', 'top');
+        var copyBtn = document.getElementById('copyBtn');
+        var saveBtn = document.getElementById('saveBtn');
+        // Compute combined bounding box of both buttons
+        var r1 = copyBtn.getBoundingClientRect();
+        var r2 = saveBtn.getBoundingClientRect();
+        var combinedLeft = Math.min(r1.left, r2.left);
+        var combinedTop = Math.min(r1.top, r2.top);
+        var combinedRight = Math.max(r1.right, r2.right);
+        var combinedBottom = Math.max(r1.bottom, r2.bottom);
+        var pad = 8;
+        spotlight.style.top = (combinedTop - pad) + 'px';
+        spotlight.style.left = (combinedLeft - pad) + 'px';
+        spotlight.style.width = (combinedRight - combinedLeft + pad * 2) + 'px';
+        spotlight.style.height = (combinedBottom - combinedTop + pad * 2) + 'px';
+        spotlight.classList.add('visible');
+        showTooltip(copyBtn, 14, '<strong>Afslut</strong> — Når konsultationen er færdig, pauser du optagelsen og klikker her for at gennemgå og redigere notatet.', 'top');
         await wait(6500);
 
         // Auto-pause recording
