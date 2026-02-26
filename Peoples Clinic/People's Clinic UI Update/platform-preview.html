@@ -824,10 +824,259 @@
       50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(52, 211, 153, 0); }
     }
   </style>
-  <button class="demo-launch" onclick="window.location.href='platform-preview.html?demo'">
-    <span class="demo-launch__pulse"></span>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-    Se interaktiv demo
-  </button>
+  <script>
+  // Only show launch button when NOT in demo mode
+  if (!window.location.search.includes('demo')) {
+    document.write('<button class="demo-launch" onclick="window.location.href=\'platform-preview.html?demo\'"><span class="demo-launch__pulse"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Se interaktiv demo</button>');
+  }
+  </script>
+
+  <!-- ═══════════════════════════════════════════
+       KONSULTATION GUIDED TOUR (?demo)
+       ═══════════════════════════════════════════ -->
+  <script>
+  (function() {
+    if (!window.location.search.includes('demo')) return;
+
+    // Suppress onboarding nudge in demo mode
+    var nudge = document.getElementById('onboardingNudge');
+    if (nudge) nudge.style.display = 'none';
+
+    // ── Shared Demo CSS ──
+    var s = document.createElement('style');
+    s.textContent = `
+      .demo-overlay {
+        position: fixed; inset: 0; z-index: 9000;
+        background: rgba(15, 23, 42, 0.70);
+        backdrop-filter: blur(6px);
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; transition: opacity 0.4s ease;
+      }
+      .demo-overlay.visible { opacity: 1; }
+      .demo-overlay.hidden { pointer-events: none; opacity: 0; }
+      .demo-modal {
+        background: white; border-radius: 20px;
+        max-width: 580px; width: 92%; padding: 48px 44px 40px;
+        box-shadow: 0 25px 80px rgba(0,0,0,0.25);
+        transform: translateY(20px) scale(0.97);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        text-align: center;
+      }
+      .demo-overlay.visible .demo-modal { transform: translateY(0) scale(1); }
+      .demo-modal__icon {
+        width: 64px; height: 64px; margin: 0 auto 20px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #3B4D7A, #5669A4);
+        display: flex; align-items: center; justify-content: center;
+      }
+      .demo-modal__icon svg { width: 30px; height: 30px; color: white; }
+      .demo-modal__title { font-size: 22px; font-weight: 700; color: #1a202c; margin-bottom: 8px; line-height: 1.3; }
+      .demo-modal__subtitle { font-size: 14px; color: #64748b; margin-bottom: 28px; line-height: 1.6; }
+      .demo-modal__features { text-align: left; margin-bottom: 32px; display: flex; flex-direction: column; gap: 14px; }
+      .demo-feature { display: flex; gap: 14px; align-items: flex-start; }
+      .demo-feature__num {
+        width: 28px; height: 28px; min-width: 28px; border-radius: 50%;
+        background: linear-gradient(135deg, #3B4D7A, #5669A4);
+        color: white; font-size: 13px; font-weight: 700;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .demo-feature__text { font-size: 14px; line-height: 1.55; color: #334155; }
+      .demo-feature__text strong { color: #1a202c; font-weight: 600; }
+      .demo-btn {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 14px 36px; border-radius: 12px; border: none;
+        background: linear-gradient(135deg, #3B4D7A, #5669A4);
+        color: white; font-size: 15px; font-weight: 600;
+        cursor: pointer; font-family: inherit;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 16px rgba(59, 77, 122, 0.3);
+      }
+      .demo-btn:hover { background: linear-gradient(135deg, #2F3D62, #4A5D96); transform: translateY(-1px); }
+      .demo-btn svg { width: 18px; height: 18px; }
+      .demo-spotlight {
+        position: fixed; z-index: 8500;
+        border: 3px solid #5669A4; border-radius: 12px;
+        box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.55), 0 0 30px rgba(86, 105, 164, 0.3);
+        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none; opacity: 0;
+      }
+      .demo-spotlight.visible { opacity: 1; }
+      .demo-tooltip {
+        position: fixed; z-index: 8600;
+        background: white; border-radius: 14px;
+        padding: 18px 22px; max-width: 360px;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+        opacity: 0; transform: translateY(8px);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none;
+      }
+      .demo-tooltip.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+      .demo-tooltip__step {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-size: 11px; font-weight: 700; color: #5669A4;
+        text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
+      }
+      .demo-tooltip__text { font-size: 14px; line-height: 1.6; color: #334155; }
+      .demo-tooltip__text strong { color: #1a202c; }
+      .demo-progress {
+        position: fixed; top: 0; left: 0; right: 0;
+        height: 4px; z-index: 9500;
+        background: rgba(86, 105, 164, 0.15);
+      }
+      .demo-progress__fill {
+        height: 100%; width: 0%;
+        background: linear-gradient(90deg, #3B4D7A, #5669A4);
+        transition: width 0.8s ease; border-radius: 0 2px 2px 0;
+      }
+    `;
+    document.head.appendChild(s);
+
+    // ── Create DOM ──
+    var overlay = document.createElement('div');
+    overlay.className = 'demo-overlay';
+    overlay.innerHTML = '<div class="demo-modal">' +
+      '<div class="demo-modal__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg></div>' +
+      '<div class="demo-modal__title">Konsultationsflowet</div>' +
+      '<div class="demo-modal__subtitle">Se hvordan People\'s Clinic automatiserer journalføring fra samtale til færdigt notat</div>' +
+      '<div class="demo-modal__features">' +
+        '<div class="demo-feature"><div class="demo-feature__num">1</div><div class="demo-feature__text"><strong>Start konsultation</strong> — Indtast patientinfo, vælg notatskabelon og mikrofon — klar på 10 sekunder.</div></div>' +
+        '<div class="demo-feature"><div class="demo-feature__num">2</div><div class="demo-feature__text"><strong>AI lytter med i realtid</strong> — Under konsultationen transskriberes samtalen live, og et struktureret notat genereres automatisk.</div></div>' +
+        '<div class="demo-feature"><div class="demo-feature__num">3</div><div class="demo-feature__text"><strong>Rediger, godkend og gem</strong> — Gennemgå det AI-genererede notat, tilpas det, og kopier det direkte til dit journalsystem.</div></div>' +
+      '</div>' +
+      '<button class="demo-btn" id="demoStartBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Se demo</button>' +
+    '</div>';
+    document.body.appendChild(overlay);
+
+    var spotlight = document.createElement('div');
+    spotlight.className = 'demo-spotlight';
+    document.body.appendChild(spotlight);
+
+    var tooltip = document.createElement('div');
+    tooltip.className = 'demo-tooltip';
+    document.body.appendChild(tooltip);
+
+    var progressBar = document.createElement('div');
+    progressBar.className = 'demo-progress';
+    progressBar.innerHTML = '<div class="demo-progress__fill" id="demoProgressFill"></div>';
+    document.body.appendChild(progressBar);
+
+    // Show modal
+    requestAnimationFrame(function() { requestAnimationFrame(function() { overlay.classList.add('visible'); }); });
+
+    // ── Helpers ──
+    function wait(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
+    function setProgress(p) { document.getElementById('demoProgressFill').style.width = p + '%'; }
+    function showSpotlight(el, pad) {
+      pad = pad || 8;
+      var r = el.getBoundingClientRect();
+      spotlight.style.top = (r.top - pad) + 'px';
+      spotlight.style.left = (r.left - pad) + 'px';
+      spotlight.style.width = (r.width + pad * 2) + 'px';
+      spotlight.style.height = (r.height + pad * 2) + 'px';
+      spotlight.classList.add('visible');
+    }
+    function hideSpotlight() { spotlight.classList.remove('visible'); }
+    function showTooltip(el, step, text, pos) {
+      pos = pos || 'right';
+      var r = el.getBoundingClientRect();
+      tooltip.innerHTML = '<div class="demo-tooltip__step">Trin ' + step + '</div><div class="demo-tooltip__text">' + text + '</div>';
+      tooltip.classList.remove('visible');
+      tooltip.style.bottom = 'auto';
+      if (pos === 'right') { tooltip.style.top = r.top + 'px'; tooltip.style.left = (r.right + 16) + 'px'; }
+      else if (pos === 'left') { tooltip.style.top = r.top + 'px'; tooltip.style.left = (r.left - 380) + 'px'; }
+      else if (pos === 'top') { tooltip.style.top = (r.top - 120) + 'px'; tooltip.style.left = r.left + 'px'; }
+      else if (pos === 'bottom') { tooltip.style.top = (r.bottom + 16) + 'px'; tooltip.style.left = r.left + 'px'; }
+      requestAnimationFrame(function() { tooltip.classList.add('visible'); });
+    }
+    function hideTooltip() { tooltip.classList.remove('visible'); }
+    function typeInto(el, text, speed) {
+      speed = speed || 50;
+      return new Promise(function(resolve) {
+        var i = 0; el.value = ''; el.focus();
+        var iv = setInterval(function() {
+          if (i < text.length) { el.value += text[i]; el.dispatchEvent(new Event('input', { bubbles: true })); i++; }
+          else { clearInterval(iv); resolve(); }
+        }, speed);
+      });
+    }
+
+    // ── Demo sequence ──
+    document.getElementById('demoStartBtn').addEventListener('click', async function() {
+      overlay.classList.remove('visible');
+      overlay.classList.add('hidden');
+      await wait(800);
+
+      // ═══════════════════════════════════════
+      // FASE 1: STARTSKÆRM
+      // ═══════════════════════════════════════
+      setProgress(3);
+
+      // Trin 1: Hele formular-kortet
+      var formCard = document.querySelector('.main__left .card');
+      showSpotlight(formCard, 6);
+      showTooltip(formCard, 1, '<strong>Start konsultation</strong> — Her forbereder du konsultationen. Indtast patientinfo, vælg skabelon og tjek mikrofonen.', 'right');
+      await wait(7000);
+
+      // Trin 2: Fødselsdato + navn-felter
+      setProgress(7);
+      hideTooltip(); await wait(500);
+      var formRow = document.querySelector('.form-row');
+      showSpotlight(formRow, 4);
+      showTooltip(formRow, 2, '<strong>Patientidentifikation</strong> — Indtast fødselsdato og patientnavn. Bruges til at matche journaldata.', 'right');
+      await wait(6000);
+
+      // Trin 3: Auto-udfyld
+      setProgress(12);
+      hideTooltip(); await wait(400);
+      var inputs = formRow.querySelectorAll('input');
+      var bdayInput = inputs[0];
+      var nameInput = inputs[1];
+      await typeInto(bdayInput, '120356', 70);
+      await wait(500);
+      await typeInto(nameInput, 'Karen Møller', 60);
+      await wait(2000);
+
+      // Trin 4: Notattype dropdown
+      setProgress(18);
+      var templateDd = document.getElementById('templateDropdown');
+      showSpotlight(templateDd, 4);
+      showTooltip(templateDd, 3, '<strong>Vælg notatskabelon</strong> — Vælg mellem SOAP, PSOAP, fritekst m.fl. Skabelonen bestemmer strukturen på dit færdige notat.', 'right');
+      await wait(6500);
+
+      // Trin 5: Mikrofon + signal
+      setProgress(23);
+      hideTooltip(); await wait(500);
+      var micSection = document.querySelector('.mic-test');
+      var micDd = document.getElementById('micDropdown');
+      var micArea = micDd || micSection;
+      showSpotlight(micArea, 6);
+      showTooltip(micArea, 4, '<strong>Mikrofon</strong> — Vælg din mikrofon og bekræft at signalet er godt. Grønne bars = klar til optagelse.', 'right');
+      await wait(6500);
+
+      // Trin 6: Start knap
+      setProgress(28);
+      hideTooltip(); await wait(500);
+      var startBtn = document.querySelector('.btn-primary');
+      showSpotlight(startBtn, 4);
+      showTooltip(startBtn, 5, '<strong>Start!</strong> — Når alt er klar, starter du konsultationen. People\'s Clinic begynder at lytte og transskribere.', 'right');
+      await wait(6000);
+
+      // Trin 7: Seneste konsultationer
+      setProgress(32);
+      hideTooltip(); await wait(500);
+      var historyTable = document.querySelector('.main__center');
+      showSpotlight(historyTable, 6);
+      showTooltip(historyTable, 6, '<strong>Seneste konsultationer</strong> — Her ser du dine tidligere konsultationer. Du kan altid gå tilbage og kopiere eller redigere et notat.', 'left');
+      await wait(6500);
+
+      // Navigate to konsultation-aktiv
+      setProgress(35);
+      hideTooltip();
+      hideSpotlight();
+      await wait(800);
+      window.location.href = 'konsultation-aktiv.html?demo';
+    });
+  })();
+  </script>
 </body>
 </html>

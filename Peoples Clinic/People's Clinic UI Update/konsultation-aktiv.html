@@ -1611,6 +1611,147 @@
         }, 1500);
       });
     }
+
+    // ═══════════════════════════════════════
+    // KONSULTATION GUIDED TOUR — FASE 2 (?demo)
+    // ═══════════════════════════════════════
+    (function() {
+      if (!window.location.search.includes('demo')) return;
+
+      var s = document.createElement('style');
+      s.textContent = `
+        .demo-spotlight { position:fixed;z-index:8500;border:3px solid #5669A4;border-radius:12px;box-shadow:0 0 0 9999px rgba(15,23,42,0.55),0 0 30px rgba(86,105,164,0.3);transition:all 0.6s cubic-bezier(0.16,1,0.3,1);pointer-events:none;opacity:0; }
+        .demo-spotlight.visible { opacity:1; }
+        .demo-tooltip { position:fixed;z-index:8600;background:white;border-radius:14px;padding:18px 22px;max-width:360px;box-shadow:0 12px 40px rgba(0,0,0,0.18);opacity:0;transform:translateY(8px);transition:all 0.4s cubic-bezier(0.16,1,0.3,1);pointer-events:none; }
+        .demo-tooltip.visible { opacity:1;transform:translateY(0);pointer-events:auto; }
+        .demo-tooltip__step { display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:#5669A4;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px; }
+        .demo-tooltip__text { font-size:14px;line-height:1.6;color:#334155; }
+        .demo-tooltip__text strong { color:#1a202c; }
+        .demo-progress { position:fixed;top:0;left:0;right:0;height:4px;z-index:9500;background:rgba(86,105,164,0.15); }
+        .demo-progress__fill { height:100%;width:35%;background:linear-gradient(90deg,#3B4D7A,#5669A4);transition:width 0.8s ease;border-radius:0 2px 2px 0; }
+      `;
+      document.head.appendChild(s);
+
+      var spotlight = document.createElement('div');
+      spotlight.className = 'demo-spotlight';
+      document.body.appendChild(spotlight);
+      var tooltip = document.createElement('div');
+      tooltip.className = 'demo-tooltip';
+      document.body.appendChild(tooltip);
+      var pb = document.createElement('div');
+      pb.className = 'demo-progress';
+      pb.innerHTML = '<div class="demo-progress__fill" id="demoProgressFill"></div>';
+      document.body.appendChild(pb);
+
+      function wait(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
+      function setProgress(p) { document.getElementById('demoProgressFill').style.width = p + '%'; }
+      function showSpotlight(el, pad) {
+        pad = pad || 8; var r = el.getBoundingClientRect();
+        spotlight.style.top = (r.top - pad) + 'px'; spotlight.style.left = (r.left - pad) + 'px';
+        spotlight.style.width = (r.width + pad * 2) + 'px'; spotlight.style.height = (r.height + pad * 2) + 'px';
+        spotlight.classList.add('visible');
+      }
+      function hideSpotlight() { spotlight.classList.remove('visible'); }
+      function showTooltip(el, step, text, pos) {
+        pos = pos || 'right'; var r = el.getBoundingClientRect();
+        tooltip.innerHTML = '<div class="demo-tooltip__step">Trin ' + step + '</div><div class="demo-tooltip__text">' + text + '</div>';
+        tooltip.classList.remove('visible'); tooltip.style.bottom = 'auto';
+        if (pos === 'right') { tooltip.style.top = r.top + 'px'; tooltip.style.left = (r.right + 16) + 'px'; }
+        else if (pos === 'left') { tooltip.style.top = r.top + 'px'; tooltip.style.left = (r.left - 380) + 'px'; }
+        else if (pos === 'top') { tooltip.style.top = (r.top - 130) + 'px'; tooltip.style.left = r.left + 'px'; }
+        else if (pos === 'bottom') { tooltip.style.top = (r.bottom + 16) + 'px'; tooltip.style.left = r.left + 'px'; }
+        requestAnimationFrame(function() { tooltip.classList.add('visible'); });
+      }
+      function hideTooltip() { tooltip.classList.remove('visible'); }
+
+      // Start demo after small delay (let page render)
+      (async function() {
+        await wait(1500);
+
+        // Trin 7: Hele konsultationsheaderen
+        setProgress(38);
+        var header = document.querySelector('.consultation-header');
+        showSpotlight(header, 6);
+        showTooltip(header, 7, '<strong>Aktiv konsultation</strong> — Konsultationen kører nu. Du ser patientinfo, optagetid og optagestatus i toppen.', 'bottom');
+        await wait(7500);
+
+        // Trin 8: Record-knap + waveform
+        setProgress(43);
+        hideTooltip(); await wait(500);
+        var recordSection = document.querySelector('.recording-section');
+        showSpotlight(recordSection, 8);
+        showTooltip(recordSection, 8, '<strong>Optagelse</strong> — Den røde knap viser at People\'s Clinic lytter. Waveformen bekræfter at lyden opfanges. Du kan pause og genoptage efter behov.', 'bottom');
+        await wait(7500);
+
+        // Trin 9: Transskriptions-panelet
+        setProgress(48);
+        hideTooltip(); await wait(500);
+        var transcriptPanel = document.querySelectorAll('.consultation-panel')[0];
+        showSpotlight(transcriptPanel, 4);
+        showTooltip(transcriptPanel, 9, '<strong>Transskription</strong> — Samtalen transskriberes i realtid. Både læge- og patient-dialog adskilles automatisk.', 'right');
+        await wait(7500);
+
+        // Trin 10: Vent på transskription (den dukker op automatisk via countdown)
+        setProgress(52);
+        hideTooltip(); await wait(400);
+        showTooltip(transcriptPanel, 10, 'Transskriptionen vises automatisk når samtalen starter...', 'right');
+
+        // Wait for transcript to appear (check every 500ms)
+        var maxWait = 25000; var elapsed = 0;
+        await new Promise(function(resolve) {
+          var iv = setInterval(function() {
+            elapsed += 500;
+            var lines = document.getElementById('transcriptLines');
+            if ((lines && lines.style.display !== 'none') || elapsed >= maxWait) {
+              clearInterval(iv); resolve();
+            }
+          }, 500);
+        });
+        await wait(2000);
+
+        // Trin 11: Notater-panelet
+        setProgress(60);
+        hideTooltip(); await wait(500);
+        var notesPanel = document.querySelectorAll('.consultation-panel')[2];
+        showSpotlight(notesPanel, 4);
+        showTooltip(notesPanel, 11, '<strong>AI-genereret notat</strong> — Baseret på transskriptionen genererer People\'s Clinic automatisk et struktureret SOAP-notat. Ord streamer ind mens samtalen kører.', 'left');
+        await wait(8500);
+
+        // Trin 12: Patient resume
+        setProgress(66);
+        hideTooltip(); await wait(500);
+        var resumePanel = document.querySelectorAll('.consultation-panel')[3];
+        showSpotlight(resumePanel, 4);
+        showTooltip(resumePanel, 12, '<strong>Patientresume</strong> — AI\'en udtrækker automatisk nøgleinformation: symptomer, risikofaktorer, objektive fund. Du kan stille spørgsmål via chat-feltet.', 'left');
+        await wait(7500);
+
+        // Trin 13: Huskeliste
+        setProgress(72);
+        hideTooltip(); await wait(500);
+        var huskePanel = document.querySelectorAll('.consultation-panel')[1];
+        showSpotlight(huskePanel, 4);
+        showTooltip(huskePanel, 13, '<strong>Huskeliste</strong> — Din personlige huskeliste med ting du skal huske under konsultationer. Gemmes automatisk mellem sessioner.', 'right');
+        await wait(6500);
+
+        // Trin 14: Action bar
+        setProgress(77);
+        hideTooltip(); await wait(500);
+        var actionBar = document.querySelector('.action-bar');
+        showSpotlight(actionBar, 4);
+        showTooltip(actionBar, 14, '<strong>Afslut</strong> — Når konsultationen er færdig, pauser du optagelsen og klikker her for at gennemgå og redigere notatet.', 'top');
+        await wait(6500);
+
+        // Auto-pause recording
+        setProgress(80);
+        hideTooltip(); hideSpotlight();
+        await wait(400);
+        if (!isPaused) toggleRecording();
+        await wait(1200);
+
+        // Navigate to rediger
+        window.location.href = 'konsultation-rediger.html?demo';
+      })();
+    })();
   </script>
 </body>
 </html>

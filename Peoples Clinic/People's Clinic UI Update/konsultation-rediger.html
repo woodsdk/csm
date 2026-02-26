@@ -3160,6 +3160,183 @@
     addCorrectionButtons();
     updateLearningBadge();
 
+    // ═══════════════════════════════════════
+    // KONSULTATION GUIDED TOUR — FASE 3 (?demo)
+    // ═══════════════════════════════════════
+    (function() {
+      if (!window.location.search.includes('demo')) return;
+
+      // ─── Demo styles ───
+      var s = document.createElement('style');
+      s.textContent = `
+        .demo-spotlight { position:fixed;z-index:8500;border:3px solid #5669A4;border-radius:12px;box-shadow:0 0 0 9999px rgba(15,23,42,0.55),0 0 30px rgba(86,105,164,0.3);transition:all 0.6s cubic-bezier(0.16,1,0.3,1);pointer-events:none;opacity:0; }
+        .demo-spotlight.visible { opacity:1; }
+        .demo-tooltip { position:fixed;z-index:8600;background:white;border-radius:14px;padding:18px 22px;max-width:360px;box-shadow:0 12px 40px rgba(0,0,0,0.18);opacity:0;transform:translateY(8px);transition:all 0.4s cubic-bezier(0.16,1,0.3,1);pointer-events:none; }
+        .demo-tooltip.visible { opacity:1;transform:translateY(0);pointer-events:auto; }
+        .demo-tooltip__step { display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:#5669A4;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px; }
+        .demo-tooltip__text { font-size:14px;line-height:1.6;color:#334155; }
+        .demo-tooltip__text strong { color:#1a202c; }
+        .demo-progress { position:fixed;top:0;left:0;right:0;height:4px;z-index:9500;background:rgba(86,105,164,0.15); }
+        .demo-progress__fill { height:100%;width:80%;background:linear-gradient(90deg,#3B4D7A,#5669A4);transition:width 0.8s ease;border-radius:0 2px 2px 0; }
+        .demo-complete-overlay { position:fixed;inset:0;z-index:9600;background:rgba(15,23,42,0.6);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.5s ease; }
+        .demo-complete-overlay.visible { opacity:1; }
+        .demo-complete-modal { background:white;border-radius:20px;padding:44px 48px;max-width:520px;width:90%;text-align:center;transform:scale(0.9);transition:transform 0.5s cubic-bezier(0.16,1,0.3,1);box-shadow:0 25px 60px rgba(0,0,0,0.25); }
+        .demo-complete-overlay.visible .demo-complete-modal { transform:scale(1); }
+        .demo-complete__icon { width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#22C55E,#16A34A);display:flex;align-items:center;justify-content:center;margin:0 auto 18px; }
+        .demo-complete__icon svg { width:28px;height:28px;color:white; }
+        .demo-complete__title { font-size:1.4rem;font-weight:700;color:#1a202c;margin-bottom:6px; }
+        .demo-complete__subtitle { font-size:0.9rem;color:#5669A4;margin-bottom:24px;line-height:1.5; }
+        .demo-complete__features { display:flex;gap:14px;justify-content:center;margin-bottom:28px;flex-wrap:wrap; }
+        .demo-complete__feature { display:flex;align-items:center;gap:6px;padding:8px 14px;background:#f1f5f9;border-radius:10px;font-size:0.78rem;font-weight:600;color:#334155; }
+        .demo-complete__feature svg { width:14px;height:14px;color:#5669A4; }
+        .demo-complete__btn { display:inline-flex;align-items:center;gap:8px;padding:14px 36px;background:linear-gradient(135deg,#3B4D7A,#5669A4);color:white;border:none;border-radius:50px;font-family:inherit;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(59,77,122,0.35);transition:all 0.3s ease; }
+        .demo-complete__btn:hover { transform:translateY(-2px);box-shadow:0 8px 28px rgba(59,77,122,0.45); }
+        .demo-complete__btn svg { width:16px;height:16px; }
+      `;
+      document.head.appendChild(s);
+
+      // ─── DOM elements ───
+      var spotlight = document.createElement('div');
+      spotlight.className = 'demo-spotlight';
+      document.body.appendChild(spotlight);
+      var tooltip = document.createElement('div');
+      tooltip.className = 'demo-tooltip';
+      document.body.appendChild(tooltip);
+      var pb = document.createElement('div');
+      pb.className = 'demo-progress';
+      pb.innerHTML = '<div class="demo-progress__fill" id="demoProgressFill"></div>';
+      document.body.appendChild(pb);
+
+      function wait(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
+      function setProgress(p) { document.getElementById('demoProgressFill').style.width = p + '%'; }
+      function showSpotlight(el, pad) {
+        pad = pad || 8; var r = el.getBoundingClientRect();
+        spotlight.style.top = (r.top - pad) + 'px'; spotlight.style.left = (r.left - pad) + 'px';
+        spotlight.style.width = (r.width + pad * 2) + 'px'; spotlight.style.height = (r.height + pad * 2) + 'px';
+        spotlight.classList.add('visible');
+      }
+      function hideSpotlight() { spotlight.classList.remove('visible'); }
+      function showTooltip(el, step, text, pos) {
+        pos = pos || 'right'; var r = el.getBoundingClientRect();
+        tooltip.innerHTML = '<div class="demo-tooltip__step">Trin ' + step + '</div><div class="demo-tooltip__text">' + text + '</div>';
+        tooltip.classList.remove('visible'); tooltip.style.bottom = 'auto';
+        if (pos === 'right') { tooltip.style.top = r.top + 'px'; tooltip.style.left = (r.right + 16) + 'px'; }
+        else if (pos === 'left') { tooltip.style.top = r.top + 'px'; tooltip.style.left = (r.left - 380) + 'px'; }
+        else if (pos === 'top') { tooltip.style.top = (r.top - 130) + 'px'; tooltip.style.left = r.left + 'px'; }
+        else if (pos === 'bottom') { tooltip.style.top = (r.bottom + 16) + 'px'; tooltip.style.left = r.left + 'px'; }
+        requestAnimationFrame(function() { tooltip.classList.add('visible'); });
+      }
+      function hideTooltip() { tooltip.classList.remove('visible'); }
+
+      // ─── Suppress rating modal in demo ───
+      document.querySelector('.action-btn--primary').removeEventListener && (function() {
+        var origBtn = document.querySelector('.action-btn--primary');
+        var newBtn = origBtn.cloneNode(true);
+        origBtn.parentNode.replaceChild(newBtn, origBtn);
+      })();
+
+      // ─── Run tour ───
+      (async function() {
+        await wait(1500);
+
+        // Trin 15: Overordnet redigér-skærm
+        setProgress(82);
+        var reviewHeader = document.querySelector('.review-header');
+        showSpotlight(reviewHeader, 10);
+        showTooltip(reviewHeader, 15, '<strong>Redigér og gem</strong> — Her gennemgår du det AI-genererede notat. Du kan redigere alle felter, skifte skabelon, godkende diagnosekoder og gemme det endelige notat.', 'bottom');
+        await wait(8000);
+
+        // Trin 16: Notat-panelet med SOAP-sektioner
+        setProgress(85);
+        hideTooltip(); await wait(500);
+        var notePanel = document.querySelector('.review-main .consultation-panel');
+        var noteContent = notePanel.querySelector('.panel-content');
+        showSpotlight(noteContent, 4);
+        showTooltip(noteContent, 16, '<strong>Redigerbart notat</strong> — AI\'en har struktureret samtalen i SOAP-format: <em>Anamnese, Objektivt, Vurdering</em> og <em>Plan</em>. Klik på et felt for at redigere teksten direkte.', 'right');
+        await wait(8500);
+
+        // Trin 17: Skabelon-dropdown + AI-badge
+        setProgress(88);
+        hideTooltip(); await wait(500);
+        var panelHeader = notePanel.querySelector('.panel-header');
+        showSpotlight(panelHeader, 4);
+        showTooltip(panelHeader, 17, '<strong>Skabelon & AI-badge</strong> — Skift mellem notat-skabeloner (SOAP, PSOAP, fritekst m.fl.). <em>AI-genereret</em>-badgen viser at notatet er lavet af People\'s Clinic AI.', 'bottom');
+        await wait(8000);
+
+        // Trin 18: Diagnosekoder
+        setProgress(90);
+        hideTooltip(); await wait(500);
+        var codesSection = document.querySelector('.codes-section');
+        showSpotlight(codesSection, 6);
+        showTooltip(codesSection, 18, '<strong>Diagnosekoder</strong> — AI\'en foreslår automatisk relevante ICPC-2 og ICD-10 koder baseret på konsultationen. Du kan <em>godkende</em>, <em>fjerne</em> eller <em>tilføje</em> koder manuelt.', 'bottom');
+        await wait(8000);
+
+        // Trin 19: Patientresume (højre panel)
+        setProgress(93);
+        hideTooltip(); await wait(500);
+        var resumePanel = document.querySelector('.review-sidebar .consultation-panel');
+        showSpotlight(resumePanel, 4);
+        showTooltip(resumePanel, 19, '<strong>Patientresume</strong> — AI\'en udtrækker nøgleinformation: hovedsymptom, symptomkarakteristika, risikofaktorer og objektive fund. Du kan stille spørgsmål via chatfeltet i bunden.', 'left');
+        await wait(8000);
+
+        // Trin 20: Kopier notat-knap
+        setProgress(95);
+        hideTooltip(); await wait(500);
+        var copyBtn = document.querySelector('.action-btn--secondary');
+        showSpotlight(copyBtn, 6);
+        showTooltip(copyBtn, 20, '<strong>Kopier notat</strong> — Med ét klik kopieres det redigerede notat til din udklipsholder, klar til at indsætte i dit journalsystem.', 'top');
+        await wait(7000);
+
+        // Trin 21: Godkend & Gem
+        setProgress(98);
+        hideTooltip(); await wait(500);
+        var saveBtn = document.querySelector('.action-btn--primary');
+        showSpotlight(saveBtn, 6);
+        showTooltip(saveBtn, 21, '<strong>Godkend & Gem</strong> — Når du er tilfreds med notatet, klik her for at gemme. Du bliver bedt om at bedømme AI-notatets præcision — dette forbedrer fremtidige noter.', 'top');
+        await wait(8000);
+
+        // ─── Completion ───
+        setProgress(100);
+        hideTooltip(); hideSpotlight();
+        await wait(800);
+
+        // Show completion modal
+        var completeOvl = document.createElement('div');
+        completeOvl.className = 'demo-complete-overlay';
+        completeOvl.innerHTML = `
+          <div class="demo-complete-modal">
+            <div class="demo-complete__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            </div>
+            <div class="demo-complete__title">Demo afsluttet!</div>
+            <div class="demo-complete__subtitle">Du har nu set hele konsultationsflowet — fra start til gemning af det færdige notat.</div>
+            <div class="demo-complete__features">
+              <div class="demo-complete__feature">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                Start konsultation
+              </div>
+              <div class="demo-complete__feature">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                AI-lytning & notat
+              </div>
+              <div class="demo-complete__feature">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                Redigér & gem
+              </div>
+            </div>
+            <button class="demo-complete__btn" onclick="window.location.href='platform-preview.html'">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9"/><polyline points="3 3 3 9 9 3"/></svg>
+              Tilbage til startsiden
+            </button>
+          </div>
+        `;
+        document.body.appendChild(completeOvl);
+        await wait(100);
+        completeOvl.classList.add('visible');
+
+      })();
+    })();
+
   </script>
 </body>
 </html>
