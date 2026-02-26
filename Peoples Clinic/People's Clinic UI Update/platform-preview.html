@@ -776,60 +776,7 @@
 
   <script>lucide.createIcons();</script>
 
-  <!-- Demo Launch Button -->
-  <style>
-    .demo-launch {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 900;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 32px;
-      background: linear-gradient(135deg, #3B4D7A, #5669A4);
-      color: white;
-      border: none;
-      border-radius: 16px;
-      font-family: inherit;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 8px 32px rgba(59, 77, 122, 0.35), 0 0 0 1px rgba(255,255,255,0.1) inset;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      letter-spacing: 0.01em;
-    }
-    .demo-launch:hover {
-      transform: translateX(-50%) translateY(-2px);
-      box-shadow: 0 12px 40px rgba(59, 77, 122, 0.45), 0 0 0 1px rgba(255,255,255,0.15) inset;
-      background: linear-gradient(135deg, #2F3D62, #4A5D96);
-    }
-    .demo-launch:active {
-      transform: translateX(-50%) translateY(0);
-    }
-    .demo-launch svg {
-      width: 18px;
-      height: 18px;
-    }
-    .demo-launch__pulse {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #34D399;
-      animation: demoLaunchPulse 2s ease-in-out infinite;
-    }
-    @keyframes demoLaunchPulse {
-      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.4); }
-      50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(52, 211, 153, 0); }
-    }
-  </style>
-  <script>
-  // Only show launch button when NOT in demo mode
-  if (!window.location.search.includes('demo')) {
-    document.write('<button class="demo-launch" onclick="window.location.href=\'platform-preview.html?demo\'"><span class="demo-launch__pulse"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Se interaktiv demo</button>');
-  }
-  </script>
+  <!-- Floating demo button removed — inline button in header is sufficient -->
 
   <!-- ═══════════════════════════════════════════
        KONSULTATION GUIDED TOUR (?demo)
@@ -855,6 +802,7 @@
       .demo-overlay.visible { opacity: 1; }
       .demo-overlay.hidden { pointer-events: none; opacity: 0; }
       .demo-modal {
+        position: relative;
         background: white; border-radius: 20px;
         max-width: 580px; width: 92%; padding: 48px 44px 40px;
         box-shadow: 0 25px 80px rgba(0,0,0,0.25);
@@ -863,6 +811,15 @@
         text-align: center;
       }
       .demo-overlay.visible .demo-modal { transform: translateY(0) scale(1); }
+      .demo-modal__close {
+        position: absolute; top: 16px; right: 16px;
+        width: 36px; height: 36px; border-radius: 50%;
+        border: none; background: #f1f5f9; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        color: #64748b; transition: all 0.2s ease;
+      }
+      .demo-modal__close:hover { background: #e2e8f0; color: #334155; }
+      .demo-modal__close svg { width: 20px; height: 20px; }
       .demo-modal__icon {
         width: 64px; height: 64px; margin: 0 auto 20px;
         border-radius: 16px;
@@ -935,6 +892,7 @@
     var overlay = document.createElement('div');
     overlay.className = 'demo-overlay';
     overlay.innerHTML = '<div class="demo-modal">' +
+      '<button class="demo-modal__close" id="demoCloseBtn" title="Luk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
       '<div class="demo-modal__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg></div>' +
       '<div class="demo-modal__title">Konsultationsflowet</div>' +
       '<div class="demo-modal__subtitle">Se hvordan People\'s Clinic automatiserer journalføring fra samtale til færdigt notat</div>' +
@@ -999,6 +957,11 @@
         }, speed);
       });
     }
+
+    // ── Close button — dismiss demo entirely ──
+    document.getElementById('demoCloseBtn').addEventListener('click', function() {
+      window.location.href = 'platform-preview.html';
+    });
 
     // ── Demo sequence ──
     document.getElementById('demoStartBtn').addEventListener('click', async function() {
