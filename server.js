@@ -22,7 +22,8 @@ const UI_DIR = './Peoples Clinic/People\'s Clinic UI Update';
 const DESIGN_DIR = './Peoples Clinic/Design System';
 
 const server = http.createServer((req, res) => {
-  let urlPath = decodeURIComponent(req.url);
+  // Strip query parameters (?v=7 etc.) before resolving file path
+  let urlPath = decodeURIComponent(req.url.split('?')[0]);
   let filePath;
 
   if (urlPath === '/' || urlPath === '') {
