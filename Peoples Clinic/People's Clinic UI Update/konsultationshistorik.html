@@ -17,6 +17,28 @@
         display: none;
       }
     }
+    /* Inline demo button */
+    .demo-launch-inline {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 20px; background: linear-gradient(135deg, #3B4D7A, #5669A4);
+      color: white; border: none; border-radius: 50px;
+      font-family: inherit; font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; box-shadow: 0 4px 16px rgba(59, 77, 122, 0.25);
+      transition: all 0.2s ease; letter-spacing: 0.01em;
+    }
+    .demo-launch-inline:hover {
+      background: linear-gradient(135deg, #2F3D62, #4A5D96);
+      transform: translateY(-1px); box-shadow: 0 6px 20px rgba(59, 77, 122, 0.35);
+    }
+    .demo-launch-inline svg { width: 14px; height: 14px; }
+    .demo-launch-inline__pulse {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #34D399; animation: demoInlinePulse 2s ease-in-out infinite;
+    }
+    @keyframes demoInlinePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.5); }
+    }
   </style>
 </head>
 <body>
@@ -110,14 +132,21 @@
 
       <!-- Main Content -->
       <main class="main">
-        <div class="page-header">
+        <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
           <div class="page-header__left">
             <h1 class="page-title">Konsultationshistorik</h1>
             <p class="page-description">Gennemse og administrer dine tidligere konsultationer.</p>
           </div>
-          <div class="search-box">
-            <input type="text" placeholder="Søg i konsultationshistorik">
-            <i data-lucide="search"></i>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <button class="demo-launch-inline" id="demoLaunchInline" onclick="window.location.href='konsultationshistorik.html?demo'">
+              <span class="demo-launch-inline__pulse"></span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Se demo
+            </button>
+            <div class="search-box">
+              <input type="text" placeholder="Søg i konsultationshistorik">
+              <i data-lucide="search"></i>
+            </div>
           </div>
         </div>
 
@@ -266,6 +295,12 @@
 
       localStorage.setItem('peoplesClinic_referralContext', JSON.stringify(referralData));
       window.location.href = 'ai-assistent.html?type=henvisning&from=konsultation';
+    }
+
+    // Hide inline demo button when in demo mode
+    if (window.location.search.includes('demo')) {
+      var inlineBtn = document.getElementById('demoLaunchInline');
+      if (inlineBtn) inlineBtn.style.display = 'none';
     }
 
     // ═══════════════════════════════════════
