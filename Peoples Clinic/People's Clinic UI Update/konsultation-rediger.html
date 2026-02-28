@@ -1095,17 +1095,16 @@
       gap: 5px;
     }
     .resume-approve-bar__note i { width: 11px; height: 11px; flex-shrink: 0; }
-    .resume-approve-bar__actions {
-      display: flex;
-      gap: 8px;
+    .resume-approve-bar__note--approved {
+      color: #16a34a;
     }
     .resume-approve-btn {
-      flex: 1;
-      display: inline-flex;
+      width: 100%;
+      display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      padding: 7px 12px;
+      padding: 8px 12px;
       border: none;
       border-radius: var(--radius-lg);
       font-family: inherit;
@@ -1119,12 +1118,12 @@
     .resume-approve-btn:hover { background: var(--color-navy-700); }
     .resume-approve-btn i { width: 13px; height: 13px; }
     .resume-copy-btn {
-      flex: 1;
-      display: inline-flex;
+      width: 100%;
+      display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      padding: 7px 12px;
+      padding: 8px 12px;
       border: 1px solid var(--color-gray-200);
       border-radius: var(--radius-lg);
       font-family: inherit;
@@ -1851,20 +1850,18 @@
 
               <!-- Godkendelsesbar -->
               <div class="resume-approve-bar">
-                <div class="resume-approve-bar__note">
+                <div class="resume-approve-bar__note" id="resumeNote">
                   <i data-lucide="graduation-cap"></i>
                   AI-genereret resumé under SDU-forskningsprotokol. Gennemgå og godkend.
                 </div>
-                <div class="resume-approve-bar__actions">
-                  <button class="resume-approve-btn">
-                    <i data-lucide="shield-check"></i>
-                    Godkend
-                  </button>
-                  <button class="resume-copy-btn" onclick="navigator.clipboard.writeText(document.querySelector('.resume-body').innerText).then(()=>{this.innerHTML='<i data-lucide=\'check\'></i> Kopieret';lucide.createIcons();setTimeout(()=>{this.innerHTML='<i data-lucide=\'copy\'></i> Kopiér';lucide.createIcons();},2000)})">
-                    <i data-lucide="copy"></i>
-                    Kopiér
-                  </button>
-                </div>
+                <button class="resume-approve-btn" id="resumeApproveBtn" onclick="approveResume()">
+                  <i data-lucide="shield-check"></i>
+                  Godkend resumé
+                </button>
+                <button class="resume-copy-btn" id="resumeCopyBtn" style="display:none;" onclick="copyResume(this)">
+                  <i data-lucide="copy"></i>
+                  Kopiér resumé
+                </button>
               </div>
 
               <div class="ai-input-section">
@@ -2009,6 +2006,28 @@
 
   <script>
     lucide.createIcons();
+
+    // ─── Resume Approve → Copy flow ──────────────────────────
+    function approveResume() {
+      var btn = document.getElementById('resumeApproveBtn');
+      var copyBtn = document.getElementById('resumeCopyBtn');
+      var note = document.getElementById('resumeNote');
+      btn.style.display = 'none';
+      copyBtn.style.display = 'flex';
+      note.innerHTML = '<i data-lucide="check-circle"></i> Resumé godkendt';
+      note.classList.add('resume-approve-bar__note--approved');
+      lucide.createIcons();
+    }
+
+    function copyResume(btn) {
+      var text = document.querySelector('.resume-body').innerText;
+      navigator.clipboard.writeText(text).then(function() {
+        var orig = btn.innerHTML;
+        btn.innerHTML = '<i data-lucide="check"></i> Kopieret';
+        lucide.createIcons();
+        setTimeout(function() { btn.innerHTML = orig; lucide.createIcons(); }, 2000);
+      });
+    }
 
     // ─── Template Dropdown ──────────────────────────────────────
     const templateBtn = document.getElementById('templateDropdownBtn');
