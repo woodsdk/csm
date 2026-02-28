@@ -814,14 +814,14 @@
     .ba-template-chip {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 7px 14px;
+      gap: 7px;
+      padding: 9px 18px;
       border-radius: var(--radius-full);
       border: 1px solid var(--color-gray-200);
       background: var(--color-white);
-      font-size: var(--font-size-xs);
-      font-weight: 600;
-      color: var(--color-navy-500);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--color-text);
       cursor: pointer;
       font-family: inherit;
       transition: all var(--transition-fast);
@@ -829,25 +829,30 @@
       flex-shrink: 0;
     }
     .ba-template-chip i,
-    .ba-template-chip svg { width: 13px; height: 13px; flex-shrink: 0; }
+    .ba-template-chip svg { width: 15px; height: 15px; flex-shrink: 0; color: var(--color-navy-400); }
     .ba-template-chip:hover {
       border-color: var(--color-navy-400);
-      background: var(--color-gray-100);
+      background: rgba(86,105,164,0.04);
+      color: var(--color-navy-700);
     }
     .ba-template-chip--active {
       border-color: var(--color-navy-500);
-      background: var(--color-navy-600);
-      color: white;
+      background: rgba(86,105,164,0.08);
+      color: var(--color-navy-700);
+      font-weight: 600;
     }
     .ba-template-chip--active:hover {
-      background: var(--color-navy-700);
-      border-color: var(--color-navy-600);
+      background: rgba(86,105,164,0.12);
+      border-color: var(--color-navy-500);
     }
+    .ba-template-chip--active i,
+    .ba-template-chip--active svg { color: var(--color-navy-600); }
     .ba-template-chip__check {
       display: none;
-      width: 12px;
-      height: 12px;
+      width: 14px;
+      height: 14px;
       flex-shrink: 0;
+      color: var(--color-navy-600);
     }
     .ba-template-chip--active .ba-template-chip__check { display: inline-block; }
     .ba-template-chip--active .ba-template-chip__icon { display: none; }
@@ -968,7 +973,7 @@
         </div>
 
         <!-- Main inbox + detail layout -->
-        <div class="ba-layout" style="background: var(--color-white); border-radius: var(--radius-2xl); border: 1px solid var(--color-gray-200); overflow: hidden;">
+        <div class="ba-layout" style="background: var(--color-white); border-radius: var(--radius-2xl); box-shadow: var(--shadow-card); overflow: hidden;">
 
           <!-- LEFT: inbox list -->
           <div class="ba-inbox">

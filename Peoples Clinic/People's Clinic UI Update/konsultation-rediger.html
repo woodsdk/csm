@@ -1399,15 +1399,16 @@
       align-items: center;
       gap: 6px;
       padding: 10px 20px;
-      background: var(--color-navy-800);
-      border: 1px solid transparent;
+      background: var(--gradient-button-primary);
+      border: none;
       color: var(--color-white);
       font-family: inherit;
       font-size: 0.8125rem;
       font-weight: 600;
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-full);
       cursor: pointer;
-      transition: background 0.2s ease;
+      box-shadow: var(--shadow-button);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
       white-space: nowrap;
       box-sizing: border-box;
       height: 40px;
@@ -1418,7 +1419,8 @@
     }
 
     .translate-panel__generate:hover {
-      background: var(--color-navy-700);
+      background: linear-gradient(135deg, #2F3D62 0%, #4A5D96 100%);
+      box-shadow: 0 4px 18px rgba(56, 69, 109, 0.3);
     }
 
     .translate-panel__generate i {

@@ -790,7 +790,7 @@
       align-items: center;
       gap: 6px;
       padding: 6px 12px;
-      margin: 0 20px 8px;
+      margin: 10px 20px 0;
       border-radius: var(--radius-md);
       font-size: 0.6875rem;
       font-weight: 600;
@@ -911,11 +911,13 @@
       gap: 16px;
     }
 
-    /* Ensure grid fills available space without overflow */
+    /* Grid with padding to preserve shadow visibility */
     .consultation-grid {
-      overflow: hidden;
+      overflow: visible;
       flex: 1;
       min-height: 0;
+      padding: 8px;
+      margin: -8px;
     }
 
     .consultation-panel {

@@ -23,8 +23,9 @@
       flex-shrink: 0;
       overflow: visible;
       position: relative;
-      padding-top: 6px;
+      padding-top: 40px;
       padding-bottom: 12px;
+      min-height: 160px;
     }
 
     .patient-info {
@@ -468,7 +469,9 @@
       position: relative;
       width: 72px;
       height: 72px;
-      margin-bottom: 18px;
+      min-height: 72px;
+      flex-shrink: 0;
+      margin-bottom: 9px;
     }
 
     .transcript-waiting__orb svg.orb-ring {
@@ -801,7 +804,7 @@
       align-items: center;
       gap: 6px;
       padding: 6px 12px;
-      margin: 0 20px 8px;
+      margin: 10px 20px 0;
       border-radius: var(--radius-md);
       font-size: 0.6875rem;
       font-weight: 600;
@@ -923,16 +926,18 @@
       max-width: 100%;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      overflow: visible;
       gap: 16px;
       min-height: 0;
     }
 
-    /* Ensure grid fills available space without overflow */
+    /* Grid with padding to preserve shadow visibility */
     .consultation-grid {
-      overflow: hidden;
+      overflow: visible;
       flex: 1;
       min-height: 0;
+      padding: 8px;
+      margin: -8px;
     }
 
     .consultation-panel {
@@ -961,8 +966,8 @@
       align-items: center;
       gap: 12px;
       padding: 10px 100px;
-      background: var(--color-white);
-      border-bottom: 1px solid var(--color-gray-200);
+      background: rgba(220, 38, 38, 0.04);
+      border: 1px solid rgba(220, 38, 38, 0.35);
       font-size: 0.8125rem;
       color: var(--color-navy-600);
       flex-shrink: 0;
@@ -1159,12 +1164,9 @@
     <div class="video-reminder-banner" id="reminderBanner">
       <div class="video-reminder-banner__indicator">
         <div class="video-reminder-banner__dot"></div>
-        LYTTER
+        Lytter til videokonsultation
       </div>
-      <span>Lytter til videokonsultation — People's Clinic optager lyden og transskriberer automatisk.</span>
-      <button class="video-reminder-banner__dismiss" onclick="document.getElementById('reminderBanner').style.display='none'">
-        <i data-lucide="x"></i>
-      </button>
+      <span>People's Clinic optager lyden og transskriberer automatisk.</span>
     </div>
 
     <!-- Content Area (No Sidebar) -->
@@ -1175,10 +1177,6 @@
         <div class="consultation-header">
           <!-- Patient Info -->
           <div class="patient-info">
-            <div class="consultation-type-badge">
-              <i data-lucide="video"></i>
-              Videokonsultation
-            </div>
             <div class="patient-info__name"><strong>Fornavn:</strong> Nancy</div>
             <div class="patient-info__time"><strong>Starttidspunkt:</strong> 25-10-2026 10:47</div>
           </div>

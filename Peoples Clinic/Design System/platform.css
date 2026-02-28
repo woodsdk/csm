@@ -53,7 +53,7 @@
   --gradient-button-primary: linear-gradient(135deg, #38456D 0%, #5669A4 100%);
 
   /* Shadows */
-  --shadow-card: 0 0 25px rgba(38, 48, 79, 0.05);
+  --shadow-card: 0 2px 30px rgba(38, 48, 79, 0.10);
   --shadow-topbar: 0 2px 10px rgba(0, 0, 0, 0.08);
   --shadow-button: 0 4px 15px rgba(56, 69, 109, 0.2);
   --shadow-button-hover: 0 8px 20px rgba(56, 69, 109, 0.25);
@@ -484,6 +484,8 @@ body {
   gap: 16px;
   overflow-y: auto;
   overflow-x: hidden;
+  padding: 8px 20px;
+  margin: -8px -20px;
 }
 
 .main__top {
@@ -535,6 +537,8 @@ body {
   flex-direction: column;
   gap: 22px;
   align-items: flex-end;
+  padding: 4px;
+  padding-bottom: 8px;
 }
 
 /* ============================================
@@ -853,6 +857,148 @@ body {
 .btn-primary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* ============================================
+   SUGGESTION / TEMPLATE CHIPS
+   Shared chip pattern for AI assistant, message
+   assistant, and other template selectors.
+   ============================================ */
+.suggestion-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-gray-200);
+  background: var(--color-white);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.suggestion-chip i,
+.suggestion-chip svg {
+  width: 16px;
+  height: 16px;
+  color: var(--color-navy-400);
+  flex-shrink: 0;
+}
+
+.suggestion-chip:hover {
+  border-color: var(--color-navy-400);
+  background: rgba(86, 105, 164, 0.04);
+  color: var(--color-navy-700);
+}
+
+.suggestion-chip--active {
+  border-color: var(--color-navy-500);
+  background: rgba(86, 105, 164, 0.08);
+  color: var(--color-navy-700);
+  font-weight: 600;
+}
+
+.suggestion-chip--active:hover {
+  background: rgba(86, 105, 164, 0.12);
+  border-color: var(--color-navy-500);
+}
+
+.suggestion-chip--active i,
+.suggestion-chip--active svg {
+  color: var(--color-navy-600);
+}
+
+/* Small variant for compact layouts */
+.suggestion-chip--sm {
+  padding: 7px 14px;
+  font-size: var(--font-size-xs);
+  gap: 6px;
+}
+
+.suggestion-chip--sm i,
+.suggestion-chip--sm svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* ============================================
+   CONTEXT SIDEBAR FIELDS
+   Shared input/field pattern for sidebars.
+   ============================================ */
+.ctx-field {
+  margin-bottom: 10px;
+}
+
+.ctx-field:last-child {
+  margin-bottom: 0;
+}
+
+.ctx-field__label {
+  display: block;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--color-navy-400);
+  margin-bottom: 4px;
+}
+
+.ctx-field__input {
+  width: 100%;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-lg);
+  transition: border-color var(--transition-fast);
+  box-sizing: border-box;
+}
+
+.ctx-field__input::placeholder {
+  color: var(--color-navy-300);
+}
+
+.ctx-field__input:focus {
+  outline: none;
+  border-color: var(--color-navy-500);
+}
+
+/* ============================================
+   BTN-GENERATE — Gradient action button (inline)
+   Used for Generér, Oversæt, etc.
+   ============================================ */
+.btn-generate {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  background: var(--gradient-button-primary);
+  border: none;
+  color: var(--color-white);
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  box-shadow: var(--shadow-button);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-generate:hover {
+  background: linear-gradient(135deg, #2F3D62 0%, #4A5D96 100%);
+  box-shadow: 0 4px 18px rgba(56, 69, 109, 0.3);
+}
+
+.btn-generate i,
+.btn-generate svg {
+  width: 14px;
+  height: 14px;
 }
 
 /* ============================================
@@ -1224,12 +1370,13 @@ td.table-actions > *:last-child {
 .onboarding-nudge {
   display: none;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   padding: 14px 18px;
   opacity: 0;
   transform: translateY(20px);
-  box-shadow: var(--shadow-card);
-  transition: box-shadow 0.3s ease;
+  background: var(--color-white) !important;
+  box-shadow: 0 2px 16px rgba(59, 77, 122, 0.12);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 .onboarding-nudge--visible {
   display: flex;
@@ -1237,8 +1384,8 @@ td.table-actions > *:last-child {
              nudgeFloat 3s ease-in-out 1.5s infinite;
 }
 .onboarding-nudge:hover {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(59, 77, 122, 0.15);
+  transform: translateY(-2px);
 }
 @keyframes nudgeReveal {
   0%   { opacity: 0; transform: translateY(20px); }

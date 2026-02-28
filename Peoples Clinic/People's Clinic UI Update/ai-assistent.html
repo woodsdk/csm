@@ -739,7 +739,6 @@
       display: flex;
       flex-direction: column;
       background: var(--color-white);
-      border: 1px solid var(--color-gray-200);
       border-radius: var(--radius-2xl);
       box-shadow: var(--shadow-card);
       overflow-y: auto;
@@ -794,16 +793,18 @@
       font-family: inherit;
       font-size: var(--font-size-sm);
       color: var(--color-text);
-      background: var(--color-gray-100);
+      background: var(--color-white);
       border: 1px solid var(--color-gray-200);
       border-radius: var(--radius-lg);
       transition: border-color var(--transition-fast);
       box-sizing: border-box;
     }
+    .ctx-field__input::placeholder {
+      color: var(--color-navy-300);
+    }
     .ctx-field__input:focus {
       outline: none;
       border-color: var(--color-navy-500);
-      background: var(--color-white);
     }
 
     /* Active patient display */
@@ -1018,6 +1019,40 @@
       .chat-msg--user .chat-msg__content, .chat-msg--ai .chat-msg__content { max-width: 92%; }
       .chat-msg__actions { flex-wrap: wrap; gap: 4px; }
     }
+
+    /* Inline demo button (top-right of page header) */
+    .demo-launch-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 20px;
+      background: linear-gradient(135deg, #3B4D7A, #5669A4);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(59, 77, 122, 0.25);
+      transition: all 0.2s ease;
+      letter-spacing: 0.01em;
+    }
+    .demo-launch-inline:hover {
+      background: linear-gradient(135deg, #2F3D62, #4A5D96);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(59, 77, 122, 0.35);
+    }
+    .demo-launch-inline svg { width: 14px; height: 14px; }
+    .demo-launch-inline__pulse {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #34D399;
+      animation: demoInlinePulse 2s ease-in-out infinite;
+    }
+    @keyframes demoInlinePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.4); }
+    }
   </style>
 </head>
 <body>
@@ -1121,9 +1156,13 @@
           <div class="chat-header">
             <div class="chat-header__left">
               <h1 class="page-header__title">Min Assistent</h1>
-              <p class="page-header__subtitle">Din personlige assistent til skrivning, analyse og rådgivning</p>
             </div>
             <div class="chat-header__right">
+              <button class="demo-launch-inline" id="demoLaunchInline" onclick="window.location.href='ai-assistent.html?demo'">
+                <span class="demo-launch-inline__pulse"></span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Se demo
+              </button>
               <div class="chat-patient-badge" id="patientBadge" style="display: none;">
                 <i data-lucide="user"></i>
                 <span id="patientBadgeName"></span>
@@ -1268,6 +1307,12 @@
 
   <script>
     lucide.createIcons();
+
+    // Hide inline demo button when already in demo mode
+    if (window.location.search.includes('demo')) {
+      var inlineBtn = document.getElementById('demoLaunchInline');
+      if (inlineBtn) inlineBtn.style.display = 'none';
+    }
 
     // ═══════════════════════════════════════
     // STATE
@@ -2429,6 +2474,434 @@
         }
       }
     });
+
+    // ═══════════════════════════════════════
+    // INTERACTIVE DEMO MODE (?demo)
+    // ═══════════════════════════════════════
+    (function() {
+      if (!window.location.search.includes('demo')) return;
+
+      // ── Demo CSS ──
+      var demoStyle = document.createElement('style');
+      demoStyle.textContent = `
+        /* Overlay & Modal */
+        .demo-overlay {
+          position: fixed; inset: 0; z-index: 9000;
+          background: rgba(15, 23, 42, 0.70);
+          backdrop-filter: blur(6px);
+          display: flex; align-items: center; justify-content: center;
+          opacity: 0; transition: opacity 0.4s ease;
+        }
+        .demo-overlay.visible { opacity: 1; }
+        .demo-overlay.hidden { pointer-events: none; opacity: 0; }
+
+        .demo-modal {
+          position: relative;
+          background: white; border-radius: 20px;
+          max-width: 560px; width: 90%; padding: 48px 44px 40px;
+          box-shadow: 0 25px 80px rgba(0,0,0,0.25);
+          transform: translateY(20px) scale(0.97);
+          transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          text-align: center;
+        }
+        .demo-modal__close {
+          position: absolute; top: 16px; right: 16px;
+          width: 36px; height: 36px; border-radius: 50%;
+          border: none; background: #f1f5f9; cursor: pointer;
+          display: flex; align-items: center; justify-content: center;
+          color: #64748b; transition: all 0.2s ease;
+        }
+        .demo-modal__close:hover { background: #e2e8f0; color: #334155; }
+        .demo-modal__close svg { width: 20px; height: 20px; }
+        .demo-overlay.visible .demo-modal {
+          transform: translateY(0) scale(1);
+        }
+        .demo-modal__icon {
+          width: 64px; height: 64px; margin: 0 auto 20px;
+          border-radius: 16px;
+          background: linear-gradient(135deg, #3B4D7A, #5669A4);
+          display: flex; align-items: center; justify-content: center;
+        }
+        .demo-modal__icon svg { width: 30px; height: 30px; color: white; }
+        .demo-modal__title {
+          font-size: 22px; font-weight: 700; color: #1a202c;
+          margin-bottom: 8px; line-height: 1.3;
+        }
+        .demo-modal__subtitle {
+          font-size: 14px; color: #64748b; margin-bottom: 28px; line-height: 1.6;
+        }
+        .demo-modal__features {
+          text-align: left; margin-bottom: 32px;
+          display: flex; flex-direction: column; gap: 14px;
+        }
+        .demo-feature {
+          display: flex; gap: 14px; align-items: flex-start;
+        }
+        .demo-feature__num {
+          width: 28px; height: 28px; min-width: 28px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #3B4D7A, #5669A4);
+          color: white; font-size: 13px; font-weight: 700;
+          display: flex; align-items: center; justify-content: center;
+        }
+        .demo-feature__text {
+          font-size: 14px; line-height: 1.55; color: #334155;
+        }
+        .demo-feature__text strong { color: #1a202c; font-weight: 600; }
+        .demo-btn {
+          display: inline-flex; align-items: center; gap: 8px;
+          padding: 14px 36px; border-radius: 12px; border: none;
+          background: linear-gradient(135deg, #3B4D7A, #5669A4);
+          color: white; font-size: 15px; font-weight: 600;
+          cursor: pointer; font-family: inherit;
+          transition: all 0.2s ease;
+          box-shadow: 0 4px 16px rgba(59, 77, 122, 0.3);
+        }
+        .demo-btn:hover {
+          background: linear-gradient(135deg, #2F3D62, #4A5D96);
+          transform: translateY(-1px);
+          box-shadow: 0 6px 20px rgba(59, 77, 122, 0.4);
+        }
+        .demo-btn svg { width: 18px; height: 18px; }
+
+        /* Spotlight & Tooltip */
+        .demo-spotlight {
+          position: fixed; z-index: 8500;
+          border: 3px solid #5669A4;
+          border-radius: 12px;
+          box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.55), 0 0 30px rgba(86, 105, 164, 0.3);
+          transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+          pointer-events: none;
+          opacity: 0;
+        }
+        .demo-spotlight.visible { opacity: 1; }
+
+        .demo-tooltip {
+          position: fixed; z-index: 8600;
+          background: white; border-radius: 14px;
+          padding: 18px 22px; max-width: 340px;
+          box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+          opacity: 0; transform: translateY(8px);
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          pointer-events: none;
+        }
+        .demo-tooltip.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .demo-tooltip__step {
+          display: inline-flex; align-items: center; gap: 6px;
+          font-size: 11px; font-weight: 700; color: #5669A4;
+          text-transform: uppercase; letter-spacing: 0.5px;
+          margin-bottom: 6px;
+        }
+        .demo-tooltip__text {
+          font-size: 14px; line-height: 1.6; color: #334155;
+        }
+        .demo-tooltip__text strong { color: #1a202c; }
+
+        /* Progress bar at top */
+        .demo-progress {
+          position: fixed; top: 0; left: 0; right: 0;
+          height: 4px; z-index: 9500;
+          background: rgba(86, 105, 164, 0.15);
+        }
+        .demo-progress__fill {
+          height: 100%; width: 0%;
+          background: linear-gradient(90deg, #3B4D7A, #5669A4);
+          transition: width 0.8s ease;
+          border-radius: 0 2px 2px 0;
+        }
+        .demo-tooltip__timer { display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid #f1f5f9; }
+        .demo-tooltip__timer-bar { flex:1;height:3px;background:rgba(86,105,164,0.12);border-radius:2px;overflow:hidden; }
+        .demo-tooltip__timer-fill { height:100%;width:100%;background:linear-gradient(90deg,#5669A4,#3B4D7A);border-radius:2px; }
+        .demo-tooltip__timer-text { font-size:11px;font-weight:700;color:#5669A4;min-width:20px;text-align:right;font-variant-numeric:tabular-nums; }
+        .demo-cancel-btn { position:fixed;top:12px;right:16px;z-index:9700;display:flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border:1px solid rgba(86,105,164,0.2);border-radius:50px;font-family:inherit;font-size:12px;font-weight:600;color:#5669A4;cursor:pointer;transition:all 0.2s ease;opacity:0;pointer-events:none; }
+        .demo-cancel-btn.visible { opacity:1;pointer-events:auto; }
+        .demo-cancel-btn:hover { background:white;border-color:#5669A4;box-shadow:0 2px 12px rgba(86,105,164,0.15); }
+        .demo-cancel-btn svg { width:14px;height:14px; }
+      `;
+      document.head.appendChild(demoStyle);
+
+      // ── Create DOM elements ──
+      var overlay = document.createElement('div');
+      overlay.className = 'demo-overlay';
+      overlay.innerHTML = `
+        <div class="demo-modal">
+          <button class="demo-modal__close" id="demoCloseBtn" title="Luk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          <div class="demo-modal__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+              <path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
+            </svg>
+          </div>
+          <div class="demo-modal__title">Min Assistent</div>
+          <div class="demo-modal__subtitle">Din personlige AI-assistent til skrivning, analyse og klinisk r\u00e5dgivning</div>
+          <div class="demo-modal__features">
+            <div class="demo-feature">
+              <div class="demo-feature__num">1</div>
+              <div class="demo-feature__text"><strong>5 AI-skabeloner</strong> \u2014 V\u00e6lg mellem Svarudkast, Journalresum\u00e9, Klinisk r\u00e5dgivning, Henvisning og Attest for at f\u00e5 AI-genererede udkast.</div>
+            </div>
+            <div class="demo-feature">
+              <div class="demo-feature__num">2</div>
+              <div class="demo-feature__text"><strong>Patientkontekst</strong> \u2014 Tilf\u00f8j patientdata og tidligere konsultationer for mere pr\u00e6cise og relevante udkast.</div>
+            </div>
+            <div class="demo-feature">
+              <div class="demo-feature__num">3</div>
+              <div class="demo-feature__text"><strong>Rediger og kopi\u00e9r</strong> \u2014 Alle AI-genererede udkast kan redigeres direkte og kopieres til dit kliniske system.</div>
+            </div>
+          </div>
+          <button class="demo-btn" id="demoStartBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Se demo
+          </button>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      var spotlight = document.createElement('div');
+      spotlight.className = 'demo-spotlight';
+      document.body.appendChild(spotlight);
+
+      var tooltip = document.createElement('div');
+      tooltip.className = 'demo-tooltip';
+      document.body.appendChild(tooltip);
+
+      var progressBar = document.createElement('div');
+      progressBar.className = 'demo-progress';
+      progressBar.innerHTML = '<div class="demo-progress__fill" id="demoProgressFill"></div>';
+      document.body.appendChild(progressBar);
+
+      var cancelBtn = document.createElement('button');
+      cancelBtn.className = 'demo-cancel-btn';
+      cancelBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Afslut tour';
+      document.body.appendChild(cancelBtn);
+
+      // Show intro modal
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          overlay.classList.add('visible');
+        });
+      });
+
+      // ── Utility functions ──
+      function wait(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
+
+      function setProgress(pct) {
+        document.getElementById('demoProgressFill').style.width = pct + '%';
+      }
+
+      function showSpotlight(el, padding) {
+        padding = padding || 8;
+        var r = el.getBoundingClientRect();
+        spotlight.style.top = (r.top - padding) + 'px';
+        spotlight.style.left = (r.left - padding) + 'px';
+        spotlight.style.width = (r.width + padding * 2) + 'px';
+        spotlight.style.height = (r.height + padding * 2) + 'px';
+        spotlight.classList.add('visible');
+      }
+
+      function hideSpotlight() { spotlight.classList.remove('visible'); }
+
+      function showTooltip(el, stepNum, text, position) {
+        position = position || 'right';
+        var r = el.getBoundingClientRect();
+        var vw = window.innerWidth, vh = window.innerHeight;
+        tooltip.innerHTML = '<div class="demo-tooltip__step">Trin ' + stepNum + '</div><div class="demo-tooltip__text">' + text + '</div><div class="demo-tooltip__timer"><div class="demo-tooltip__timer-bar"><div class="demo-tooltip__timer-fill"></div></div><span class="demo-tooltip__timer-text"></span></div>';
+        tooltip.classList.remove('visible'); tooltip.style.bottom = 'auto';
+        tooltip.style.top = '-9999px'; tooltip.style.left = '-9999px';
+        tooltip.style.display = 'block';
+        requestAnimationFrame(function() {
+          var tw = tooltip.offsetWidth || 340, th = tooltip.offsetHeight || 140;
+          var t, l;
+          if (position === 'right') { t = r.top + r.height / 2 - th / 2; l = r.right + 16; if (l + tw > vw - 16) { l = r.left - tw - 16; } }
+          else if (position === 'left') { t = r.top + r.height / 2 - th / 2; l = r.left - tw - 16; if (l < 16) { l = r.right + 16; } }
+          else if (position === 'top') { t = r.top - th - 16; l = r.left + r.width / 2 - tw / 2; if (t < 16) { t = r.bottom + 16; } }
+          else if (position === 'bottom') { t = r.bottom + 16; l = r.left + r.width / 2 - tw / 2; if (t + th > vh - 16) { t = r.top - th - 16; } }
+          if (l < 16) l = 16; if (l + tw > vw - 16) l = vw - tw - 16;
+          if (t < 16) t = 16; if (t + th > vh - 16) t = vh - th - 16;
+          tooltip.style.top = t + 'px'; tooltip.style.left = l + 'px';
+          requestAnimationFrame(function() { tooltip.classList.add('visible'); });
+        });
+      }
+
+      function hideTooltip() { tooltip.classList.remove('visible'); }
+
+      // ── Close button — dismiss demo entirely ──
+      document.getElementById('demoCloseBtn').addEventListener('click', function() {
+        window.location.href = 'ai-assistent.html';
+      });
+
+      var tourCancelled = false;
+      var timerInterval = null;
+      function startTooltipTimer(ms) {
+        if (timerInterval) clearInterval(timerInterval);
+        var fill = tooltip.querySelector('.demo-tooltip__timer-fill');
+        var txt = tooltip.querySelector('.demo-tooltip__timer-text');
+        if (!fill || !txt) return;
+        var secs = Math.ceil(ms / 1000);
+        txt.textContent = secs + 's';
+        fill.style.transition = 'none';
+        fill.style.width = '100%';
+        requestAnimationFrame(function() {
+          fill.style.transition = 'width ' + (ms / 1000) + 's linear';
+          fill.style.width = '0%';
+        });
+        timerInterval = setInterval(function() {
+          secs--;
+          if (txt) txt.textContent = Math.max(0, secs) + 's';
+          if (secs <= 0) { clearInterval(timerInterval); timerInterval = null; }
+        }, 1000);
+      }
+      cancelBtn.addEventListener('click', function() {
+        tourCancelled = true;
+        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+        hideTooltip(); hideSpotlight();
+        cancelBtn.classList.remove('visible');
+        progressBar.style.display = 'none';
+        window.location.href = window.location.pathname;
+      });
+
+      // ── Demo sequence ──
+      document.getElementById('demoStartBtn').addEventListener('click', async function() {
+        // Close modal
+        overlay.classList.remove('visible');
+        overlay.classList.add('hidden');
+        cancelBtn.classList.add('visible');
+        await wait(800);
+        if (tourCancelled) return;
+
+        // ══════════════════════════════
+        // Step 1: Highlight suggestion chips
+        // ══════════════════════════════
+        setProgress(8);
+        var chipsEl = document.querySelector('.chat-quick-prompts');
+        showSpotlight(chipsEl, 6);
+        showTooltip(chipsEl, 1, '<strong>Skabeloner</strong> \u2014 V\u00e6lg mellem 5 AI-skabeloner: Svarudkast, Journalresum\u00e9, Klinisk r\u00e5dgivning, Henvisning og Attest. Hver skabelon tilpasser AI\'ens output til den valgte opgavetype.', 'top');
+        startTooltipTimer(7000);
+        await wait(7000);
+        if (tourCancelled) return;
+
+        // ══════════════════════════════
+        // Step 2: Click "Svarudkast" chip programmatically
+        // ══════════════════════════════
+        setProgress(22);
+        hideTooltip();
+        await wait(600);
+        if (tourCancelled) return;
+
+        // Set up demo patient context first
+        state.patientContext = { name: 'Karen M\u00f8ller', cpr: '120356-****' };
+        sidebarNameInput.value = 'Karen M\u00f8ller';
+        sidebarCprInput.value = '120356-****';
+        showPatientActive();
+        loadConsultations();
+
+        // Click the Svarudkast chip
+        var svarudkastChip = document.querySelector('.chat-suggestion-chip[data-template="svarudkast"]');
+        svarudkastChip.click();
+        await wait(400);
+        if (tourCancelled) return;
+
+        // Send the auto-generated prompt
+        sendMessage();
+        await wait(600);
+        if (tourCancelled) return;
+
+        // Spotlight the chat messages area while generating
+        var chatMsgsEl = document.getElementById('chatMessages');
+        showSpotlight(chatMsgsEl, 6);
+        showTooltip(chatMsgsEl, 2, '<strong>AI-genereret udkast</strong> \u2014 Assistenten genererer et svarudkast baseret p\u00e5 den valgte skabelon, patientkontekst og dine instruktioner. Udkastet kan redigeres direkte.', 'left');
+        startTooltipTimer(6000);
+        await wait(6000);
+        if (tourCancelled) return;
+
+        // ══════════════════════════════
+        // Step 3: Highlight an SDU badge
+        // ══════════════════════════════
+        setProgress(40);
+        hideTooltip();
+        hideSpotlight();
+        await wait(600);
+        if (tourCancelled) return;
+
+        var sduChip = document.querySelector('.chat-suggestion-chip[data-template="resume"]');
+        showSpotlight(sduChip, 6);
+        showTooltip(sduChip, 3, '<strong>SDU Forskningssamarbejde</strong> \u2014 Skabeloner markeret med <strong>SDU</strong> er kliniske skabeloner udviklet i samarbejde med Syddansk Universitet. Disse kr\u00e6ver et aktivt forskningssamarbejde og er underlagt EU MDR-regulering.', 'bottom');
+        startTooltipTimer(7000);
+        await wait(7000);
+        if (tourCancelled) return;
+
+        // ══════════════════════════════
+        // Step 4: Highlight patient context sidebar
+        // ══════════════════════════════
+        setProgress(58);
+        hideTooltip();
+        hideSpotlight();
+        await wait(600);
+        if (tourCancelled) return;
+
+        var sidebarEl = document.getElementById('aiContextSidebar');
+        showSpotlight(sidebarEl, 6);
+        showTooltip(sidebarEl, 4, '<strong>Patientkontekst</strong> \u2014 I sidepanelet kan du tilknytte en patient, uploade dokumenter og se tidligere konsultationer. Konteksten bruges automatisk til at g\u00f8re AI-udkast mere pr\u00e6cise og relevante.', 'left');
+        startTooltipTimer(7000);
+        await wait(7000);
+        if (tourCancelled) return;
+
+        // ══════════════════════════════
+        // Step 5: Highlight chat input
+        // ══════════════════════════════
+        setProgress(78);
+        hideTooltip();
+        hideSpotlight();
+        await wait(600);
+        if (tourCancelled) return;
+
+        var inputBarEl = document.getElementById('chatInputBar');
+        showSpotlight(inputBarEl, 6);
+        showTooltip(inputBarEl, 5, '<strong>Instruktioner til AI</strong> \u2014 Skriv specifikke instruktioner for at pr\u00e6cisere dit udkast. Du kan bede om \u00e6ndringer i tone, indhold eller formatering \u2014 og vedhæfte filer direkte i inputfeltet.', 'top');
+        startTooltipTimer(7000);
+        await wait(7000);
+        if (tourCancelled) return;
+
+        // ══════════════════════════════
+        // DEMO COMPLETE
+        // ══════════════════════════════
+        setProgress(100);
+        hideTooltip();
+        hideSpotlight();
+        cancelBtn.classList.remove('visible');
+        await wait(600);
+
+        // Show completion modal
+        overlay.classList.remove('hidden');
+        overlay.querySelector('.demo-modal').innerHTML = `
+          <div class="demo-modal__icon" style="background: linear-gradient(135deg, #059669, #10B981);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div class="demo-modal__title">Demo afsluttet</div>
+          <div class="demo-modal__subtitle">Min Assistent giver sundhedspersonale adgang til AI-genererede udkast for svar, journaler, henvisninger og attester \u2014 alt sammen med fuld klinisk kontekst.</div>
+          <div class="demo-modal__features">
+            <div class="demo-feature">
+              <div class="demo-feature__num" style="background: linear-gradient(135deg, #059669, #10B981);">\u2713</div>
+              <div class="demo-feature__text">5 specialiserede skabeloner til kliniske opgaver</div>
+            </div>
+            <div class="demo-feature">
+              <div class="demo-feature__num" style="background: linear-gradient(135deg, #059669, #10B981);">\u2713</div>
+              <div class="demo-feature__text">Automatisk patientkontekst fra konsultationshistorik</div>
+            </div>
+            <div class="demo-feature">
+              <div class="demo-feature__num" style="background: linear-gradient(135deg, #059669, #10B981);">\u2713</div>
+              <div class="demo-feature__text">L\u00e6gen har altid fuld kontrol \u2014 rediger, kopi\u00e9r eller kass\u00e9r</div>
+            </div>
+          </div>
+          <button class="demo-btn" onclick="window.location.href='ai-assistent.html'" style="background: linear-gradient(135deg, #059669, #10B981); box-shadow: 0 4px 16px rgba(5, 150, 105, 0.3);">
+            Pr\u00f8v selv
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+        `;
+        overlay.classList.add('visible');
+      });
+    })();
 
   </script>
 </body>
