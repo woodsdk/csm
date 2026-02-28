@@ -397,6 +397,158 @@
       padding: 0 2px; border-radius: 2px;
     }
 
+    /* ═══════════════════════════════════════
+       STRUCTURED DOCUMENT OUTPUT (Henvisning / Attest)
+       ═══════════════════════════════════════ */
+    .doc-output {
+      margin: 0;
+    }
+    .doc-output--henvisning { border-left: 4px solid #3B82F6; }
+    .doc-output--attest { border-left: 4px solid #10B981; }
+
+    .doc-output__header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 20px 12px 20px;
+      border-bottom: 1px solid var(--color-gray-200);
+    }
+    .doc-output__header-icon {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-lg);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .doc-output--henvisning .doc-output__header-icon {
+      background: rgba(59, 130, 246, 0.08);
+      color: #3B82F6;
+    }
+    .doc-output--attest .doc-output__header-icon {
+      background: rgba(16, 185, 129, 0.08);
+      color: #10B981;
+    }
+    .doc-output__header-icon i { width: 18px; height: 18px; }
+    .doc-output__header-info { flex: 1; }
+    .doc-output__header-title {
+      font-size: var(--font-size-md);
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .doc-output__header-sub {
+      font-size: var(--font-size-xs);
+      color: var(--color-navy-400);
+      margin-top: 1px;
+    }
+    .doc-output__ai-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      border-radius: var(--radius-full);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      flex-shrink: 0;
+    }
+    .doc-output--henvisning .doc-output__ai-badge {
+      background: rgba(59, 130, 246, 0.08);
+      color: #3B82F6;
+    }
+    .doc-output--attest .doc-output__ai-badge {
+      background: rgba(16, 185, 129, 0.08);
+      color: #10B981;
+    }
+    .doc-output__ai-badge i { width: 10px; height: 10px; }
+
+    .doc-output__body {
+      padding: 16px 20px 12px 20px;
+    }
+    .doc-output__section {
+      margin-bottom: 14px;
+    }
+    .doc-output__section:last-child { margin-bottom: 0; }
+    .doc-output__label {
+      font-size: var(--font-size-xs);
+      font-weight: 700;
+      color: var(--color-navy-500);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 4px;
+    }
+    .doc-output__value {
+      font-size: var(--font-size-sm);
+      color: var(--color-text);
+      line-height: 1.6;
+    }
+    .doc-output__value ul {
+      margin: 4px 0 0 0;
+      padding-left: 18px;
+    }
+    .doc-output__value li {
+      margin-bottom: 3px;
+      font-size: var(--font-size-sm);
+      line-height: 1.5;
+    }
+
+    .doc-output__patient-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 10px 14px;
+      background: var(--color-gray-100);
+      border-radius: var(--radius-lg);
+      margin-bottom: 14px;
+    }
+    .doc-output__patient-name {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .doc-output__patient-cpr {
+      font-size: var(--font-size-xs);
+      color: var(--color-navy-400);
+    }
+
+    .doc-output__urgency-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      background: rgba(245, 158, 11, 0.08);
+      color: #92400E;
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+    .doc-output__urgency-badge i { width: 12px; height: 12px; color: #F59E0B; }
+
+    .doc-output__divider {
+      border: none;
+      border-top: 1px solid var(--color-gray-200);
+      margin: 14px 0;
+    }
+
+    .doc-output__footer {
+      padding: 10px 20px 14px 20px;
+      border-top: 1px solid var(--color-gray-200);
+    }
+    .doc-output__actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .doc-output__disclaimer {
+      font-size: 10px;
+      color: var(--color-navy-300);
+      line-height: 1.4;
+      display: flex;
+      align-items: flex-start;
+      gap: 5px;
+    }
+    .doc-output__disclaimer i { width: 12px; height: 12px; flex-shrink: 0; margin-top: 1px; }
+
     /* AI message actions */
     .chat-msg__actions {
       display: flex; align-items: center; justify-content: space-between;
@@ -1675,13 +1827,177 @@
           timestamp: new Date()
         };
         state.messages.push(aiMsg);
-        renderAiMessage(aiMsg);
+        renderAiResponse(aiMsg);
         scrollToBottom();
         state.isGenerating = false;
       }, delay);
     }
 
     btnSend.addEventListener('click', sendMessage);
+
+    // ═══════════════════════════════════════
+    // STRUCTURED DOCUMENT OUTPUTS (PLO F-10.A / F-11.A)
+    // ═══════════════════════════════════════
+    function buildHenvisningDocumentHTML() {
+      var patientName = 'Nancy Ann Berggren';
+      var patientCpr = '010145-****';
+      if (state.patientContext && state.patientContext.name) {
+        patientName = state.patientContext.name;
+        patientCpr = state.patientContext.cpr || '------****';
+      }
+
+      return '<div class="doc-output doc-output--henvisning">' +
+        '<div class="doc-output__header">' +
+          '<div class="doc-output__header-icon"><i data-lucide="file-text"></i></div>' +
+          '<div class="doc-output__header-info">' +
+            '<div class="doc-output__header-title">Udkast til Henvisning</div>' +
+            '<div class="doc-output__header-sub">Genereret ' + new Date().toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' }) + '</div>' +
+          '</div>' +
+          '<span class="doc-output__ai-badge"><i data-lucide="sparkles"></i>AI-genereret</span>' +
+        '</div>' +
+
+        '<div class="doc-output__body">' +
+          '<div class="doc-output__patient-row">' +
+            '<div><span class="doc-output__patient-name">' + patientName + '</span></div>' +
+            '<div><span class="doc-output__patient-cpr">CPR: ' + patientCpr + '</span></div>' +
+          '</div>' +
+
+          '<div class="doc-output__section">' +
+            '<div class="doc-output__label">Modtagende instans</div>' +
+            '<div class="doc-output__value">Kardiologisk afdeling, Herlev Hospital</div>' +
+          '</div>' +
+
+          '<div class="doc-output__section">' +
+            '<div class="doc-output__label">Henvisnings\u00e5rsag</div>' +
+            '<div class="doc-output__value">Vedvarende atrieflimren med symptomatisk takykardi trods medicinsk behandling med metoprolol 50mg x 2. Patienten er henvist til vurdering af behov for DC-konvertering eller ablationsbehandling.</div>' +
+          '</div>' +
+
+          '<div class="doc-output__section">' +
+            '<div class="doc-output__label">Relevante kliniske fund</div>' +
+            '<div class="doc-output__value"><ul>' +
+              '<li>Nyopdaget atrieflimren (ICPC-2: K78)</li>' +
+              '<li>BT: 142/88 mmHg</li>' +
+              '<li>EKG: Irregul\u00e6rt med frekvens 110\u2013125/min</li>' +
+            '</ul></div>' +
+          '</div>' +
+
+          '<div class="doc-output__section">' +
+            '<div class="doc-output__label">Aktuel medicinering</div>' +
+            '<div class="doc-output__value">Metoprolol 50mg x 2, Eliquis 5mg x 2</div>' +
+          '</div>' +
+
+          '<div class="doc-output__section">' +
+            '<div class="doc-output__label">\u00d8nsket unders\u00f8gelse/behandling</div>' +
+            '<div class="doc-output__value">Kardiologisk vurdering mhp. rytmekontrolstrategi</div>' +
+          '</div>' +
+
+          '<hr class="doc-output__divider">' +
+
+          '<div class="doc-output__section">' +
+            '<div class="doc-output__label">Hastegrad</div>' +
+            '<div class="doc-output__value"><span class="doc-output__urgency-badge"><i data-lucide="clock"></i>Subakut (inden 14 dage)</span></div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="doc-output__footer">' +
+          '<div class="doc-output__actions">' +
+            '<button class="chat-msg-action" data-action="copy-doc"><i data-lucide="copy"></i>Kopi\u00e9r henvisning</button>' +
+            '<button class="chat-msg-action chat-msg-action--primary" data-action="approve-doc"><i data-lucide="check-circle"></i>Godkend &amp; gem</button>' +
+          '</div>' +
+          '<div class="doc-output__disclaimer"><i data-lucide="shield-check"></i>AI-genereret under SDU-forskningsprotokollen. Kr\u00e6ver l\u00e6gefaglig godkendelse.</div>' +
+        '</div>' +
+      '</div>';
+    }
+
+    function buildAttestDocumentHTML() {
+      var patientName = 'Nancy Ann Berggren';
+      var patientCpr = '010145-****';
+      if (state.patientContext && state.patientContext.name) {
+        patientName = state.patientContext.name;
+        patientCpr = state.patientContext.cpr || '------****';
+      }
+
+      return '<div class="doc-output doc-output--attest">' +
+        '<div class="doc-output__header">' +
+          '<div class="doc-output__header-icon"><i data-lucide="file-signature"></i></div>' +
+          '<div class="doc-output__header-info">' +
+            '<div class="doc-output__header-title">Udkast til Attest</div>' +
+            '<div class="doc-output__header-sub">Genereret ' + new Date().toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' }) + '</div>' +
+          '</div>' +
+          '<span class="doc-output__ai-badge"><i data-lucide="sparkles"></i>AI-genereret</span>' +
+        '</div>' +
+
+        '<div class="doc-output__body">' +
+          '<div class="doc-output__section">' +
+            '<div class="doc-output__label">Attesttype</div>' +
+            '<div class="doc-output__value">L\u00e6geerkl\u00e6ring til kommunen (\u00a722)</div>' +
+          '</div>' +
+
+          '<div class="doc-output__patient-row">' +
+            '<div><span class="doc-output__patient-name">' + patientName + '</span></div>' +
+            '<div><span class="doc-output__patient-cpr">CPR: ' + patientCpr + '</span></div>' +
+          '</div>' +
+
+          '<div class="doc-output__section">' +
+            '<div class="doc-output__label">Vedr\u00f8rende</div>' +
+            '<div class="doc-output__value">Funktionsevnevurdering i forbindelse med ans\u00f8gning om f\u00f8rtidspension</div>' +
+          '</div>' +
+
+          '<div class="doc-output__section">' +
+            '<div class="doc-output__label">Klinisk sammenfatning</div>' +
+            '<div class="doc-output__value">Patienten har gennem de seneste 3 \u00e5r haft tiltagende funktionsneds\u00e6ttelse grundet sv\u00e6r KOL (GOLD stadium III) kombineret med kroniske l\u00e6ndesmerter. Patienten er ude af stand til at varetage fysisk kr\u00e6vende arbejde og har sv\u00e6rt ved stillesiddende arbejde i mere end 2 timer ad gangen grundet dyspn\u00f8 og smerter.</div>' +
+          '</div>' +
+
+          '<div class="doc-output__section">' +
+            '<div class="doc-output__label">Relevante diagnoser</div>' +
+            '<div class="doc-output__value"><ul>' +
+              '<li>KOL GOLD III (ICPC-2: R95)</li>' +
+              '<li>Kroniske l\u00e6ndesmerter (ICPC-2: L03)</li>' +
+            '</ul></div>' +
+          '</div>' +
+
+          '<div class="doc-output__section">' +
+            '<div class="doc-output__label">Funktionsniveau</div>' +
+            '<div class="doc-output__value">Markant nedsat \u2014 kan g\u00e5 ca. 200m p\u00e5 fladt terr\u00e6n, behov for hvilepauser ved trappegang</div>' +
+          '</div>' +
+
+          '<div class="doc-output__section">' +
+            '<div class="doc-output__label">Varighed og prognose</div>' +
+            '<div class="doc-output__value">Kronisk tilstand uden udsigt til bedring trods optimeret medicinsk behandling og genoptr\u00e6ning</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="doc-output__footer">' +
+          '<div class="doc-output__actions">' +
+            '<button class="chat-msg-action" data-action="copy-doc"><i data-lucide="copy"></i>Kopi\u00e9r attest</button>' +
+            '<button class="chat-msg-action chat-msg-action--primary" data-action="approve-doc"><i data-lucide="check-circle"></i>Godkend &amp; gem</button>' +
+          '</div>' +
+          '<div class="doc-output__disclaimer"><i data-lucide="shield-check"></i>AI-genereret under SDU-forskningsprotokollen. Kr\u00e6ver l\u00e6gefaglig godkendelse.</div>' +
+        '</div>' +
+      '</div>';
+    }
+
+    function renderDocumentAiMessage(msg) {
+      var html = '<div class="chat-msg chat-msg--ai" data-msg-id="' + msg.id + '">';
+      html += '<div class="chat-msg__avatar"><i data-lucide="sparkles"></i></div>';
+      html += '<div class="chat-msg__content" style="padding:0;">';
+      html += msg.content;
+      html += '</div></div>';
+      chatMessages.insertAdjacentHTML('beforeend', html);
+      lucide.createIcons();
+    }
+
+    function isDocumentTemplate(template) {
+      return template === 'henvisning' || template === 'attest';
+    }
+
+    function renderAiResponse(msg) {
+      if (isDocumentTemplate(msg.template)) {
+        renderDocumentAiMessage(msg);
+      } else {
+        renderAiMessage(msg);
+      }
+    }
 
     function getResponseForTemplate(template, userMsg) {
       // Contextual referral
@@ -1690,6 +2006,9 @@
         state.referralContext = null;
         return html;
       }
+      // Structured document outputs for henvisning & attest
+      if (template === 'henvisning') return buildHenvisningDocumentHTML();
+      if (template === 'attest') return buildAttestDocumentHTML();
       return draftResponses[template] || draftResponses['svarudkast'];
     }
 
@@ -1804,10 +2123,21 @@
             hideTypingIndicator();
             var aiMsg = { id: 'msg_' + Date.now(), role: 'ai', content: getResponseForTemplate(state.currentTemplate), template: state.currentTemplate, timestamp: new Date() };
             state.messages.push(aiMsg);
-            renderAiMessage(aiMsg);
+            renderAiResponse(aiMsg);
             scrollToBottom();
           }, 1800);
         }, 200);
+      } else if (action === 'copy-doc') {
+        var docBody = msgEl.querySelector('.doc-output__body');
+        var textContent = docBody ? docBody.innerText : msgEl.innerText;
+        navigator.clipboard.writeText(textContent).then(function() { showToast('Dokument kopieret til udklipsholder'); });
+      } else if (action === 'approve-doc') {
+        var actionsRow = actionBtn.closest('.doc-output__actions');
+        if (actionsRow) {
+          actionsRow.innerHTML = '<div class="chat-msg__approved"><i data-lucide="check-circle"></i>Godkendt og gemt</div>';
+          lucide.createIcons();
+        }
+        showToast('Dokument godkendt og gemt');
       } else if (action === 'discard') {
         msgEl.style.animation = 'msgFadeOut 0.25s ease forwards';
         setTimeout(function() { msgEl.remove(); showToast('Svar kasseret'); }, 250);
@@ -1950,15 +2280,23 @@
       renderUserMessage(userMsg);
 
       var draftKey = session.template || 'svarudkast';
+      var restoredContent;
+      if (draftKey === 'henvisning') {
+        restoredContent = buildHenvisningDocumentHTML();
+      } else if (draftKey === 'attest') {
+        restoredContent = buildAttestDocumentHTML();
+      } else {
+        restoredContent = draftResponses[draftKey] || draftResponses['svarudkast'];
+      }
       var aiMsg = {
         id: 'msg_restored_ai',
         role: 'ai',
-        content: draftResponses[draftKey] || draftResponses['svarudkast'],
+        content: restoredContent,
         template: session.template,
         timestamp: session.timestamp
       };
       state.messages.push(aiMsg);
-      renderAiMessage(aiMsg);
+      renderAiResponse(aiMsg);
       scrollToBottom();
       showToast('Session genindlæst');
     }

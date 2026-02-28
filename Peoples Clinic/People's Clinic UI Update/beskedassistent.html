@@ -637,6 +637,120 @@
       color: rgba(86, 105, 164, 0.55);
     }
 
+    /* ═══════════════════════════════════════
+       REGULATORY COMPLIANCE MODAL
+       PLO F-7.B / F-9.B
+       ═══════════════════════════════════════ */
+    .compliance-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .compliance-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .compliance-modal {
+      background: var(--color-white);
+      border-radius: 16px;
+      max-width: 520px;
+      width: 92%;
+      padding: 36px 32px 28px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      transform: translateY(16px) scale(0.97);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      text-align: center;
+    }
+    .compliance-overlay.active .compliance-modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .compliance-modal__icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      background: rgba(245, 158, 11, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f59e0b;
+    }
+    .compliance-modal__icon i,
+    .compliance-modal__icon svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .compliance-modal__title {
+      font-size: var(--font-size-lg);
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 10px;
+    }
+
+    .compliance-modal__body {
+      font-size: var(--font-size-sm);
+      line-height: 1.65;
+      color: var(--color-navy-500);
+      margin-bottom: 24px;
+      text-align: left;
+    }
+
+    .compliance-modal__actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .compliance-modal__btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 22px;
+      border-radius: var(--radius-xl);
+      font-family: inherit;
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      border: 1px solid var(--color-gray-200);
+      background: var(--color-white);
+      color: var(--color-navy-500);
+    }
+    .compliance-modal__btn:hover {
+      border-color: var(--color-navy-400);
+      background: var(--color-gray-100);
+    }
+
+    .compliance-modal__btn--primary {
+      background: linear-gradient(135deg, var(--color-navy-600), var(--color-navy-500));
+      color: white;
+      border-color: transparent;
+    }
+    .compliance-modal__btn--primary:hover {
+      background: linear-gradient(135deg, var(--color-navy-700), var(--color-navy-600));
+      border-color: transparent;
+    }
+
+    .compliance-modal__info {
+      font-size: 11px;
+      line-height: 1.5;
+      color: var(--color-navy-400);
+      padding-top: 12px;
+      border-top: 1px solid var(--color-gray-100);
+    }
+
     /* Inline demo button (top-right of page header) */
     .demo-launch-inline {
       display: inline-flex;
@@ -670,6 +784,100 @@
       0%, 100% { opacity: 1; }
       50% { opacity: 0.4; }
     }
+
+    /* ═══════════════════════════════════════
+       TEMPLATE CHIPS — F-7.A skabelonvalg
+       ═══════════════════════════════════════ */
+    .ba-template-section {
+      padding: 12px 24px 0;
+      flex-shrink: 0;
+      border-bottom: 1px solid var(--color-gray-100);
+    }
+    .ba-template-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-navy-400);
+      letter-spacing: 0.02em;
+      margin-bottom: 8px;
+    }
+    .ba-template-chips {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .ba-template-chips::-webkit-scrollbar { display: none; }
+
+    .ba-template-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--color-gray-200);
+      background: #f0f4ff;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-navy-500);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .ba-template-chip i,
+    .ba-template-chip svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .ba-template-chip:hover {
+      border-color: var(--color-navy-400);
+      background: #e4ebff;
+      color: var(--color-navy-600);
+    }
+    .ba-template-chip--active {
+      border-color: var(--color-navy-500);
+      background: rgba(86, 105, 164, 0.12);
+      color: var(--color-navy-600);
+      font-weight: 600;
+      box-shadow: 0 1px 4px rgba(86, 105, 164, 0.12);
+    }
+    .ba-template-chip--active:hover {
+      background: rgba(86, 105, 164, 0.16);
+    }
+    .ba-template-chip__check {
+      display: none;
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+    }
+    .ba-template-chip--active .ba-template-chip__check { display: inline-block; }
+    .ba-template-chip--active .ba-template-chip__icon { display: none; }
+
+    .ba-template-clear {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      min-width: 24px;
+      border-radius: 50%;
+      border: 1px solid var(--color-gray-200);
+      background: var(--color-white);
+      color: var(--color-navy-400);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
+      align-self: center;
+    }
+    .ba-template-clear i,
+    .ba-template-clear svg { width: 12px; height: 12px; }
+    .ba-template-clear:hover {
+      border-color: #DC2626;
+      background: #FEF2F2;
+      color: #DC2626;
+    }
+    .ba-template-clear--visible { display: inline-flex; }
   </style>
 </head>
 <body>
@@ -799,6 +1007,40 @@
 
               <!-- Fixed footer: chat + actions -->
               <div class="ba-footer" id="detailFooter">
+                <!-- Template chips — F-7.A skabelonvalg -->
+                <div class="ba-template-section" id="templateSection">
+                  <div class="ba-template-label">V&#230;lg skabelon til svarudkast:</div>
+                  <div class="ba-template-chips" id="templateChips">
+                    <button class="ba-template-chip" data-template="receptfornyelse" data-placeholder="Beskriv hvilken medicin der skal fornyes...">
+                      <i data-lucide="pill" class="ba-template-chip__icon"></i>
+                      <i data-lucide="check" class="ba-template-chip__check"></i>
+                      Receptfornyelse
+                    </button>
+                    <button class="ba-template-chip" data-template="proevesvar" data-placeholder="Beskriv hvilke pr&#248;vesvar der skal formidles...">
+                      <i data-lucide="flask-conical" class="ba-template-chip__icon"></i>
+                      <i data-lucide="check" class="ba-template-chip__check"></i>
+                      Pr&#248;vesvar
+                    </button>
+                    <button class="ba-template-chip" data-template="generelt-svar" data-placeholder="Beskriv hvad svaret skal indeholde...">
+                      <i data-lucide="message-circle" class="ba-template-chip__icon"></i>
+                      <i data-lucide="check" class="ba-template-chip__check"></i>
+                      Generelt svar
+                    </button>
+                    <button class="ba-template-chip" data-template="akut-henvendelse" data-placeholder="Beskriv den akutte situation og anbefalinger...">
+                      <i data-lucide="alert-circle" class="ba-template-chip__icon"></i>
+                      <i data-lucide="check" class="ba-template-chip__check"></i>
+                      Akut henvendelse
+                    </button>
+                    <button class="ba-template-chip" data-template="henvisning" data-placeholder="Beskriv hvilken specialist patienten skal henvises til...">
+                      <i data-lucide="arrow-right-circle" class="ba-template-chip__icon"></i>
+                      <i data-lucide="check" class="ba-template-chip__check"></i>
+                      Henvisning til specialist
+                    </button>
+                    <button class="ba-template-clear" id="templateClear" title="Ryd skabelonvalg">
+                      <i data-lucide="x"></i>
+                    </button>
+                  </div>
+                </div>
                 <div class="ba-chat__history" id="chatHistory"></div>
                 <div class="ba-chat__input-row">
                   <div class="ba-chat__input-bar">
@@ -836,6 +1078,26 @@
       if (inlineBtn) inlineBtn.style.display = 'none';
     }
   </script>
+
+  <!-- Regulatory Compliance Modal (PLO F-7.B / F-9.B) -->
+  <div class="compliance-overlay" id="complianceOverlay">
+    <div class="compliance-modal">
+      <div class="compliance-modal__icon">
+        <i data-lucide="shield-alert"></i>
+      </div>
+      <div class="compliance-modal__title">Regulatorisk vejledning</div>
+      <div class="compliance-modal__body">
+        Du forsøger at anvende et administrativt modul til klinisk rådgivning. Kliniske funktioner som risikovurdering og beslutningsstøtte er underlagt SDU-forskningsprotokollen (EU MDR Art. 62) og kræver aktivering via Min Assistent &rarr; Klinisk rådgivning.
+      </div>
+      <div class="compliance-modal__actions">
+        <button class="compliance-modal__btn" id="complianceStay">Forstået &mdash; bliv her</button>
+        <button class="compliance-modal__btn compliance-modal__btn--primary" id="complianceGo">Gå til Klinisk rådgivning</button>
+      </div>
+      <div class="compliance-modal__info">
+        Denne overvågning sikrer korrekthed og beskytter klinikken mod juridiske risici i dokumentationsarbejdet.
+      </div>
+    </div>
+  </div>
 
   <!-- Toast -->
   <div class="toast" id="toast"><i data-lucide="check-circle"></i><span id="toastText"></span></div>
@@ -888,7 +1150,8 @@
       batchIndex: 0,
       sentMessages: [],
       chatHistory: {},   // per-message chat bubbles
-      draftGenerated: {} // per-message: has draft been generated?
+      draftGenerated: {}, // per-message: has draft been generated?
+      activeTemplate: null // currently selected template chip key
     };
 
     var sourceLabels = { min_laege: 'Min Læge', email: 'E-mail', epj: 'EPJ', sms: 'SMS' };
@@ -1007,15 +1270,30 @@
       renderMessageList();
     }
 
+    function getDraftLabel() {
+      if (state.activeTemplate && templateLabels[state.activeTemplate]) {
+        return 'AI Svarudkast \u2014 ' + templateLabels[state.activeTemplate];
+      }
+      return 'AI-udkast til svar';
+    }
+
+    var templateLabels = {
+      'receptfornyelse': 'Receptfornyelse',
+      'proevesvar': 'Pr\u00f8vesvar',
+      'generelt-svar': 'Generelt svar',
+      'akut-henvendelse': 'Akut henvendelse',
+      'henvisning': 'Henvisning til specialist'
+    };
+
     function buildDraftHtml(msg) {
       return '<div class="ba-draft">' +
         '<div class="ba-draft__header">' +
           '<div class="ba-draft__header-left">' +
             '<div class="ba-draft__icon"><i data-lucide="sparkles"></i></div>' +
-            '<span class="ba-draft__label">AI-udkast til svar</span>' +
+            '<span class="ba-draft__label" id="draftLabel">' + getDraftLabel() + '</span>' +
           '</div>' +
         '</div>' +
-        '<div class="ba-draft__body" contenteditable="true" id="draftBody">' + (msg.draftText || '<p>Udkast genereret baseret på din instruktion.</p>') + '</div>' +
+        '<div class="ba-draft__body" contenteditable="true" id="draftBody">' + (msg.draftText || '<p>Udkast genereret baseret p\u00e5 din instruktion.</p>') + '</div>' +
       '</div>';
     }
 
@@ -1041,11 +1319,57 @@
       chatSend.addEventListener('click', sendChatPrompt);
     }
 
+    // ═══════════════════════════════════════
+    // REGULATORY COMPLIANCE — clinical keyword detection
+    // PLO F-7.B / F-9.B
+    // ═══════════════════════════════════════
+    var clinicalKeywords = [
+      'diagnose', 'risiko', 'symptom', 'behandling', 'medicin',
+      'bivirkn', 'kontraindik', 'prognose', 'differential', 'udredning'
+    ];
+
+    function containsClinicalKeyword(text) {
+      var lower = text.toLowerCase();
+      for (var i = 0; i < clinicalKeywords.length; i++) {
+        if (lower.indexOf(clinicalKeywords[i]) !== -1) return true;
+      }
+      return false;
+    }
+
+    function showComplianceModal() {
+      var overlay = document.getElementById('complianceOverlay');
+      overlay.classList.add('active');
+      lucide.createIcons();
+    }
+
+    function hideComplianceModal() {
+      var overlay = document.getElementById('complianceOverlay');
+      overlay.classList.remove('active');
+    }
+
+    // Compliance modal button handlers
+    document.getElementById('complianceStay').addEventListener('click', function() {
+      hideComplianceModal();
+    });
+    document.getElementById('complianceGo').addEventListener('click', function() {
+      window.location.href = 'ai-assistent.html?template=klinisk';
+    });
+    // Close on overlay click (outside modal)
+    document.getElementById('complianceOverlay').addEventListener('click', function(e) {
+      if (e.target === this) hideComplianceModal();
+    });
+
     function sendChatPrompt() {
       var chatInput = document.getElementById('chatInput');
       if (!chatInput) return;
       var text = chatInput.value.trim();
       if (!text || !state.selectedId) return;
+
+      // Regulatory compliance check — intercept clinical keywords
+      if (containsClinicalKeyword(text)) {
+        showComplianceModal();
+        return;
+      }
 
       var msg = mockMessages.find(function(m) { return m.id === state.selectedId; });
       if (!msg) return;
@@ -1142,6 +1466,7 @@
       document.getElementById('detailView').style.display = 'none';
       document.getElementById('chatHistory').innerHTML = '';
       document.getElementById('actionButtons').style.display = 'none';
+      clearTemplateSelection();
     }
 
     document.getElementById('btnCopy').addEventListener('click', copyDraft);
@@ -1224,9 +1549,61 @@
     document.addEventListener('click', function() { userMenu.classList.remove('user-menu--open'); });
 
     // ═══════════════════════════════════════
+    // TEMPLATE CHIPS — F-7.A skabelonvalg
+    // ═══════════════════════════════════════
+    var defaultPlaceholder = 'Skriv en instruktion \u2014 fx "skriv et h\u00f8fligt svar om receptfornyelse"';
+
+    function clearTemplateSelection() {
+      state.activeTemplate = null;
+      document.querySelectorAll('.ba-template-chip').forEach(function(c) {
+        c.classList.remove('ba-template-chip--active');
+      });
+      document.getElementById('templateClear').classList.remove('ba-template-clear--visible');
+      var chatInput = document.getElementById('chatInput');
+      if (chatInput) chatInput.placeholder = defaultPlaceholder;
+      var draftLabel = document.getElementById('draftLabel');
+      if (draftLabel) draftLabel.textContent = 'AI-udkast til svar';
+    }
+
+    function selectTemplate(templateKey) {
+      if (state.activeTemplate === templateKey) {
+        clearTemplateSelection();
+        lucide.createIcons();
+        return;
+      }
+      state.activeTemplate = templateKey;
+      document.querySelectorAll('.ba-template-chip').forEach(function(c) {
+        c.classList.remove('ba-template-chip--active');
+      });
+      var activeChip = document.querySelector('.ba-template-chip[data-template="' + templateKey + '"]');
+      if (activeChip) activeChip.classList.add('ba-template-chip--active');
+      document.getElementById('templateClear').classList.add('ba-template-clear--visible');
+      var chatInput = document.getElementById('chatInput');
+      if (chatInput && activeChip) {
+        chatInput.placeholder = activeChip.getAttribute('data-placeholder') || defaultPlaceholder;
+      }
+      var draftLabel = document.getElementById('draftLabel');
+      if (draftLabel) draftLabel.textContent = getDraftLabel();
+      lucide.createIcons();
+    }
+
+    function initTemplateChips() {
+      document.querySelectorAll('.ba-template-chip').forEach(function(chip) {
+        chip.addEventListener('click', function() {
+          selectTemplate(this.getAttribute('data-template'));
+        });
+      });
+      document.getElementById('templateClear').addEventListener('click', function() {
+        clearTemplateSelection();
+        lucide.createIcons();
+      });
+    }
+
+    // ═══════════════════════════════════════
     // INIT
     // ═══════════════════════════════════════
     initChat();
+    initTemplateChips();
     renderMessageList();
 
     // ═══════════════════════════════════════

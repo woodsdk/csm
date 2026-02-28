@@ -474,6 +474,222 @@
     a.btn-secondary {
       text-decoration: none;
     }
+
+    /* =============================================
+       F-8.B: Critical Information Highlight Cards
+       ============================================= */
+    /* Wider assistant message when it contains critical info */
+    .chat-message--assistant:has(.critical-info-panel) {
+      max-width: 92%;
+    }
+
+    .critical-info-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+      padding: 0;
+    }
+
+    .highlight-card {
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      border-left: 4px solid;
+    }
+
+    .highlight-card__header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .highlight-card__header i {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .highlight-card__items {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding-left: 24px;
+    }
+
+    .highlight-card__item {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      font-size: 0.8125rem;
+      line-height: 1.5;
+    }
+
+    .highlight-card__item i {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* CAVE - red / critical */
+    .highlight-cave {
+      background: rgba(239, 68, 68, 0.08);
+      border-left-color: #ef4444;
+    }
+
+    .highlight-cave .highlight-card__header {
+      color: #dc2626;
+    }
+
+    .highlight-cave .highlight-card__item {
+      color: #991b1b;
+    }
+
+    .highlight-cave .highlight-card__item i {
+      color: #ef4444;
+    }
+
+    /* Attention - amber */
+    .highlight-attention {
+      background: rgba(245, 158, 11, 0.08);
+      border-left-color: #f59e0b;
+    }
+
+    .highlight-attention .highlight-card__header {
+      color: #b45309;
+    }
+
+    .highlight-attention .highlight-card__item {
+      color: #92400e;
+    }
+
+    .highlight-attention .highlight-card__item i {
+      color: #f59e0b;
+    }
+
+    /* Info - blue */
+    .highlight-info {
+      background: rgba(59, 130, 246, 0.07);
+      border-left-color: #3b82f6;
+    }
+
+    .highlight-info .highlight-card__header {
+      color: #1d4ed8;
+    }
+
+    .highlight-info .highlight-card__item {
+      color: #1e40af;
+    }
+
+    .highlight-info .highlight-card__item i {
+      color: #3b82f6;
+    }
+
+    /* =============================================
+       F-8.B: Enhanced Approval Bar
+       ============================================= */
+    .journal-approve-bar.active {
+      display: flex;
+    }
+
+    .journal-approve-review-notice {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: rgba(245, 158, 11, 0.10);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: var(--radius-md);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #92400e;
+      line-height: 1.4;
+    }
+
+    .journal-approve-review-notice i {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      color: #f59e0b;
+    }
+
+    .journal-approve-btn--primary {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: var(--radius-lg);
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: #16a34a;
+      color: white;
+      transition: background 0.15s, box-shadow 0.15s;
+      box-shadow: 0 2px 8px rgba(22, 163, 74, 0.2);
+    }
+
+    .journal-approve-btn--primary:hover {
+      background: #15803d;
+      box-shadow: 0 4px 14px rgba(22, 163, 74, 0.3);
+    }
+
+    .journal-approve-btn--primary i {
+      width: 17px;
+      height: 17px;
+    }
+
+    .journal-approve-success {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 20px;
+      background: rgba(22, 163, 74, 0.08);
+      border: 1px solid rgba(22, 163, 74, 0.2);
+      border-radius: var(--radius-lg);
+    }
+
+    .journal-approve-success__icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #16a34a;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .journal-approve-success__icon i {
+      width: 16px;
+      height: 16px;
+    }
+
+    .journal-approve-success__text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .journal-approve-success__title {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: #15803d;
+    }
+
+    .journal-approve-success__meta {
+      font-size: 0.6875rem;
+      color: #16a34a;
+      font-weight: 500;
+    }
   </style>
 </head>
 <body>
@@ -650,23 +866,27 @@
               </div>
             </div>
 
-            <!-- F-8.B: Approval bar for generated summary -->
+            <!-- F-8.B: Enhanced approval bar for generated summary -->
             <div class="journal-approve-bar" id="journalApproveBar">
+              <div class="journal-approve-review-notice">
+                <i data-lucide="alert-triangle"></i>
+                Gennemgå venligst de fremhævede kritiske informationer inden godkendelse
+              </div>
               <div class="journal-approve-status">
                 <i data-lucide="info"></i>
-                AI-genereret resumé — gennemgå inden godkendelse
+                AI-genereret resumé — afventer lægelig validering
               </div>
               <div class="journal-approve-actions">
-                <button class="journal-approve-btn" id="btnApproveJournal">
+                <button class="journal-approve-btn--primary" id="btnApproveJournal">
                   <i data-lucide="shield-check"></i>
-                  Godkend resumé
+                  Godkend og valider resumé
                 </button>
                 <button class="journal-copy-btn" id="btnCopyJournal">
                   <i data-lucide="copy"></i>
                   Kopiér
                 </button>
               </div>
-              <div class="journal-approve-note">Godkendelse bekræfter at resuméet er klinisk korrekt og komplet</div>
+              <div class="journal-approve-note">Godkendelse bekræfter at resuméet er klinisk korrekt, komplet, og at kritisk information er verificeret</div>
             </div>
 
             <div class="ai-disclaimer">
@@ -799,11 +1019,79 @@
       setTimeout(() => {
         typingIndicator.classList.remove('active');
         const response = getAIResponse(message);
+        // F-8.B: Set flag for critical info panel on resumé-type or comprehensive responses
+        const lowerMsg = message.toLowerCase();
+        if (lowerMsg.includes('resumé') || lowerMsg.includes('resume') || lowerMsg.includes('komplet') || lowerMsg.includes('overblik') || lowerMsg.includes('samlet') || lowerMsg.includes('generer')) {
+          pendingCriticalInfo = true;
+        }
         addMessage(response, 'assistant');
         // F-8.B: Show approval bar when AI responds
         document.getElementById('journalApproveBar').classList.add('active');
       }, 1500 + Math.random() * 1000);
     }
+
+    // F-8.B: Generate critical information highlight panel HTML
+    function buildCriticalInfoPanel() {
+      return `
+        <div class="critical-info-panel">
+          <div class="highlight-card highlight-cave">
+            <div class="highlight-card__header">
+              <i data-lucide="shield-alert"></i>
+              CAVE — Kritiske advarsler
+            </div>
+            <div class="highlight-card__items">
+              <div class="highlight-card__item">
+                <i data-lucide="alert-triangle"></i>
+                <span>Penicillinallergi (anafylaktisk reaktion 2019)</span>
+              </div>
+              <div class="highlight-card__item">
+                <i data-lucide="alert-triangle"></i>
+                <span>Warfarin — øget blødningsrisiko</span>
+              </div>
+            </div>
+          </div>
+          <div class="highlight-card highlight-attention">
+            <div class="highlight-card__header">
+              <i data-lucide="triangle-alert"></i>
+              Opmærksomhedspunkter
+            </div>
+            <div class="highlight-card__items">
+              <div class="highlight-card__item">
+                <i data-lucide="triangle-alert"></i>
+                <span>HbA1c: 58 mmol/mol (forhøjet — mål &lt;48)</span>
+              </div>
+              <div class="highlight-card__item">
+                <i data-lucide="triangle-alert"></i>
+                <span>eGFR: 52 ml/min (let nedsat nyrefunktion)</span>
+              </div>
+            </div>
+          </div>
+          <div class="highlight-card highlight-info">
+            <div class="highlight-card__header">
+              <i data-lucide="pill"></i>
+              Aktiv medicinering (7 præparater)
+            </div>
+            <div class="highlight-card__items">
+              <div class="highlight-card__item">
+                <i data-lucide="circle-dot"></i>
+                <span>Metformin 1000mg x 2</span>
+              </div>
+              <div class="highlight-card__item">
+                <i data-lucide="circle-dot"></i>
+                <span>Ramipril 5mg x 1</span>
+              </div>
+              <div class="highlight-card__item">
+                <i data-lucide="circle-dot"></i>
+                <span>Atorvastatin 40mg x 1</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Track whether the response should include critical info highlights
+    var pendingCriticalInfo = false;
 
     function addMessage(content, type) {
       const messageDiv = document.createElement('div');
@@ -825,7 +1113,14 @@
       const formattedContent = content
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/\n/g, '<br>');
-      contentDiv.innerHTML = formattedContent;
+
+      // F-8.B: Prepend critical info panel for resumé-type responses
+      if (type === 'assistant' && pendingCriticalInfo) {
+        contentDiv.innerHTML = buildCriticalInfoPanel() + '<div style="margin-top:14px;">' + formattedContent + '</div>';
+        pendingCriticalInfo = false;
+      } else {
+        contentDiv.innerHTML = formattedContent;
+      }
 
       messageDiv.appendChild(avatar);
       messageDiv.appendChild(contentDiv);
@@ -848,10 +1143,18 @@
       });
     });
 
-    // F-8.B: Approve button
+    // F-8.B: Approve button — enhanced success state with timestamp
     document.getElementById('btnApproveJournal').addEventListener('click', function() {
       var bar = document.getElementById('journalApproveBar');
-      bar.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:8px;color:#16a34a;font-weight:600;font-size:0.8125rem;"><i data-lucide="check-circle" style="width:16px;height:16px;"></i> Resumé godkendt og valideret</div>';
+      var now = new Date();
+      var timeStr = now.toLocaleString('da-DK', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      bar.innerHTML = '<div class="journal-approve-success">' +
+        '<div class="journal-approve-success__icon"><i data-lucide="check"></i></div>' +
+        '<div class="journal-approve-success__text">' +
+          '<div class="journal-approve-success__title">Resumé godkendt og valideret af Dr. Anna Nielsen</div>' +
+          '<div class="journal-approve-success__meta">Godkendt ' + timeStr + ' — Kritisk information verificeret</div>' +
+        '</div>' +
+      '</div>';
       lucide.createIcons();
     });
 

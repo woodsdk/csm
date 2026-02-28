@@ -1085,6 +1085,109 @@
     .chat-welcome__mode-tab--support.chat-welcome__mode-tab--active {
       color: #A34840;
     }
+
+    /* ═══════════════════════════════════════
+       CLINICAL MODE ACTIVATION BANNER
+       PLO F-7.B / F-9.B — SDU research disclaimer
+       ═══════════════════════════════════════ */
+    .clinical-mode-banner {
+      display: none;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 16px;
+      background: rgba(86, 105, 164, 0.06);
+      border: 1px solid rgba(86, 105, 164, 0.18);
+      border-radius: var(--radius-lg);
+      margin-bottom: 12px;
+      animation: fadeInUp 0.4s ease;
+      position: relative;
+    }
+    .clinical-mode-banner.active {
+      display: flex;
+    }
+
+    .clinical-mode-banner__icon {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, rgba(86, 105, 164, 0.12), rgba(86, 105, 164, 0.2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-navy-500);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .clinical-mode-banner__icon i,
+    .clinical-mode-banner__icon svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .clinical-mode-banner__content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .clinical-mode-banner__header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .clinical-mode-banner__title {
+      font-size: var(--font-size-sm);
+      font-weight: 700;
+      color: var(--color-navy-700);
+    }
+
+    .clinical-mode-banner__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 1px 7px;
+      background: rgba(86, 105, 164, 0.1);
+      border-radius: var(--radius-full);
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--color-navy-500);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .clinical-mode-banner__text {
+      font-size: var(--font-size-xs);
+      line-height: 1.55;
+      color: var(--color-navy-500);
+    }
+
+    .clinical-mode-banner__dismiss {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: none;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-navy-400);
+      transition: all var(--transition-fast);
+    }
+    .clinical-mode-banner__dismiss:hover {
+      color: var(--color-navy-700);
+      background: rgba(86, 105, 164, 0.08);
+    }
+    .clinical-mode-banner__dismiss i,
+    .clinical-mode-banner__dismiss svg {
+      width: 14px;
+      height: 14px;
+    }
   </style>
 </head>
 <body>
@@ -1216,6 +1319,25 @@
               <button class="btn-demo-header" id="btnDemo"><span class="btn-demo-header__pulse"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polygon points="5 3 19 12 5 21 5 3"/></svg>Se demo</button>
               <button class="ai-sidebar-toggle" id="aiSidebarToggle" title="Kontekstpanel"><i data-lucide="panel-right"></i></button>
             </div>
+          </div>
+
+          <!-- Clinical mode activation banner (PLO F-7.B / F-9.B) -->
+          <div class="clinical-mode-banner" id="clinicalModeBanner">
+            <div class="clinical-mode-banner__icon">
+              <i data-lucide="shield-check"></i>
+            </div>
+            <div class="clinical-mode-banner__content">
+              <div class="clinical-mode-banner__header">
+                <span class="clinical-mode-banner__title">Klinisk rådgivning aktiveret</span>
+                <span class="clinical-mode-banner__badge">SDU Forskning</span>
+              </div>
+              <div class="clinical-mode-banner__text">
+                Klinisk rådgivning er aktiveret under SDU-forskningsprotokollen (EU MDR Art. 62). Alle output er udkast og kræver lægefaglig validering før klinisk anvendelse.
+              </div>
+            </div>
+            <button class="clinical-mode-banner__dismiss" id="clinicalModeBannerDismiss" title="Luk">
+              <i data-lucide="x"></i>
+            </button>
           </div>
 
           <!-- Chat messages -->
@@ -1675,6 +1797,15 @@
         clinicalWarning.classList.remove('active');
       }
 
+      // Clinical mode banner (PLO F-7.B / F-9.B)
+      var clinicalBanner = document.getElementById('clinicalModeBanner');
+      if (state.chatMode === 'assistant' && state.currentTemplate === 'klinisk') {
+        clinicalBanner.classList.add('active');
+        lucide.createIcons();
+      } else {
+        clinicalBanner.classList.remove('active');
+      }
+
       // Auto-prompt
       if (state.currentTemplate) {
         if (state.chatMode === 'support') {
@@ -1701,6 +1832,14 @@
       });
     }
     bindChipClicks();
+
+    // ═══════════════════════════════════════
+    // CLINICAL MODE BANNER — dismiss handler
+    // PLO F-7.B / F-9.B
+    // ═══════════════════════════════════════
+    document.getElementById('clinicalModeBannerDismiss').addEventListener('click', function() {
+      document.getElementById('clinicalModeBanner').classList.remove('active');
+    });
 
     // ═══════════════════════════════════════
     // MODE SWITCHING
