@@ -789,22 +789,23 @@
        TEMPLATE CHIPS — F-7.A skabelonvalg
        ═══════════════════════════════════════ */
     .ba-template-section {
-      padding: 12px 24px 0;
+      padding: 10px 24px 0;
       flex-shrink: 0;
       border-bottom: 1px solid var(--color-gray-100);
     }
     .ba-template-label {
-      font-size: 11px;
+      font-size: var(--font-size-2xs);
       font-weight: 600;
       color: var(--color-navy-400);
-      letter-spacing: 0.02em;
-      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
     }
     .ba-template-chips {
       display: flex;
       gap: 6px;
       overflow-x: auto;
-      padding-bottom: 12px;
+      padding-bottom: 10px;
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
@@ -813,13 +814,13 @@
     .ba-template-chip {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      padding: 5px 12px;
+      gap: 6px;
+      padding: 7px 14px;
       border-radius: var(--radius-full);
       border: 1px solid var(--color-gray-200);
-      background: #f0f4ff;
-      font-size: 12px;
-      font-weight: 500;
+      background: var(--color-white);
+      font-size: var(--font-size-xs);
+      font-weight: 600;
       color: var(--color-navy-500);
       cursor: pointer;
       font-family: inherit;
@@ -828,21 +829,19 @@
       flex-shrink: 0;
     }
     .ba-template-chip i,
-    .ba-template-chip svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .ba-template-chip svg { width: 13px; height: 13px; flex-shrink: 0; }
     .ba-template-chip:hover {
       border-color: var(--color-navy-400);
-      background: #e4ebff;
-      color: var(--color-navy-600);
+      background: var(--color-gray-100);
     }
     .ba-template-chip--active {
       border-color: var(--color-navy-500);
-      background: rgba(86, 105, 164, 0.12);
-      color: var(--color-navy-600);
-      font-weight: 600;
-      box-shadow: 0 1px 4px rgba(86, 105, 164, 0.12);
+      background: var(--color-navy-600);
+      color: white;
     }
     .ba-template-chip--active:hover {
-      background: rgba(86, 105, 164, 0.16);
+      background: var(--color-navy-700);
+      border-color: var(--color-navy-600);
     }
     .ba-template-chip__check {
       display: none;
@@ -873,9 +872,8 @@
     .ba-template-clear i,
     .ba-template-clear svg { width: 12px; height: 12px; }
     .ba-template-clear:hover {
-      border-color: #DC2626;
-      background: #FEF2F2;
-      color: #DC2626;
+      border-color: var(--color-navy-400);
+      background: var(--color-gray-100);
     }
     .ba-template-clear--visible { display: inline-flex; }
   </style>

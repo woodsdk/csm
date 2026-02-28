@@ -804,8 +804,9 @@
     }
 
     .code-chip--accepted {
-      background: rgba(34, 197, 94, 0.04);
-      border-color: rgba(34, 197, 94, 0.3);
+      background: rgba(34, 197, 94, 0.10);
+      border-color: rgba(34, 197, 94, 0.55);
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.15);
     }
 
     .code-chip--removed {
@@ -1077,152 +1078,68 @@
       left: 0;
     }
 
-    /* F-6.B: Critical info highlighting */
-    .resume-section--cave {
-      background: rgba(239, 68, 68, 0.07);
-      border: 1px solid rgba(239, 68, 68, 0.22);
-      border-radius: 8px;
-      padding: 8px 10px;
-      margin-bottom: 12px;
-    }
-    .resume-section--cave .resume-label {
-      color: #dc2626;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .resume-section--cave .resume-label i {
-      width: 13px;
-      height: 13px;
-      flex-shrink: 0;
-    }
-    .resume-section--cave .resume-list li {
-      color: #b91c1c;
-      font-weight: 500;
-    }
-    .resume-section--cave .resume-list li::before {
-      content: "⚠";
-      font-size: 0.65rem;
-    }
-    .resume-flag {
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-      padding: 1px 7px;
-      font-size: 0.6rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      border-radius: 999px;
-      margin-left: 5px;
-      vertical-align: middle;
-      line-height: 1.6;
-    }
-    .resume-flag--critical {
-      color: #dc2626;
-      background: rgba(239, 68, 68, 0.12);
-    }
-    .resume-flag--elevated {
-      color: #d97706;
-      background: rgba(245, 158, 11, 0.12);
-    }
-    .resume-list li.resume-list__item--flagged {
-      font-weight: 600;
-    }
+    /* F-6.B: Approve bar */
     .resume-approve-bar {
       padding: 10px 16px;
       border-top: 1px solid var(--color-gray-100);
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
     }
-    .resume-approve-btn {
+    .resume-approve-bar__note {
+      font-size: 0.6875rem;
+      line-height: 1.4;
+      color: var(--color-navy-400);
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 5px;
+    }
+    .resume-approve-bar__note i { width: 11px; height: 11px; flex-shrink: 0; }
+    .resume-approve-bar__actions {
+      display: flex;
       gap: 8px;
-      width: 100%;
-      padding: 10px 16px;
+    }
+    .resume-approve-btn {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 12px;
       border: none;
       border-radius: var(--radius-lg);
-      font-size: 0.8125rem;
+      font-family: inherit;
+      font-size: 0.75rem;
       font-weight: 600;
       cursor: pointer;
       background: var(--color-navy-600);
       color: white;
       transition: background 0.15s;
     }
-    .resume-approve-btn:hover {
-      background: var(--color-navy-700);
-    }
-    .resume-approve-btn i {
-      width: 15px;
-      height: 15px;
-    }
+    .resume-approve-btn:hover { background: var(--color-navy-700); }
+    .resume-approve-btn i { width: 13px; height: 13px; }
     .resume-copy-btn {
-      display: flex;
+      flex: 1;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      width: 100%;
-      padding: 9px 16px;
-      border: 1.5px solid var(--color-gray-200);
+      gap: 6px;
+      padding: 7px 12px;
+      border: 1px solid var(--color-gray-200);
       border-radius: var(--radius-lg);
-      font-size: 0.8125rem;
-      font-weight: 600;
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 500;
       cursor: pointer;
       background: var(--color-white);
       color: var(--color-navy-500);
       transition: all 0.15s;
     }
     .resume-copy-btn:hover {
-      border-color: var(--color-navy-400);
+      border-color: var(--color-navy-300);
       background: var(--color-gray-50);
     }
-    .resume-copy-btn i {
-      width: 15px;
-      height: 15px;
-    }
-    .resume-sdu-badge {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      padding: 5px 10px;
-      border-radius: var(--radius-md);
-      font-size: 0.6875rem;
-      font-weight: 600;
-      background: rgba(86, 105, 164, 0.08);
-      color: var(--color-navy-500);
-      margin-bottom: 2px;
-    }
-    .resume-sdu-badge i {
-      width: 11px;
-      height: 11px;
-    }
-    .resume-approve-note {
-      font-size: 0.6875rem;
-      color: var(--color-navy-400);
-      text-align: center;
-      line-height: 1.4;
-    }
-    .resume-status-badge {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: var(--radius-lg);
-      font-size: 0.6875rem;
-      font-weight: 600;
-      background: rgba(245, 158, 11, 0.08);
-      color: #b45309;
-      margin-bottom: 4px;
-    }
-    .resume-status-badge i {
-      width: 12px;
-      height: 12px;
-    }
+    .resume-copy-btn i { width: 13px; height: 13px; }
 
     /* Page-specific action bar override */
     .action-bar {
@@ -1646,346 +1563,12 @@
     }
 
     /* ──────────────────────────────────────────────
-       KLINISK SIKKERHEDSNET (Clinical Safety Net)
-       F-9.A: Identificering af kliniske risici
-       ────────────────────────────────────────────── */
-    .safety-net-section {
-      background: var(--color-gray-50);
-      border-radius: var(--radius-2xl);
-      box-shadow: var(--shadow-card);
-      overflow: hidden;
-    }
-
-    .safety-net-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 26px;
-      border-bottom: 1px solid var(--color-gray-200);
-      min-height: 52px;
-      background: var(--color-white);
-    }
-
-    .safety-net-header__left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .safety-net-header__icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 28px;
-      height: 28px;
-      border-radius: var(--radius-md);
-      background: rgba(239, 68, 68, 0.08);
-      color: #dc2626;
-    }
-
-    .safety-net-header__icon i {
-      width: 16px;
-      height: 16px;
-    }
-
-    .safety-net-header__text {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-    }
-
-    .safety-net-header__title {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--color-text);
-    }
-
-    .safety-net-header__subtitle {
-      font-size: 0.6875rem;
-      color: var(--color-navy-400);
-      line-height: 1.3;
-    }
-
-    .safety-net-sdu-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 4px 10px;
-      border-radius: var(--radius-md);
-      font-size: 0.6875rem;
-      font-weight: 600;
-      background: rgba(86, 105, 164, 0.08);
-      color: var(--color-navy-500);
-    }
-
-    .safety-net-sdu-badge i {
-      width: 11px;
-      height: 11px;
-    }
-
-    .safety-net-body {
-      padding: 16px 26px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    /* Individual risk cards */
-    .risk-card {
-      background: var(--color-white);
-      border-radius: var(--radius-lg);
-      box-shadow: 0 1px 4px rgba(19, 16, 44, 0.06);
-      border-left: 4px solid transparent;
-      overflow: hidden;
-      transition: box-shadow 0.2s ease;
-    }
-
-    .risk-card:hover {
-      box-shadow: 0 2px 8px rgba(19, 16, 44, 0.1);
-    }
-
-    .risk-card--high {
-      border-left-color: #ef4444;
-    }
-
-    .risk-card--medium {
-      border-left-color: #f59e0b;
-    }
-
-    .risk-card--low {
-      border-left-color: #3b82f6;
-    }
-
-    .risk-card__header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 16px;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .risk-card__icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      width: 28px;
-      height: 28px;
-      border-radius: var(--radius-md);
-    }
-
-    .risk-card__icon i {
-      width: 15px;
-      height: 15px;
-    }
-
-    .risk-card--high .risk-card__icon {
-      background: rgba(239, 68, 68, 0.08);
-      color: #dc2626;
-    }
-
-    .risk-card--medium .risk-card__icon {
-      background: rgba(245, 158, 11, 0.08);
-      color: #b45309;
-    }
-
-    .risk-card--low .risk-card__icon {
-      background: rgba(59, 130, 246, 0.08);
-      color: #2563eb;
-    }
-
-    .risk-card__title-area {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .risk-card__title {
-      font-size: 0.8125rem;
-      font-weight: 600;
-      color: var(--color-text);
-      line-height: 1.3;
-    }
-
-    .risk-card__badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 2px 8px;
-      border-radius: var(--radius-full);
-      font-size: 0.625rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-      flex-shrink: 0;
-    }
-
-    .risk-card--high .risk-card__badge {
-      background: rgba(239, 68, 68, 0.1);
-      color: #dc2626;
-    }
-
-    .risk-card--medium .risk-card__badge {
-      background: rgba(245, 158, 11, 0.1);
-      color: #b45309;
-    }
-
-    .risk-card--low .risk-card__badge {
-      background: rgba(59, 130, 246, 0.1);
-      color: #2563eb;
-    }
-
-    .risk-card__chevron {
-      display: flex;
-      align-items: center;
-      color: var(--color-navy-400);
-      transition: transform 0.2s ease;
-    }
-
-    .risk-card__chevron i {
-      width: 14px;
-      height: 14px;
-    }
-
-    .risk-card.open .risk-card__chevron {
-      transform: rotate(180deg);
-    }
-
-    .risk-card__body {
-      display: none;
-      padding: 0 16px 14px;
-      border-top: 1px solid var(--color-gray-100);
-    }
-
-    .risk-card.open .risk-card__body {
-      display: block;
-    }
-
-    .risk-card__description {
-      font-size: 0.8125rem;
-      line-height: 1.6;
-      color: var(--color-navy-600);
-      padding-top: 12px;
-      margin-bottom: 10px;
-    }
-
-    .risk-card__question-label {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.6875rem;
-      font-weight: 600;
-      color: var(--color-navy-400);
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-      margin-bottom: 6px;
-    }
-
-    .risk-card__question-label i {
-      width: 11px;
-      height: 11px;
-    }
-
-    .risk-card__question-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-    }
-
-    .risk-card__question {
-      flex: 1;
-      font-size: 0.8125rem;
-      line-height: 1.5;
-      color: var(--color-text);
-      font-style: italic;
-      padding: 8px 12px;
-      background: var(--color-gray-50);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--color-gray-200);
-    }
-
-    .risk-card__copy-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 6px 10px;
-      background: var(--color-white);
-      border: 1px solid var(--color-gray-200);
-      border-radius: var(--radius-md);
-      font-family: inherit;
-      font-size: 0.6875rem;
-      font-weight: 500;
-      color: var(--color-navy-500);
-      cursor: pointer;
-      white-space: nowrap;
-      transition: background 0.15s ease, border-color 0.15s ease;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    .risk-card__copy-btn:hover {
-      background: var(--color-gray-50);
-      border-color: var(--color-navy-300);
-    }
-
-    .risk-card__copy-btn i {
-      width: 11px;
-      height: 11px;
-    }
-
-    /* Safety net footer */
-    .safety-net-footer {
-      padding: 12px 26px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid var(--color-gray-200);
-      background: var(--color-white);
-    }
-
-    .safety-net-disclaimer {
-      font-size: 0.6875rem;
-      color: var(--color-navy-400);
-      line-height: 1.4;
-      max-width: 80%;
-    }
-
-    .safety-net-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: none;
-      border: none;
-      font-family: inherit;
-      font-size: 0.6875rem;
-      font-weight: 500;
-      color: var(--color-navy-500);
-      cursor: pointer;
-      padding: 4px 8px;
-      border-radius: var(--radius-md);
-      transition: background 0.15s ease;
-      white-space: nowrap;
-    }
-
-    .safety-net-toggle:hover {
-      background: var(--color-gray-100);
-    }
-
-    .safety-net-toggle i {
-      width: 12px;
-      height: 12px;
-    }
-
-    .safety-net-body.collapsed {
-      display: none;
-    }
-
-    /* ──────────────────────────────────────────────
        PRINT STYLES
        ────────────────────────────────────────────── */
     @media print {
       .topbar, .bottom-nav, .action-bar, .review-sidebar,
       .rating-overlay, .translate-overlay, .codes-section,
-      .panel-header, .ai-input-section, .safety-net-section {
+      .panel-header, .ai-input-section {
         display: none !important;
       }
 
@@ -2219,138 +1802,6 @@
 
               </div>
 
-            <!-- ═══════════════════════════════════════
-                 KLINISK SIKKERHEDSNET — F-9.A
-                 Identificering af kliniske risici
-                 ═══════════════════════════════════════ -->
-            <div class="safety-net-section" id="safetyNetSection">
-              <div class="safety-net-header">
-                <div class="safety-net-header__left">
-                  <div class="safety-net-header__icon">
-                    <i data-lucide="shield-alert"></i>
-                  </div>
-                  <div class="safety-net-header__text">
-                    <div class="safety-net-header__title">Klinisk Sikkerhedsnet</div>
-                    <div class="safety-net-header__subtitle">AI-identificerede risikofaktorer og foreslåede opfølgende spørgsmål</div>
-                  </div>
-                </div>
-                <span class="safety-net-sdu-badge">
-                  <i data-lucide="graduation-cap"></i>
-                  SDU
-                </span>
-              </div>
-
-              <div class="safety-net-body" id="safetyNetBody">
-
-                <!-- Risk 1: Høj risiko — Lægemiddelinteraktion -->
-                <div class="risk-card risk-card--high open" id="riskCard1">
-                  <div class="risk-card__header" onclick="toggleRiskCard('riskCard1')">
-                    <div class="risk-card__icon">
-                      <i data-lucide="alert-triangle"></i>
-                    </div>
-                    <div class="risk-card__title-area">
-                      <div class="risk-card__title">Potentiel lægemiddelinteraktion</div>
-                    </div>
-                    <span class="risk-card__badge">Høj risiko</span>
-                    <div class="risk-card__chevron">
-                      <i data-lucide="chevron-down"></i>
-                    </div>
-                  </div>
-                  <div class="risk-card__body">
-                    <div class="risk-card__description">
-                      Patienten er i behandling med warfarin og har fået ordineret NSAID. Kombination øger risiko for gastrointestinal blødning.
-                    </div>
-                    <div class="risk-card__question-label">
-                      <i data-lucide="message-circle"></i>
-                      Foreslået opfølgende spørgsmål
-                    </div>
-                    <div class="risk-card__question-row">
-                      <div class="risk-card__question">Har du oplevet blod i afføringen eller mavesmerter?</div>
-                      <button class="risk-card__copy-btn" onclick="copySafetyQuestion(this, 'Har du oplevet blod i afføringen eller mavesmerter?')">
-                        <i data-lucide="copy"></i>
-                        Kopiér spørgsmål
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Risk 2: Moderat risiko — Blodtryk -->
-                <div class="risk-card risk-card--medium" id="riskCard2">
-                  <div class="risk-card__header" onclick="toggleRiskCard('riskCard2')">
-                    <div class="risk-card__icon">
-                      <i data-lucide="alert-circle"></i>
-                    </div>
-                    <div class="risk-card__title-area">
-                      <div class="risk-card__title">Manglende opfølgning på blodtryk</div>
-                    </div>
-                    <span class="risk-card__badge">Moderat risiko</span>
-                    <div class="risk-card__chevron">
-                      <i data-lucide="chevron-down"></i>
-                    </div>
-                  </div>
-                  <div class="risk-card__body">
-                    <div class="risk-card__description">
-                      Seneste blodtryksmåling viste 158/95 mmHg. Ingen registreret opfølgning de seneste 3 måneder.
-                    </div>
-                    <div class="risk-card__question-label">
-                      <i data-lucide="message-circle"></i>
-                      Foreslået opfølgende spørgsmål
-                    </div>
-                    <div class="risk-card__question-row">
-                      <div class="risk-card__question">Har du målt dit blodtryk derhjemme? Hvordan har du det med din medicin?</div>
-                      <button class="risk-card__copy-btn" onclick="copySafetyQuestion(this, 'Har du målt dit blodtryk derhjemme? Hvordan har du det med din medicin?')">
-                        <i data-lucide="copy"></i>
-                        Kopiér spørgsmål
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Risk 3: Opmærksomhed — Vaccination -->
-                <div class="risk-card risk-card--low" id="riskCard3">
-                  <div class="risk-card__header" onclick="toggleRiskCard('riskCard3')">
-                    <div class="risk-card__icon">
-                      <i data-lucide="info"></i>
-                    </div>
-                    <div class="risk-card__title-area">
-                      <div class="risk-card__title">Vaccinationsstatus</div>
-                    </div>
-                    <span class="risk-card__badge">Opmærksomhed</span>
-                    <div class="risk-card__chevron">
-                      <i data-lucide="chevron-down"></i>
-                    </div>
-                  </div>
-                  <div class="risk-card__body">
-                    <div class="risk-card__description">
-                      Patienten er over 65 år og har ikke registreret influenzavaccination denne sæson.
-                    </div>
-                    <div class="risk-card__question-label">
-                      <i data-lucide="message-circle"></i>
-                      Foreslået opfølgende spørgsmål
-                    </div>
-                    <div class="risk-card__question-row">
-                      <div class="risk-card__question">Har du fået din influenzavaccination i år?</div>
-                      <button class="risk-card__copy-btn" onclick="copySafetyQuestion(this, 'Har du fået din influenzavaccination i år?')">
-                        <i data-lucide="copy"></i>
-                        Kopiér spørgsmål
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-
-              <div class="safety-net-footer">
-                <div class="safety-net-disclaimer">
-                  Risikoidentifikation er AI-genereret under SDU-forskningsprotokollen og kræver altid lægefaglig vurdering.
-                </div>
-                <button class="safety-net-toggle" id="safetyNetToggle" onclick="toggleSafetyNet()">
-                  <i data-lucide="eye-off"></i>
-                  Skjul sikkerhedsnet
-                </button>
-              </div>
-            </div>
-
           </div>
 
           <!-- RIGHT: Context sidebar -->
@@ -2360,23 +1811,8 @@
             <div class="consultation-panel" style="flex: 1; min-height: 0;">
               <div class="panel-header">
                 <h2 class="panel-title">Patientresume</h2>
-                <span class="resume-flag resume-flag--elevated" style="margin-left: auto;">
-                  <i data-lucide="clock" style="width:10px;height:10px;"></i>
-                  Afventer godkendelse
-                </span>
               </div>
               <div class="panel-content resume-body">
-
-                <!-- CAVE / Allergi — rød fremhævning -->
-                <div class="resume-section resume-section--cave">
-                  <div class="resume-label">
-                    <i data-lucide="alert-triangle"></i>
-                    CAVE / Allergi
-                  </div>
-                  <ul class="resume-list">
-                    <li>Penicillin — urticaria (selvrapporteret)</li>
-                  </ul>
-                </div>
 
                 <div class="resume-section">
                   <div class="resume-label">Hovedsymptom</div>
@@ -2415,23 +1851,20 @@
 
               <!-- Godkendelsesbar -->
               <div class="resume-approve-bar">
-                <div class="resume-sdu-badge">
+                <div class="resume-approve-bar__note">
                   <i data-lucide="graduation-cap"></i>
-                  SDU Forskningsprotokol — EU MDR Art. 62
+                  AI-genereret resumé under SDU-forskningsprotokol. Gennemgå og godkend.
                 </div>
-                <div class="resume-status-badge">
-                  <i data-lucide="info"></i>
-                  AI-genereret resumé — gennemgå inden godkendelse
+                <div class="resume-approve-bar__actions">
+                  <button class="resume-approve-btn">
+                    <i data-lucide="shield-check"></i>
+                    Godkend
+                  </button>
+                  <button class="resume-copy-btn" onclick="navigator.clipboard.writeText(document.querySelector('.resume-body').innerText).then(()=>{this.innerHTML='<i data-lucide=\'check\'></i> Kopieret';lucide.createIcons();setTimeout(()=>{this.innerHTML='<i data-lucide=\'copy\'></i> Kopiér';lucide.createIcons();},2000)})">
+                    <i data-lucide="copy"></i>
+                    Kopiér
+                  </button>
                 </div>
-                <button class="resume-approve-btn">
-                  <i data-lucide="shield-check"></i>
-                  Godkend resumé
-                </button>
-                <button class="resume-copy-btn" onclick="navigator.clipboard.writeText(document.querySelector('.resume-body').innerText).then(()=>{this.innerHTML='<i data-lucide=\'check\'></i> Kopieret!';lucide.createIcons();setTimeout(()=>{this.innerHTML='<i data-lucide=\'copy\'></i> Kopiér resumé';lucide.createIcons();},2000)})">
-                  <i data-lucide="copy"></i>
-                  Kopiér resumé
-                </button>
-                <div class="resume-approve-note">Godkendelse bekræfter at resuméet er klinisk korrekt og komplet</div>
               </div>
 
               <div class="ai-input-section">
@@ -2576,39 +2009,6 @@
 
   <script>
     lucide.createIcons();
-
-    // ─── Klinisk Sikkerhedsnet: Toggle & Copy ────────────────────
-    function toggleRiskCard(cardId) {
-      var card = document.getElementById(cardId);
-      if (card) {
-        card.classList.toggle('open');
-      }
-    }
-
-    function copySafetyQuestion(btn, text) {
-      navigator.clipboard.writeText(text).then(function() {
-        var original = btn.innerHTML;
-        btn.innerHTML = '<i data-lucide="check"></i> Kopieret!';
-        lucide.createIcons();
-        setTimeout(function() {
-          btn.innerHTML = original;
-          lucide.createIcons();
-        }, 1500);
-      });
-    }
-
-    function toggleSafetyNet() {
-      var body = document.getElementById('safetyNetBody');
-      var toggle = document.getElementById('safetyNetToggle');
-      if (body.classList.contains('collapsed')) {
-        body.classList.remove('collapsed');
-        toggle.innerHTML = '<i data-lucide="eye-off"></i> Skjul sikkerhedsnet';
-      } else {
-        body.classList.add('collapsed');
-        toggle.innerHTML = '<i data-lucide="eye"></i> Vis sikkerhedsnet';
-      }
-      lucide.createIcons();
-    }
 
     // ─── Template Dropdown ──────────────────────────────────────
     const templateBtn = document.getElementById('templateDropdownBtn');
