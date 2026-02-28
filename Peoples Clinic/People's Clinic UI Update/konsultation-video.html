@@ -795,6 +795,22 @@
       background: #22C55E;
     }
 
+    /* SDU research badge for Patientresume */
+    .resume-sdu-notice {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      margin: 0 20px 8px;
+      border-radius: var(--radius-md);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      background: rgba(86, 105, 164, 0.06);
+      color: var(--color-navy-500);
+      border: 1px solid rgba(86, 105, 164, 0.12);
+    }
+    .resume-sdu-notice i { width: 12px; height: 12px; flex-shrink: 0; }
+
     /* AI input at bottom of panels */
     .ai-input-section {
       padding: 12px 30px;
@@ -1296,19 +1312,19 @@
               <!-- SOAP sections (hidden initially, revealed by streaming animation) -->
               <div class="notes-section notes-section--hidden" id="noteSection0">
                 <div class="notes-label">Anamnese</div>
-                <div class="notes-content" data-original="Patient med to ugers tiltagende trykken retrosternalt, udløst af moderat fysisk aktivitet. Varighed ca. 5 min, lindres ved hvile. Let udstråling til venstre skulder. Let dyspnø ved anfald. Ingen kvalme. Familiær disposition til IHS (far med AMI v. 62 år). Øget træthed gennem de seneste uger. Ingen medicinændringer."></div>
+                <div class="notes-content" data-original="Patient med 3 ugers tiltagende smerter i venstre knæ, opstået efter et vrid under havearbejde. Oplever usikkerhed ved gang, særligt ved trappegang og ujævnt terræn. Intermitterende hævelse over medialt knæ. Ingen locking-episoder. Kan belaste fuldt. Ingen feber eller rødme. Tidligere rask i knæene. Bruger dagligt gangstok udendørs."></div>
               </div>
               <div class="notes-section notes-section--hidden" id="noteSection1">
                 <div class="notes-label">Objektivt</div>
-                <div class="notes-content" data-original="Almen upåvirket, vågen og klar. Normal vejrtrækning i hvile. Ingen ødemer. BT 132/78, puls 78 reg. Cor/pulm uden mislyde eller krepitationer. EKG initialt uden akutte iskæmitegn (fiktivt)."></div>
+                <div class="notes-content" data-original="Let hydrops over venstre knæ. Minimal ømhed over mediale ledlinje. Positiv forreste skuffetest (let laxitet, blød stopklods). Lachman usikker positiv. McMurray negativ. Stabil i sideplanet. Fuld ekstension, fleksion til 120°. Ingen rubor eller varmeøgning."></div>
               </div>
               <div class="notes-section notes-section--hidden" id="noteSection2">
                 <div class="notes-label">Vurdering</div>
-                <div class="notes-content" data-original="Brystsmerter forenelige med mulig stabil angina pectoris. Familiær disposition og belastningsudløste symptomer taler for videre kardiologisk udredning. Ingen tegn på akut koronart syndrom aktuelt."></div>
+                <div class="notes-content" data-original="Sandsynlig lettere ACL-distorsion grad I–II efter vridtraume. Meniskskade mindre sandsynlig grundet negativ McMurray og fravær af locking. Degenerative forandringer kan medvirke til instabilitetsfølelse. Lav risiko for akut intervention."></div>
               </div>
               <div class="notes-section notes-section--hidden" id="noteSection3">
                 <div class="notes-label">Plan</div>
-                <div class="notes-content" data-original="– Bestilling af EKG og blodprøver inkl. lipidprofil, HbA1c og troponin (screening). – Henvisning til kardiologisk vurdering inkl. arbejds-EKG. – Rådgivning om at undgå hård fysisk belastning indtil udredning er afsluttet."></div>
+                <div class="notes-content" data-original="– Røntgen af venstre knæ mhp. artrose og fraktur. – Aflastning med krykkestøtte ved behov. Ibuprofen 400 mg x 3 ved smerter (max 1 uge). – Kontrol om 2 uger. Evt. MR-scanning ved persisterende instabilitet."></div>
               </div>
             </div>
             <div class="ai-input-section">
@@ -1326,46 +1342,50 @@
             <div class="panel-header">
               <h2 class="panel-title">Patientresume</h2>
             </div>
+            <div class="resume-sdu-notice">
+              <i data-lucide="graduation-cap"></i>
+              SDU Forskningsprotokol — EU MDR Art. 62
+            </div>
             <div class="panel-content">
               <div class="resume-section">
                 <div class="resume-label">Hovedsymptom:</div>
                 <div class="resume-content">
-                  Belastningsudløst brystsmerte (tryk), retrosternalt, varighed ca. 5 min, lindres ved hvile.
+                  Venstre knæsmerte efter vridtraume under havearbejde, 3 uger. Instabilitetsfølelse ved gang og trappegang.
                 </div>
               </div>
               <div class="resume-section">
                 <div class="resume-label">Symptomkarakteristika:</div>
                 <ul class="resume-list">
-                  <li>Lokalisation: retrosternalt</li>
-                  <li>Udløsende faktor: moderat fysisk aktivitet</li>
-                  <li>Lindring: hvile</li>
-                  <li>Udstråling: venstre skulder</li>
-                  <li>Associerede symptomer: let dyspnø, øget træthed</li>
-                  <li>Fravær af: kvalme, synkope, hvilesmerter</li>
+                  <li>Lokalisation: medialt venstre knæ</li>
+                  <li>Udløsende faktor: vridtraume</li>
+                  <li>Forværring: trappegang, ujævnt terræn</li>
+                  <li>Lindring: hvile, aflastning</li>
+                  <li>Associeret: intermitterende hævelse</li>
+                  <li>Fravær af: locking, feber, rødme</li>
                 </ul>
               </div>
               <div class="resume-section">
                 <div class="resume-label">Risiko- og baggrundsdata:</div>
                 <ul class="resume-list">
-                  <li>Familiær disposition: far med AMI (62 år)</li>
-                  <li>Ingen nylige medicinændringer</li>
-                  <li>Ingen kendt hjertesygdom</li>
+                  <li>Ingen tidligere knæskader</li>
+                  <li>Let overvægt (BMI 27)</li>
+                  <li>Daglig gangstok udendørs</li>
                 </ul>
               </div>
               <div class="resume-section">
                 <div class="resume-label">Objektive fund:</div>
                 <ul class="resume-list">
-                  <li>BT 132/78</li>
-                  <li>Puls 78, regelmæssig</li>
-                  <li>Cor/pulm: upåfaldende</li>
-                  <li>Ingen ødemer</li>
-                  <li>EKG: ingen akutte iskæmitegn (fiktivt)</li>
+                  <li>Let hydrops venstre knæ</li>
+                  <li>Forreste skuffetest: let positiv</li>
+                  <li>Lachman: usikker positiv</li>
+                  <li>McMurray: negativ</li>
+                  <li>Fuld ekstension, fleksion 120°</li>
                 </ul>
               </div>
             </div>
             <div class="ai-input-section">
               <div class="ai-input-wrapper">
-                <input type="text" class="ai-input" placeholder="Stil spørgsmål til patientjournal...">
+                <input type="text" class="ai-input" placeholder="Søg i patientjournalen...">
                 <button class="ai-send-btn">
                   <i data-lucide="send"></i>
                 </button>
@@ -1389,7 +1409,7 @@
           <i data-lucide="play"></i>
           <span>Start</span>
         </a>
-        <a href="konsultationshistorik.html" class="bottom-nav__item">
+        <a href="patientoversigt.html" class="bottom-nav__item">
           <i data-lucide="history"></i>
           <span>Historik</span>
         </a>

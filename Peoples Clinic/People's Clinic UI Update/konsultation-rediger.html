@@ -1077,6 +1077,153 @@
       left: 0;
     }
 
+    /* F-6.B: Critical info highlighting */
+    .resume-section--cave {
+      background: rgba(239, 68, 68, 0.07);
+      border: 1px solid rgba(239, 68, 68, 0.22);
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 12px;
+    }
+    .resume-section--cave .resume-label {
+      color: #dc2626;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .resume-section--cave .resume-label i {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+    }
+    .resume-section--cave .resume-list li {
+      color: #b91c1c;
+      font-weight: 500;
+    }
+    .resume-section--cave .resume-list li::before {
+      content: "⚠";
+      font-size: 0.65rem;
+    }
+    .resume-flag {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 1px 7px;
+      font-size: 0.6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-radius: 999px;
+      margin-left: 5px;
+      vertical-align: middle;
+      line-height: 1.6;
+    }
+    .resume-flag--critical {
+      color: #dc2626;
+      background: rgba(239, 68, 68, 0.12);
+    }
+    .resume-flag--elevated {
+      color: #d97706;
+      background: rgba(245, 158, 11, 0.12);
+    }
+    .resume-list li.resume-list__item--flagged {
+      font-weight: 600;
+    }
+    .resume-approve-bar {
+      padding: 10px 16px;
+      border-top: 1px solid var(--color-gray-100);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .resume-approve-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 10px 16px;
+      border: none;
+      border-radius: var(--radius-lg);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--color-navy-600);
+      color: white;
+      transition: background 0.15s;
+    }
+    .resume-approve-btn:hover {
+      background: var(--color-navy-700);
+    }
+    .resume-approve-btn i {
+      width: 15px;
+      height: 15px;
+    }
+    .resume-copy-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 9px 16px;
+      border: 1.5px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--color-white);
+      color: var(--color-navy-500);
+      transition: all 0.15s;
+    }
+    .resume-copy-btn:hover {
+      border-color: var(--color-navy-400);
+      background: var(--color-gray-50);
+    }
+    .resume-copy-btn i {
+      width: 15px;
+      height: 15px;
+    }
+    .resume-sdu-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: var(--radius-md);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      background: rgba(86, 105, 164, 0.08);
+      color: var(--color-navy-500);
+      margin-bottom: 2px;
+    }
+    .resume-sdu-badge i {
+      width: 11px;
+      height: 11px;
+    }
+    .resume-approve-note {
+      font-size: 0.6875rem;
+      color: var(--color-navy-400);
+      text-align: center;
+      line-height: 1.4;
+    }
+    .resume-status-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: var(--radius-lg);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      background: rgba(245, 158, 11, 0.08);
+      color: #b45309;
+      margin-bottom: 4px;
+    }
+    .resume-status-badge i {
+      width: 12px;
+      height: 12px;
+    }
+
     /* Page-specific action bar override */
     .action-bar {
       padding-bottom: 24px;
@@ -1337,15 +1484,21 @@
       gap: 6px;
       padding: 10px 20px;
       background: var(--color-navy-800);
-      border: none;
+      border: 1px solid transparent;
       color: var(--color-white);
       font-family: inherit;
       font-size: 0.8125rem;
       font-weight: 600;
-      border-radius: var(--radius-full);
+      border-radius: var(--radius-lg);
       cursor: pointer;
       transition: background 0.2s ease;
       white-space: nowrap;
+      box-sizing: border-box;
+      height: 40px;
+    }
+    .translate-panel__select {
+      height: 40px;
+      box-sizing: border-box;
     }
 
     .translate-panel__generate:hover {
@@ -1661,19 +1814,19 @@
               <div class="panel-content">
                 <div class="notes-section">
                   <div class="notes-label">Anamnese</div>
-                  <div class="notes-content" contenteditable="true">Patient med to ugers tiltagende trykken retrosternalt, udløst af moderat fysisk aktivitet. Varighed ca. 5 min, lindres ved hvile. Let udstråling til venstre skulder. Let dyspnø ved anfald. Ingen kvalme. Familiær disposition til IHS (far med AMI v. 62 år). Øget træthed gennem de seneste uger. Ingen medicinændringer.</div>
+                  <div class="notes-content" contenteditable="true">Patient med 3 ugers tiltagende smerter i venstre knæ, opstået efter et vrid under havearbejde. Oplever usikkerhed ved gang, særligt ved trappegang og ujævnt terræn. Intermitterende hævelse over medialt knæ. Ingen locking-episoder. Kan belaste fuldt. Ingen feber eller rødme. Tidligere rask i knæene. Bruger dagligt gangstok udendørs.</div>
                 </div>
                 <div class="notes-section">
                   <div class="notes-label">Objektivt</div>
-                  <div class="notes-content" contenteditable="true">Almen upåvirket, vågen og klar. Normal vejrtrækning i hvile. Ingen ødemer. BT 132/78, puls 78 reg. Cor/pulm uden mislyde eller krepitationer. EKG initialt uden akutte iskæmitegn.</div>
+                  <div class="notes-content" contenteditable="true">Let hydrops over venstre knæ. Minimal ømhed over mediale ledlinje. Positiv forreste skuffetest (let laxitet, blød stopklods). Lachman usikker positiv. McMurray negativ. Stabil i sideplanet. Fuld ekstension, fleksion til 120°. Ingen rubor eller varmeøgning. Upåfaldende perifere kar og neuro.</div>
                 </div>
                 <div class="notes-section">
                   <div class="notes-label">Vurdering</div>
-                  <div class="notes-content" contenteditable="true">Brystsmerter forenelige med mulig stabil angina pectoris. Familiær disposition og belastningsudløste symptomer taler for videre kardiologisk udredning. Ingen tegn på akut koronart syndrom aktuelt.</div>
+                  <div class="notes-content" contenteditable="true">Sandsynlig lettere ACL-distorsion grad I–II efter vridtraume. Meniskskade mindre sandsynlig grundet negativ McMurray og fravær af locking. Degenerative forandringer kan medvirke til instabilitetsfølelse. Lav risiko for akut kirurgisk intervention.</div>
                 </div>
                 <div class="notes-section">
                   <div class="notes-label">Plan</div>
-                  <div class="notes-content" contenteditable="true">– Bestilling af EKG og blodprøver inkl. lipidprofil, HbA1c og troponin (screening).<br>– Henvisning til kardiologisk vurdering inkl. arbejds-EKG.<br>– Rådgivning om at undgå hård fysisk belastning indtil udredning er afsluttet.</div>
+                  <div class="notes-content" contenteditable="true">– Røntgen af venstre knæ mhp. artrose og fraktur.<br>– Aflastning med krykkestøtte ved behov. Ibuprofen 400 mg x 3 ved smerter (max 1 uge).<br>– Kontrol om 2 uger. Evt. MR-scanning ved persisterende instabilitet.<br>– Instruktion i hjemmeøvelser for knæstabilisering.</div>
                 </div>
               </div>
 
@@ -1689,32 +1842,32 @@
                   <div class="code-chip" id="chip-1">
                     <span class="code-chip__confidence code-chip__confidence--high"></span>
                     <span class="code-chip__system code-chip__system--icpc">ICPC-2</span>
-                    <span class="code-chip__code">K74</span>
-                    <span class="code-chip__desc">Angina pectoris</span>
+                    <span class="code-chip__code">L78</span>
+                    <span class="code-chip__desc">Forstuvning/forstrækning af knæ</span>
                     <button class="code-chip__btn code-chip__btn--accept" title="Godkend" onclick="acceptCode('chip-1')"><i data-lucide="check"></i></button>
                     <button class="code-chip__btn code-chip__btn--remove" title="Fjern" onclick="removeCode('chip-1')"><i data-lucide="x"></i></button>
                   </div>
                   <div class="code-chip" id="chip-2">
                     <span class="code-chip__confidence code-chip__confidence--high"></span>
                     <span class="code-chip__system code-chip__system--icd">ICD-10</span>
-                    <span class="code-chip__code">DI209</span>
-                    <span class="code-chip__desc">Ustabil angina pectoris</span>
+                    <span class="code-chip__code">DS835</span>
+                    <span class="code-chip__desc">Forstuvning af korsbånd i knæ</span>
                     <button class="code-chip__btn code-chip__btn--accept" title="Godkend" onclick="acceptCode('chip-2')"><i data-lucide="check"></i></button>
                     <button class="code-chip__btn code-chip__btn--remove" title="Fjern" onclick="removeCode('chip-2')"><i data-lucide="x"></i></button>
                   </div>
                   <div class="code-chip" id="chip-3">
                     <span class="code-chip__confidence code-chip__confidence--medium"></span>
                     <span class="code-chip__system code-chip__system--icpc">ICPC-2</span>
-                    <span class="code-chip__code">K85</span>
-                    <span class="code-chip__desc">Forhøjet blodtryk</span>
+                    <span class="code-chip__code">L96</span>
+                    <span class="code-chip__desc">Akut knæskade</span>
                     <button class="code-chip__btn code-chip__btn--accept" title="Godkend" onclick="acceptCode('chip-3')"><i data-lucide="check"></i></button>
                     <button class="code-chip__btn code-chip__btn--remove" title="Fjern" onclick="removeCode('chip-3')"><i data-lucide="x"></i></button>
                   </div>
                   <div class="code-chip" id="chip-4">
                     <span class="code-chip__confidence code-chip__confidence--medium"></span>
                     <span class="code-chip__system code-chip__system--icd">ICD-10</span>
-                    <span class="code-chip__code">DZ825</span>
-                    <span class="code-chip__desc">Fam. disp. iskæmisk hjertesygd.</span>
+                    <span class="code-chip__code">DM171</span>
+                    <span class="code-chip__desc">Primær gonartrose, knæ</span>
                     <button class="code-chip__btn code-chip__btn--accept" title="Godkend" onclick="acceptCode('chip-4')"><i data-lucide="check"></i></button>
                     <button class="code-chip__btn code-chip__btn--remove" title="Fjern" onclick="removeCode('chip-4')"><i data-lucide="x"></i></button>
                   </div>
@@ -1736,43 +1889,84 @@
           <!-- RIGHT: Context sidebar -->
           <div class="review-sidebar">
 
-            <!-- Patientresume -->
+            <!-- Patientresume — F-6.B: Godkendelsesvisning med fremhævet kritisk info -->
             <div class="consultation-panel" style="flex: 1; min-height: 0;">
               <div class="panel-header">
                 <h2 class="panel-title">Patientresume</h2>
+                <span class="resume-flag resume-flag--elevated" style="margin-left: auto;">
+                  <i data-lucide="clock" style="width:10px;height:10px;"></i>
+                  Afventer godkendelse
+                </span>
               </div>
-              <div class="panel-content">
+              <div class="panel-content resume-body">
+
+                <!-- CAVE / Allergi — rød fremhævning -->
+                <div class="resume-section resume-section--cave">
+                  <div class="resume-label">
+                    <i data-lucide="alert-triangle"></i>
+                    CAVE / Allergi
+                  </div>
+                  <ul class="resume-list">
+                    <li>Penicillin — urticaria (selvrapporteret)</li>
+                  </ul>
+                </div>
+
                 <div class="resume-section">
                   <div class="resume-label">Hovedsymptom</div>
-                  <div style="font-size: 0.8125rem; line-height: 1.5; color: var(--color-text);">Belastningsudløst brystsmerte (tryk), retrosternalt, varighed ca. 5 min, lindres ved hvile.</div>
+                  <div style="font-size: 0.8125rem; line-height: 1.5; color: var(--color-text);">Venstre knæsmerte efter vridtraume under havearbejde, 3 uger. Instabilitetsfølelse ved gang og trappegang.</div>
                 </div>
                 <div class="resume-section">
                   <div class="resume-label">Symptomkarakteristika</div>
                   <ul class="resume-list">
-                    <li>Lokalisation: retrosternalt</li>
-                    <li>Udløsende: moderat fysisk aktivitet</li>
-                    <li>Lindring: hvile</li>
-                    <li>Udstråling: venstre skulder</li>
-                    <li>Associeret: let dyspnø, træthed</li>
+                    <li>Lokalisation: medialt venstre knæ</li>
+                    <li>Udløsende: vridtraume</li>
+                    <li>Forværring: trappegang, ujævnt terræn</li>
+                    <li>Lindring: hvile, aflastning</li>
+                    <li>Associeret: intermitterende hævelse</li>
                   </ul>
                 </div>
                 <div class="resume-section">
-                  <div class="resume-label">Risiko- og baggrundsdata</div>
+                  <div class="resume-label">
+                    Risiko- og baggrundsdata
+                  </div>
                   <ul class="resume-list">
-                    <li>Familiær disposition: far med AMI v. 62 år</li>
-                    <li>Ingen aktuelle medicinændringer</li>
+                    <li>Ingen tidligere knæskader</li>
+                    <li>Let overvægt (BMI 27)</li>
+                    <li>Daglig gangstok udendørs</li>
                   </ul>
                 </div>
                 <div class="resume-section">
                   <div class="resume-label">Objektive fund</div>
                   <ul class="resume-list">
-                    <li>BT 132/78, puls 78 reg.</li>
-                    <li>Cor/pulm: upåfaldende</li>
-                    <li>EKG: uden akutte iskæmitegn</li>
-                    <li>Ingen ødemer</li>
+                    <li>Let hydrops venstre knæ</li>
+                    <li>Forreste skuffetest: let positiv</li>
+                    <li>Lachman: usikker positiv</li>
+                    <li>McMurray: negativ</li>
                   </ul>
                 </div>
               </div>
+
+              <!-- Godkendelsesbar -->
+              <div class="resume-approve-bar">
+                <div class="resume-sdu-badge">
+                  <i data-lucide="graduation-cap"></i>
+                  SDU Forskningsprotokol — EU MDR Art. 62
+                </div>
+                <div class="resume-status-badge">
+                  <i data-lucide="info"></i>
+                  AI-genereret resumé — gennemgå inden godkendelse
+                </div>
+                <button class="resume-approve-btn">
+                  <i data-lucide="shield-check"></i>
+                  Godkend resumé
+                </button>
+                <button class="resume-copy-btn" onclick="navigator.clipboard.writeText(document.querySelector('.resume-body').innerText).then(()=>{this.innerHTML='<i data-lucide=\'check\'></i> Kopieret!';lucide.createIcons();setTimeout(()=>{this.innerHTML='<i data-lucide=\'copy\'></i> Kopiér resumé';lucide.createIcons();},2000)})">
+                  <i data-lucide="copy"></i>
+                  Kopiér resumé
+                </button>
+                <div class="resume-approve-note">Godkendelse bekræfter at resuméet er klinisk korrekt og komplet</div>
+              </div>
+
               <div class="ai-input-section">
                 <div class="ai-input-wrapper">
                   <input type="text" class="ai-input" placeholder="Spørg til patientjournal...">
@@ -1893,7 +2087,7 @@
           <i data-lucide="play"></i>
           <span>Start</span>
         </a>
-        <a href="konsultationshistorik.html" class="bottom-nav__item">
+        <a href="patientoversigt.html" class="bottom-nav__item">
           <i data-lucide="history"></i>
           <span>Historik</span>
         </a>
@@ -1924,51 +2118,51 @@
 
     const templateSections = {
       'soap': [
-        { label: 'Anamnese', content: 'Patient med to ugers tiltagende trykken retrosternalt, udløst af moderat fysisk aktivitet. Varighed ca. 5 min, lindres ved hvile. Let udstråling til venstre skulder. Let dyspnø ved anfald. Ingen kvalme. Familiær disposition til IHS (far med AMI v. 62 år). Øget træthed gennem de seneste uger. Ingen medicinændringer.' },
-        { label: 'Objektivt', content: 'Almen upåvirket, vågen og klar. Normal vejrtrækning i hvile. Ingen ødemer. BT 132/78, puls 78 reg. Cor/pulm uden mislyde eller krepitationer. EKG initialt uden akutte iskæmitegn.' },
-        { label: 'Vurdering', content: 'Brystsmerter forenelige med mulig stabil angina pectoris. Familiær disposition og belastningsudløste symptomer taler for videre kardiologisk udredning. Ingen tegn på akut koronart syndrom aktuelt.' },
-        { label: 'Plan', content: '– Bestilling af EKG og blodprøver inkl. lipidprofil, HbA1c og troponin (screening).<br>– Henvisning til kardiologisk vurdering inkl. arbejds-EKG.<br>– Rådgivning om at undgå hård fysisk belastning indtil udredning er afsluttet.' }
+        { label: 'Anamnese', content: 'Patient med 3 ugers tiltagende smerter i venstre knæ, opstået efter et vrid under havearbejde. Oplever usikkerhed ved gang, særligt ved trappegang og ujævnt terræn. Intermitterende hævelse over medialt knæ. Ingen locking-episoder. Kan belaste fuldt. Ingen feber eller rødme. Tidligere rask i knæene. Bruger dagligt gangstok udendørs.' },
+        { label: 'Objektivt', content: 'Let hydrops over venstre knæ. Minimal ømhed over mediale ledlinje. Positiv forreste skuffetest (let laxitet, blød stopklods). Lachman usikker positiv. McMurray negativ. Stabil i sideplanet. Fuld ekstension, fleksion til 120°. Ingen rubor eller varmeøgning. Upåfaldende perifere kar og neuro.' },
+        { label: 'Vurdering', content: 'Sandsynlig lettere ACL-distorsion grad I–II efter vridtraume. Meniskskade mindre sandsynlig grundet negativ McMurray og fravær af locking. Degenerative forandringer kan medvirke til instabilitetsfølelse. Lav risiko for akut kirurgisk intervention.' },
+        { label: 'Plan', content: '– Røntgen af venstre knæ mhp. artrose og fraktur.<br>– Aflastning med krykkestøtte ved behov. Ibuprofen 400 mg x 3 ved smerter (max 1 uge).<br>– Kontrol om 2 uger. Evt. MR-scanning ved persisterende instabilitet.<br>– Instruktion i hjemmeøvelser for knæstabilisering.' }
       ],
       'psoap': [
-        { label: 'Problem', content: 'Belastningsudløste retrosternale brystsmerter med udstråling til venstre skulder. Familiær disposition til iskæmisk hjertesygdom.' },
-        { label: 'Subjektivt', content: 'Patient med to ugers tiltagende trykken retrosternalt ved moderat fysisk aktivitet. Varighed ca. 5 min, lindres ved hvile. Let dyspnø ved anfald. Ingen kvalme. Øget træthed de seneste uger. Far med AMI v. 62 år. Ingen medicinændringer.' },
-        { label: 'Objektivt', content: 'Almen upåvirket, vågen og klar. Normal vejrtrækning i hvile. Ingen ødemer. BT 132/78, puls 78 reg. Cor/pulm uden mislyde eller krepitationer. EKG initialt uden akutte iskæmitegn.' },
-        { label: 'Vurdering', content: 'Brystsmerter forenelige med mulig stabil angina pectoris. Familiær disposition og belastningsudløste symptomer taler for videre kardiologisk udredning. Ingen tegn på akut koronart syndrom aktuelt.' },
-        { label: 'Plan', content: '– Bestilling af EKG og blodprøver inkl. lipidprofil, HbA1c og troponin (screening).<br>– Henvisning til kardiologisk vurdering inkl. arbejds-EKG.<br>– Rådgivning om at undgå hård fysisk belastning indtil udredning er afsluttet.' }
+        { label: 'Problem', content: 'Venstre knæsmerte og instabilitetsfølelse efter vridtraume for 3 uger siden. Let positiv skuffetest.' },
+        { label: 'Subjektivt', content: 'Patient med 3 ugers tiltagende smerter i venstre knæ efter vrid under havearbejde. Usikkerhed ved gang, særligt trapper og ujævnt terræn. Intermitterende hævelse. Ingen locking. Kan belaste fuldt. Tidligere rask i knæene.' },
+        { label: 'Objektivt', content: 'Let hydrops over venstre knæ. Minimal ømhed over mediale ledlinje. Positiv forreste skuffetest (let laxitet). Lachman usikker positiv. McMurray negativ. Stabil i sideplanet. Fuld ekstension, fleksion til 120°. Ingen rubor eller varmeøgning.' },
+        { label: 'Vurdering', content: 'Sandsynlig lettere ACL-distorsion grad I–II efter vridtraume. Meniskskade mindre sandsynlig grundet negativ McMurray og fravær af locking. Lav risiko for akut intervention.' },
+        { label: 'Plan', content: '– Røntgen af venstre knæ mhp. artrose og fraktur.<br>– Aflastning med krykkestøtte ved behov. Ibuprofen 400 mg x 3 ved smerter (max 1 uge).<br>– Kontrol om 2 uger. Evt. MR-scanning ved persisterende instabilitet.' }
       ],
       'soap-kort': [
-        { label: 'Anamnese', content: 'To ugers tiltagende retrosternal trykken ved fysisk aktivitet, varighed 5 min, lindres ved hvile. Udstråling til venstre skulder. Familiær disposition (far AMI v. 62).' },
-        { label: 'Objektivt', content: 'BT 132/78, puls 78 reg. Cor/pulm ua. EKG uden akutte iskæmitegn.' },
-        { label: 'Plan', content: '– EKG + blodprøver (lipidprofil, HbA1c, troponin).<br>– Henvisning til kardiologisk vurdering.<br>– Undgå hård fysisk belastning indtil udredning.' }
+        { label: 'Anamnese', content: '3 ugers venstre knæsmerte efter vridtraume. Instabilitetsfølelse ved gang. Intermitterende hævelse. Ingen locking.' },
+        { label: 'Objektivt', content: 'Let hydrops venstre knæ. Forreste skuffetest let positiv. McMurray negativ. Fuld ROM.' },
+        { label: 'Plan', content: '– Røntgen venstre knæ.<br>– Aflastning og ibuprofen p.n.<br>– Kontrol om 2 uger med stillingtagen til MR-scanning.' }
       ],
       'soap-psykisk': [
-        { label: 'Anamnese', content: 'Patient med to ugers tiltagende trykken retrosternalt, udløst af moderat fysisk aktivitet. Øget træthed og nedsat overskud de seneste uger.' },
-        { label: 'Objektivt', content: 'Almen upåvirket, vågen og klar. BT 132/78, puls 78 reg. Cor/pulm ua. EKG uden akutte iskæmitegn.' },
-        { label: 'Psykisk status', content: 'Patienten fremstår relevant bekymret for symptomerne. Ingen tegn på angst eller depression. Normalt stemningsleje. God sygdomsindsigt.' },
-        { label: 'Vurdering', content: 'Somatisk: obs. stabil angina pectoris. Psykisk: relevant bekymring, ingen psykopatologi.' },
-        { label: 'Plan', content: '– Kardiologisk udredning som beskrevet.<br>– Opfølgning om 2 uger mhp. resultater og patientens trivsel.' }
+        { label: 'Anamnese', content: 'Patient med 3 ugers tiltagende smerter i venstre knæ efter vridtraume. Oplever usikkerhed og bekymring vedr. gangfunktion.' },
+        { label: 'Objektivt', content: 'Let hydrops venstre knæ. Forreste skuffetest let positiv. McMurray negativ. Fuld ekstension, fleksion 120°.' },
+        { label: 'Psykisk status', content: 'Patienten fremstår relevant bekymret for knæets stabilitet og fremtidig gangfunktion. Ingen tegn på angst eller depression. God sygdomsindsigt og motivation for genoptræning.' },
+        { label: 'Vurdering', content: 'Somatisk: lettere ACL-distorsion. Psykisk: relevant bekymring for funktionsniveau, ingen psykopatologi.' },
+        { label: 'Plan', content: '– Røntgen og evt. MR-scanning af venstre knæ.<br>– Opfølgning om 2 uger mhp. resultater og patientens trivsel.' }
       ],
       'soap-baggrund': [
-        { label: 'Baggrund', content: 'Mand, ingen tidligere kardiel sygehistorie. Familiær disposition til iskæmisk hjertesygdom (far med AMI v. 62 år). Ingen faste lægemidler. Ikke-ryger. Ingen kendte allergier.' },
-        { label: 'Anamnese', content: 'Patient med to ugers tiltagende trykken retrosternalt, udløst af moderat fysisk aktivitet. Varighed ca. 5 min, lindres ved hvile. Let udstråling til venstre skulder. Let dyspnø ved anfald. Ingen kvalme. Øget træthed de seneste uger.' },
-        { label: 'Objektivt', content: 'Almen upåvirket, vågen og klar. Normal vejrtrækning i hvile. Ingen ødemer. BT 132/78, puls 78 reg. Cor/pulm uden mislyde eller krepitationer. EKG initialt uden akutte iskæmitegn.' },
-        { label: 'Vurdering', content: 'Brystsmerter forenelige med mulig stabil angina pectoris. Familiær disposition og belastningsudløste symptomer taler for videre kardiologisk udredning. Ingen tegn på akut koronart syndrom aktuelt.' },
-        { label: 'Plan', content: '– Bestilling af EKG og blodprøver inkl. lipidprofil, HbA1c og troponin (screening).<br>– Henvisning til kardiologisk vurdering inkl. arbejds-EKG.<br>– Rådgivning om at undgå hård fysisk belastning indtil udredning er afsluttet.' }
+        { label: 'Baggrund', content: 'Kvinde, ingen tidligere knæskader eller ledlidelser. Let overvægt (BMI 27). Bruger dagligt gangstok udendørs. Ingen faste lægemidler. CAVE: Penicillin (urticaria, selvrapporteret).' },
+        { label: 'Anamnese', content: 'Patient med 3 ugers tiltagende smerter i venstre knæ, opstået efter et vrid under havearbejde. Usikkerhed ved gang, særligt trapper. Intermitterende hævelse. Ingen locking eller feber.' },
+        { label: 'Objektivt', content: 'Let hydrops over venstre knæ. Minimal ømhed over mediale ledlinje. Positiv forreste skuffetest (let laxitet). Lachman usikker positiv. McMurray negativ. Stabil i sideplanet. Fuld ekstension, fleksion til 120°. Ingen rubor eller varmeøgning.' },
+        { label: 'Vurdering', content: 'Sandsynlig lettere ACL-distorsion grad I–II efter vridtraume. Meniskskade mindre sandsynlig. Degenerative forandringer kan medvirke. Lav risiko for akut intervention.' },
+        { label: 'Plan', content: '– Røntgen af venstre knæ mhp. artrose og fraktur.<br>– Aflastning med krykkestøtte ved behov. Ibuprofen 400 mg x 3 ved smerter (max 1 uge).<br>– Kontrol om 2 uger. Evt. MR-scanning ved persisterende instabilitet.' }
       ],
       'fritekst': [
-        { label: 'Notat', content: 'Patient med to ugers tiltagende retrosternal trykken ved moderat fysisk aktivitet. Varighed ca. 5 min, lindres ved hvile. Let udstråling til venstre skulder, let dyspnø ved anfald. Familiær disposition til IHS. Obj: BT 132/78, puls 78 reg, cor/pulm ua, EKG ua. Vurderes som obs. stabil angina pectoris. Plan: EKG, blodprøver inkl. lipidprofil, HbA1c og troponin. Henvisning til kardiologisk vurdering inkl. arbejds-EKG. Rådgivet om at undgå hård fysisk belastning.' }
+        { label: 'Notat', content: 'Patient med 3 ugers venstre knæsmerte efter vridtraume under havearbejde. Instabilitetsfølelse ved gang og trapper, intermitterende hævelse. Obj: let hydrops, positiv forreste skuffetest (let laxitet), Lachman usikker positiv, McMurray neg., fuld ROM. Vurderes som lettere ACL-distorsion grad I–II. Plan: røntgen af venstre knæ, aflastning med krykkestøtte ved behov, ibuprofen 400 mg x 3 p.n. Kontrol om 2 uger med stillingtagen til MR-scanning. Instruktion i hjemmeøvelser.' }
       ],
       'struktureret': [
-        { label: 'Baggrund', content: 'Mand, kendt med familiær disposition til iskæmisk hjertesygdom. Ingen tidligere kardiel sygehistorie. Ingen medicinændringer.' },
-        { label: 'Undersøgelse', content: 'BT 132/78, puls 78 regelmæssig. Stetoskopi af cor og pulm uden abnorme fund. EKG uden akutte iskæmitegn.' },
-        { label: 'Konklusion', content: 'Obs. stabil angina pectoris. Belastningsudløste retrosternale trykgener med familiær disposition taler for videre udredning.' },
-        { label: 'Opfølgning', content: '– EKG og blodprøver bestilt (lipidprofil, HbA1c, troponin).<br>– Henvist til kardiologisk vurdering inkl. arbejds-EKG.<br>– Kontrol efter svar, forventet 2-3 uger.' }
+        { label: 'Baggrund', content: 'Kvinde, ingen tidligere knælidelser. Let overvægt (BMI 27). Bruger gangstok udendørs. CAVE: Penicillin.' },
+        { label: 'Undersøgelse', content: 'Let hydrops venstre knæ. Positiv forreste skuffetest (let laxitet, blød stopklods). Lachman usikker positiv. McMurray negativ. Fuld ROM. Stabil lateralt.' },
+        { label: 'Konklusion', content: 'Sandsynlig lettere ACL-distorsion grad I–II. Meniskskade mindre sandsynlig. Degenerative forandringer kan medvirke.' },
+        { label: 'Opfølgning', content: '– Røntgen venstre knæ bestilt.<br>– Aflastning og analgetika ordineret.<br>– Kontrol om 2 uger med stillingtagen til MR-scanning og evt. fysioterapi.' }
       ],
       'aarskontrol': [
-        { label: 'Generel status', content: 'Patienten møder til årlig helbredskontrol. Føler sig generelt rask. Rapporterer tiltagende retrosternal trykken de seneste 2 uger.' },
-        { label: 'Vitale parametre', content: 'BT 132/78, puls 78 reg, vægt 82 kg, BMI 26,1. Cor/pulm ua.' },
-        { label: 'Screening & prøver', content: 'EKG: uden akutte iskæmitegn. Blodprøver bestilt: lipidprofil, HbA1c, troponin, TSH, Hgb.' },
-        { label: 'Vurdering & plan', content: 'Fund af belastningsrelaterede brystsmerter kræver kardiologisk vurdering. Henvisning udstedt. Øvrig helbredsstatus tilfredsstillende.' }
+        { label: 'Generel status', content: 'Patienten møder til årlig helbredskontrol. Føler sig generelt rask. Rapporterer tiltagende smerter i venstre knæ de seneste 3 uger efter vridtraume.' },
+        { label: 'Vitale parametre', content: 'BT 138/82, puls 72 reg, vægt 74 kg, BMI 27. Let hydrops venstre knæ.' },
+        { label: 'Screening & prøver', content: 'Knæundersøgelse: positiv skuffetest, McMurray negativ. Røntgen bestilt. Blodprøver bestilt: CRP, SR, urat, TSH.' },
+        { label: 'Vurdering & plan', content: 'Fund af knæinstabilitet efter vridtraume kræver billeddiagnostik. Røntgen bestilt. Evt. MR ved persisterende instabilitet. Øvrig helbredsstatus tilfredsstillende.' }
       ]
     };
 
@@ -2157,39 +2351,34 @@
 
     // ─── Code Search Autocomplete ─────────────────────────────────
     const codeDatabase = [
-      { system: 'icpc', code: 'A04', desc: 'Træthed/svaghed, generel' },
-      { system: 'icpc', code: 'K01', desc: 'Hjertesmerter' },
-      { system: 'icpc', code: 'K02', desc: 'Trykkende brystsmerter' },
-      { system: 'icpc', code: 'K74', desc: 'Angina pectoris' },
-      { system: 'icpc', code: 'K75', desc: 'Akut myokardieinfarkt' },
-      { system: 'icpc', code: 'K76', desc: 'Iskæmisk hjertesygdom, kronisk' },
-      { system: 'icpc', code: 'K77', desc: 'Hjertesvigt' },
-      { system: 'icpc', code: 'K78', desc: 'Atrieflimren/-flagren' },
-      { system: 'icpc', code: 'K79', desc: 'Paroksysmal takykardi' },
-      { system: 'icpc', code: 'K80', desc: 'Hjertearytmi NOS' },
-      { system: 'icpc', code: 'K85', desc: 'Forhøjet blodtryk' },
-      { system: 'icpc', code: 'K86', desc: 'Hypertension, ukompliceret' },
-      { system: 'icpc', code: 'K87', desc: 'Hypertension med organpåvirkning' },
-      { system: 'icpc', code: 'K89', desc: 'Forbigående cerebral iskæmi' },
-      { system: 'icpc', code: 'K90', desc: 'Apopleksi/cerebral hæmoragi' },
-      { system: 'icpc', code: 'K92', desc: 'Perifer vaskulær sygdom' },
-      { system: 'icpc', code: 'K99', desc: 'Kardiovaskulær sygdom, anden' },
-      { system: 'icpc', code: 'L04', desc: 'Bryst-/thoraxsymptom' },
-      { system: 'icpc', code: 'R02', desc: 'Dyspnø' },
-      { system: 'icpc', code: 'R29', desc: 'Respirationssymptom, andet' },
-      { system: 'icpc', code: 'T93', desc: 'Lipidstofskifteforstyrrelse' },
-      { system: 'icd', code: 'DI200', desc: 'Ustabil angina pectoris' },
-      { system: 'icd', code: 'DI201', desc: 'Angina pectoris med dokumenteret spasme' },
-      { system: 'icd', code: 'DI208', desc: 'Andre former for angina pectoris' },
-      { system: 'icd', code: 'DI209', desc: 'Angina pectoris, uspecificeret' },
-      { system: 'icd', code: 'DI251', desc: 'Aterosklerotisk hjertesygdom' },
-      { system: 'icd', code: 'DI259', desc: 'Kronisk iskæmisk hjertesygdom, uspecificeret' },
-      { system: 'icd', code: 'DI10',  desc: 'Essentiel hypertension' },
-      { system: 'icd', code: 'DI110', desc: 'Hypertensiv hjertesygdom med hjertesvigt' },
-      { system: 'icd', code: 'DI119', desc: 'Hypertensiv hjertesygdom uden hjertesvigt' },
-      { system: 'icd', code: 'DR072', desc: 'Brystsmerter, uspecificerede' },
-      { system: 'icd', code: 'DZ825', desc: 'Familiær disposition til iskæmisk hjertesygdom' },
-      { system: 'icd', code: 'DE785', desc: 'Hyperlipidæmi, uspecificeret' },
+      { system: 'icpc', code: 'L15', desc: 'Knæsymptom/klage' },
+      { system: 'icpc', code: 'L77', desc: 'Forstuvning/forstrækning, anden' },
+      { system: 'icpc', code: 'L78', desc: 'Forstuvning/forstrækning af knæ' },
+      { system: 'icpc', code: 'L84', desc: 'Artrose/slidgigt, knæ' },
+      { system: 'icpc', code: 'L96', desc: 'Akut knæskade' },
+      { system: 'icpc', code: 'L97', desc: 'Kronisk indre knæforstyrrelse' },
+      { system: 'icpc', code: 'L99', desc: 'Muskuloskeletal sygdom, anden' },
+      { system: 'icpc', code: 'L13', desc: 'Hoftesymptom/klage' },
+      { system: 'icpc', code: 'L14', desc: 'Bensymptom/klage' },
+      { system: 'icpc', code: 'L17', desc: 'Fodsymptom/klage' },
+      { system: 'icpc', code: 'L18', desc: 'Muskelsmerter' },
+      { system: 'icpc', code: 'L19', desc: 'Muskelsymptom NOS' },
+      { system: 'icpc', code: 'L20', desc: 'Ledsymptom NOS' },
+      { system: 'icpc', code: 'L76', desc: 'Fraktur, anden' },
+      { system: 'icpc', code: 'L79', desc: 'Forstuvning, ankel' },
+      { system: 'icpc', code: 'L80', desc: 'Luxation/subluxation' },
+      { system: 'icpc', code: 'L87', desc: 'Bursitis/tendinitis/synovitis' },
+      { system: 'icd', code: 'DS835', desc: 'Forstuvning af korsbånd i knæ' },
+      { system: 'icd', code: 'DS836', desc: 'Forstuvning af knæled, uspecificeret' },
+      { system: 'icd', code: 'DS830', desc: 'Luxation af knæled' },
+      { system: 'icd', code: 'DM171', desc: 'Primær gonartrose, knæ' },
+      { system: 'icd', code: 'DM179', desc: 'Gonartrose, uspecificeret' },
+      { system: 'icd', code: 'DM232', desc: 'Menisklidelse pga. gammel læsion' },
+      { system: 'icd', code: 'DM233', desc: 'Anden menisklidelse' },
+      { system: 'icd', code: 'DM239', desc: 'Menisklidelse, uspecificeret' },
+      { system: 'icd', code: 'DM255', desc: 'Ledinstabilitet' },
+      { system: 'icd', code: 'DM256', desc: 'Ledstivhed' },
+      { system: 'icd', code: 'DS760', desc: 'Muskelskade i hofte/lår' },
       { system: 'icd', code: 'DR060', desc: 'Dyspnø' }
     ];
 
@@ -2292,65 +2481,65 @@
       en: {
         label: 'English',
         sections: [
-          { title: 'History', text: 'Patient with two weeks of increasing retrosternal pressure, triggered by moderate physical activity. Duration approx. 5 min, relieved by rest. Mild radiation to left shoulder. Mild dyspnea during episodes. No nausea. Family history of IHD (father with AMI at age 62). Increased fatigue over recent weeks. No medication changes.' },
-          { title: 'Objective', text: 'Generally unaffected, alert and oriented. Normal breathing at rest. No edema. BP 132/78, pulse 78 regular. Heart/lungs without murmurs or crepitations. Initial ECG without acute ischemic changes.' },
-          { title: 'Assessment', text: 'Chest pain consistent with possible stable angina pectoris. Family history and exertion-triggered symptoms warrant further cardiological investigation. No signs of acute coronary syndrome at present.' },
-          { title: 'Plan', text: '– Order ECG and blood tests incl. lipid profile, HbA1c and troponin (screening).\n– Referral for cardiological evaluation incl. exercise ECG.\n– Advise against strenuous physical activity until evaluation is complete.' }
+          { title: 'History', text: 'Patient with 3 weeks of increasing left knee pain following a twisting injury during gardening. Reports instability when walking, especially on stairs and uneven terrain. Intermittent swelling over medial knee. No locking episodes. Full weight bearing. No fever or redness. No previous knee injuries. Uses walking stick outdoors daily.' },
+          { title: 'Objective', text: 'Mild effusion over left knee. Minimal tenderness over medial joint line. Positive anterior drawer test (mild laxity, soft end-point). Lachman equivocal positive. McMurray negative. Stable laterally. Full extension, flexion to 120°. No rubor or warmth.' },
+          { title: 'Assessment', text: 'Probable mild ACL sprain grade I–II following twisting injury. Meniscal tear less likely given negative McMurray and absence of locking. Degenerative changes may contribute to instability. Low risk for acute surgical intervention.' },
+          { title: 'Plan', text: '– X-ray of left knee to assess for osteoarthritis and fracture.\n– Offloading with crutch support as needed. Ibuprofen 400 mg x 3 for pain (max 1 week).\n– Follow-up in 2 weeks. MRI if persistent instability.\n– Instruction in home exercises for knee stabilization.' }
         ]
       },
       de: {
         label: 'Deutsch',
         sections: [
-          { title: 'Anamnese', text: 'Patient mit zwei Wochen zunehmendem retrosternalem Druckgefühl, ausgelöst durch mäßige körperliche Aktivität. Dauer ca. 5 Min., Linderung in Ruhe. Leichte Ausstrahlung in die linke Schulter. Leichte Dyspnoe bei Anfällen. Keine Übelkeit. Familiäre Disposition für KHK (Vater mit AMI im Alter von 62 Jahren). Zunehmende Müdigkeit in den letzten Wochen. Keine Medikamentenänderungen.' },
-          { title: 'Befund', text: 'Allgemein unbeeinträchtigt, wach und orientiert. Normale Atmung in Ruhe. Keine Ödeme. RR 132/78, Puls 78 regelmäßig. Herz/Lunge ohne Geräusche oder Krepitationen. Initial-EKG ohne akute Ischämiezeichen.' },
-          { title: 'Beurteilung', text: 'Brustschmerzen vereinbar mit möglicher stabiler Angina pectoris. Familiäre Disposition und belastungsinduzierte Symptome sprechen für weitere kardiologische Abklärung. Derzeit keine Zeichen eines akuten Koronarsyndroms.' },
-          { title: 'Plan', text: '– EKG und Blutuntersuchungen inkl. Lipidprofil, HbA1c und Troponin (Screening) anordnen.\n– Überweisung zur kardiologischen Beurteilung inkl. Belastungs-EKG.\n– Beratung, intensive körperliche Belastung bis zum Abschluss der Abklärung zu vermeiden.' }
+          { title: 'Anamnese', text: 'Patient mit 3 Wochen zunehmenden Schmerzen im linken Knie nach Verdrehungstrauma bei Gartenarbeit. Unsicherheitsgefühl beim Gehen, besonders auf Treppen und unebenem Gelände. Intermittierende Schwellung über dem medialen Knie. Keine Blockierungsepisoden. Vollbelastung möglich.' },
+          { title: 'Befund', text: 'Leichter Erguss über dem linken Knie. Minimale Druckempfindlichkeit über der medialen Gelenklinie. Positiver vorderer Schubladentest (leichte Laxität). Lachman unsicher positiv. McMurray negativ. Seitlich stabil. Volle Streckung, Beugung bis 120°.' },
+          { title: 'Beurteilung', text: 'Wahrscheinlich leichte VKB-Distorsion Grad I–II nach Verdrehungstrauma. Meniskusschaden weniger wahrscheinlich. Degenerative Veränderungen können zur Instabilität beitragen. Geringes Risiko für akute chirurgische Intervention.' },
+          { title: 'Plan', text: '– Röntgen des linken Knies zum Ausschluss von Arthrose und Fraktur.\n– Entlastung mit Gehstütze bei Bedarf. Ibuprofen 400 mg x 3.\n– Kontrolle in 2 Wochen. Ggf. MRT bei anhaltender Instabilität.\n– Anleitung zu Heimübungen zur Kniestabilisierung.' }
         ]
       },
       ar: {
         label: 'العربية',
         sections: [
-          { title: 'السيرة المرضية', text: 'مريض يعاني منذ أسبوعين من ضغط متزايد خلف القص، يُثار بالنشاط البدني المعتدل. المدة حوالي 5 دقائق، يخف بالراحة. انتشار خفيف للكتف الأيسر. ضيق تنفس خفيف أثناء النوبات. لا غثيان. تاريخ عائلي لأمراض القلب الإقفارية (الأب أصيب باحتشاء عضلة القلب في سن 62). إرهاق متزايد خلال الأسابيع الأخيرة. لا تغييرات في الأدوية.' },
-          { title: 'الفحص', text: 'حالة عامة جيدة، واعٍ ومتوجه. تنفس طبيعي أثناء الراحة. لا وذمات. ضغط الدم 132/78، النبض 78 منتظم. القلب والرئتان بدون نفخات أو فرقعات. تخطيط القلب الأولي بدون علامات إقفارية حادة.' },
-          { title: 'التقييم', text: 'ألم صدري متوافق مع ذبحة صدرية مستقرة محتملة. التاريخ العائلي والأعراض المرتبطة بالمجهود تستدعي مزيداً من الفحص القلبي. لا توجد علامات على متلازمة الشريان التاجي الحادة حالياً.' },
-          { title: 'الخطة', text: '– طلب تخطيط قلب وفحوصات دم شاملة بما في ذلك ملف الدهون و HbA1c والتروبونين.\n– تحويل للتقييم القلبي بما في ذلك تخطيط قلب بالجهد.\n– نصح المريض بتجنب المجهود البدني الشديد حتى اكتمال الفحوصات.' }
+          { title: 'السيرة المرضية', text: 'مريض يعاني منذ 3 أسابيع من آلام متزايدة في الركبة اليسرى بعد إصابة التواء أثناء البستنة. يشعر بعدم الاستقرار عند المشي خاصة على السلالم. تورم متقطع. لا حلقات قفل. يمكنه تحمل الوزن بالكامل.' },
+          { title: 'الفحص', text: 'انصباب خفيف في الركبة اليسرى. ألم خفيف عند الضغط على الخط المفصلي الإنسي. اختبار الدرج الأمامي إيجابي (ارتخاء خفيف). لاكمان إيجابي مشكوك. ماكموري سلبي. مستقرة جانبياً. بسط كامل، ثني إلى 120 درجة.' },
+          { title: 'التقييم', text: 'على الأرجح التواء خفيف في الرباط الصليبي الأمامي من الدرجة الأولى أو الثانية. إصابة الغضروف المفصلي أقل احتمالاً. خطر منخفض للتدخل الجراحي الحاد.' },
+          { title: 'الخطة', text: '– أشعة سينية للركبة اليسرى.\n– تخفيف الحمل مع دعامة عند الحاجة. إيبوبروفين 400 ملغ × 3.\n– متابعة بعد أسبوعين. تصوير بالرنين المغناطيسي إذا استمر عدم الاستقرار.' }
         ]
       },
       tr: {
         label: 'Türkçe',
         sections: [
-          { title: 'Öykü', text: 'İki haftadır artan retrosternal baskı hissi olan hasta, orta düzeyde fiziksel aktiviteyle tetikleniyor. Süre yaklaşık 5 dakika, istirahatte rahatlıyor. Sol omuza hafif yayılım. Atak sırasında hafif nefes darlığı. Bulantı yok. İskemik kalp hastalığı aile öyküsü (babası 62 yaşında AMI geçirmiş). Son haftalarda artan yorgunluk. İlaç değişikliği yok.' },
-          { title: 'Muayene', text: 'Genel durumu iyi, uyanık ve oryante. İstirahatte normal solunum. Ödem yok. TA 132/78, nabız 78 düzenli. Kalp/akciğer üfürüm veya krepitasyon yok. İlk EKG\'de akut iskemik değişiklik yok.' },
-          { title: 'Değerlendirme', text: 'Göğüs ağrısı olası stabil angina pektoris ile uyumlu. Aile öyküsü ve eforla tetiklenen semptomlar ileri kardiyolojik incelemeyi gerektirmektedir. Şu anda akut koroner sendrom bulgusu yok.' },
-          { title: 'Plan', text: '– Lipid profili, HbA1c ve troponin dahil EKG ve kan testleri istenmesi.\n– Efor EKG dahil kardiyolojik değerlendirme için sevk.\n– Değerlendirme tamamlanana kadar ağır fiziksel aktiviteden kaçınması önerilmesi.' }
+          { title: 'Öykü', text: '3 haftadır sol dizde artan ağrı, bahçe işi sırasında burkulma travması sonrası. Yürürken, özellikle merdivenlerde instabilite hissi. Aralıklı şişlik. Kilitleme yok. Tam ağırlık taşıyabiliyor.' },
+          { title: 'Muayene', text: 'Sol dizde hafif efüzyon. Medial eklem çizgisinde minimal hassasiyet. Pozitif ön çekmece testi (hafif laksite). Lachman belirsiz pozitif. McMurray negatif. Lateral stabil. Tam ekstansiyon, fleksiyon 120°\'ye kadar.' },
+          { title: 'Değerlendirme', text: 'Burkulma travması sonrası muhtemel hafif ÖÇB distorsiyonu derece I–II. Menisküs yırtığı daha az olası. Akut cerrahi müdahale riski düşük.' },
+          { title: 'Plan', text: '– Sol diz röntgeni.\n– Gerektiğinde koltuk değneği ile yük azaltma. İbuprofen 400 mg × 3.\n– 2 hafta sonra kontrol. Devam eden instabilite durumunda MR.' }
         ]
       },
       pl: {
         label: 'Polski',
         sections: [
-          { title: 'Wywiad', text: 'Pacjent z dwutygodniowym narastającym uciskiem zamostkowym, wywoływanym umiarkowaną aktywnością fizyczną. Czas trwania ok. 5 min, ustępuje w spoczynku. Lekkie promieniowanie do lewego barku. Lekka duszność podczas napadów. Bez nudności. Obciążenie rodzinne chorobą niedokrwienną serca (ojciec z AMI w wieku 62 lat). Narastające zmęczenie w ostatnich tygodniach. Bez zmian w lekach.' },
-          { title: 'Badanie', text: 'Stan ogólny dobry, przytomny i zorientowany. Prawidłowe oddychanie w spoczynku. Bez obrzęków. BP 132/78, tętno 78 miarowe. Serce/płuca bez szmerów i trzeszczeń. Wstępne EKG bez ostrych zmian niedokrwiennych.' },
-          { title: 'Ocena', text: 'Ból w klatce piersiowej odpowiadający możliwej stabilnej dławicy piersiowej. Obciążenie rodzinne i objawy wysiłkowe wskazują na dalszą diagnostykę kardiologiczną. Brak objawów ostrego zespołu wieńcowego.' },
-          { title: 'Plan', text: '– Zlecenie EKG i badań krwi w tym profil lipidowy, HbA1c i troponina.\n– Skierowanie na ocenę kardiologiczną z próbą wysiłkową EKG.\n– Zalecenie unikania intensywnego wysiłku fizycznego do zakończenia diagnostyki.' }
+          { title: 'Wywiad', text: 'Pacjent z 3-tygodniowym narastającym bólem lewego kolana po urazie skrętnym podczas pracy w ogrodzie. Niestabilność przy chodzeniu, szczególnie po schodach. Przerywany obrzęk. Brak blokowania. Pełne obciążanie.' },
+          { title: 'Badanie', text: 'Niewielki wysięk w lewym kolanie. Minimalna tkliwość wzdłuż przyśrodkowej linii stawowej. Pozytywny przedni test szufladowy (niewielka wiotkość). Lachman wątpliwie pozytywny. McMurray negatywny. Stabilne bocznie. Pełny wyprost, zgięcie do 120°.' },
+          { title: 'Ocena', text: 'Prawdopodobne lekkie naderwanie ACL stopnia I–II po urazie skrętnym. Uszkodzenie łąkotki mniej prawdopodobne. Niskie ryzyko ostrej interwencji chirurgicznej.' },
+          { title: 'Plan', text: '– RTG lewego kolana.\n– Odciążenie z kulą łokciową w razie potrzeby. Ibuprofen 400 mg × 3.\n– Kontrola za 2 tygodnie. MRI w przypadku utrzymującej się niestabilności.' }
         ]
       },
       ur: { label: 'اردو', sections: [
-        { title: 'تاریخچہ', text: 'مریض کو دو ہفتوں سے سینے کے پیچھے بڑھتا ہوا دباؤ، معتدل جسمانی سرگرمی سے شروع ہوتا ہے۔ دورانیہ تقریباً 5 منٹ، آرام سے بہتر ہوتا ہے۔ بائیں کندھے تک ہلکا پھیلاؤ۔ دوروں کے دوران ہلکی سانس کی تنگی۔ متلی نہیں۔ دل کی بیماری کی خاندانی تاریخ۔' },
-        { title: 'معائنہ', text: 'عمومی حالت اچھی، بیدار اور باخبر۔ آرام میں نارمل سانس۔ سوجن نہیں۔ بلڈ پریشر 132/78، نبض 78 باقاعدہ۔ دل/پھیپھڑے بغیر کسی آواز کے۔' },
-        { title: 'تشخیص', text: 'سینے کا درد ممکنہ مستحکم انجائنا پیکٹوریس سے مطابقت رکھتا ہے۔ خاندانی تاریخ اور محنت سے متعلق علامات مزید قلبی تحقیقات کی ضرورت ہے۔' },
-        { title: 'منصوبہ', text: '– ای سی جی اور خون کے ٹیسٹ بشمول لپڈ پروفائل اور ٹروپونین۔\n– قلبی تشخیص کے لیے ریفرل۔\n– تحقیقات مکمل ہونے تک سخت ورزش سے پرہیز کا مشورہ۔' }
+        { title: 'تاریخچہ', text: 'مریض کو 3 ہفتوں سے بائیں گھٹنے میں بڑھتا ہوا درد، باغبانی کے دوران موچ کی چوٹ کے بعد۔ چلتے وقت عدم استحکام کا احساس۔ وقفے وقفے سے سوجن۔ مکمل وزن اٹھا سکتے ہیں۔' },
+        { title: 'معائنہ', text: 'بائیں گھٹنے میں ہلکا افیوژن۔ سامنے کا دراز ٹیسٹ مثبت (ہلکی ڈھیلاپن)۔ لیکمین غیر یقینی مثبت۔ میکمری منفی۔ مکمل ایکسٹینشن، فلیکشن 120° تک۔' },
+        { title: 'تشخیص', text: 'ممکنہ ہلکی ACL ڈسٹورشن گریڈ I-II۔ مینسکس کی چوٹ کا امکان کم۔ فوری جراحی مداخلت کا خطرہ کم۔' },
+        { title: 'منصوبہ', text: '– بائیں گھٹنے کا ایکسرے۔\n– ضرورت کے مطابق بیساکھی سے سہارا۔ آئبوپروفین 400 ملی گرام × 3۔\n– 2 ہفتے بعد فالو اپ۔' }
       ]},
       so: { label: 'Soomaali', sections: [
-        { title: 'Taariikhda', text: 'Bukaan labo toddobaad ah oo xanuun laabta dambe ah oo sii kordhaya, oo ka dhasha jimicsiga caadiga ah. Muddo 5 daqiiqo, nasashada ayuu ku fiicnaadaa. Garbaha bidix wax yar bay u fidisaa. Neefta oo yar. Qoysku waxay leeyihiin taariikhda cudurka wadnaha.' },
-        { title: 'Baaritaanka', text: 'Xaaladda guud waa fiican tahay. Neefsashada nasashada waa caadi. Dhiig-cadaadis 132/78, garaaca 78. Wadnaha iyo sambabada sanduuq la\'aan.' },
-        { title: 'Qiimaynta', text: 'Xanuunka laabta wuxuu u dhigmaa angina pectoris oo sugan. Taariikhda qoyska iyo astaamaha jimicsiga ayaa u baahan sii baaritaan wadnaha.' },
-        { title: 'Qorshaha', text: '– ECG iyo baaritaanno dhiig oo ay ku jiraan lipid profile iyo troponin.\n– Tixraac baaritaan wadne oo ay ku jirto ECG jimicsi.\n– La taliyo in laga fogaado jimicsi adag ilaa baaritaanka la dhamaystiro.' }
+        { title: 'Taariikhda', text: 'Bukaan 3 toddobaad ah oo xanuun jilbo bidix ah oo sii kordhaya, ka dib dhaawac maroorsi ah oo ka dhacay shaqo beer ah. Dareemid aan xasillooneyn markuu socdo. Bararo kala joogsi ah. Culeyska buuxa wuu qaadi karaa.' },
+        { title: 'Baaritaanka', text: 'Jilbaha bidix oo yar u barar. Tijaabada sanduuqa hore waa togan (dabacsan yar). Lachman shakisan togan. McMurray taban. Jidhka buuxa, laabid ilaa 120°.' },
+        { title: 'Qiimaynta', text: 'Waxaa u badan inuu yahay dhaawac fudud ee ACL heer I-II. Khatarta qalliin degdeg ah waa hooseysa.' },
+        { title: 'Qorshaha', text: '– Raajo-qaadis jilbaha bidix.\n– Fududayn oo loo isticmaalo ul markay baahiddu jirto. Ibuprofen 400 mg × 3.\n– Dib-u-eegis 2 toddobaad ka dib.' }
       ]},
       fa: { label: 'فارسی', sections: [
-        { title: 'شرح حال', text: 'بیمار با دو هفته فشار فزاینده پشت جناغ، ناشی از فعالیت بدنی متوسط. مدت حدود 5 دقیقه، با استراحت بهبود می‌یابد. انتشار خفیف به شانه چپ. تنگی نفس خفیف حین حملات. بدون تهوع. سابقه خانوادگی بیماری ایسکمیک قلب (پدر با AMI در 62 سالگی). خستگی فزاینده در هفته‌های اخیر. بدون تغییر دارو.' },
-        { title: 'معاینه', text: 'وضعیت عمومی خوب، هوشیار و جهت‌یاب. تنفس طبیعی در استراحت. بدون ادم. فشار خون 132/78، نبض 78 منظم. قلب و ریه بدون سوفل یا کرپیتاسیون. ECG اولیه بدون تغییرات ایسکمیک حاد.' },
-        { title: 'ارزیابی', text: 'درد قفسه سینه سازگار با آنژین صدری پایدار احتمالی. سابقه خانوادگی و علائم مرتبط با فعالیت نیاز به بررسی قلبی بیشتر دارد. در حال حاضر نشانه‌ای از سندرم حاد کرونری وجود ندارد.' },
-        { title: 'برنامه', text: '– درخواست ECG و آزمایش خون شامل پروفایل لیپید، HbA1c و تروپونین.\n– ارجاع برای ارزیابی قلبی شامل ECG ورزشی.\n– توصیه به اجتناب از فعالیت بدنی شدید تا تکمیل بررسی‌ها.' }
+        { title: 'شرح حال', text: 'بیمار با 3 هفته درد فزاینده زانوی چپ پس از آسیب چرخشی حین باغبانی. احساس بی‌ثباتی هنگام راه رفتن، به‌خصوص از پله‌ها. تورم متناوب. قفل شدن ندارد. تحمل وزن کامل.' },
+        { title: 'معاینه', text: 'افیوژن خفیف زانوی چپ. تست کشوی قدامی مثبت (لقی خفیف). لاکمن مشکوک مثبت. مک‌موری منفی. ثبات جانبی. اکستنشن کامل، فلکشن تا 120 درجه.' },
+        { title: 'ارزیابی', text: 'احتمالاً دیستورسیون خفیف ACL درجه I-II. آسیب مینیسک کمتر محتمل. خطر مداخله جراحی حاد پایین.' },
+        { title: 'برنامه', text: '– رادیوگرافی زانوی چپ.\n– سبک‌سازی با عصا در صورت نیاز. ایبوپروفن 400 میلی‌گرم × 3.\n– پیگیری پس از 2 هفته. MRI در صورت تداوم بی‌ثباتی.' }
       ]}
     };
 
@@ -3192,6 +3381,14 @@
         .demo-complete__btn { display:inline-flex;align-items:center;gap:8px;padding:14px 36px;background:linear-gradient(135deg,#3B4D7A,#5669A4);color:white;border:none;border-radius:50px;font-family:inherit;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(59,77,122,0.35);transition:all 0.3s ease; }
         .demo-complete__btn:hover { transform:translateY(-2px);box-shadow:0 8px 28px rgba(59,77,122,0.45); }
         .demo-complete__btn svg { width:16px;height:16px; }
+        .demo-tooltip__timer { display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid #f1f5f9; }
+        .demo-tooltip__timer-bar { flex:1;height:3px;background:rgba(86,105,164,0.12);border-radius:2px;overflow:hidden; }
+        .demo-tooltip__timer-fill { height:100%;width:100%;background:linear-gradient(90deg,#5669A4,#3B4D7A);border-radius:2px; }
+        .demo-tooltip__timer-text { font-size:11px;font-weight:700;color:#5669A4;min-width:20px;text-align:right;font-variant-numeric:tabular-nums; }
+        .demo-cancel-btn { position:fixed;top:12px;right:16px;z-index:9700;display:flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border:1px solid rgba(86,105,164,0.2);border-radius:50px;font-family:inherit;font-size:12px;font-weight:600;color:#5669A4;cursor:pointer;transition:all 0.2s ease;opacity:0;pointer-events:none; }
+        .demo-cancel-btn.visible { opacity:1;pointer-events:auto; }
+        .demo-cancel-btn:hover { background:white;border-color:#5669A4;box-shadow:0 2px 12px rgba(86,105,164,0.15); }
+        .demo-cancel-btn svg { width:14px;height:14px; }
       `;
       document.head.appendChild(s);
 
@@ -3206,6 +3403,10 @@
       pb.className = 'demo-progress';
       pb.innerHTML = '<div class="demo-progress__fill" id="demoProgressFill"></div>';
       document.body.appendChild(pb);
+      var cancelBtn = document.createElement('button');
+      cancelBtn.className = 'demo-cancel-btn';
+      cancelBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Afslut tour';
+      document.body.appendChild(cancelBtn);
 
       function wait(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
       function setProgress(p) { document.getElementById('demoProgressFill').style.width = p + '%'; }
@@ -3218,13 +3419,23 @@
       function hideSpotlight() { spotlight.classList.remove('visible'); }
       function showTooltip(el, step, text, pos) {
         pos = pos || 'right'; var r = el.getBoundingClientRect();
-        tooltip.innerHTML = '<div class="demo-tooltip__step">Trin ' + step + '</div><div class="demo-tooltip__text">' + text + '</div>';
+        var vw = window.innerWidth, vh = window.innerHeight;
+        tooltip.innerHTML = '<div class="demo-tooltip__step">Trin ' + step + '</div><div class="demo-tooltip__text">' + text + '</div><div class="demo-tooltip__timer"><div class="demo-tooltip__timer-bar"><div class="demo-tooltip__timer-fill"></div></div><span class="demo-tooltip__timer-text"></span></div>';
         tooltip.classList.remove('visible'); tooltip.style.bottom = 'auto';
-        if (pos === 'right') { tooltip.style.top = r.top + 'px'; tooltip.style.left = (r.right + 16) + 'px'; }
-        else if (pos === 'left') { tooltip.style.top = r.top + 'px'; tooltip.style.left = (r.left - 380) + 'px'; }
-        else if (pos === 'top') { tooltip.style.top = (r.top - 130) + 'px'; tooltip.style.left = r.left + 'px'; }
-        else if (pos === 'bottom') { tooltip.style.top = (r.bottom + 16) + 'px'; tooltip.style.left = r.left + 'px'; }
-        requestAnimationFrame(function() { tooltip.classList.add('visible'); });
+        tooltip.style.top = '-9999px'; tooltip.style.left = '-9999px';
+        tooltip.style.display = 'block';
+        requestAnimationFrame(function() {
+          var tw = tooltip.offsetWidth || 360, th = tooltip.offsetHeight || 140;
+          var t, l;
+          if (pos === 'right') { t = r.top + r.height / 2 - th / 2; l = r.right + 16; if (l + tw > vw - 16) { l = r.left - tw - 16; } }
+          else if (pos === 'left') { t = r.top + r.height / 2 - th / 2; l = r.left - tw - 16; if (l < 16) { l = r.right + 16; } }
+          else if (pos === 'top') { t = r.top - th - 16; l = r.left + r.width / 2 - tw / 2; if (t < 16) { t = r.bottom + 16; } }
+          else if (pos === 'bottom') { t = r.bottom + 16; l = r.left + r.width / 2 - tw / 2; if (t + th > vh - 16) { t = r.top - th - 16; } }
+          if (l < 16) l = 16; if (l + tw > vw - 16) l = vw - tw - 16;
+          if (t < 16) t = 16; if (t + th > vh - 16) t = vh - th - 16;
+          tooltip.style.top = t + 'px'; tooltip.style.left = l + 'px';
+          requestAnimationFrame(function() { tooltip.classList.add('visible'); });
+        });
       }
       function hideTooltip() { tooltip.classList.remove('visible'); }
 
@@ -3235,67 +3446,119 @@
         origBtn.parentNode.replaceChild(newBtn, origBtn);
       })();
 
+      var tourCancelled = false;
+      var timerInterval = null;
+      function startTooltipTimer(ms) {
+        if (timerInterval) clearInterval(timerInterval);
+        var fill = tooltip.querySelector('.demo-tooltip__timer-fill');
+        var txt = tooltip.querySelector('.demo-tooltip__timer-text');
+        if (!fill || !txt) return;
+        var secs = Math.ceil(ms / 1000);
+        txt.textContent = secs + 's';
+        fill.style.transition = 'none';
+        fill.style.width = '100%';
+        requestAnimationFrame(function() {
+          fill.style.transition = 'width ' + (ms / 1000) + 's linear';
+          fill.style.width = '0%';
+        });
+        timerInterval = setInterval(function() {
+          secs--;
+          if (txt) txt.textContent = Math.max(0, secs) + 's';
+          if (secs <= 0) { clearInterval(timerInterval); timerInterval = null; }
+        }, 1000);
+      }
+      cancelBtn.addEventListener('click', function() {
+        tourCancelled = true;
+        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+        hideTooltip(); hideSpotlight();
+        cancelBtn.classList.remove('visible');
+        pb.style.display = 'none';
+        window.location.href = window.location.pathname;
+      });
+
       // ─── Run tour ───
       (async function() {
         await wait(1500);
+        cancelBtn.classList.add('visible');
 
         // Trin 15: Overordnet redigér-skærm
         setProgress(82);
         var reviewHeader = document.querySelector('.review-header');
         showSpotlight(reviewHeader, 10);
         showTooltip(reviewHeader, 15, '<strong>Redigér og gem</strong> — Her gennemgår du det AI-genererede notat. Du kan redigere alle felter, skifte skabelon, godkende diagnosekoder og gemme det endelige notat.', 'bottom');
+        startTooltipTimer(8000);
         await wait(8000);
+        if (tourCancelled) return;
 
         // Trin 16: Notat-panelet med SOAP-sektioner
         setProgress(85);
         hideTooltip(); await wait(500);
+        if (tourCancelled) return;
         var notePanel = document.querySelector('.review-main .consultation-panel');
         var noteContent = notePanel.querySelector('.panel-content');
         showSpotlight(noteContent, 4);
         showTooltip(noteContent, 16, '<strong>Redigerbart notat</strong> — AI\'en har struktureret samtalen i SOAP-format: <em>Anamnese, Objektivt, Vurdering</em> og <em>Plan</em>. Klik på et felt for at redigere teksten direkte.', 'right');
+        startTooltipTimer(8500);
         await wait(8500);
+        if (tourCancelled) return;
 
         // Trin 17: Skabelon-dropdown + AI-badge
         setProgress(88);
         hideTooltip(); await wait(500);
+        if (tourCancelled) return;
         var panelHeader = notePanel.querySelector('.panel-header');
         showSpotlight(panelHeader, 4);
         showTooltip(panelHeader, 17, '<strong>Skabelon & AI-badge</strong> — Skift mellem notat-skabeloner (SOAP, PSOAP, fritekst m.fl.). <em>AI-genereret</em>-badgen viser at notatet er lavet af People\'s Clinic AI.', 'bottom');
+        startTooltipTimer(8000);
         await wait(8000);
+        if (tourCancelled) return;
 
         // Trin 18: Diagnosekoder
         setProgress(90);
         hideTooltip(); await wait(500);
+        if (tourCancelled) return;
         var codesSection = document.querySelector('.codes-section');
         showSpotlight(codesSection, 6);
         showTooltip(codesSection, 18, '<strong>Diagnosekoder</strong> — AI\'en foreslår automatisk relevante ICPC-2 og ICD-10 koder baseret på konsultationen. Du kan <em>godkende</em>, <em>fjerne</em> eller <em>tilføje</em> koder manuelt.', 'top');
+        startTooltipTimer(8000);
         await wait(8000);
+        if (tourCancelled) return;
 
         // Trin 19: Patientresume (højre panel)
         setProgress(93);
         hideTooltip(); await wait(500);
+        if (tourCancelled) return;
         var resumePanel = document.querySelector('.review-sidebar .consultation-panel');
         showSpotlight(resumePanel, 4);
         showTooltip(resumePanel, 19, '<strong>Patientresume</strong> — AI\'en udtrækker nøgleinformation: hovedsymptom, symptomkarakteristika, risikofaktorer og objektive fund. Du kan stille spørgsmål via chatfeltet i bunden.', 'left');
+        startTooltipTimer(8000);
         await wait(8000);
+        if (tourCancelled) return;
 
         // Trin 20: Kopier notat-knap
         setProgress(95);
         hideTooltip(); await wait(500);
+        if (tourCancelled) return;
         var copyBtn = document.querySelector('.action-btn--secondary');
         showSpotlight(copyBtn, 6);
         showTooltip(copyBtn, 20, '<strong>Kopier notat</strong> — Med ét klik kopieres det redigerede notat til din udklipsholder, klar til at indsætte i dit journalsystem.', 'top');
+        startTooltipTimer(7000);
         await wait(7000);
+        if (tourCancelled) return;
 
         // Trin 21: Godkend & Gem
         setProgress(98);
         hideTooltip(); await wait(500);
+        if (tourCancelled) return;
         var saveBtn = document.querySelector('.action-btn--primary');
         showSpotlight(saveBtn, 6);
         showTooltip(saveBtn, 21, '<strong>Godkend & Gem</strong> — Når du er tilfreds med notatet, klik her for at gemme. Du bliver bedt om at bedømme AI-notatets præcision — dette forbedrer fremtidige noter.', 'top');
+        startTooltipTimer(8000);
         await wait(8000);
+        if (tourCancelled) return;
 
         // ─── Completion ───
+        cancelBtn.classList.remove('visible');
         setProgress(100);
         hideTooltip(); hideSpotlight();
         await wait(800);

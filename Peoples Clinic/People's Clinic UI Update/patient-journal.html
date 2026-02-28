@@ -264,6 +264,147 @@
       height: 18px;
     }
 
+    /* SDU notice banner */
+    .journal-sdu-banner {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(86, 105, 164, 0.06);
+      border-bottom: 1px solid rgba(86, 105, 164, 0.12);
+      font-size: 0.6875rem;
+      color: var(--color-navy-500);
+      font-weight: 500;
+    }
+    .journal-sdu-banner i {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+    }
+    .journal-sdu-banner__badge {
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      background: rgba(86, 105, 164, 0.12);
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+    }
+
+    /* Approval bar for generated summary */
+    .journal-approve-bar {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      padding: 12px 24px;
+      border-top: 1px solid var(--color-gray-200);
+      background: var(--color-gray-50);
+    }
+    .journal-approve-bar.active {
+      display: flex;
+    }
+    .journal-approve-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: var(--radius-md);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      background: rgba(245, 158, 11, 0.08);
+      color: #b45309;
+    }
+    .journal-approve-status i {
+      width: 12px;
+      height: 12px;
+    }
+    .journal-approve-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .journal-approve-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 16px;
+      border: none;
+      border-radius: var(--radius-lg);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--color-navy-600);
+      color: white;
+      transition: background 0.15s;
+    }
+    .journal-approve-btn:hover {
+      background: var(--color-navy-700);
+    }
+    .journal-approve-btn i {
+      width: 15px;
+      height: 15px;
+    }
+    .journal-copy-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 16px;
+      border: 1.5px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--color-white);
+      color: var(--color-navy-500);
+      transition: all 0.15s;
+    }
+    .journal-copy-btn:hover {
+      border-color: var(--color-navy-400);
+      background: var(--color-gray-50);
+    }
+    .journal-copy-btn i {
+      width: 15px;
+      height: 15px;
+    }
+    .journal-approve-note {
+      font-size: 0.6875rem;
+      color: var(--color-navy-400);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    /* Template selection chips for journal summary type */
+    .journal-template-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 10px 28px;
+      border-bottom: 1px solid var(--color-gray-100);
+      background: var(--color-white);
+    }
+    .journal-template-chip {
+      padding: 5px 12px;
+      background: var(--color-white);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-full);
+      font-size: 0.6875rem;
+      font-weight: 500;
+      color: var(--color-navy-500);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .journal-template-chip:hover {
+      border-color: var(--color-navy-400);
+      background: var(--color-gray-50);
+    }
+    .journal-template-chip--active {
+      border-color: var(--color-navy-500);
+      background: rgba(86, 105, 164, 0.08);
+      font-weight: 600;
+    }
+
     /* AI disclaimer */
     .ai-disclaimer {
       text-align: center;
@@ -452,6 +593,22 @@
               </button>
             </div>
 
+            <!-- SDU research notice -->
+            <div class="journal-sdu-banner">
+              <i data-lucide="graduation-cap"></i>
+              AI Journalresumé er tilgængeligt via forskningssamarbejdet med SDU (Aalborg Universitet, DACS/FEA) og underlagt EU MDR Art. 62.
+              <span class="journal-sdu-banner__badge">SDU</span>
+            </div>
+
+            <!-- F-8.A: Template selection for summary type -->
+            <div class="journal-template-chips">
+              <button class="journal-template-chip journal-template-chip--active" data-jtemplate="generelt">Generelt overblik</button>
+              <button class="journal-template-chip" data-jtemplate="kroniker">Kroniker-overblik</button>
+              <button class="journal-template-chip" data-jtemplate="medicin">Medicinhistorik</button>
+              <button class="journal-template-chip" data-jtemplate="henvisning">Henvisningsforberedelse</button>
+              <button class="journal-template-chip" data-jtemplate="udredning">Udredningsforløb</button>
+            </div>
+
             <div class="quick-actions">
               <button class="quick-action" data-question="Hvad er patientens nuværende diagnoser?">Diagnoser</button>
               <button class="quick-action" data-question="Hvilken medicin får patienten?">Medicin</button>
@@ -493,6 +650,25 @@
               </div>
             </div>
 
+            <!-- F-8.B: Approval bar for generated summary -->
+            <div class="journal-approve-bar" id="journalApproveBar">
+              <div class="journal-approve-status">
+                <i data-lucide="info"></i>
+                AI-genereret resumé — gennemgå inden godkendelse
+              </div>
+              <div class="journal-approve-actions">
+                <button class="journal-approve-btn" id="btnApproveJournal">
+                  <i data-lucide="shield-check"></i>
+                  Godkend resumé
+                </button>
+                <button class="journal-copy-btn" id="btnCopyJournal">
+                  <i data-lucide="copy"></i>
+                  Kopiér
+                </button>
+              </div>
+              <div class="journal-approve-note">Godkendelse bekræfter at resuméet er klinisk korrekt og komplet</div>
+            </div>
+
             <div class="ai-disclaimer">
               AI kan lave fejl og kan præsentere forkert information.
             </div>
@@ -508,7 +684,7 @@
           <i data-lucide="play"></i>
           <span>Start</span>
         </a>
-        <a href="konsultationshistorik.html" class="bottom-nav__item">
+        <a href="patientoversigt.html" class="bottom-nav__item">
           <i data-lucide="history"></i>
           <span>Historik</span>
         </a>
@@ -624,6 +800,8 @@
         typingIndicator.classList.remove('active');
         const response = getAIResponse(message);
         addMessage(response, 'assistant');
+        // F-8.B: Show approval bar when AI responds
+        document.getElementById('journalApproveBar').classList.add('active');
       }, 1500 + Math.random() * 1000);
     }
 
@@ -659,6 +837,40 @@
       // Scroll to bottom
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
+
+    // Journal template chip selection
+    document.querySelectorAll('.journal-template-chip').forEach(function(chip) {
+      chip.addEventListener('click', function() {
+        document.querySelectorAll('.journal-template-chip').forEach(function(c) {
+          c.classList.remove('journal-template-chip--active');
+        });
+        this.classList.add('journal-template-chip--active');
+      });
+    });
+
+    // F-8.B: Approve button
+    document.getElementById('btnApproveJournal').addEventListener('click', function() {
+      var bar = document.getElementById('journalApproveBar');
+      bar.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:8px;color:#16a34a;font-weight:600;font-size:0.8125rem;"><i data-lucide="check-circle" style="width:16px;height:16px;"></i> Resumé godkendt og valideret</div>';
+      lucide.createIcons();
+    });
+
+    // F-8.B: Copy button
+    document.getElementById('btnCopyJournal').addEventListener('click', function() {
+      var msgs = document.querySelectorAll('.chat-message--assistant .chat-message__content');
+      var lastMsg = msgs[msgs.length - 1];
+      if (lastMsg) {
+        navigator.clipboard.writeText(lastMsg.innerText).then(function() {
+          var btn = document.getElementById('btnCopyJournal');
+          btn.innerHTML = '<i data-lucide="check"></i> Kopieret!';
+          lucide.createIcons();
+          setTimeout(function() {
+            btn.innerHTML = '<i data-lucide="copy"></i> Kopiér';
+            lucide.createIcons();
+          }, 2000);
+        });
+      }
+    });
 
     function getAIResponse(question) {
       const lowerQuestion = question.toLowerCase();

@@ -784,6 +784,22 @@
       background: var(--color-gray-50);
     }
 
+    /* SDU research badge for Patientresume */
+    .resume-sdu-notice {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      margin: 0 20px 8px;
+      border-radius: var(--radius-md);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      background: rgba(86, 105, 164, 0.06);
+      color: var(--color-navy-500);
+      border: 1px solid rgba(86, 105, 164, 0.12);
+    }
+    .resume-sdu-notice i { width: 12px; height: 12px; flex-shrink: 0; }
+
     /* AI input at bottom of patient resume */
     .ai-input-section {
       padding: 12px 30px;
@@ -1137,13 +1153,35 @@
               </div>
             </div>
 
-            <!-- Huskeliste Panel -->
+            <!-- Huskeliste Panel — F-9.A: Risikoidentifikation og opfølgende spørgsmål -->
             <div class="consultation-panel">
               <div class="panel-header">
                 <h2 class="panel-title">Huskeliste</h2>
+                <span style="font-size:0.6rem;font-weight:700;color:var(--color-navy-500);background:rgba(86,105,164,0.1);padding:2px 7px;border-radius:var(--radius-full);margin-left:auto;">AI-genereret</span>
               </div>
-              <div class="panel-content" style="flex: 1; display: flex;">
-                <textarea class="huskeliste-textarea" id="huskelisteText" placeholder="Skriv dine huskenotater her..."></textarea>
+              <div class="panel-content" style="flex: 1; display: flex; flex-direction: column; gap: 0;">
+                <div class="huskeliste-risk" style="padding:8px 12px 4px;font-size:0.6875rem;font-weight:700;color:#b45309;display:flex;align-items:center;gap:5px;">
+                  <i data-lucide="alert-triangle" style="width:11px;height:11px;"></i>
+                  Risikofaktorer identificeret
+                </div>
+                <textarea class="huskeliste-textarea" id="huskelisteText" placeholder="Skriv dine huskenotater her...">&#x26A0; RISIKOFAKTORER:
+  - Alder 80 år — øget faldrisiko
+  - BMI 27 — belastning af knæled
+  - Brug af gangstok — funktionsnedsættelse
+  - Vridtraume — obs. skjult fraktur
+
+&#x2753; OPFØLGENDE SPØRGSMÅL:
+  &#x25A1; Faldtendens? Antal fald seneste 12 mdr?
+  &#x25A1; Antikoagulerende medicin? (hæmartrose)
+  &#x25A1; Kan belaste fuldt? VAS-score?
+  &#x25A1; Tidligere knæoperationer (kontralateral)?
+  &#x25A1; Osteoporose-status — DEXA-scanning?
+  &#x25A1; Social funktionsevne — behov for hjemmehjælp?
+
+&#x1F50D; HUSK:
+  &#x25A1; Røntgen venstre knæ (ap+lateral)
+  &#x25A1; Vurdér MR-scanning ved vedvarende instabilitet
+  &#x25A1; Kontrol 2-3 uger — revurdér knæstabilitet</textarea>
               </div>
               <div class="huskeliste-footer">
                 <span class="huskeliste-saved" id="huskelisteSaved">Gemt</span>
@@ -1188,19 +1226,19 @@
               <!-- SOAP sections (hidden initially, revealed by streaming animation) -->
               <div class="notes-section notes-section--hidden" id="noteSection0">
                 <div class="notes-label">Anamnese</div>
-                <div class="notes-content" data-original="Patient med to ugers tiltagende trykken retrosternalt, udløst af moderat fysisk aktivitet. Varighed ca. 5 min, lindres ved hvile. Let udstråling til venstre skulder. Let dyspnø ved anfald. Ingen kvalme. Familiær disposition til IHS (far med AMI v. 62 år). Øget træthed gennem de seneste uger. Ingen medicinændringer."></div>
+                <div class="notes-content" data-original="Patient med 3 ugers tiltagende smerter i venstre knæ, opstået efter et vrid under havearbejde. Oplever usikkerhed ved gang, særligt ved trappegang og ujævnt terræn. Intermitterende hævelse over medialt knæ. Ingen locking-episoder. Kan belaste fuldt. Ingen feber eller rødme. Tidligere rask i knæene. Bruger dagligt gangstok udendørs."></div>
               </div>
               <div class="notes-section notes-section--hidden" id="noteSection1">
                 <div class="notes-label">Objektivt</div>
-                <div class="notes-content" data-original="Almen upåvirket, vågen og klar. Normal vejrtrækning i hvile. Ingen ødemer. BT 132/78, puls 78 reg. Cor/pulm uden mislyde eller krepitationer. EKG initialt uden akutte iskæmitegn (fiktivt)."></div>
+                <div class="notes-content" data-original="Let hydrops over venstre knæ. Minimal ømhed over mediale ledlinje. Positiv forreste skuffetest (let laxitet, blød stopklods). Lachman usikker positiv. McMurray negativ. Stabil i sideplanet. Fuld ekstension, fleksion til 120°. Ingen rubor eller varmeøgning."></div>
               </div>
               <div class="notes-section notes-section--hidden" id="noteSection2">
                 <div class="notes-label">Vurdering:</div>
-                <div class="notes-content" data-original="Brystsmerter forenelige med mulig stabil angina pectoris. Familiær disposition og belastningsudløste symptomer taler for videre kardiologisk udredning. Ingen tegn på akut koronart syndrom aktuelt."></div>
+                <div class="notes-content" data-original="Sandsynlig lettere ACL-distorsion grad I–II efter vridtraume. Meniskskade mindre sandsynlig grundet negativ McMurray og fravær af locking. Degenerative forandringer kan medvirke til instabilitetsfølelse. Lav risiko for akut intervention."></div>
               </div>
               <div class="notes-section notes-section--hidden" id="noteSection3">
                 <div class="notes-label">Plan:</div>
-                <div class="notes-content" data-original="– Bestilling af EKG og blodprøver inkl. lipidprofil, HbA1c og troponin (screening). – Henvisning til kardiologisk vurdering inkl. arbejdsekg. – Rådgivning om at undgå hård fysisk belastning indtil"></div>
+                <div class="notes-content" data-original="– Røntgen af venstre knæ mhp. artrose og fraktur. – Aflastning med krykkestøtte ved behov. Ibuprofen 400 mg x 3 ved smerter (max 1 uge). – Kontrol om 2 uger. Evt. MR-scanning ved persisterende instabilitet."></div>
               </div>
             </div>
             <div class="ai-input-section">
@@ -1218,46 +1256,50 @@
             <div class="panel-header">
               <h2 class="panel-title">Patientresume</h2>
             </div>
+            <div class="resume-sdu-notice">
+              <i data-lucide="graduation-cap"></i>
+              SDU Forskningsprotokol — EU MDR Art. 62
+            </div>
             <div class="panel-content">
               <div class="resume-section">
                 <div class="resume-label">Hovedsymptom:</div>
                 <div class="resume-content">
-                  Belastningsudløst brystsmerte (tryk), retrosternalt, varighed ca. 5 min, lindres ved hvile.
+                  Venstre knæsmerte efter vridtraume under havearbejde, 3 uger. Instabilitetsfølelse ved gang og trappegang.
                 </div>
               </div>
               <div class="resume-section">
                 <div class="resume-label">Symptomkarakteristika:</div>
                 <ul class="resume-list">
-                  <li>Lokalisation: retrosternalt</li>
-                  <li>Udløsende faktor: moderat fysisk aktivitet</li>
-                  <li>Lindring: hvile</li>
-                  <li>Udstråling: venstre skulder</li>
-                  <li>Associerede symptomer: let dyspnø, øget træthed</li>
-                  <li>Fravær af: kvalme, synkope, hvilesmerter</li>
+                  <li>Lokalisation: medialt venstre knæ</li>
+                  <li>Udløsende faktor: vridtraume</li>
+                  <li>Forværring: trappegang, ujævnt terræn</li>
+                  <li>Lindring: hvile, aflastning</li>
+                  <li>Associeret: intermitterende hævelse</li>
+                  <li>Fravær af: locking, feber, rødme</li>
                 </ul>
               </div>
               <div class="resume-section">
                 <div class="resume-label">Risiko- og baggrundsdata:</div>
                 <ul class="resume-list">
-                  <li>Familiær disposition: far med AMI (62 år)</li>
-                  <li>Ingen nylige medicinændringer</li>
-                  <li>Ingen kendt hjertesygdom</li>
+                  <li>Ingen tidligere knæskader</li>
+                  <li>Let overvægt (BMI 27)</li>
+                  <li>Daglig gangstok udendørs</li>
                 </ul>
               </div>
               <div class="resume-section">
                 <div class="resume-label">Objektive fund:</div>
                 <ul class="resume-list">
-                  <li>BT 132/78</li>
-                  <li>Puls 78, regelmæssig</li>
-                  <li>Cor/pulm: upåfaldende</li>
-                  <li>Ingen ødemer</li>
-                  <li>EKG: ingen akutte iskæmitegn (fiktivt)</li>
+                  <li>Let hydrops venstre knæ</li>
+                  <li>Forreste skuffetest: let positiv</li>
+                  <li>Lachman: usikker positiv</li>
+                  <li>McMurray: negativ</li>
+                  <li>Fuld ekstension, fleksion 120°</li>
                 </ul>
               </div>
             </div>
             <div class="ai-input-section">
               <div class="ai-input-wrapper">
-                <input type="text" class="ai-input" placeholder="Stil spørgsmål til patientjournal...">
+                <input type="text" class="ai-input" placeholder="Søg i patientjournalen...">
                 <button class="ai-send-btn">
                   <i data-lucide="send"></i>
                 </button>
@@ -1281,7 +1323,7 @@
           <i data-lucide="play"></i>
           <span>Start</span>
         </a>
-        <a href="konsultationshistorik.html" class="bottom-nav__item">
+        <a href="patientoversigt.html" class="bottom-nav__item">
           <i data-lucide="history"></i>
           <span>Historik</span>
         </a>
@@ -1629,6 +1671,14 @@
         .demo-tooltip__text strong { color:#1a202c; }
         .demo-progress { position:fixed;top:0;left:0;right:0;height:4px;z-index:9500;background:rgba(86,105,164,0.15); }
         .demo-progress__fill { height:100%;width:35%;background:linear-gradient(90deg,#3B4D7A,#5669A4);transition:width 0.8s ease;border-radius:0 2px 2px 0; }
+        .demo-tooltip__timer { display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid #f1f5f9; }
+        .demo-tooltip__timer-bar { flex:1;height:3px;background:rgba(86,105,164,0.12);border-radius:2px;overflow:hidden; }
+        .demo-tooltip__timer-fill { height:100%;width:100%;background:linear-gradient(90deg,#5669A4,#3B4D7A);border-radius:2px; }
+        .demo-tooltip__timer-text { font-size:11px;font-weight:700;color:#5669A4;min-width:20px;text-align:right;font-variant-numeric:tabular-nums; }
+        .demo-cancel-btn { position:fixed;top:12px;right:16px;z-index:9700;display:flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border:1px solid rgba(86,105,164,0.2);border-radius:50px;font-family:inherit;font-size:12px;font-weight:600;color:#5669A4;cursor:pointer;transition:all 0.2s ease;opacity:0;pointer-events:none; }
+        .demo-cancel-btn.visible { opacity:1;pointer-events:auto; }
+        .demo-cancel-btn:hover { background:white;border-color:#5669A4;box-shadow:0 2px 12px rgba(86,105,164,0.15); }
+        .demo-cancel-btn svg { width:14px;height:14px; }
       `;
       document.head.appendChild(s);
 
@@ -1643,6 +1693,11 @@
       pb.innerHTML = '<div class="demo-progress__fill" id="demoProgressFill"></div>';
       document.body.appendChild(pb);
 
+      var cancelBtn = document.createElement('button');
+      cancelBtn.className = 'demo-cancel-btn';
+      cancelBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Afslut tour';
+      document.body.appendChild(cancelBtn);
+
       function wait(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
       function setProgress(p) { document.getElementById('demoProgressFill').style.width = p + '%'; }
       function showSpotlight(el, pad) {
@@ -1654,46 +1709,96 @@
       function hideSpotlight() { spotlight.classList.remove('visible'); }
       function showTooltip(el, step, text, pos) {
         pos = pos || 'right'; var r = el.getBoundingClientRect();
-        tooltip.innerHTML = '<div class="demo-tooltip__step">Trin ' + step + '</div><div class="demo-tooltip__text">' + text + '</div>';
+        var vw = window.innerWidth, vh = window.innerHeight;
+        tooltip.innerHTML = '<div class="demo-tooltip__step">Trin ' + step + '</div><div class="demo-tooltip__text">' + text + '</div><div class="demo-tooltip__timer"><div class="demo-tooltip__timer-bar"><div class="demo-tooltip__timer-fill"></div></div><span class="demo-tooltip__timer-text"></span></div>';
         tooltip.classList.remove('visible'); tooltip.style.bottom = 'auto';
-        if (pos === 'right') { tooltip.style.top = r.top + 'px'; tooltip.style.left = (r.right + 16) + 'px'; }
-        else if (pos === 'left') { tooltip.style.top = r.top + 'px'; tooltip.style.left = (r.left - 380) + 'px'; }
-        else if (pos === 'top') { tooltip.style.top = (r.top - 130) + 'px'; tooltip.style.left = r.left + 'px'; }
-        else if (pos === 'bottom') { tooltip.style.top = (r.bottom + 16) + 'px'; tooltip.style.left = r.left + 'px'; }
-        requestAnimationFrame(function() { tooltip.classList.add('visible'); });
+        tooltip.style.top = '-9999px'; tooltip.style.left = '-9999px';
+        tooltip.style.display = 'block';
+        requestAnimationFrame(function() {
+          var tw = tooltip.offsetWidth || 360, th = tooltip.offsetHeight || 140;
+          var t, l;
+          if (pos === 'right') { t = r.top + r.height / 2 - th / 2; l = r.right + 16; if (l + tw > vw - 16) { l = r.left - tw - 16; } }
+          else if (pos === 'left') { t = r.top + r.height / 2 - th / 2; l = r.left - tw - 16; if (l < 16) { l = r.right + 16; } }
+          else if (pos === 'top') { t = r.top - th - 16; l = r.left + r.width / 2 - tw / 2; if (t < 16) { t = r.bottom + 16; } }
+          else if (pos === 'bottom') { t = r.bottom + 16; l = r.left + r.width / 2 - tw / 2; if (t + th > vh - 16) { t = r.top - th - 16; } }
+          if (l < 16) l = 16; if (l + tw > vw - 16) l = vw - tw - 16;
+          if (t < 16) t = 16; if (t + th > vh - 16) t = vh - th - 16;
+          tooltip.style.top = t + 'px'; tooltip.style.left = l + 'px';
+          requestAnimationFrame(function() { tooltip.classList.add('visible'); });
+        });
       }
       function hideTooltip() { tooltip.classList.remove('visible'); }
+
+      var tourCancelled = false;
+      var timerInterval = null;
+      function startTooltipTimer(ms) {
+        if (timerInterval) clearInterval(timerInterval);
+        var fill = tooltip.querySelector('.demo-tooltip__timer-fill');
+        var txt = tooltip.querySelector('.demo-tooltip__timer-text');
+        if (!fill || !txt) return;
+        var secs = Math.ceil(ms / 1000);
+        txt.textContent = secs + 's';
+        fill.style.transition = 'none';
+        fill.style.width = '100%';
+        requestAnimationFrame(function() {
+          fill.style.transition = 'width ' + (ms / 1000) + 's linear';
+          fill.style.width = '0%';
+        });
+        timerInterval = setInterval(function() {
+          secs--;
+          if (txt) txt.textContent = Math.max(0, secs) + 's';
+          if (secs <= 0) { clearInterval(timerInterval); timerInterval = null; }
+        }, 1000);
+      }
+      cancelBtn.addEventListener('click', function() {
+        tourCancelled = true;
+        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+        hideTooltip(); hideSpotlight();
+        cancelBtn.classList.remove('visible');
+        pb.style.display = 'none';
+        window.location.href = window.location.pathname;
+      });
 
       // Start demo after small delay (let page render)
       (async function() {
         await wait(1500);
+        cancelBtn.classList.add('visible');
 
         // Trin 7: Hele konsultationsheaderen
         setProgress(38);
         var header = document.querySelector('.consultation-header');
         showSpotlight(header, 6);
         showTooltip(header, 7, '<strong>Aktiv konsultation</strong> — Konsultationen kører nu. Du ser patientinfo, optagetid og optagestatus i toppen.', 'bottom');
+        startTooltipTimer(7500);
         await wait(7500);
+        if (tourCancelled) return;
 
         // Trin 8: Record-knap + waveform
         setProgress(43);
         hideTooltip(); await wait(500);
+        if (tourCancelled) return;
         var recordSection = document.querySelector('.recording-section');
         showSpotlight(recordSection, 8);
         showTooltip(recordSection, 8, '<strong>Optagelse</strong> — Den røde knap viser at People\'s Clinic lytter. Waveformen bekræfter at lyden opfanges. Du kan pause og genoptage efter behov.', 'bottom');
+        startTooltipTimer(7500);
         await wait(7500);
+        if (tourCancelled) return;
 
         // Trin 9: Transskriptions-panelet
         setProgress(48);
         hideTooltip(); await wait(500);
+        if (tourCancelled) return;
         var transcriptPanel = document.querySelectorAll('.consultation-panel')[0];
         showSpotlight(transcriptPanel, 4);
         showTooltip(transcriptPanel, 9, '<strong>Transskription</strong> — Samtalen transskriberes i realtid. Både læge- og patient-dialog adskilles automatisk.', 'right');
+        startTooltipTimer(7500);
         await wait(7500);
+        if (tourCancelled) return;
 
         // Trin 10: Vent på transskription (den dukker op automatisk via countdown)
         setProgress(52);
         hideTooltip(); await wait(400);
+        if (tourCancelled) return;
         showTooltip(transcriptPanel, 10, 'Transskriptionen vises automatisk når samtalen starter...', 'right');
 
         // Wait for transcript to appear (check every 500ms)
@@ -1701,41 +1806,54 @@
         await new Promise(function(resolve) {
           var iv = setInterval(function() {
             elapsed += 500;
+            if (tourCancelled) { clearInterval(iv); resolve(); return; }
             var lines = document.getElementById('transcriptLines');
             if ((lines && lines.style.display !== 'none') || elapsed >= maxWait) {
               clearInterval(iv); resolve();
             }
           }, 500);
         });
+        if (tourCancelled) return;
         await wait(2000);
+        if (tourCancelled) return;
 
         // Trin 11: Notater-panelet
         setProgress(60);
         hideTooltip(); await wait(500);
+        if (tourCancelled) return;
         var notesPanel = document.querySelectorAll('.consultation-panel')[2];
         showSpotlight(notesPanel, 4);
         showTooltip(notesPanel, 11, '<strong>AI-genereret notat</strong> — Baseret på transskriptionen genererer People\'s Clinic automatisk et struktureret SOAP-notat. Ord streamer ind mens samtalen kører.', 'left');
+        startTooltipTimer(8500);
         await wait(8500);
+        if (tourCancelled) return;
 
         // Trin 12: Patient resume
         setProgress(66);
         hideTooltip(); await wait(500);
+        if (tourCancelled) return;
         var resumePanel = document.querySelectorAll('.consultation-panel')[3];
         showSpotlight(resumePanel, 4);
         showTooltip(resumePanel, 12, '<strong>Patientresume</strong> — AI\'en udtrækker automatisk nøgleinformation: symptomer, risikofaktorer, objektive fund. Du kan stille spørgsmål via chat-feltet.', 'left');
+        startTooltipTimer(7500);
         await wait(7500);
+        if (tourCancelled) return;
 
         // Trin 13: Huskeliste
         setProgress(72);
         hideTooltip(); await wait(500);
+        if (tourCancelled) return;
         var huskePanel = document.querySelectorAll('.consultation-panel')[1];
         showSpotlight(huskePanel, 4);
         showTooltip(huskePanel, 13, '<strong>Huskeliste</strong> — Din personlige huskeliste med ting du skal huske under konsultationer. Gemmes automatisk mellem sessioner.', 'right');
+        startTooltipTimer(6500);
         await wait(6500);
+        if (tourCancelled) return;
 
         // Trin 14: Action buttons (not full bar, just the buttons)
         setProgress(77);
         hideTooltip(); await wait(500);
+        if (tourCancelled) return;
         var copyBtn = document.getElementById('copyBtn');
         var saveBtn = document.getElementById('saveBtn');
         // Compute combined bounding box of both buttons
@@ -1752,16 +1870,21 @@
         spotlight.style.height = (combinedBottom - combinedTop + pad * 2) + 'px';
         spotlight.classList.add('visible');
         showTooltip(copyBtn, 14, '<strong>Afslut</strong> — Når konsultationen er færdig, pauser du optagelsen og klikker her for at gennemgå og redigere notatet.', 'top');
+        startTooltipTimer(6500);
         await wait(6500);
+        if (tourCancelled) return;
 
         // Auto-pause recording
         setProgress(80);
         hideTooltip(); hideSpotlight();
         await wait(400);
+        if (tourCancelled) return;
         if (!isPaused) toggleRecording();
         await wait(1200);
+        if (tourCancelled) return;
 
         // Navigate to rediger
+        cancelBtn.classList.remove('visible');
         window.location.href = 'konsultation-rediger.html?demo';
       })();
     })();

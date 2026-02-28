@@ -289,6 +289,76 @@
       margin-left: 8px;
     }
 
+    /* F-7.B: Regulatory warning banner */
+    .regulatory-warning {
+      display: flex;
+      gap: 14px;
+      padding: 16px 18px;
+      margin: 6px 0 2px;
+      background: rgba(245, 158, 11, 0.07);
+      border: 1.5px solid rgba(245, 158, 11, 0.3);
+      border-radius: var(--radius-lg);
+      animation: regWarnPulse 3s ease-in-out infinite;
+    }
+    @keyframes regWarnPulse {
+      0%, 100% { border-color: rgba(245, 158, 11, 0.3); }
+      50% { border-color: rgba(245, 158, 11, 0.55); }
+    }
+    .regulatory-warning__icon {
+      display: flex;
+      align-items: flex-start;
+      padding-top: 1px;
+      color: #d97706;
+      flex-shrink: 0;
+    }
+    .regulatory-warning__icon i {
+      width: 20px;
+      height: 20px;
+    }
+    .regulatory-warning__content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .regulatory-warning__title {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: #92400e;
+    }
+    .regulatory-warning__text {
+      font-size: 0.75rem;
+      line-height: 1.55;
+      color: #78350f;
+    }
+    .regulatory-warning__badges {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .regulatory-warning__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      font-size: 0.625rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-radius: 999px;
+    }
+    .regulatory-warning__badge--mdr {
+      background: rgba(239, 68, 68, 0.1);
+      color: #b91c1c;
+    }
+    .regulatory-warning__badge--sdu {
+      background: rgba(86, 105, 164, 0.1);
+      color: var(--color-navy-600);
+    }
+    .regulatory-warning__badge--gdpr {
+      background: rgba(16, 185, 129, 0.1);
+      color: #065f46;
+    }
+
     /* ========================================== */
     /* Brugere styles (from admin-klinik-admin)   */
     /* ========================================== */
@@ -1765,6 +1835,34 @@
               <div class="template-item"><div class="template-item__left"><div class="template-item__info"><span class="template-item__name">Klinisk rådgivning <span class="template-item__badge">SDU</span></span><span class="template-item__description">Kliniske udkast baseret på konsultationsdata (EU MDR)</span></div></div><label class="toggle"><input type="checkbox" class="toggle__input" checked><span class="toggle__slider"></span></label></div>
               <div class="template-item"><div class="template-item__left"><div class="template-item__info"><span class="template-item__name">Andet</span><span class="template-item__description">Generelt fritekst-udkast</span></div></div><label class="toggle"><input type="checkbox" class="toggle__input" checked><span class="toggle__slider"></span></label></div>
             </div>
+
+            <!-- F-7.B: Regulatorisk advarsel for kliniske skabeloner -->
+            <div class="regulatory-warning">
+              <div class="regulatory-warning__icon">
+                <i data-lucide="shield-alert"></i>
+              </div>
+              <div class="regulatory-warning__content">
+                <div class="regulatory-warning__title">Regulatorisk advarsel — Kliniske skabeloner</div>
+                <div class="regulatory-warning__text">
+                  Skabeloner markeret med <strong>SDU</strong> anvender klinisk beslutningsstøtte klassificeret som <strong>investigational device</strong> under EU MDR Artikel 62. Disse funktioner er kun tilgængelige via det aktive forskningssamarbejde med Syddansk Universitet og kan ikke konfigureres, tilpasses eller aktiveres som standard produktfunktionalitet via administratorpanelet. Ændringer kræver godkendelse fra forskningsansvarlig.
+                </div>
+                <div class="regulatory-warning__badges">
+                  <span class="regulatory-warning__badge regulatory-warning__badge--mdr">
+                    <i data-lucide="shield" style="width:10px;height:10px;"></i>
+                    EU MDR Art. 62
+                  </span>
+                  <span class="regulatory-warning__badge regulatory-warning__badge--sdu">
+                    <i data-lucide="graduation-cap" style="width:10px;height:10px;"></i>
+                    SDU Forskningsprotokol
+                  </span>
+                  <span class="regulatory-warning__badge regulatory-warning__badge--gdpr">
+                    <i data-lucide="lock" style="width:10px;height:10px;"></i>
+                    GDPR Art. 9
+                  </span>
+                </div>
+              </div>
+            </div>
+
           </div>
 
           <!-- Standardfraser -->
@@ -2055,7 +2153,7 @@
     <nav class="bottom-nav">
       <ul class="bottom-nav__list">
         <li><a href="platform-preview.html" class="bottom-nav__item"><svg><use href="#mic"/></svg>Start</a></li>
-        <li><a href="konsultationshistorik.html" class="bottom-nav__item"><svg><use href="#file-text"/></svg>Historik</a></li>
+        <li><a href="patientoversigt.html" class="bottom-nav__item"><svg><use href="#file-text"/></svg>Historik</a></li>
         <li><a href="beskeder.html" class="bottom-nav__item"><svg><use href="#mail"/></svg>Beskeder</a></li>
         <li><a href="admin-dashboard.html" class="bottom-nav__item bottom-nav__item--active"><svg><use href="#settings"/></svg>Admin</a></li>
       </ul>

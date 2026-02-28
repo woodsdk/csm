@@ -129,6 +129,68 @@
       margin-left: 8px;
     }
 
+    /* F-7.B: Regulatory warning banner */
+    .regulatory-warning {
+      display: flex;
+      gap: 14px;
+      padding: 16px 18px;
+      margin: 6px 0 2px;
+      background: rgba(245, 158, 11, 0.07);
+      border: 1.5px solid rgba(245, 158, 11, 0.3);
+      border-radius: var(--radius-lg);
+    }
+    .regulatory-warning__icon {
+      display: flex;
+      align-items: flex-start;
+      padding-top: 1px;
+      color: #d97706;
+      flex-shrink: 0;
+    }
+    .regulatory-warning__icon i { width: 20px; height: 20px; }
+    .regulatory-warning__content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .regulatory-warning__title {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: #92400e;
+    }
+    .regulatory-warning__text {
+      font-size: 0.75rem;
+      line-height: 1.55;
+      color: #78350f;
+    }
+    .regulatory-warning__badges {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .regulatory-warning__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      font-size: 0.625rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-radius: 999px;
+    }
+    .regulatory-warning__badge--mdr {
+      background: rgba(239, 68, 68, 0.1);
+      color: #b91c1c;
+    }
+    .regulatory-warning__badge--sdu {
+      background: rgba(86, 105, 164, 0.1);
+      color: var(--color-navy-600);
+    }
+    .regulatory-warning__badge--gdpr {
+      background: rgba(16, 185, 129, 0.1);
+      color: #065f46;
+    }
+
     /* Settings list card */
     .settings-list {
       display: flex;
@@ -1130,6 +1192,25 @@
                 </label>
               </div>
             </div>
+
+            <!-- F-7.B: Regulatorisk advarsel for kliniske skabeloner -->
+            <div class="regulatory-warning">
+              <div class="regulatory-warning__icon">
+                <i data-lucide="shield-alert"></i>
+              </div>
+              <div class="regulatory-warning__content">
+                <div class="regulatory-warning__title">Regulatorisk advarsel — Kliniske skabeloner</div>
+                <div class="regulatory-warning__text">
+                  Skabeloner markeret med <strong>SDU</strong> anvender klinisk beslutningsstøtte klassificeret som <strong>investigational device</strong> under EU MDR Artikel 62. Disse funktioner er kun tilgængelige via det aktive forskningssamarbejde med Syddansk Universitet og kan ikke konfigureres, tilpasses eller aktiveres som standard produktfunktionalitet via administratorpanelet. Ændringer kræver godkendelse fra forskningsansvarlig.
+                </div>
+                <div class="regulatory-warning__badges">
+                  <span class="regulatory-warning__badge regulatory-warning__badge--mdr">EU MDR Art. 62</span>
+                  <span class="regulatory-warning__badge regulatory-warning__badge--sdu">SDU Forskningsprotokol</span>
+                  <span class="regulatory-warning__badge regulatory-warning__badge--gdpr">GDPR Art. 9</span>
+                </div>
+              </div>
+            </div>
+
           </div>
 
           <!-- Section 3: Standardfraser (klinikdækkende) -->
@@ -1306,7 +1387,7 @@
           </a>
         </li>
         <li>
-          <a href="konsultationshistorik.html" class="bottom-nav__item">
+          <a href="patientoversigt.html" class="bottom-nav__item">
             <svg><use href="#file-text"/></svg>
             Historik
           </a>
@@ -1628,6 +1709,14 @@
       .demo-complete__btn { display:inline-flex;align-items:center;gap:8px;padding:14px 36px;background:linear-gradient(135deg,#3B4D7A,#5669A4);color:white;border:none;border-radius:50px;font-family:inherit;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(59,77,122,0.35);transition:all 0.3s ease; }
       .demo-complete__btn:hover { transform:translateY(-2px);box-shadow:0 8px 28px rgba(59,77,122,0.45); }
       .demo-complete__btn svg { width:16px;height:16px; }
+        .demo-tooltip__timer { display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid #f1f5f9; }
+        .demo-tooltip__timer-bar { flex:1;height:3px;background:rgba(86,105,164,0.12);border-radius:2px;overflow:hidden; }
+        .demo-tooltip__timer-fill { height:100%;width:100%;background:linear-gradient(90deg,#5669A4,#3B4D7A);border-radius:2px; }
+        .demo-tooltip__timer-text { font-size:11px;font-weight:700;color:#5669A4;min-width:20px;text-align:right;font-variant-numeric:tabular-nums; }
+        .demo-cancel-btn { position:fixed;top:12px;right:16px;z-index:9700;display:flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border:1px solid rgba(86,105,164,0.2);border-radius:50px;font-family:inherit;font-size:12px;font-weight:600;color:#5669A4;cursor:pointer;transition:all 0.2s ease;opacity:0;pointer-events:none; }
+        .demo-cancel-btn.visible { opacity:1;pointer-events:auto; }
+        .demo-cancel-btn:hover { background:white;border-color:#5669A4;box-shadow:0 2px 12px rgba(86,105,164,0.15); }
+        .demo-cancel-btn svg { width:14px;height:14px; }
     `;
     document.head.appendChild(s);
 
@@ -1652,19 +1741,74 @@
     var tooltip = document.createElement('div'); tooltip.className = 'demo-tooltip'; document.body.appendChild(tooltip);
     var pb = document.createElement('div'); pb.className = 'demo-progress'; pb.innerHTML = '<div class="demo-progress__fill" id="demoProgressFill"></div>'; document.body.appendChild(pb);
 
+      var cancelBtn = document.createElement('button');
+      cancelBtn.className = 'demo-cancel-btn';
+      cancelBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Afslut tour';
+      document.body.appendChild(cancelBtn);
+
     requestAnimationFrame(function() { requestAnimationFrame(function() { overlay.classList.add('visible'); }); });
 
     function wait(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
     function setProgress(p) { document.getElementById('demoProgressFill').style.width = p + '%'; }
     function showSpotlight(el, pad) { pad = pad || 8; var r = el.getBoundingClientRect(); spotlight.style.top = (r.top - pad) + 'px'; spotlight.style.left = (r.left - pad) + 'px'; spotlight.style.width = (r.width + pad * 2) + 'px'; spotlight.style.height = (r.height + pad * 2) + 'px'; spotlight.classList.add('visible'); }
     function hideSpotlight() { spotlight.classList.remove('visible'); }
-    function showTooltip(el, step, text, pos) { pos = pos || 'right'; var r = el.getBoundingClientRect(); tooltip.innerHTML = '<div class="demo-tooltip__step">Trin ' + step + '</div><div class="demo-tooltip__text">' + text + '</div>'; tooltip.classList.remove('visible'); tooltip.style.bottom = 'auto'; if (pos === 'right') { tooltip.style.top = r.top + 'px'; tooltip.style.left = (r.right + 16) + 'px'; } else if (pos === 'left') { tooltip.style.top = r.top + 'px'; tooltip.style.left = (r.left - 380) + 'px'; } else if (pos === 'top') { tooltip.style.top = (r.top - 130) + 'px'; tooltip.style.left = r.left + 'px'; } else if (pos === 'bottom') { tooltip.style.top = (r.bottom + 16) + 'px'; tooltip.style.left = r.left + 'px'; } requestAnimationFrame(function() { tooltip.classList.add('visible'); }); }
+    function showTooltip(el, step, text, pos) {
+      pos = pos || 'right'; var r = el.getBoundingClientRect();
+      var vw = window.innerWidth, vh = window.innerHeight;
+      tooltip.innerHTML = '<div class="demo-tooltip__step">Trin ' + step + '</div><div class="demo-tooltip__text">' + text + '</div><div class="demo-tooltip__timer"><div class="demo-tooltip__timer-bar"><div class="demo-tooltip__timer-fill"></div></div><span class="demo-tooltip__timer-text"></span></div>';
+      tooltip.classList.remove('visible'); tooltip.style.bottom = 'auto';
+      tooltip.style.top = '-9999px'; tooltip.style.left = '-9999px';
+      tooltip.style.display = 'block';
+      requestAnimationFrame(function() {
+        var tw = tooltip.offsetWidth || 360, th = tooltip.offsetHeight || 140;
+        var t, l;
+        if (pos === 'right') { t = r.top + r.height / 2 - th / 2; l = r.right + 16; if (l + tw > vw - 16) { l = r.left - tw - 16; } }
+        else if (pos === 'left') { t = r.top + r.height / 2 - th / 2; l = r.left - tw - 16; if (l < 16) { l = r.right + 16; } }
+        else if (pos === 'top') { t = r.top - th - 16; l = r.left + r.width / 2 - tw / 2; if (t < 16) { t = r.bottom + 16; } }
+        else if (pos === 'bottom') { t = r.bottom + 16; l = r.left + r.width / 2 - tw / 2; if (t + th > vh - 16) { t = r.top - th - 16; } }
+        if (l < 16) l = 16; if (l + tw > vw - 16) l = vw - tw - 16;
+        if (t < 16) t = 16; if (t + th > vh - 16) t = vh - th - 16;
+        tooltip.style.top = t + 'px'; tooltip.style.left = l + 'px';
+        requestAnimationFrame(function() { tooltip.classList.add('visible'); });
+      });
+    }
     function hideTooltip() { tooltip.classList.remove('visible'); }
+
+      var tourCancelled = false;
+      var timerInterval = null;
+      function startTooltipTimer(ms) {
+        if (timerInterval) clearInterval(timerInterval);
+        var fill = tooltip.querySelector('.demo-tooltip__timer-fill');
+        var txt = tooltip.querySelector('.demo-tooltip__timer-text');
+        if (!fill || !txt) return;
+        var secs = Math.ceil(ms / 1000);
+        txt.textContent = secs + 's';
+        fill.style.transition = 'none';
+        fill.style.width = '100%';
+        requestAnimationFrame(function() {
+          fill.style.transition = 'width ' + (ms / 1000) + 's linear';
+          fill.style.width = '0%';
+        });
+        timerInterval = setInterval(function() {
+          secs--;
+          if (txt) txt.textContent = Math.max(0, secs) + 's';
+          if (secs <= 0) { clearInterval(timerInterval); timerInterval = null; }
+        }, 1000);
+      }
+      cancelBtn.addEventListener('click', function() {
+        tourCancelled = true;
+        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+        hideTooltip(); hideSpotlight();
+        cancelBtn.classList.remove('visible');
+        pb.style.display = 'none';
+        window.location.href = window.location.pathname;
+      });
 
     document.getElementById('demoCloseBtn').addEventListener('click', function() { window.location.href = 'admin-klinik.html'; });
 
     document.getElementById('demoStartBtn').addEventListener('click', async function() {
       overlay.classList.remove('visible'); overlay.classList.add('hidden');
+      cancelBtn.classList.add('visible');
       await wait(800);
 
       // Trin 1: Stats-overblik
@@ -1672,7 +1816,9 @@
       var statsGrid = document.querySelector('.stats-grid');
       showSpotlight(statsGrid, 6);
       showTooltip(statsGrid, 1, '<strong>Overblik</strong> — Se klinikkens nøgleinfo: kliniknavn, tilsluttet EPJ-system og antal brugere.', 'bottom');
+      startTooltipTimer(7000);
       await wait(7000);
+      if (tourCancelled) return;
 
       // Trin 2: Tab-navigation
       setProgress(18);
@@ -1680,7 +1826,9 @@
       var tabsEl = document.querySelector('.tabs');
       showSpotlight(tabsEl, 6);
       showTooltip(tabsEl, 2, '<strong>Faner</strong> — Naviger mellem klinikprofil, EPJ-integration og skabeloner.', 'bottom');
+      startTooltipTimer(7000);
       await wait(7000);
+      if (tourCancelled) return;
 
       // Trin 3: Klinikprofil — klinikoplysninger
       setProgress(28);
@@ -1691,7 +1839,9 @@
       var klinikCard = klinikPanel.querySelector('.card.settings-list');
       showSpotlight(klinikCard, 4);
       showTooltip(klinikCard, 3, '<strong>Klinikoplysninger</strong> — Se og redigér kliniknavn, type, adresse, telefon, CVR- og ydernummer. Disse oplysninger bruges i breve, henvisninger og fakturaer.', 'right');
+      startTooltipTimer(8000);
       await wait(8000);
+      if (tourCancelled) return;
 
       // Trin 4: Åbningstider
       setProgress(38);
@@ -1702,7 +1852,9 @@
       await wait(400);
       showSpotlight(hoursCard, 4);
       showTooltip(hoursCard, 4, '<strong>Åbningstider</strong> — Oversigt over klinikkens åbningstider med status for hver dag. Torsdag har udvidede tider.', 'right');
+      startTooltipTimer(7500);
       await wait(7500);
+      if (tourCancelled) return;
 
       // Trin 5: EPJ-integration — forbundet system
       setProgress(50);
@@ -1712,7 +1864,9 @@
       var epjConnection = document.querySelector('.epj-connection');
       showSpotlight(epjConnection, 4);
       showTooltip(epjConnection, 5, '<strong>EPJ-forbindelse</strong> — Se det tilsluttede journalsystem (CGM XMO), forbindelsesstatus, API-version og seneste synkronisering. Test forbindelsen eller gensynkroniser data.', 'right');
+      startTooltipTimer(8500);
       await wait(8500);
+      if (tourCancelled) return;
 
       // Trin 6: Datasynkronisering
       setProgress(62);
@@ -1724,7 +1878,9 @@
       await wait(400);
       showSpotlight(syncCard, 4);
       showTooltip(syncCard, 6, '<strong>Datasynkronisering</strong> — Styr hvad der synkroniseres med EPJ: journalnotater, honorarforslag, konsultationsdata. Aktivér fejlnotifikationer.', 'right');
+      startTooltipTimer(7500);
       await wait(7500);
+      if (tourCancelled) return;
 
       // Trin 7: Tilgængelige EPJ-systemer
       setProgress(74);
@@ -1735,7 +1891,9 @@
       await wait(400);
       showSpotlight(epjGridCard, 4);
       showTooltip(epjGridCard, 7, '<strong>Tilgængelige systemer</strong> — Se alle understøttede EPJ-systemer. CGM XMO er aktivt, mens NOVAX og CGM Complimenta er tilgængelige. KirCACS kommer snart.', 'right');
+      startTooltipTimer(7500);
       await wait(7500);
+      if (tourCancelled) return;
 
       // Trin 8: Skabeloner-tab
       setProgress(86);
@@ -1747,11 +1905,15 @@
       await wait(400);
       showSpotlight(skabelonPanel, 4);
       showTooltip(skabelonPanel, 8, '<strong>Skabeloner</strong> — Administrer klinikkens skabeloner: notattemplates (SOAP, PSOAP m.fl.), assistentskabeloner (booking, recept, henvisning) og klinikdækkende standardfraser.', 'right');
+      startTooltipTimer(8000);
       await wait(8000);
+      if (tourCancelled) return;
 
       // Completion
       setProgress(100);
-      hideTooltip(); hideSpotlight(); await wait(800);
+      hideTooltip(); hideSpotlight();
+      cancelBtn.classList.remove('visible');
+      await wait(800);
       var c = document.createElement('div'); c.className = 'demo-complete-overlay';
       c.innerHTML = '<div class="demo-complete-modal"><div class="demo-complete__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div><div class="demo-complete__title">Demo afsluttet!</div><div class="demo-complete__subtitle">Du har nu set klinikadministrationens tre hovedområder.</div><div class="demo-complete__features"><div class="demo-complete__feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 22V4a2 2 0 012-2h8a2 2 0 012 2v18Z"/><path d="M10 6h4"/><path d="M10 10h4"/></svg>Klinikprofil</div><div class="demo-complete__feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19a9 3 0 0018 0V5"/></svg>EPJ-integration</div><div class="demo-complete__feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>Skabeloner</div></div><button class="demo-complete__btn" onclick="window.location.href=\'admin-klinik.html\'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9"/><polyline points="3 3 3 9 9 3"/></svg>Tilbage til administration</button></div>';
       document.body.appendChild(c); await wait(100); c.classList.add('visible');

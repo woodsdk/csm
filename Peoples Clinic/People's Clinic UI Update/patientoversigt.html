@@ -212,6 +212,20 @@
       color: var(--color-text);
     }
 
+    /* ── Unified heights: all action-section elements align ── */
+    .action-section__body .action-btn,
+    .action-section__body .consult-select,
+    .action-section__body .honorar-info {
+      height: 34px;
+      box-sizing: border-box;
+    }
+    .action-section__body .action-btn--primary {
+      border: 1px solid transparent;
+    }
+    .action-section__body .honorar-info {
+      margin-bottom: 0;
+    }
+
     /* ───────────────────────────────────────
        HONORAR MODAL (from honorarforslag)
     ─────────────────────────────────────── */
@@ -449,7 +463,7 @@
             <p class="page-description">Overblik baseret på seneste konsultationer i People's Clinic</p>
           </div>
           <div style="display:flex;align-items:center;gap:12px;">
-            <button class="demo-launch-inline" id="demoLaunchInline" onclick="window.location.href='konsultationshistorik.html?demo'">
+            <button class="demo-launch-inline" id="demoLaunchInline" onclick="window.location.href='patientoversigt.html?demo'">
               <span class="demo-launch-inline__pulse"></span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               Se demo
@@ -493,7 +507,7 @@
           <i data-lucide="layout-list"></i>
           <span>Oversigt</span>
         </a>
-        <a href="konsultationshistorik.html" class="bottom-nav__item">
+        <a href="patientoversigt.html" class="bottom-nav__item">
           <i data-lucide="history"></i>
           <span>Historik</span>
         </a>
@@ -540,6 +554,12 @@
 
   <script>
     lucide.createIcons();
+
+    // Hide demo button when in demo mode
+    if (window.location.search.includes('demo')) {
+      var inlineBtn = document.getElementById('demoLaunchInline');
+      if (inlineBtn) inlineBtn.style.display = 'none';
+    }
 
     // ═══════════════════════════════════════
     // COMBINED DATA MODEL
@@ -627,9 +647,9 @@
     // ═══════════════════════════════════════
     var patientConsultations = {
       'Nancy Ann Berggren': [
-        { date: '24.02.2026', snippet: 'Øresmerter bilateralt. Otoskopi: rødme hø. tromme.' },
-        { date: '12.02.2026', snippet: 'Brystsmerter ved anstrengelse. BT 144/88.' },
-        { date: '15.01.2026', snippet: 'Diabeteskontrol. HbA1c 58. Insulin justeret.' }
+        { date: '24.02.2026', snippet: 'Venstre knæsmerter. Positiv skuffetest. Obs. ACL-distorsion.' },
+        { date: '12.02.2026', snippet: 'Kontrolbesøg. Slidgigt hø. hofte. Uændret. Fortsat øvelser.' },
+        { date: '15.01.2026', snippet: 'Årskontrol. BMI 27. Kostrådgivning og motion anbefalet.' }
       ],
       'Peter Hansen': [
         { date: '24.02.2026', snippet: 'Knæsmerter venstre side efter løb.' },
@@ -897,6 +917,460 @@
     // INIT
     // ═══════════════════════════════════════
     renderTable();
+
+    // ═══════════════════════════════════════
+    // GUIDED TOUR — PATIENTOVERSIGT (?demo)
+    // ═══════════════════════════════════════
+    (function() {
+      if (!window.location.search.includes('demo')) return;
+
+      // ── Demo CSS ──
+      var demoStyle = document.createElement('style');
+      demoStyle.textContent = `
+        /* Overlay & Modal */
+        .demo-overlay {
+          position: fixed; inset: 0; z-index: 9000;
+          background: rgba(15, 23, 42, 0.70);
+          backdrop-filter: blur(6px);
+          display: flex; align-items: center; justify-content: center;
+          opacity: 0; transition: opacity 0.4s ease;
+        }
+        .demo-overlay.visible { opacity: 1; }
+        .demo-overlay.hidden { pointer-events: none; opacity: 0; }
+
+        .demo-modal {
+          position: relative;
+          background: white; border-radius: 20px;
+          max-width: 560px; width: 90%; padding: 48px 44px 40px;
+          box-shadow: 0 25px 80px rgba(0,0,0,0.25);
+          transform: translateY(20px) scale(0.97);
+          transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          text-align: center;
+        }
+        .demo-modal__close {
+          position: absolute; top: 16px; right: 16px;
+          width: 36px; height: 36px; border-radius: 50%;
+          border: none; background: #f1f5f9; cursor: pointer;
+          display: flex; align-items: center; justify-content: center;
+          color: #64748b; transition: all 0.2s ease;
+        }
+        .demo-modal__close:hover { background: #e2e8f0; color: #334155; }
+        .demo-modal__close svg { width: 20px; height: 20px; }
+        .demo-overlay.visible .demo-modal {
+          transform: translateY(0) scale(1);
+        }
+        .demo-modal__icon {
+          width: 64px; height: 64px; margin: 0 auto 20px;
+          border-radius: 16px;
+          background: linear-gradient(135deg, #3B4D7A, #5669A4);
+          display: flex; align-items: center; justify-content: center;
+        }
+        .demo-modal__icon svg { width: 30px; height: 30px; color: white; }
+        .demo-modal__title {
+          font-size: 22px; font-weight: 700; color: #1a202c;
+          margin-bottom: 8px; line-height: 1.3;
+        }
+        .demo-modal__subtitle {
+          font-size: 14px; color: #64748b; margin-bottom: 28px; line-height: 1.6;
+        }
+        .demo-modal__features {
+          text-align: left; margin-bottom: 32px;
+          display: flex; flex-direction: column; gap: 14px;
+        }
+        .demo-feature {
+          display: flex; gap: 14px; align-items: flex-start;
+        }
+        .demo-feature__num {
+          width: 28px; height: 28px; min-width: 28px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #3B4D7A, #5669A4);
+          color: white; font-size: 13px; font-weight: 700;
+          display: flex; align-items: center; justify-content: center;
+        }
+        .demo-feature__text {
+          font-size: 14px; line-height: 1.55; color: #334155;
+        }
+        .demo-feature__text strong { color: #1a202c; font-weight: 600; }
+        .demo-btn {
+          display: inline-flex; align-items: center; gap: 8px;
+          padding: 14px 36px; border-radius: 12px; border: none;
+          background: linear-gradient(135deg, #3B4D7A, #5669A4);
+          color: white; font-size: 15px; font-weight: 600;
+          cursor: pointer; font-family: inherit;
+          transition: all 0.2s ease;
+          box-shadow: 0 4px 16px rgba(59, 77, 122, 0.3);
+        }
+        .demo-btn:hover {
+          background: linear-gradient(135deg, #2F3D62, #4A5D96);
+          transform: translateY(-1px);
+          box-shadow: 0 6px 20px rgba(59, 77, 122, 0.4);
+        }
+        .demo-btn svg { width: 18px; height: 18px; }
+
+        /* Spotlight & Tooltip */
+        .demo-spotlight {
+          position: fixed; z-index: 8500;
+          border: 3px solid #5669A4;
+          border-radius: 12px;
+          box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.55), 0 0 30px rgba(86, 105, 164, 0.3);
+          transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+          pointer-events: none;
+          opacity: 0;
+        }
+        .demo-spotlight.visible { opacity: 1; }
+
+        .demo-tooltip {
+          position: fixed; z-index: 8600;
+          background: white; border-radius: 14px;
+          padding: 18px 22px; max-width: 360px;
+          box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+          opacity: 0; transform: translateY(8px);
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          pointer-events: none;
+        }
+        .demo-tooltip.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .demo-tooltip__step {
+          display: inline-flex; align-items: center; gap: 6px;
+          font-size: 11px; font-weight: 700; color: #5669A4;
+          text-transform: uppercase; letter-spacing: 0.5px;
+          margin-bottom: 6px;
+        }
+        .demo-tooltip__text {
+          font-size: 14px; line-height: 1.6; color: #334155;
+        }
+        .demo-tooltip__text strong { color: #1a202c; }
+
+        /* Progress bar */
+        .demo-progress {
+          position: fixed; top: 0; left: 0; right: 0;
+          height: 4px; z-index: 9500;
+          background: rgba(86, 105, 164, 0.15);
+        }
+        .demo-progress__fill {
+          height: 100%; width: 0%;
+          background: linear-gradient(90deg, #3B4D7A, #5669A4);
+          transition: width 0.8s ease;
+          border-radius: 0 2px 2px 0;
+        }
+        .demo-tooltip__timer { display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid #f1f5f9; }
+        .demo-tooltip__timer-bar { flex:1;height:3px;background:rgba(86,105,164,0.12);border-radius:2px;overflow:hidden; }
+        .demo-tooltip__timer-fill { height:100%;width:100%;background:linear-gradient(90deg,#5669A4,#3B4D7A);border-radius:2px; }
+        .demo-tooltip__timer-text { font-size:11px;font-weight:700;color:#5669A4;min-width:20px;text-align:right;font-variant-numeric:tabular-nums; }
+        .demo-cancel-btn { position:fixed;top:12px;right:16px;z-index:9700;display:flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border:1px solid rgba(86,105,164,0.2);border-radius:50px;font-family:inherit;font-size:12px;font-weight:600;color:#5669A4;cursor:pointer;transition:all 0.2s ease;opacity:0;pointer-events:none; }
+        .demo-cancel-btn.visible { opacity:1;pointer-events:auto; }
+        .demo-cancel-btn:hover { background:white;border-color:#5669A4;box-shadow:0 2px 12px rgba(86,105,164,0.15); }
+        .demo-cancel-btn svg { width:14px;height:14px; }
+
+        /* Completion modal */
+        .demo-complete-overlay { position:fixed;inset:0;z-index:9600;background:rgba(15,23,42,0.6);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.5s ease; }
+        .demo-complete-overlay.visible { opacity:1; }
+        .demo-complete-modal { background:white;border-radius:20px;padding:44px 48px;max-width:520px;width:90%;text-align:center;transform:scale(0.9);transition:transform 0.5s cubic-bezier(0.16,1,0.3,1);box-shadow:0 25px 60px rgba(0,0,0,0.25); }
+        .demo-complete-overlay.visible .demo-complete-modal { transform:scale(1); }
+        .demo-complete__icon { width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#22C55E,#16A34A);display:flex;align-items:center;justify-content:center;margin:0 auto 18px; }
+        .demo-complete__icon svg { width:28px;height:28px;color:white; }
+        .demo-complete__title { font-size:1.4rem;font-weight:700;color:#1a202c;margin-bottom:6px; }
+        .demo-complete__subtitle { font-size:0.9rem;color:#5669A4;margin-bottom:24px;line-height:1.5; }
+        .demo-complete__features { display:flex;gap:14px;justify-content:center;margin-bottom:28px;flex-wrap:wrap; }
+        .demo-complete__feature { display:flex;align-items:center;gap:6px;padding:8px 14px;background:#f1f5f9;border-radius:10px;font-size:0.78rem;font-weight:600;color:#334155; }
+        .demo-complete__feature svg { width:14px;height:14px;color:#5669A4; }
+        .demo-complete__btn { display:inline-flex;align-items:center;gap:8px;padding:14px 36px;background:linear-gradient(135deg,#3B4D7A,#5669A4);color:white;border:none;border-radius:50px;font-family:inherit;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(59,77,122,0.35);transition:all 0.3s ease; }
+        .demo-complete__btn:hover { transform:translateY(-2px);box-shadow:0 8px 28px rgba(59,77,122,0.45); }
+        .demo-complete__btn svg { width:16px;height:16px; }
+      `;
+      document.head.appendChild(demoStyle);
+
+      // ── Create DOM elements ──
+      var overlay = document.createElement('div');
+      overlay.className = 'demo-overlay';
+      overlay.innerHTML = `
+        <div class="demo-modal">
+          <button class="demo-modal__close" id="demoCloseBtn" title="Luk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          <div class="demo-modal__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+              <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+            </svg>
+          </div>
+          <div class="demo-modal__title">Seneste konsultationer</div>
+          <div class="demo-modal__subtitle">Overblik over dine seneste konsultationer med handlingsmuligheder</div>
+          <div class="demo-modal__features">
+            <div class="demo-feature">
+              <div class="demo-feature__num">1</div>
+              <div class="demo-feature__text"><strong>Patientoversigt</strong> — Se alle seneste konsultationer med patient, dato, emne og honorar-status</div>
+            </div>
+            <div class="demo-feature">
+              <div class="demo-feature__num">2</div>
+              <div class="demo-feature__text"><strong>Handlinger</strong> — Kopi\u00e9r notater, generer henvisninger og gennemg\u00e5 ydelseskoder direkte fra oversigten</div>
+            </div>
+            <div class="demo-feature">
+              <div class="demo-feature__num">3</div>
+              <div class="demo-feature__text"><strong>AI Honoraroptimering</strong> — AI'en identificerer manglende ydelseskoder og foresl\u00e5r registreringer</div>
+            </div>
+          </div>
+          <button class="demo-btn" id="demoStartBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Se demo
+          </button>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      var spotlight = document.createElement('div');
+      spotlight.className = 'demo-spotlight';
+      document.body.appendChild(spotlight);
+
+      var tooltip = document.createElement('div');
+      tooltip.className = 'demo-tooltip';
+      document.body.appendChild(tooltip);
+
+      var progressBar = document.createElement('div');
+      progressBar.className = 'demo-progress';
+      progressBar.innerHTML = '<div class="demo-progress__fill" id="demoProgressFill"></div>';
+      document.body.appendChild(progressBar);
+
+      var cancelBtn = document.createElement('button');
+      cancelBtn.className = 'demo-cancel-btn';
+      cancelBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Afslut tour';
+      document.body.appendChild(cancelBtn);
+
+      // Show intro modal
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          overlay.classList.add('visible');
+        });
+      });
+
+      // ── Utility functions ──
+      function wait(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
+
+      function setProgress(pct) {
+        document.getElementById('demoProgressFill').style.width = pct + '%';
+      }
+
+      function showSpotlight(el, padding) {
+        padding = padding || 8;
+        var r = el.getBoundingClientRect();
+        spotlight.style.top = (r.top - padding) + 'px';
+        spotlight.style.left = (r.left - padding) + 'px';
+        spotlight.style.width = (r.width + padding * 2) + 'px';
+        spotlight.style.height = (r.height + padding * 2) + 'px';
+        spotlight.classList.add('visible');
+      }
+
+      function hideSpotlight() { spotlight.classList.remove('visible'); }
+
+      function showTooltip(el, stepNum, text, position) {
+        position = position || 'right';
+        var r = el.getBoundingClientRect();
+        var vw = window.innerWidth, vh = window.innerHeight;
+        tooltip.innerHTML = '<div class="demo-tooltip__step">Trin ' + stepNum + '</div><div class="demo-tooltip__text">' + text + '</div><div class="demo-tooltip__timer"><div class="demo-tooltip__timer-bar"><div class="demo-tooltip__timer-fill"></div></div><span class="demo-tooltip__timer-text"></span></div>';
+        tooltip.classList.remove('visible'); tooltip.style.bottom = 'auto';
+        tooltip.style.top = '-9999px'; tooltip.style.left = '-9999px';
+        tooltip.style.display = 'block';
+        requestAnimationFrame(function() {
+          var tw = tooltip.offsetWidth || 360, th = tooltip.offsetHeight || 140;
+          var t, l;
+          if (position === 'right') { t = r.top + r.height / 2 - th / 2; l = r.right + 16; if (l + tw > vw - 16) { l = r.left - tw - 16; } }
+          else if (position === 'left') { t = r.top + r.height / 2 - th / 2; l = r.left - tw - 16; if (l < 16) { l = r.right + 16; } }
+          else if (position === 'top') { t = r.top - th - 16; l = r.left + r.width / 2 - tw / 2; if (t < 16) { t = r.bottom + 16; } }
+          else if (position === 'bottom') { t = r.bottom + 16; l = r.left + r.width / 2 - tw / 2; if (t + th > vh - 16) { t = r.top - th - 16; } }
+          if (l < 16) l = 16; if (l + tw > vw - 16) l = vw - tw - 16;
+          if (t < 16) t = 16; if (t + th > vh - 16) t = vh - th - 16;
+          tooltip.style.top = t + 'px'; tooltip.style.left = l + 'px';
+          requestAnimationFrame(function() { tooltip.classList.add('visible'); });
+        });
+      }
+
+      function hideTooltip() { tooltip.classList.remove('visible'); }
+
+      // ── Close button — dismiss demo entirely ──
+      document.getElementById('demoCloseBtn').addEventListener('click', function() {
+        window.location.href = window.location.pathname;
+      });
+
+      var tourCancelled = false;
+      var timerInterval = null;
+      function startTooltipTimer(ms) {
+        if (timerInterval) clearInterval(timerInterval);
+        var fill = tooltip.querySelector('.demo-tooltip__timer-fill');
+        var txt = tooltip.querySelector('.demo-tooltip__timer-text');
+        if (!fill || !txt) return;
+        var secs = Math.ceil(ms / 1000);
+        txt.textContent = secs + 's';
+        fill.style.transition = 'none';
+        fill.style.width = '100%';
+        requestAnimationFrame(function() {
+          fill.style.transition = 'width ' + (ms / 1000) + 's linear';
+          fill.style.width = '0%';
+        });
+        timerInterval = setInterval(function() {
+          secs--;
+          if (txt) txt.textContent = Math.max(0, secs) + 's';
+          if (secs <= 0) { clearInterval(timerInterval); timerInterval = null; }
+        }, 1000);
+      }
+      cancelBtn.addEventListener('click', function() {
+        tourCancelled = true;
+        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+        hideTooltip(); hideSpotlight();
+        cancelBtn.classList.remove('visible');
+        progressBar.style.display = 'none';
+        window.location.href = window.location.pathname;
+      });
+
+      // ── Demo sequence ──
+      document.getElementById('demoStartBtn').addEventListener('click', async function() {
+        // Close welcome modal
+        overlay.classList.remove('visible');
+        overlay.classList.add('hidden');
+        cancelBtn.classList.add('visible');
+        await wait(800);
+        if (tourCancelled) return;
+
+        // ═══ Step 1: Search box ═══
+        setProgress(8);
+        var searchBox = document.querySelector('.search-box');
+        searchBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        await wait(400);
+        if (tourCancelled) return;
+        showSpotlight(searchBox, 6);
+        showTooltip(searchBox, 1, '<strong>S\u00f8gefelt</strong> \u2014 S\u00f8g hurtigt efter patient, emne eller dato. Resultater filtreres i realtid.', 'bottom');
+        startTooltipTimer(7000);
+        await wait(7000);
+        if (tourCancelled) return;
+
+        // ═══ Step 2: Overview table ═══
+        setProgress(20);
+        hideTooltip(); await wait(500);
+        if (tourCancelled) return;
+        var overviewTable = document.getElementById('overviewTable');
+        overviewTable.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        await wait(400);
+        if (tourCancelled) return;
+        showSpotlight(overviewTable, 6);
+        showTooltip(overviewTable, 2, '<strong>Konsultationsliste</strong> \u2014 Alle dine seneste konsultationer vises her med patient, dato, emne og honorar-status. Klik p\u00e5 en r\u00e6kke for at udvide.', 'bottom');
+        startTooltipTimer(8000);
+        await wait(8000);
+        if (tourCancelled) return;
+
+        // ═══ Step 3: Expand first row ═══
+        setProgress(34);
+        hideTooltip(); hideSpotlight(); await wait(500);
+        if (tourCancelled) return;
+        toggleRow(0);
+        await wait(500);
+        if (tourCancelled) return;
+        var expandPanel = document.querySelector('.expand-panel');
+        if (expandPanel) {
+          expandPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          await wait(400);
+          if (tourCancelled) return;
+          showSpotlight(expandPanel, 6);
+          showTooltip(expandPanel, 3, '<strong>Udvidet patientvisning</strong> \u2014 N\u00e5r du klikker p\u00e5 en patient, \u00e5bnes tre handlingssektioner: Konsultation, Henvisning og Honorar.', 'bottom');
+          startTooltipTimer(8000);
+          await wait(8000);
+          if (tourCancelled) return;
+        }
+
+        // ═══ Step 4: Copy note button ═══
+        setProgress(48);
+        hideTooltip(); await wait(500);
+        if (tourCancelled) return;
+        var copyBtn = document.querySelector('.expand-panel .action-btn');
+        if (copyBtn) {
+          copyBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          await wait(400);
+          if (tourCancelled) return;
+          showSpotlight(copyBtn, 4);
+          showTooltip(copyBtn, 4, '<strong>Kopier notat</strong> \u2014 Kopi\u00e9r det AI-genererede konsultationsnotat direkte til udklipsholderen med \u00e9t klik.', 'right');
+          startTooltipTimer(7000);
+          await wait(7000);
+          if (tourCancelled) return;
+        }
+
+        // ═══ Step 5: Generate referral button ═══
+        setProgress(60);
+        hideTooltip(); await wait(500);
+        if (tourCancelled) return;
+        var referralBtn = document.querySelector('.expand-panel .action-btn--primary');
+        if (referralBtn) {
+          referralBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          await wait(400);
+          if (tourCancelled) return;
+          showSpotlight(referralBtn, 4);
+          showTooltip(referralBtn, 5, '<strong>Generer henvisning</strong> \u2014 V\u00e6lg en konsultation fra dropdown og gener\u00e9r automatisk en henvisning baseret p\u00e5 konsultationsdata.', 'top');
+          startTooltipTimer(7500);
+          await wait(7500);
+          if (tourCancelled) return;
+        }
+
+        // ═══ Step 6: Honorar section ═══
+        setProgress(72);
+        hideTooltip(); await wait(500);
+        if (tourCancelled) return;
+        var actionSections = document.querySelectorAll('.expand-panel .action-section');
+        var honorarSection = actionSections.length >= 3 ? actionSections[2] : null;
+        if (!honorarSection) honorarSection = document.querySelector('.expand-panel .honorar-info');
+        if (honorarSection) {
+          honorarSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          await wait(400);
+          if (tourCancelled) return;
+          showSpotlight(honorarSection, 6);
+          showTooltip(honorarSection, 6, '<strong>AI Honorar</strong> \u2014 AI\'en analyserer konsultationen og identificerer manglende ydelseskoder. Klik \'Gennemg\u00e5 forslag\' for at se detaljer.', 'top');
+          startTooltipTimer(8000);
+          await wait(8000);
+          if (tourCancelled) return;
+        }
+
+        // ═══ Step 7: Honorar modal ═══
+        setProgress(86);
+        hideTooltip(); hideSpotlight(); await wait(500);
+        if (tourCancelled) return;
+        openHonorarModal(0);
+        await wait(600);
+        if (tourCancelled) return;
+        var honorarModal = document.querySelector('#modalHonorar .modal');
+        if (honorarModal) {
+          showSpotlight(honorarModal, 6);
+          showTooltip(honorarModal, 7, '<strong>Honorarforslag</strong> \u2014 Gennemg\u00e5 de foresl\u00e5ede ydelseskoder. Accept\u00e9r eller afvis individuelt, eller tilf\u00f8j egne koder. Gem for at opdatere.', 'right');
+          startTooltipTimer(8500);
+          await wait(8500);
+          if (tourCancelled) return;
+        }
+        closeHonorarModal();
+        await wait(400);
+        if (tourCancelled) return;
+
+        // ═══ Cleanup & Completion ═══
+        expandedIndex = -1;
+        renderTable();
+
+        setProgress(100);
+        hideTooltip(); hideSpotlight();
+        cancelBtn.classList.remove('visible');
+        await wait(800);
+
+        // Show completion modal
+        var completeOvl = document.createElement('div');
+        completeOvl.className = 'demo-complete-overlay';
+        completeOvl.innerHTML =
+          '<div class="demo-complete-modal">' +
+            '<div class="demo-complete__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>' +
+            '<div class="demo-complete__title">Demo afsluttet!</div>' +
+            '<div class="demo-complete__subtitle">Du har nu set hvordan du arbejder med seneste konsultationer, handlinger og AI-honoraroptimering.</div>' +
+            '<div class="demo-complete__features">' +
+              '<div class="demo-complete__feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>Konsultationer</div>' +
+              '<div class="demo-complete__feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>Henvisninger</div>' +
+              '<div class="demo-complete__feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>Honorarkoder</div>' +
+            '</div>' +
+            '<button class="demo-complete__btn" onclick="window.location.href=\'patientoversigt.html\'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9"/><polyline points="3 3 3 9 9 3"/></svg>Pr\u00f8v selv</button>' +
+          '</div>';
+        document.body.appendChild(completeOvl);
+        await wait(100);
+        completeOvl.classList.add('visible');
+      });
+    })();
+
   </script>
 </body>
 </html>

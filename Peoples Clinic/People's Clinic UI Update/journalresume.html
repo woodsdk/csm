@@ -407,6 +407,106 @@
 
     /* Button styles use .btn-secondary from platform.css */
 
+    /* Template selection grid — F-8.A */
+    .template-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .template-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1.5px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all 0.15s;
+      background: var(--color-white);
+    }
+    .template-option:hover {
+      border-color: var(--color-navy-400);
+      background: rgba(86, 105, 164, 0.03);
+    }
+    .template-option--selected {
+      border-color: var(--color-navy-500);
+      background: rgba(86, 105, 164, 0.06);
+      box-shadow: 0 0 0 1px var(--color-navy-500);
+    }
+    .template-option__radio {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid var(--color-gray-300);
+      flex-shrink: 0;
+      margin-top: 1px;
+      transition: all 0.15s;
+      position: relative;
+    }
+    .template-option--selected .template-option__radio {
+      border-color: var(--color-navy-500);
+    }
+    .template-option--selected .template-option__radio::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-navy-500);
+    }
+    .template-option__content {
+      flex: 1;
+      min-width: 0;
+    }
+    .template-option__name {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 2px;
+    }
+    .template-option__desc {
+      font-size: 0.6875rem;
+      color: var(--color-navy-400);
+      line-height: 1.4;
+    }
+    .template-option__icon {
+      width: 16px;
+      height: 16px;
+      color: var(--color-navy-400);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .sdu-notice {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: rgba(86, 105, 164, 0.06);
+      border: 1px solid rgba(86, 105, 164, 0.15);
+      border-radius: var(--radius-lg);
+      margin-bottom: 16px;
+      font-size: 0.6875rem;
+      color: var(--color-navy-500);
+      font-weight: 500;
+    }
+    .sdu-notice i {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+    .sdu-notice__badge {
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      background: rgba(86, 105, 164, 0.12);
+      border-radius: var(--radius-full);
+      margin-left: auto;
+      white-space: nowrap;
+    }
+
     /* FNX Dropdown styling */
     .fnx-dropdown {
       padding: 8px 12px;
@@ -731,6 +831,62 @@
 
         <!-- Upload state -->
         <div class="modal__body" id="uploadState">
+          <!-- SDU notice -->
+          <div class="sdu-notice">
+            <i data-lucide="graduation-cap"></i>
+            Journalresumé er en del af forskningsprojektet med SDU (2026–2030) og anvender AI klassificeret som investigational device under EU MDR Art. 62.
+            <span class="sdu-notice__badge">SDU</span>
+          </div>
+
+          <!-- F-8.A: Template selection for journal summary type -->
+          <div class="form-field" style="margin-bottom: 16px;">
+            <label class="form-label">Vælg resumétype <span class="form-label__required">*</span></label>
+            <div class="template-grid" id="templateGrid">
+              <div class="template-option template-option--selected" data-template="generelt">
+                <div class="template-option__radio"></div>
+                <div class="template-option__content">
+                  <div class="template-option__name">Generelt overblik</div>
+                  <div class="template-option__desc">Samlet status med diagnoser, medicin og nøgletal</div>
+                </div>
+              </div>
+              <div class="template-option" data-template="kroniker">
+                <div class="template-option__radio"></div>
+                <div class="template-option__content">
+                  <div class="template-option__name">Kroniker-overblik</div>
+                  <div class="template-option__desc">Fokus på kroniske tilstande, kontroller og behandlingsmål</div>
+                </div>
+              </div>
+              <div class="template-option" data-template="medicin">
+                <div class="template-option__radio"></div>
+                <div class="template-option__content">
+                  <div class="template-option__name">Medicinhistorik</div>
+                  <div class="template-option__desc">Komplet medicingennemgang med interaktioner og ændringer</div>
+                </div>
+              </div>
+              <div class="template-option" data-template="henvisning">
+                <div class="template-option__radio"></div>
+                <div class="template-option__content">
+                  <div class="template-option__name">Henvisningsforberedelse</div>
+                  <div class="template-option__desc">Relevant klinisk baggrund til specialistrehenvisning</div>
+                </div>
+              </div>
+              <div class="template-option" data-template="udredning">
+                <div class="template-option__radio"></div>
+                <div class="template-option__content">
+                  <div class="template-option__name">Udredningsforl&oslash;b</div>
+                  <div class="template-option__desc">Tidslinje over udredning med prøvesvar og konklusioner</div>
+                </div>
+              </div>
+              <div class="template-option" data-template="aarskontrol">
+                <div class="template-option__radio"></div>
+                <div class="template-option__content">
+                  <div class="template-option__name">&Aring;rskontrol</div>
+                  <div class="template-option__desc">Årsstatus med screeninger, vaccinationer og forebyggelse</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Patient info fields -->
           <div class="form-row">
             <div class="form-field" style="flex: 1;">
@@ -806,7 +962,7 @@
           <i data-lucide="play"></i>
           <span>Start</span>
         </a>
-        <a href="konsultationshistorik.html" class="bottom-nav__item">
+        <a href="patientoversigt.html" class="bottom-nav__item">
           <i data-lucide="history"></i>
           <span>Historik</span>
         </a>
@@ -991,6 +1147,18 @@
       processingState.classList.remove('active');
       successState.classList.remove('active');
     }
+
+    // Template grid selection — F-8.A
+    var selectedTemplate = 'generelt';
+    document.querySelectorAll('.template-option').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        document.querySelectorAll('.template-option').forEach(function(o) {
+          o.classList.remove('template-option--selected');
+        });
+        this.classList.add('template-option--selected');
+        selectedTemplate = this.getAttribute('data-template');
+      });
+    });
 
     // FNX dropdown change handler
     document.querySelectorAll('.fnx-dropdown').forEach(function(dropdown) {
