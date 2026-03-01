@@ -100,14 +100,18 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 12px;
+      padding: 0 12px;
+      height: 30px;
+      box-sizing: border-box;
       background: var(--color-gray-100);
+      border: 1px solid transparent;
       border-radius: var(--radius-full);
       font-size: 0.6875rem;
       font-weight: 600;
       color: var(--color-navy-500);
       text-transform: uppercase;
       letter-spacing: 0.03em;
+      white-space: nowrap;
     }
 
     .panel-badge svg {
@@ -115,18 +119,128 @@
       height: 12px;
     }
 
-    .panel-dropdown {
+    .transcript-btn {
+      cursor: pointer;
+      border-color: var(--color-gray-200);
+      background: var(--color-white);
+      transition: all 0.15s ease;
+    }
+
+    .transcript-btn:hover {
+      background: var(--color-gray-100);
+      border-color: var(--color-gray-300);
+    }
+
+    /* Transcript Modal */
+    .transcript-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .transcript-overlay.active {
+      display: flex;
+    }
+
+    .transcript-modal {
+      background: var(--color-white);
+      border-radius: var(--radius-2xl);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      padding: 32px 36px;
+      max-width: 640px;
+      width: 100%;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .transcript-modal__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .transcript-modal__title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .transcript-modal__meta {
+      font-size: 0.75rem;
+      color: var(--color-navy-400);
+      margin-top: 2px;
+    }
+
+    .transcript-modal__close {
+      background: none;
+      border: none;
+      padding: 8px;
+      cursor: pointer;
+      color: var(--color-navy-400);
+      border-radius: var(--radius-lg);
+      transition: background 0.15s ease;
+    }
+
+    .transcript-modal__close:hover {
+      background: var(--color-gray-100);
+    }
+
+    .transcript-modal__close svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .transcript-modal__body {
+      overflow-y: auto;
+      flex: 1;
+      font-size: 0.8125rem;
+      line-height: 1.7;
+      color: var(--color-navy-600);
+      white-space: pre-wrap;
+      padding: 20px 24px;
+      background: var(--color-gray-50);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--color-gray-200);
+    }
+
+    .transcript-modal__footer {
+      margin-top: 16px;
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 6px 12px;
+      font-size: 0.6875rem;
+      color: var(--color-navy-400);
+    }
+
+    .transcript-modal__footer svg {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+    }
+
+    .panel-dropdown {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 12px;
+      height: 30px;
+      box-sizing: border-box;
       background: var(--color-white);
       border: 1px solid var(--color-gray-200);
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-full);
       font-family: inherit;
-      font-size: 0.75rem;
-      color: var(--color-text);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--color-navy-500);
+      text-transform: uppercase;
       cursor: pointer;
+      white-space: nowrap;
     }
 
     .panel-dropdown svg {
@@ -1705,12 +1819,31 @@
                 <div style="display: flex; align-items: center; gap: 8px;">
                   <span class="panel-badge">
                     <i data-lucide="sparkles"></i>
-                    AI-genereret
+                    AI-genereret · Tilpasset til din stil
                   </span>
-                  <span class="learning-badge" id="learningBadge">
-                    <i data-lucide="brain"></i>
-                    Tilpasset til din stil
-                  </span>
+                  <button class="panel-badge transcript-btn" id="showTranscriptBtn" onclick="document.getElementById('transcriptOverlay').classList.add('active')">
+                    <i data-lucide="file-text"></i>
+                    Vis transskription
+                  </button>
+                  <div class="panel-dropdown-wrapper">
+                    <button class="panel-dropdown" id="toneDropdownBtn">
+                      <i data-lucide="speech" style="width: 12px; height: 12px; color: var(--color-navy-400);"></i>
+                      <span style="color: var(--color-navy-400); font-weight: 500;">Tone</span>
+                      <span style="font-weight: 700;" id="toneDropdownLabel">Neutral</span>
+                      <i data-lucide="chevron-down"></i>
+                    </button>
+                    <div class="panel-dropdown-menu" id="toneDropdownMenu">
+                      <div style="padding: 6px 12px 8px; border-bottom: 1px solid var(--color-gray-100); margin-bottom: 4px;">
+                        <div style="display: flex; align-items: center; gap: 5px; font-size: 0.625rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-navy-400); white-space: nowrap;">
+                          <i data-lucide="speech" style="width: 10px; height: 10px; flex-shrink: 0;"></i>
+                          Forskningsprojekt · AAU
+                        </div>
+                      </div>
+                      <button class="panel-dropdown-menu__item" data-tone="formel">Formel</button>
+                      <button class="panel-dropdown-menu__item panel-dropdown-menu__item--active" data-tone="neutral">Neutral</button>
+                      <button class="panel-dropdown-menu__item" data-tone="beroligende">Beroligende</button>
+                    </div>
+                  </div>
                   <div class="panel-dropdown-wrapper">
                     <button class="panel-dropdown" id="templateDropdownBtn">
                       <span style="color: var(--color-navy-400); font-weight: 500;">Skabelon</span>
@@ -1854,7 +1987,7 @@
               <!-- Godkendelsesbar -->
               <div class="resume-approve-bar">
                 <div class="resume-approve-bar__note" id="resumeNote">
-                  <i data-lucide="graduation-cap"></i>
+                  <i data-lucide="speech"></i>
                   AI-genereret resumé under AAU-forskningssamarbejdet. Gennemgå og godkend.
                 </div>
                 <button class="resume-approve-btn" id="resumeApproveBtn" onclick="approveResume()">
@@ -1910,6 +2043,54 @@
 
 
       </main>
+    </div>
+
+    <!-- Transcript Modal -->
+    <div class="transcript-overlay" id="transcriptOverlay" onclick="if(event.target===this)this.classList.remove('active')">
+      <div class="transcript-modal">
+        <div class="transcript-modal__header">
+          <div>
+            <div class="transcript-modal__title">Rå transskription</div>
+            <div class="transcript-modal__meta">Nancy Berggren · 25.05.2025 12:18 · Varighed: 8 min 7 sek</div>
+          </div>
+          <button class="transcript-modal__close" onclick="document.getElementById('transcriptOverlay').classList.remove('active')">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="transcript-modal__body">Læge: Goddag Nancy, kom indenfor. Sæt dig ned. Hvad kan jeg hjælpe med i dag?
+
+Patient: Tak. Jamen det er mit venstre knæ. Det har gjort ondt i snart tre uger nu. Det startede da jeg var ude i haven og skulle flytte nogle store krukker, og så vred jeg om i knæet.
+
+Læge: Okay, så et vridtraume for tre uger siden. Hvor præcist har du ondt?
+
+Patient: Det er mest herovre på indersiden. Og så er det blevet lidt hævet af og til. Det er værst når jeg går på trapper og ude på ujævnt terræn. Jeg føler mig usikker på benet.
+
+Læge: Har du oplevet at knæet låser sig, altså at du ikke kan strække eller bøje det helt?
+
+Patient: Nej, det synes jeg ikke. Det er mere den der usikkerhed. Jeg kan godt belaste det fuldt, men jeg tør ikke rigtig stole på det.
+
+Læge: Okay. Har du haft feber eller rødme omkring knæet?
+
+Patient: Nej, slet ikke.
+
+Læge: Har du tidligere haft problemer med knæene?
+
+Patient: Nej, jeg har altid været rask i knæene. Jeg bruger gangstok når jeg er udendørs, men det er mest for balancen generelt.
+
+Læge: Fint, lad mig undersøge dig. Kan du lægge dig op på lejet? ... Jeg kan se der er en let hævelse over venstre knæ. Der er minimal ømhed her over den mediale ledlinje. Jeg tester nu for forreste skuffelade ... der er en let laxitet med blød stopklods. Lachman er usikker positiv. McMurray er negativ. Knæet er stabilt i sideplanet. Du har fuld ekstension og fleksion til omkring 120 grader. Ingen rødme eller varme. De perifere kar og nerver er upåfaldende.
+
+Læge: Nancy, min vurdering er at du sandsynligvis har en lettere forstrækning af det forreste korsbånd, grad et til to, efter det vrid. Jeg tror ikke der er tale om en meniskskade, fordi McMurray-testen er negativ og du ikke oplever låsning. Der kan være lidt degenerative forandringer som bidrager til usikkerheden. Jeg vurderer at risikoen for akut kirurgisk indgreb er lav.
+
+Patient: Okay, hvad gør vi så?
+
+Læge: Jeg vil gerne have et røntgenbillede af knæet for at udelukke artrose og brud. Du skal aflaste med krykkestøtte ved behov, og du kan tage Ibuprofen 400 milligram tre gange dagligt mod smerterne, men maks en uge. Vi ses igen om to uger, og hvis det stadig er ustabilt, sender vi dig til en MR-scanning. Jeg giver dig også nogle øvelser til at styrke stabiliteten i knæet.
+
+Patient: Det lyder fint, tak skal du have.</div>
+        <div class="transcript-modal__footer">
+          <i data-lucide="info"></i>
+          <span>Denne transskription er den rå tale-til-tekst omsætning. AI-notatet ovenfor er genereret ud fra denne kilde.</span>
+        </div>
+      </div>
     </div>
 
     <!-- Rating Modal -->
@@ -2032,6 +2213,57 @@
       });
     }
 
+    // ─── Tone Dropdown (Forskningsprojekt · AAU) ────────────────
+    const toneBtn = document.getElementById('toneDropdownBtn');
+    const toneMenu = document.getElementById('toneDropdownMenu');
+    const toneLabel = document.getElementById('toneDropdownLabel');
+    var currentTone = 'neutral';
+    var pendingTone = null;
+
+    toneBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      toneMenu.classList.toggle('panel-dropdown-menu--open');
+      // Close template menu if open
+      document.getElementById('templateDropdownMenu').classList.remove('panel-dropdown-menu--open');
+    });
+
+    document.addEventListener('click', function() {
+      toneMenu.classList.remove('panel-dropdown-menu--open');
+    });
+
+    toneMenu.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+
+    toneMenu.querySelectorAll('.panel-dropdown-menu__item').forEach(function(item) {
+      item.addEventListener('click', function() {
+        var toneId = this.getAttribute('data-tone');
+
+        // Update dropdown label
+        toneLabel.textContent = this.textContent;
+
+        // Update active state
+        toneMenu.querySelectorAll('.panel-dropdown-menu__item').forEach(function(i) {
+          i.classList.remove('panel-dropdown-menu__item--active');
+        });
+        this.classList.add('panel-dropdown-menu__item--active');
+        toneMenu.classList.remove('panel-dropdown-menu--open');
+
+        // If different from current, trigger regenerate pulse
+        if (toneId !== currentTone) {
+          pendingTone = toneId;
+          var btnRegen = document.getElementById('btnRegenerate');
+          var badge = document.getElementById('templatePendingBadge');
+          if (btnRegen) btnRegen.classList.add('action-btn--regenerate-pulse');
+          if (badge) badge.classList.add('template-pending-badge--visible');
+        } else {
+          pendingTone = null;
+        }
+
+        currentTone = toneId;
+      });
+    });
+
     // ─── Template Dropdown ──────────────────────────────────────
     const templateBtn = document.getElementById('templateDropdownBtn');
     const templateMenu = document.getElementById('templateDropdownMenu');
@@ -2091,6 +2323,8 @@
     templateBtn.addEventListener('click', function(e) {
       e.stopPropagation();
       templateMenu.classList.toggle('panel-dropdown-menu--open');
+      // Close tone menu if open
+      toneMenu.classList.remove('panel-dropdown-menu--open');
     });
 
     document.addEventListener('click', function() {

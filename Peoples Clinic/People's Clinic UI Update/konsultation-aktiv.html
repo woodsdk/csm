@@ -340,22 +340,27 @@
     }
 
     .panel-dropdown {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 14px;
+      gap: 6px;
+      padding: 0 12px;
+      height: 30px;
+      box-sizing: border-box;
       background: var(--color-white);
       border: 1px solid var(--color-gray-200);
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-full);
       font-family: inherit;
-      font-size: 0.813rem;
-      color: var(--color-text);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--color-navy-500);
+      text-transform: uppercase;
       cursor: pointer;
+      white-space: nowrap;
     }
 
     .panel-dropdown svg {
-      width: 14px;
-      height: 14px;
+      width: 12px;
+      height: 12px;
       color: var(--color-navy-500);
     }
 
@@ -1184,21 +1189,42 @@ Kontrol 2-3 uger — revurdér knæstabilitet</textarea>
           <div class="consultation-panel">
             <div class="panel-header">
               <h2 class="panel-title">Notater</h2>
-              <div class="panel-dropdown-wrapper">
-                <button class="panel-dropdown" id="templateDropdownBtn">
-                  <span style="color: var(--color-navy-400); font-weight: 500;">Skabelon</span>
-                  <span style="font-weight: 700;" id="templateDropdownLabel">SOAP med baggrund</span>
-                  <i data-lucide="chevron-down"></i>
-                </button>
-                <div class="panel-dropdown-menu" id="templateDropdownMenu">
-                  <button class="panel-dropdown-menu__item" data-template="soap">SOAP</button>
-                  <button class="panel-dropdown-menu__item" data-template="psoap">PSOAP</button>
-                  <button class="panel-dropdown-menu__item" data-template="soap-kort">SOAP - Kort</button>
-                  <button class="panel-dropdown-menu__item" data-template="soap-psykisk">SOAP - Psykisk</button>
-                  <button class="panel-dropdown-menu__item panel-dropdown-menu__item--active" data-template="soap-baggrund">SOAP med baggrund</button>
-                  <button class="panel-dropdown-menu__item" data-template="fritekst">Fritekst</button>
-                  <button class="panel-dropdown-menu__item" data-template="struktureret">Struktureret</button>
-                  <button class="panel-dropdown-menu__item" data-template="aarskontrol">Årskontrol</button>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div class="panel-dropdown-wrapper">
+                  <button class="panel-dropdown" id="toneDropdownBtn">
+                    <i data-lucide="speech" style="width: 12px; height: 12px; color: var(--color-navy-400);"></i>
+                    <span style="color: var(--color-navy-400); font-weight: 500;">Tone</span>
+                    <span style="font-weight: 700;" id="toneDropdownLabel">Neutral</span>
+                    <i data-lucide="chevron-down"></i>
+                  </button>
+                  <div class="panel-dropdown-menu" id="toneDropdownMenu">
+                    <div style="padding: 6px 12px 8px; border-bottom: 1px solid var(--color-gray-100); margin-bottom: 4px;">
+                      <div style="display: flex; align-items: center; gap: 5px; font-size: 0.625rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-navy-400); white-space: nowrap;">
+                        <i data-lucide="speech" style="width: 10px; height: 10px; flex-shrink: 0;"></i>
+                        Forskningsprojekt · AAU
+                      </div>
+                    </div>
+                    <button class="panel-dropdown-menu__item" data-tone="formel">Formel</button>
+                    <button class="panel-dropdown-menu__item panel-dropdown-menu__item--active" data-tone="neutral">Neutral</button>
+                    <button class="panel-dropdown-menu__item" data-tone="beroligende">Beroligende</button>
+                  </div>
+                </div>
+                <div class="panel-dropdown-wrapper">
+                  <button class="panel-dropdown" id="templateDropdownBtn">
+                    <span style="color: var(--color-navy-400); font-weight: 500;">Skabelon</span>
+                    <span style="font-weight: 700;" id="templateDropdownLabel">SOAP med baggrund</span>
+                    <i data-lucide="chevron-down"></i>
+                  </button>
+                  <div class="panel-dropdown-menu" id="templateDropdownMenu">
+                    <button class="panel-dropdown-menu__item" data-template="soap">SOAP</button>
+                    <button class="panel-dropdown-menu__item" data-template="psoap">PSOAP</button>
+                    <button class="panel-dropdown-menu__item" data-template="soap-kort">SOAP - Kort</button>
+                    <button class="panel-dropdown-menu__item" data-template="soap-psykisk">SOAP - Psykisk</button>
+                    <button class="panel-dropdown-menu__item panel-dropdown-menu__item--active" data-template="soap-baggrund">SOAP med baggrund</button>
+                    <button class="panel-dropdown-menu__item" data-template="fritekst">Fritekst</button>
+                    <button class="panel-dropdown-menu__item" data-template="struktureret">Struktureret</button>
+                    <button class="panel-dropdown-menu__item" data-template="aarskontrol">Årskontrol</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1244,7 +1270,7 @@ Kontrol 2-3 uger — revurdér knæstabilitet</textarea>
               <h2 class="panel-title">Patientresume</h2>
             </div>
             <div class="resume-sdu-notice">
-              <i data-lucide="graduation-cap"></i>
+              <i data-lucide="speech"></i>
               AAU Forskningssamarbejde
             </div>
             <div class="panel-content">
@@ -1576,6 +1602,39 @@ Kontrol 2-3 uger — revurdér knæstabilitet</textarea>
     }
 
     // ==========================================
+    // TONE DROPDOWN FUNCTIONALITY (Forskningsprojekt · AAU)
+    // ==========================================
+
+    var toneBtn = document.getElementById('toneDropdownBtn');
+    var toneMenu = document.getElementById('toneDropdownMenu');
+    var toneLabel = document.getElementById('toneDropdownLabel');
+
+    if (toneBtn && toneMenu) {
+      toneBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        toneMenu.classList.toggle('panel-dropdown-menu--open');
+        // Close template menu if open
+        var tmenu = document.getElementById('templateDropdownMenu');
+        if (tmenu) tmenu.classList.remove('panel-dropdown-menu--open');
+      });
+
+      document.addEventListener('click', function() {
+        toneMenu.classList.remove('panel-dropdown-menu--open');
+      });
+
+      toneMenu.querySelectorAll('.panel-dropdown-menu__item').forEach(function(item) {
+        item.addEventListener('click', function() {
+          toneLabel.textContent = this.textContent;
+          toneMenu.querySelectorAll('.panel-dropdown-menu__item').forEach(function(i) {
+            i.classList.remove('panel-dropdown-menu__item--active');
+          });
+          this.classList.add('panel-dropdown-menu__item--active');
+          toneMenu.classList.remove('panel-dropdown-menu--open');
+        });
+      });
+    }
+
+    // ==========================================
     // TEMPLATE DROPDOWN FUNCTIONALITY
     // ==========================================
 
@@ -1587,6 +1646,8 @@ Kontrol 2-3 uger — revurdér knæstabilitet</textarea>
       templateBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         templateMenu.classList.toggle('panel-dropdown-menu--open');
+        // Close tone menu if open
+        if (toneMenu) toneMenu.classList.remove('panel-dropdown-menu--open');
       });
 
       document.addEventListener('click', function() {
