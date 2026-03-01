@@ -1196,7 +1196,7 @@
               <p class="chat-welcome__text">Vælg en skabelon nedenfor for at komme i gang.</p>
               <div class="chat-welcome__footer">
                 <i data-lucide="shield-check"></i>
-                Kliniske skabeloner (SDU) kræver aktivt forskningssamarbejde
+                Kliniske skabeloner (AAU) kræver aktivt forskningssamarbejde
               </div>
             </div>
           </div>
@@ -1205,10 +1205,10 @@
           <div class="chat-quick-prompts" id="quickPrompts">
             <div class="chat-quick-prompts__row">
               <button class="chat-suggestion-chip" data-template="svarudkast"><i data-lucide="mail-open"></i>Svarudkast</button>
-              <button class="chat-suggestion-chip" data-template="resume"><i data-lucide="file-text"></i>Journalresumé <span class="chip-sdu-tag">SDU</span></button>
-              <button class="chat-suggestion-chip" data-template="klinisk"><i data-lucide="stethoscope"></i>Klinisk rådgivning <span class="chip-sdu-tag">SDU</span></button>
+              <button class="chat-suggestion-chip" data-template="resume"><i data-lucide="file-text"></i>Journalresumé <span class="chip-sdu-tag">AAU</span></button>
+              <button class="chat-suggestion-chip" data-template="klinisk"><i data-lucide="stethoscope"></i>Klinisk rådgivning <span class="chip-sdu-tag">AAU</span></button>
               <button class="chat-suggestion-chip" data-template="henvisning"><i data-lucide="arrow-right-circle"></i>Henvisning</button>
-              <button class="chat-suggestion-chip" data-template="attest"><i data-lucide="file-signature"></i>Attest <span class="chip-sdu-tag">SDU</span></button>
+              <button class="chat-suggestion-chip" data-template="attest"><i data-lucide="file-signature"></i>Attest <span class="chip-sdu-tag">AAU</span></button>
             </div>
           </div>
 
@@ -1216,7 +1216,7 @@
           <div class="chat-input-area" id="chatInputArea">
             <div class="clinical-warning" id="clinicalWarning">
               <i data-lucide="alert-triangle"></i>
-              <div><strong>Klinisk skabelon</strong> — Kliniske udkast er tilgængelige via forskningssamarbejdet med SDU og underlagt EU MDR.</div>
+              <div><strong>Klinisk skabelon</strong> — Kliniske udkast er tilgængelige via forskningssamarbejdet med Aalborg Universitet.</div>
             </div>
             <div class="transfer-banner" id="transferBanner" style="display: none;">
               <div class="transfer-banner__dot"></div>
@@ -1348,8 +1348,8 @@
     };
     var templatePlaceholders = {
       svarudkast: 'Beskriv patientens henvendelse og ønsket svartype...',
-      resume: 'Beskriv hvad resuméet skal fokusere på (SDU forskningssamarbejde)...',
-      klinisk: 'Beskriv den kliniske kontekst (SDU forskningssamarbejde)...',
+      resume: 'Beskriv hvad resuméet skal fokusere på (AAU forskningssamarbejde)...',
+      klinisk: 'Beskriv den kliniske kontekst (AAU forskningssamarbejde)...',
       henvisning: 'Beskriv henvisningen — hvem, hvortil og hvorfor...',
       attest: 'Beskriv attesttype og relevant klinisk baggrund...'
     };
@@ -1462,7 +1462,7 @@
     var draftResponses = {
       svarudkast: '<p>Kære Karen,</p><p>Tak for din henvendelse.</p><p>Vi har gennemgået din forespørgsel og vil gerne give dig følgende svar:</p><p>På baggrund af din aktuelle behandlingsplan og seneste konsultation den 18.02.2025, vil vi anbefale en opfølgende konsultation for at vurdere din nuværende medicinering. Vi kan se, at du har rapporteret svimmelhed, som kan være relateret til din Amlodipin-behandling.</p><p>Du er velkommen til at kontakte os for at bestille en tid.</p><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Valby Lægehus</p>',
       resume: '<p><strong>Resumé: Klinisk vejledning — Type 2 Diabetes i almen praksis</strong></p><p>Vejledningen beskriver de aktuelle nationale anbefalinger for diagnostik, behandling og opfølgning af type 2 diabetes.</p><p><strong>Diagnostik</strong></p><ul><li>HbA1c ≥ 48 mmol/mol eller fastende plasma-glukose ≥ 7,0 mmol/L</li><li>Diagnosen bør bekræftes med mindst to målinger på forskellige dage</li></ul><p><strong>Behandlingsmål</strong></p><ul><li>HbA1c &lt; 53 mmol/mol for de fleste patienter</li><li>Individualiseret mål for ældre og komorbide patienter</li><li>BT-mål: &lt; 130/80 mmHg</li></ul><p><strong>Farmakologisk behandling</strong></p><ul><li>Førstevalg: Metformin som monoterapi (startdosis 500 mg dagligt)</li><li>Ved insufficient effekt: Tillæg af SGLT2-hæmmer eller GLP-1-receptoragonist</li><li>Insulin overvejes ved HbA1c &gt; 70 mmol/mol trods kombinationsbehandling</li></ul><p><strong>Opfølgning</strong></p><ul><li>Minimum årlig kontrol inkl. HbA1c, nyrefunktion, lipidprofil</li><li>Årlig screening for diabetisk retinopati</li><li>Fodundersøgelse mindst én gang årligt</li></ul>',
-      klinisk: '<p><em>Denne skabelon genererer kliniske udkast baseret på konsultationsdata og er tilgængelig som led i forskningssamarbejdet med SDU.</em></p><p>Det kliniske udkast vil her tage afsæt i den specifikke konsultationshistorik og tilgængelig patientdata for at sikre et præcist og kontekstuelt relevant svar.</p><p>Funktionaliteten frigives i takt med igangsættelse af relaterede forskningsprojekter under ordnede og lovlige rammer.</p>',
+      klinisk: '<p><em>Denne skabelon genererer kliniske udkast baseret på konsultationsdata og er tilgængelig som led i forskningssamarbejdet med Aalborg Universitet.</em></p><p>Det kliniske udkast vil her tage afsæt i den specifikke konsultationshistorik og tilgængelig patientdata for at sikre et præcist og kontekstuelt relevant svar.</p><p>Funktionaliteten frigives i takt med igangsættelse af relaterede forskningsprojekter under ordnede og lovlige rammer.</p>',
       henvisning: '<p><strong>Henvisning til øjenlæge</strong></p><p><strong>Patient:</strong> Mette Andersen, CPR 080492-****</p><p><strong>Henvisende læge:</strong> Dr. Anna Nielsen, Valby Lægehus</p><p><strong>Henvisningsdiagnose:</strong> Synsforstyrrelser, obs. corpus vitreum-forandringer (DH433)</p><p><strong>Anamnese:</strong> 32-årig kvinde med tilbagevendende synsforstyrrelser i form af flydende pletter og lysflash i højre øje over de seneste 3 måneder. Ingen tidligere øjensygdom. Ingen familiær disposition til nethindeløsning. Ingen traume.</p><p><strong>Objektiv undersøgelse:</strong> Visus normal bilateralt. Ingen påfaldende fund ved ekstern inspektion.</p><p><strong>Ønsket vurdering:</strong> Vurdering mhp. nethindepathologi. Fundoskopi og evt. OCT ønskes.</p><p><strong>Prioritet:</strong> Subakut (inden for 4 uger)</p><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Valby Lægehus<br>Tlf. 33 12 34 56</p>',
       attest: '<p><strong>Statusattest (LÆ 125)</strong></p><p><strong>Rekvirent:</strong> Valby Jobcenter, Sygedagpengeafdelingen</p><p><strong>Patient:</strong> Henrik Madsen, CPR 220765-****</p><p><strong>Dato:</strong> 25.02.2026</p><hr><p><strong>Diagnoser:</strong></p><ul><li>Kroniske lænderygsmerter med diskusprolaps L4/L5 (DM545)</li><li>Moderat depressiv enkeltepisode (DF329)</li></ul><p><strong>Forløb og behandling:</strong></p><p>Patienten har været sygemeldt siden september 2025. MR-skanning (oktober 2025) viste diskusprolaps med let rodpåvirkning. Aktuel behandling: fysioterapi 2x/uge, Sertralin 100 mg dagligt, psykologforløb påbegyndt januar 2026.</p><p><strong>Aktuel status:</strong></p><p>Fortsat smerter ved belastning (VAS 5-6 ved aktivitet). Den depressive tilstand er i bedring med forbedret søvnkvalitet. Nedsat energi og koncentrationsbesvær persisterer.</p><p><strong>Vurdering:</strong></p><p>Tilstanden vurderes ikke stationær. Der forventes yderligere bedring over de kommende 2-3 måneder. Gradvis tilbagevenden til arbejde med skånehensyn vurderes realistisk inden for denne tidshorisont.</p><hr><p><strong>Dr. Anna Nielsen</strong><br>Aut.ID: XXXXX<br>Valby Lægehus</p>'
     };
@@ -1560,10 +1560,10 @@
       var row = document.querySelector('.chat-quick-prompts__row');
       row.innerHTML =
         '<button class="chat-suggestion-chip" data-template="svarudkast"><i data-lucide="mail-open"></i>Svarudkast</button>' +
-        '<button class="chat-suggestion-chip" data-template="resume"><i data-lucide="file-text"></i>Journalresumé <span class="chip-sdu-tag">SDU</span></button>' +
-        '<button class="chat-suggestion-chip" data-template="klinisk"><i data-lucide="stethoscope"></i>Klinisk rådgivning <span class="chip-sdu-tag">SDU</span></button>' +
+        '<button class="chat-suggestion-chip" data-template="resume"><i data-lucide="file-text"></i>Journalresumé <span class="chip-sdu-tag">AAU</span></button>' +
+        '<button class="chat-suggestion-chip" data-template="klinisk"><i data-lucide="stethoscope"></i>Klinisk rådgivning <span class="chip-sdu-tag">AAU</span></button>' +
         '<button class="chat-suggestion-chip" data-template="henvisning"><i data-lucide="arrow-right-circle"></i>Henvisning</button>' +
-        '<button class="chat-suggestion-chip" data-template="attest"><i data-lucide="file-signature"></i>Attest <span class="chip-sdu-tag">SDU</span></button>';
+        '<button class="chat-suggestion-chip" data-template="attest"><i data-lucide="file-signature"></i>Attest <span class="chip-sdu-tag">AAU</span></button>';
       lucide.createIcons();
       bindChipClicks();
     }
@@ -1949,7 +1949,7 @@
             '<button class="chat-msg-action" data-action="copy-doc"><i data-lucide="copy"></i>Kopi\u00e9r henvisning</button>' +
             '<button class="chat-msg-action chat-msg-action--primary" data-action="approve-doc"><i data-lucide="check-circle"></i>Godkend &amp; gem</button>' +
           '</div>' +
-          '<div class="doc-output__disclaimer"><i data-lucide="shield-check"></i>AI-genereret under SDU-forskningsprotokollen. Kr\u00e6ver l\u00e6gefaglig godkendelse.</div>' +
+          '<div class="doc-output__disclaimer"><i data-lucide="shield-check"></i>AI-genereret under AAU-forskningssamarbejdet. Kr\u00e6ver l\u00e6gefaglig godkendelse.</div>' +
         '</div>' +
       '</div>';
     }
@@ -2017,7 +2017,7 @@
             '<button class="chat-msg-action" data-action="copy-doc"><i data-lucide="copy"></i>Kopi\u00e9r attest</button>' +
             '<button class="chat-msg-action chat-msg-action--primary" data-action="approve-doc"><i data-lucide="check-circle"></i>Godkend &amp; gem</button>' +
           '</div>' +
-          '<div class="doc-output__disclaimer"><i data-lucide="shield-check"></i>AI-genereret under SDU-forskningsprotokollen. Kr\u00e6ver l\u00e6gefaglig godkendelse.</div>' +
+          '<div class="doc-output__disclaimer"><i data-lucide="shield-check"></i>AI-genereret under AAU-forskningssamarbejdet. Kr\u00e6ver l\u00e6gefaglig godkendelse.</div>' +
         '</div>' +
       '</div>';
     }
@@ -2358,7 +2358,7 @@
       chatMessages.innerHTML = '<div class="chat-welcome" id="chatWelcome">' +
         '<div class="chat-welcome__icon"><i data-lucide="sparkles"></i></div>' +
         '<p class="chat-welcome__text">Vælg en skabelon nedenfor for at komme i gang.</p>' +
-        '<div class="chat-welcome__footer"><i data-lucide="shield-check"></i>Kliniske skabeloner (SDU) kræver aktivt forskningssamarbejde</div>' +
+        '<div class="chat-welcome__footer"><i data-lucide="shield-check"></i>Kliniske skabeloner (AAU) kræver aktivt forskningssamarbejde</div>' +
       '</div>';
       chatWelcome = document.getElementById('chatWelcome');
 
@@ -2814,7 +2814,7 @@
         if (tourCancelled) return;
 
         // ══════════════════════════════
-        // Step 3: Highlight an SDU badge
+        // Step 3: Highlight an AAU badge
         // ══════════════════════════════
         setProgress(40);
         hideTooltip();
@@ -2824,7 +2824,7 @@
 
         var sduChip = document.querySelector('.chat-suggestion-chip[data-template="resume"]');
         showSpotlight(sduChip, 6);
-        showTooltip(sduChip, 3, '<strong>SDU Forskningssamarbejde</strong> \u2014 Skabeloner markeret med <strong>SDU</strong> er kliniske skabeloner udviklet i samarbejde med Syddansk Universitet. Disse kr\u00e6ver et aktivt forskningssamarbejde og er underlagt EU MDR-regulering.', 'bottom');
+        showTooltip(sduChip, 3, '<strong>AAU Forskningssamarbejde</strong> \u2014 Skabeloner markeret med <strong>AAU</strong> er kliniske skabeloner udviklet i samarbejde med Aalborg Universitet. Disse kr\u00e6ver et aktivt forskningssamarbejde.', 'bottom');
         startTooltipTimer(7000);
         await wait(7000);
         if (tourCancelled) return;

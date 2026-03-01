@@ -813,106 +813,65 @@
     .sdu-consent-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(19, 16, 44, 0.55);
-      backdrop-filter: blur(6px);
+      background: rgba(19, 16, 44, 0.5);
+      backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 2000;
       opacity: 0;
       visibility: hidden;
-      transition: all 0.25s ease;
+      transition: all 0.3s ease;
     }
     .sdu-consent-overlay.active {
       opacity: 1;
       visibility: visible;
     }
     .sdu-consent-modal {
-      background: white;
-      border-radius: 20px;
+      background: var(--color-white);
+      border-radius: var(--radius-2xl);
       width: 100%;
-      max-width: 480px;
-      box-shadow: 0 25px 80px rgba(0,0,0,0.2);
-      transform: translateY(20px);
-      transition: transform 0.25s ease;
+      max-width: 440px;
+      box-shadow: 0 24px 64px rgba(19, 16, 44, 0.18);
+      transform: translateY(16px) scale(0.98);
+      transition: transform 0.3s ease;
+      font-family: inherit;
     }
     .sdu-consent-overlay.active .sdu-consent-modal {
-      transform: translateY(0);
+      transform: translateY(0) scale(1);
     }
     .sdu-consent__header {
-      padding: 28px 32px 0;
+      padding: 32px 32px 0;
       text-align: center;
     }
-    .sdu-consent__logo {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-    .sdu-consent__logo-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: var(--color-navy-600);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-    }
-    .sdu-consent__logo-icon i { width: 18px; height: 18px; }
-    .sdu-consent__logo-text {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--color-navy-600);
-      line-height: 1.3;
-      text-align: left;
-    }
-    .sdu-consent__logo-text span {
-      display: block;
-      font-size: 0.625rem;
+    .sdu-consent__institution {
+      font-size: 0.6875rem;
       font-weight: 500;
       color: var(--color-navy-400);
+      letter-spacing: 0.02em;
+      margin-bottom: 12px;
     }
     .sdu-consent__title {
       font-size: 1.125rem;
       font-weight: 700;
       color: var(--color-text);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
     .sdu-consent__subtitle {
       font-size: 0.8125rem;
       color: var(--color-navy-400);
-      line-height: 1.5;
+      line-height: 1.55;
     }
     .sdu-consent__body {
-      padding: 18px 32px;
+      padding: 20px 32px;
     }
-    .sdu-consent__features {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 14px;
-    }
-    .sdu-consent__feature {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: 8px;
-      background: var(--color-gray-50);
-      font-size: 0.6875rem;
-      font-weight: 500;
-      color: var(--color-navy-500);
-    }
-    .sdu-consent__feature i { width: 12px; height: 12px; flex-shrink: 0; }
     .sdu-consent__text {
       font-size: 0.75rem;
       color: var(--color-navy-400);
       line-height: 1.6;
     }
     .sdu-consent__footer {
-      padding: 0 32px 24px;
+      padding: 4px 32px 28px;
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -921,12 +880,13 @@
       width: 100%;
       padding: 12px 20px;
       border: none;
-      border-radius: 12px;
+      border-radius: var(--radius-lg);
+      font-family: inherit;
       font-size: 0.8125rem;
       font-weight: 600;
       cursor: pointer;
       background: var(--color-navy-600);
-      color: white;
+      color: var(--color-white);
       transition: background 0.15s;
       display: flex;
       align-items: center;
@@ -941,11 +901,12 @@
       width: 100%;
       padding: 10px 20px;
       border: 1px solid var(--color-gray-200);
-      border-radius: 12px;
+      border-radius: var(--radius-lg);
+      font-family: inherit;
       font-size: 0.75rem;
       font-weight: 500;
       cursor: pointer;
-      background: white;
+      background: var(--color-white);
       color: var(--color-navy-400);
       transition: all 0.15s;
     }
@@ -965,50 +926,24 @@
   <div class="sdu-consent-overlay" id="sduConsentOverlay">
     <div class="sdu-consent-modal">
       <div class="sdu-consent__header">
-        <div class="sdu-consent__logo">
-          <div class="sdu-consent__logo-icon">
-            <i data-lucide="graduation-cap"></i>
-          </div>
-          <div class="sdu-consent__logo-text">
-            Aalborg Universitet
-            <span>DACS &middot; Forskningsenheden for Almen Praksis</span>
-          </div>
-        </div>
+        <div class="sdu-consent__institution">Aalborg Universitet &middot; DACS &middot; Forskningsenheden for Almen Praksis</div>
         <div class="sdu-consent__title">Forskningssamtykke</div>
-        <div class="sdu-consent__subtitle">Visse funktioner i People's Clinic er del af et forskningsprojekt og kr&aelig;ver dit samtykke.</div>
+        <div class="sdu-consent__subtitle">People's Clinic indg&aring;r i forskningsprojektet <em>&ldquo;V&aelig;rdi af AI-genererede notater i almen praksis&rdquo;</em> og anvender MAS-AI-modellen til at unders&oslash;ge AI-l&oslash;sningers p&aring;virkning af kliniske arbejdsgange.</div>
       </div>
 
       <div class="sdu-consent__body">
-        <div class="sdu-consent__features">
-          <div class="sdu-consent__feature">
-            <i data-lucide="file-signature"></i>
-            Attest-generering
-          </div>
-          <div class="sdu-consent__feature">
-            <i data-lucide="stethoscope"></i>
-            Klinisk r&aring;dgivning
-          </div>
-          <div class="sdu-consent__feature">
-            <i data-lucide="file-text"></i>
-            Journalresum&eacute;
-          </div>
-          <div class="sdu-consent__feature">
-            <i data-lucide="shield-check"></i>
-            Patientresum&eacute;
-          </div>
-        </div>
-        <div class="sdu-consent__text">Uden samtykke kan du stadig bruge notatgenerering, beskedassistent og administrative funktioner. Samtykke kan tr&aelig;kkes tilbage under Indstillinger.</div>
+        <div class="sdu-consent__text">Uden samtykke kan du stadig benytte People's Clinic &mdash; de forskningsrelaterede funktioner vil blot v&aelig;re deaktiverede. Dit samtykke kan til enhver tid tr&aelig;kkes tilbage under Indstillinger.</div>
       </div>
 
       <div class="sdu-consent__footer">
         <button class="sdu-consent__btn-accept" id="sduAccept">
           <i data-lucide="check-circle"></i>
-          Ja, jeg samtykker
+          Ja, jeg samtykker til forskningsdeltagelse
         </button>
         <button class="sdu-consent__btn-decline" id="sduDecline">
           Forts&aelig;t uden forskningsfunktioner
         </button>
-        <div class="sdu-consent__note">Godkendt af Videnskabsetisk Komit&eacute; &middot; GDPR Art. 9 &middot; EU MDR Art. 62</div>
+        <div class="sdu-consent__note">Projektet er et samarbejde med People's Robots som teknologipartner (2026&ndash;2030)</div>
       </div>
     </div>
   </div>
