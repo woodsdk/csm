@@ -590,11 +590,11 @@
     const STORAGE_KEY = 'peoplesClinic_templatePreferences';
 
     const defaultTemplates = [
-      { id: 'soap', name: 'SOAP', description: 'Subjektiv, Objektiv, Analyse, Plan', visible: true, order: 0 },
-      { id: 'psoap', name: 'PSOAP', description: 'Problem, Subjektiv, Objektiv, Analyse, Plan', visible: true, order: 1 },
-      { id: 'soap-kort', name: 'SOAP - Kort', description: 'Kortfattet SOAP-format', visible: true, order: 2 },
-      { id: 'soap-psykisk', name: 'SOAP - Psykisk', description: 'SOAP tilpasset psykiske lidelser', visible: true, order: 3 },
-      { id: 'soap-baggrund', name: 'SOAP med baggrund', description: 'SOAP med udvidet baggrundssektion', visible: true, order: 4 },
+      { id: 'soap-baggrund', name: 'SOAP med baggrund', description: 'SOAP med udvidet baggrundssektion', visible: true, order: 0 },
+      { id: 'soap', name: 'SOAP', description: 'Subjektiv, Objektiv, Analyse, Plan', visible: true, order: 1 },
+      { id: 'psoap', name: 'PSOAP', description: 'Problem, Subjektiv, Objektiv, Analyse, Plan', visible: true, order: 2 },
+      { id: 'soap-kort', name: 'SOAP - Kort', description: 'Kortfattet SOAP-format', visible: true, order: 3 },
+      { id: 'soap-psykisk', name: 'SOAP - Psykisk', description: 'SOAP tilpasset psykiske lidelser', visible: true, order: 4 },
       { id: 'aarskontrol', name: 'Årskontrol', description: 'Skabelon til årlig helbredskontrol', visible: true, order: 5 },
       { id: 'kiropraktor', name: 'Kiropraktor Notat', description: 'Tilpasset kiropraktisk behandling', visible: false, order: 6 },
       { id: 'fysioterapeut', name: 'Fysioterapeut Notat', description: 'Tilpasset fysioterapeutisk behandling', visible: false, order: 7 },
@@ -633,9 +633,13 @@
         return;
       }
 
-      // Build options HTML
+      // Build options HTML — default to "SOAP med baggrund"
+      var defaultId = 'soap-baggrund';
+      var defaultIndex = visibleTemplates.findIndex(t => t.id === defaultId);
+      if (defaultIndex === -1) defaultIndex = 0;
+
       menu.innerHTML = visibleTemplates.map((t, index) => `
-        <button type="button" class="custom-dropdown__option ${index === 0 ? 'custom-dropdown__option--selected' : ''}" data-value="${t.id}">
+        <button type="button" class="custom-dropdown__option ${index === defaultIndex ? 'custom-dropdown__option--selected' : ''}" data-value="${t.id}">
           <svg class="custom-dropdown__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
@@ -645,8 +649,8 @@
 
       // Set default value
       if (visibleTemplates.length > 0) {
-        valueDisplay.textContent = visibleTemplates[0].name;
-        dropdown.dataset.value = visibleTemplates[0].id;
+        valueDisplay.textContent = visibleTemplates[defaultIndex].name;
+        dropdown.dataset.value = visibleTemplates[defaultIndex].id;
       }
 
       // Reattach event listeners for new options
