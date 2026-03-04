@@ -248,6 +248,9 @@
       height: 12px;
       color: var(--color-navy-500);
     }
+    /* Fixed-width labels to prevent layout shift on selection */
+    #toneDropdownLabel { display: inline-block; min-width: 80px; text-align: left; }
+    #templateDropdownLabel { display: inline-block; min-width: 130px; text-align: left; }
 
     /* Template dropdown menu */
     .panel-dropdown-wrapper {
@@ -912,9 +915,11 @@
       line-height: 1;
     }
 
+    .code-chip {
+      cursor: default;
+    }
     .code-chip:hover {
-      border-color: var(--color-navy-300);
-      box-shadow: 0 1px 4px rgba(86, 105, 164, 0.1);
+      border-color: var(--color-gray-200);
     }
 
     .code-chip--accepted {
@@ -1788,7 +1793,7 @@
           <div class="flag flag--dk"></div>
           <div class="flag flag--uk"></div>
         </div>
-        <div class="user-menu">
+        <div class="user-menu" id="userMenu">
           <div class="user-avatar">A</div>
           <span class="user-name">Dr. Anna Nielsen</span>
           <i data-lucide="chevron-down"></i>
@@ -1817,10 +1822,6 @@
               <div class="panel-header">
                 <h2 class="panel-title">Notat</h2>
                 <div style="display: flex; align-items: center; gap: 8px;">
-                  <span class="panel-badge">
-                    <i data-lucide="sparkles"></i>
-                    AI-genereret · Tilpasset til din stil
-                  </span>
                   <button class="panel-badge transcript-btn" id="showTranscriptBtn" onclick="document.getElementById('transcriptOverlay').classList.add('active')">
                     <i data-lucide="file-text"></i>
                     Vis transskription
@@ -1836,18 +1837,18 @@
                       <div style="padding: 6px 12px 8px; border-bottom: 1px solid var(--color-gray-100); margin-bottom: 4px;">
                         <div style="display: flex; align-items: center; gap: 5px; font-size: 0.625rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-navy-400); white-space: nowrap;">
                           <i data-lucide="speech" style="width: 10px; height: 10px; flex-shrink: 0;"></i>
-                          Forskningsprojekt · AAU
+                          Forskningsprojekt · FEA
                         </div>
                       </div>
                       <button class="panel-dropdown-menu__item" data-tone="formel">Formel</button>
                       <button class="panel-dropdown-menu__item panel-dropdown-menu__item--active" data-tone="neutral">Neutral</button>
-                      <button class="panel-dropdown-menu__item" data-tone="beroligende">Beroligende</button>
+                      <button class="panel-dropdown-menu__item" data-tone="rolig">Rolig</button>
                     </div>
                   </div>
                   <div class="panel-dropdown-wrapper">
                     <button class="panel-dropdown" id="templateDropdownBtn">
                       <span style="color: var(--color-navy-400); font-weight: 500;">Skabelon</span>
-                      <span style="font-weight: 700;" id="templateDropdownLabel">SOAP med baggrund</span>
+                      <span style="font-weight: 700;" id="templateDropdownLabel">SOAP m. baggrund</span>
                       <i data-lucide="chevron-down"></i>
                     </button>
                     <div class="panel-dropdown-menu" id="templateDropdownMenu">
@@ -1855,7 +1856,7 @@
                       <button class="panel-dropdown-menu__item" data-template="psoap">PSOAP</button>
                       <button class="panel-dropdown-menu__item" data-template="soap-kort">SOAP - Kort</button>
                       <button class="panel-dropdown-menu__item" data-template="soap-psykisk">SOAP - Psykisk</button>
-                      <button class="panel-dropdown-menu__item panel-dropdown-menu__item--active" data-template="soap-baggrund">SOAP med baggrund</button>
+                      <button class="panel-dropdown-menu__item panel-dropdown-menu__item--active" data-template="soap-baggrund">SOAP m. baggrund</button>
                       <button class="panel-dropdown-menu__item" data-template="fritekst">Fritekst</button>
                       <button class="panel-dropdown-menu__item" data-template="struktureret">Struktureret</button>
                       <button class="panel-dropdown-menu__item" data-template="aarskontrol">Årskontrol</button>
@@ -1887,50 +1888,25 @@
                    ═══════════════════════════════════════ -->
               <div class="codes-section">
                 <div class="codes-header">
-                  <span class="codes-title">Diagnosekoder</span>
+                  <span class="codes-title">Identificerede diagnosekoder</span>
                 </div>
 
                 <div class="code-chips" id="codeChips">
                   <div class="code-chip" id="chip-1">
-                    <span class="code-chip__confidence code-chip__confidence--high"></span>
-                    <span class="code-chip__system code-chip__system--icpc">ICPC-2</span>
                     <span class="code-chip__code">L78</span>
                     <span class="code-chip__desc">Forstuvning/forstrækning af knæ</span>
-                    <button class="code-chip__btn code-chip__btn--accept" title="Godkend" onclick="acceptCode('chip-1')"><i data-lucide="check"></i></button>
-                    <button class="code-chip__btn code-chip__btn--remove" title="Fjern" onclick="removeCode('chip-1')"><i data-lucide="x"></i></button>
                   </div>
                   <div class="code-chip" id="chip-2">
-                    <span class="code-chip__confidence code-chip__confidence--high"></span>
-                    <span class="code-chip__system code-chip__system--icd">ICD-10</span>
                     <span class="code-chip__code">DS835</span>
                     <span class="code-chip__desc">Forstuvning af korsbånd i knæ</span>
-                    <button class="code-chip__btn code-chip__btn--accept" title="Godkend" onclick="acceptCode('chip-2')"><i data-lucide="check"></i></button>
-                    <button class="code-chip__btn code-chip__btn--remove" title="Fjern" onclick="removeCode('chip-2')"><i data-lucide="x"></i></button>
                   </div>
                   <div class="code-chip" id="chip-3">
-                    <span class="code-chip__confidence code-chip__confidence--medium"></span>
-                    <span class="code-chip__system code-chip__system--icpc">ICPC-2</span>
                     <span class="code-chip__code">L96</span>
                     <span class="code-chip__desc">Akut knæskade</span>
-                    <button class="code-chip__btn code-chip__btn--accept" title="Godkend" onclick="acceptCode('chip-3')"><i data-lucide="check"></i></button>
-                    <button class="code-chip__btn code-chip__btn--remove" title="Fjern" onclick="removeCode('chip-3')"><i data-lucide="x"></i></button>
                   </div>
                   <div class="code-chip" id="chip-4">
-                    <span class="code-chip__confidence code-chip__confidence--medium"></span>
-                    <span class="code-chip__system code-chip__system--icd">ICD-10</span>
                     <span class="code-chip__code">DM171</span>
                     <span class="code-chip__desc">Primær gonartrose, knæ</span>
-                    <button class="code-chip__btn code-chip__btn--accept" title="Godkend" onclick="acceptCode('chip-4')"><i data-lucide="check"></i></button>
-                    <button class="code-chip__btn code-chip__btn--remove" title="Fjern" onclick="removeCode('chip-4')"><i data-lucide="x"></i></button>
-                  </div>
-
-                  <!-- Inline search -->
-                  <div class="code-search" id="codeSearch">
-                    <div class="code-search__input-wrapper">
-                      <i data-lucide="plus"></i>
-                      <input type="text" class="code-search__input" id="codeSearchInput" placeholder="Tilføj kode..." autocomplete="off">
-                    </div>
-                    <div class="code-autocomplete" id="codeAutocomplete"></div>
                   </div>
                 </div>
               </div>
@@ -1988,7 +1964,7 @@
               <div class="resume-approve-bar">
                 <div class="resume-approve-bar__note" id="resumeNote">
                   <i data-lucide="speech"></i>
-                  AI-genereret resumé under AAU-forskningssamarbejdet. Gennemgå og godkend.
+                  AI-genereret resum&eacute; under FEA-forskningssamarbejdet. Gennemg&aring; og godkend.
                 </div>
                 <button class="resume-approve-btn" id="resumeApproveBtn" onclick="approveResume()">
                   <i data-lucide="shield-check"></i>
@@ -2213,7 +2189,7 @@ Patient: Det lyder fint, tak skal du have.</div>
       });
     }
 
-    // ─── Tone Dropdown (Forskningsprojekt · AAU) ────────────────
+    // ─── Tone Dropdown (Forskningsprojekt · FEA) ────────────────
     const toneBtn = document.getElementById('toneDropdownBtn');
     const toneMenu = document.getElementById('toneDropdownMenu');
     const toneLabel = document.getElementById('toneDropdownLabel');

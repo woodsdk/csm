@@ -522,6 +522,49 @@
       to { opacity: 0; transform: translateY(-8px); }
     }
 
+    /* Compact mode — orb stays visible as small indicator while notes stream in */
+    .transcript-waiting--compact {
+      flex: 0;
+      min-height: auto;
+      padding: 16px 20px 12px;
+      gap: 0;
+      transition: all 0.5s ease;
+    }
+    .transcript-waiting--compact .transcript-waiting__orb {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 8px;
+      transition: all 0.5s ease;
+    }
+    .transcript-waiting--compact .transcript-waiting__orb svg.orb-ring {
+      width: 40px;
+      height: 40px;
+    }
+    .transcript-waiting--compact .transcript-waiting__orb-inner {
+      top: 5px;
+      left: 5px;
+      width: 30px;
+      height: 30px;
+      transition: all 0.5s ease;
+    }
+    .transcript-waiting--compact .transcript-waiting__orb-inner svg {
+      width: 14px;
+      height: 14px;
+    }
+    .transcript-waiting--compact .transcript-waiting__headline {
+      font-size: 0.75rem;
+      margin-bottom: 2px;
+    }
+    .transcript-waiting--compact .transcript-waiting__subtext {
+      display: none;
+    }
+    .transcript-waiting--compact .transcript-waiting__badge {
+      margin-bottom: 6px;
+    }
+    .transcript-waiting--compact .transcript-waiting__badge-text {
+      font-size: 0.6rem;
+    }
+
     .transcript-lines--appearing .transcript-line {
       animation: transcriptFadeIn 0.4s ease-out forwards;
       opacity: 0;
@@ -667,78 +710,18 @@
       color: #13102C;
     }
 
-    /* Huskeliste textarea */
-    .huskeliste-textarea {
-      width: 100%;
-      flex: 1;
-      border: none;
-      outline: none;
-      resize: none;
+    /* Huskeliste list */
+    .huskeliste-list {
+      list-style: disc;
+      padding-left: 20px;
+      margin: 0;
       font-family: inherit;
-      font-size: 0.813rem;
-      line-height: 1.7;
+      font-size: 0.938rem;
+      line-height: 1.8;
       color: var(--color-text);
-      background: transparent;
-      padding: 0;
     }
-
-    .huskeliste-textarea::placeholder {
-      color: var(--color-navy-300);
-    }
-
-    .huskeliste-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 16px;
-      border-top: 1px solid var(--color-gray-100);
-      flex-shrink: 0;
-    }
-
-    .huskeliste-hint {
-      font-size: 0.688rem;
-      color: var(--color-navy-300);
-    }
-
-    .huskeliste-saved {
-      font-size: 0.688rem;
-      font-weight: 500;
-      color: #22C55E;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .huskeliste-saved--visible {
-      opacity: 1;
-    }
-
-    .huskeliste-save-btn {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      padding: 4px 12px;
-      background: var(--color-navy-500);
-      color: white;
-      border: none;
-      border-radius: 100px;
-      font-family: inherit;
-      font-size: 0.6875rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-
-    .huskeliste-save-btn:hover {
-      background: var(--color-navy-600);
-    }
-
-    .huskeliste-save-btn svg {
-      width: 12px;
-      height: 12px;
-    }
-
-    .huskeliste-save-btn--saved {
-      background: #22C55E;
+    .huskeliste-list li {
+      padding: 2px 0;
     }
 
     /* Template dropdown for notes panel (matches konsultation-rediger) */
@@ -1041,9 +1024,8 @@
     <!-- Top Bar -->
     <header class="topbar">
       <div class="topbar__logo">
-        <a href="platform-preview.html" style="text-decoration: none; display: flex; align-items: baseline; gap: 4px;">
-          <span class="logo-text logo-text--people">People's</span>
-          <span class="logo-text logo-text--doctor">Doctor</span>
+        <a href="platform-preview.html">
+          <img src="../Design System/assets/Peoples Clinic.svg" alt="People's Clinic" class="topbar__logo-img">
         </a>
       </div>
       <div class="topbar__right">
@@ -1055,7 +1037,7 @@
           <div class="flag flag--dk"></div>
           <div class="flag flag--uk"></div>
         </div>
-        <div class="user-menu">
+        <div class="user-menu" id="userMenu">
           <div class="user-avatar">A</div>
           <span class="user-name">Dr. Anna Nielsen</span>
           <i data-lucide="chevron-down"></i>
@@ -1124,63 +1106,23 @@
         <div class="consultation-grid">
           <!-- Left Column -->
           <div class="left-column">
-            <!-- Transskription Panel -->
+            <!-- Huskeliste Panel -->
             <div class="consultation-panel consultation-panel--flex">
               <div class="panel-header">
-                <h2 class="panel-title">Transskription</h2>
-              </div>
-              <div class="panel-content" style="display: flex; flex-direction: column;">
-                <div class="transcript-waiting" id="transcriptWaiting">
-                  <div class="transcript-waiting__orb">
-                    <svg class="orb-ring" viewBox="0 0 72 72">
-                      <circle class="orb-ring__bg" cx="36" cy="36" r="30"/>
-                      <circle class="orb-ring__progress" id="countdownRing" cx="36" cy="36" r="30"/>
-                    </svg>
-                    <div class="transcript-waiting__orb-inner">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
-                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                        <line x1="12" x2="12" y1="19" y2="22"/>
-                      </svg>
-                    </div>
-                  </div>
-                  <div class="transcript-waiting__badge">
-                    <span class="transcript-waiting__badge-dot"></span>
-                    <span class="transcript-waiting__badge-text">Optager</span>
-                  </div>
-                  <div class="transcript-waiting__headline">Tal frit — vi lytter med</div>
-                  <div class="transcript-waiting__subtext">Transskriptionen vises automatisk om lidt</div>
-                </div>
-                <div id="transcriptLines" style="display: none;">
-                  <p class="transcript-line"><span class="transcript-speaker">Patient:</span> Jeg har haft trykken midt i brystet de sidste par uger. Det kommer især når jeg går hurtigt eller går på trapper.</p>
-                  <p class="transcript-line"><span class="transcript-speaker">Læge:</span> Hvor længe varer det typisk?</p>
-                  <p class="transcript-line"><span class="transcript-speaker">Patient:</span> Måske fem minutter. Det går væk, når jeg sætter mig ned.</p>
-                  <p class="transcript-line"><span class="transcript-speaker">Læge:</span> Stråler det nogen steder hen?</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Huskeliste Panel — F-9.A: Risikoidentifikation og opfølgende spørgsmål -->
-            <div class="consultation-panel">
-              <div class="panel-header">
                 <h2 class="panel-title">Huskeliste</h2>
-                <span style="font-size:0.6rem;font-weight:700;color:var(--color-navy-500);background:rgba(86,105,164,0.1);padding:2px 7px;border-radius:var(--radius-full);margin-left:auto;">AI-genereret</span>
+                <span style="font-size:0.6rem;font-weight:600;color:var(--color-navy-400);background:rgba(86,105,164,0.08);padding:2px 7px;border-radius:var(--radius-full);margin-left:auto;" id="huskelisteBadge">Tilpasset efter notatskabelon</span>
               </div>
-              <div class="panel-content" style="flex: 1; display: flex; flex-direction: column; gap: 0;">
-                <textarea class="huskeliste-textarea" id="huskelisteText" placeholder="Skriv dine huskenotater her...">Mål BT + puls ved alle konsultationer
-Spørg til medicinkomplians
-Tjek vaccinationsstatus (influenza, pneumokok)
-Spørg til rygestatus (tilbyd rygestop)
-Tjek seneste blodprøver / labsvar
-Vurdér MR-scanning ved vedvarende instabilitet
-Kontrol 2-3 uger — revurdér knæstabilitet</textarea>
-              </div>
-              <div class="huskeliste-footer">
-                <span class="huskeliste-saved" id="huskelisteSaved">Gemt</span>
-                <button class="huskeliste-save-btn" id="huskelisteSaveBtn">
-                  <i data-lucide="save"></i>
-                  Gem
-                </button>
+              <div class="panel-content" style="flex: 1; overflow-y: auto;" id="huskelisteContent">
+                <ul class="huskeliste-list" id="huskelisteList">
+                  <li>Mål BT + puls ved alle konsultationer</li>
+                  <li>Spørg til medicinkomplians</li>
+                  <li>Tjek vaccinationsstatus (influenza, pneumokok)</li>
+                  <li>Spørg til rygestatus (tilbyd rygestop)</li>
+                  <li>Tjek seneste blodprøver / labsvar</li>
+                  <li>Husk: opfølgning på tidligere plan</li>
+                  <li>Overvej henvisning ved alarm-symptomer</li>
+                  <li>Spørg til psykisk trivsel / søvn</li>
+                </ul>
               </div>
             </div>
           </div>
@@ -1194,25 +1136,25 @@ Kontrol 2-3 uger — revurdér knæstabilitet</textarea>
                   <button class="panel-dropdown" id="toneDropdownBtn">
                     <i data-lucide="speech" style="width: 12px; height: 12px; color: var(--color-navy-400);"></i>
                     <span style="color: var(--color-navy-400); font-weight: 500;">Tone</span>
-                    <span style="font-weight: 700;" id="toneDropdownLabel">Neutral</span>
+                    <span style="font-weight: 700; display: inline-block; min-width: 55px; text-align: left;" id="toneDropdownLabel">Neutral</span>
                     <i data-lucide="chevron-down"></i>
                   </button>
                   <div class="panel-dropdown-menu" id="toneDropdownMenu">
                     <div style="padding: 6px 12px 8px; border-bottom: 1px solid var(--color-gray-100); margin-bottom: 4px;">
                       <div style="display: flex; align-items: center; gap: 5px; font-size: 0.625rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-navy-400); white-space: nowrap;">
                         <i data-lucide="speech" style="width: 10px; height: 10px; flex-shrink: 0;"></i>
-                        Forskningsprojekt · AAU
+                        Forskningsprojekt · FEA
                       </div>
                     </div>
                     <button class="panel-dropdown-menu__item" data-tone="formel">Formel</button>
                     <button class="panel-dropdown-menu__item panel-dropdown-menu__item--active" data-tone="neutral">Neutral</button>
-                    <button class="panel-dropdown-menu__item" data-tone="beroligende">Beroligende</button>
+                    <button class="panel-dropdown-menu__item" data-tone="rolig">Rolig</button>
                   </div>
                 </div>
                 <div class="panel-dropdown-wrapper">
                   <button class="panel-dropdown" id="templateDropdownBtn">
                     <span style="color: var(--color-navy-400); font-weight: 500;">Skabelon</span>
-                    <span style="font-weight: 700;" id="templateDropdownLabel">SOAP med baggrund</span>
+                    <span style="font-weight: 700; display: inline-block; min-width: 115px; text-align: left;" id="templateDropdownLabel">SOAP m. baggrund</span>
                     <i data-lucide="chevron-down"></i>
                   </button>
                   <div class="panel-dropdown-menu" id="templateDropdownMenu">
@@ -1220,7 +1162,7 @@ Kontrol 2-3 uger — revurdér knæstabilitet</textarea>
                     <button class="panel-dropdown-menu__item" data-template="psoap">PSOAP</button>
                     <button class="panel-dropdown-menu__item" data-template="soap-kort">SOAP - Kort</button>
                     <button class="panel-dropdown-menu__item" data-template="soap-psykisk">SOAP - Psykisk</button>
-                    <button class="panel-dropdown-menu__item panel-dropdown-menu__item--active" data-template="soap-baggrund">SOAP med baggrund</button>
+                    <button class="panel-dropdown-menu__item panel-dropdown-menu__item--active" data-template="soap-baggrund">SOAP m. baggrund</button>
                     <button class="panel-dropdown-menu__item" data-template="fritekst">Fritekst</button>
                     <button class="panel-dropdown-menu__item" data-template="struktureret">Struktureret</button>
                     <button class="panel-dropdown-menu__item" data-template="aarskontrol">Årskontrol</button>
@@ -1229,12 +1171,27 @@ Kontrol 2-3 uger — revurdér knæstabilitet</textarea>
               </div>
             </div>
             <div class="panel-content" id="notesContent">
-              <!-- Placeholder shown while waiting for transcription -->
-              <div class="notes-placeholder" id="notesPlaceholder">
-                <svg class="notes-placeholder__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-                </svg>
-                <div class="notes-placeholder__text">Notatet genereres automatisk fra transskriptionen...</div>
+              <!-- Countdown waiting state (replaced the plain placeholder) -->
+              <div class="transcript-waiting" id="notesWaiting">
+                <div class="transcript-waiting__orb">
+                  <svg class="orb-ring" viewBox="0 0 72 72">
+                    <circle class="orb-ring__bg" cx="36" cy="36" r="30"/>
+                    <circle class="orb-ring__progress" id="notesCountdownRing" cx="36" cy="36" r="30"/>
+                  </svg>
+                  <div class="transcript-waiting__orb-inner">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                      <line x1="12" x2="12" y1="19" y2="22"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="transcript-waiting__badge">
+                  <span class="transcript-waiting__badge-dot"></span>
+                  <span class="transcript-waiting__badge-text">Optager</span>
+                </div>
+                <div class="transcript-waiting__headline">Tal frit — vi lytter med</div>
+                <div class="transcript-waiting__subtext">Notatet genereres automatisk fra transskriptionen</div>
               </div>
               <!-- SOAP sections (hidden initially, revealed by streaming animation) -->
               <div class="notes-section notes-section--hidden" id="noteSection0">
@@ -1271,7 +1228,7 @@ Kontrol 2-3 uger — revurdér knæstabilitet</textarea>
             </div>
             <div class="resume-sdu-notice">
               <i data-lucide="speech"></i>
-              AAU Forskningssamarbejde
+              FEA Forskningssamarbejde
             </div>
             <div class="panel-content">
               <div class="resume-section">
@@ -1506,13 +1463,12 @@ Kontrol 2-3 uger — revurdér knæstabilitet</textarea>
     startMicMeter();
 
     // ==========================================
-    // TRANSCRIPTION WAITING STATE WITH COUNTDOWN
+    // NOTES COUNTDOWN WAITING STATE
     // ==========================================
     (function() {
-      var waitingEl = document.getElementById('transcriptWaiting');
-      var linesEl = document.getElementById('transcriptLines');
-      var ring = document.getElementById('countdownRing');
-      if (!waitingEl || !linesEl) return;
+      var waitingEl = document.getElementById('notesWaiting');
+      var ring = document.getElementById('notesCountdownRing');
+      if (!waitingEl) return;
 
       var totalSeconds = 18;
       var remaining = totalSeconds;
@@ -1530,12 +1486,6 @@ Kontrol 2-3 uger — revurdér knæstabilitet</textarea>
           waitingEl.classList.add('transcript-waiting--hiding');
           setTimeout(function() {
             waitingEl.style.display = 'none';
-            linesEl.style.display = 'block';
-            linesEl.classList.add('transcript-lines--appearing');
-            setTimeout(function() {
-              linesEl.classList.remove('transcript-lines--appearing');
-            }, 600);
-            // Start notes generation after transcript appears
             revealNotes();
           }, 400);
         }
@@ -1548,19 +1498,12 @@ Kontrol 2-3 uger — revurdér knæstabilitet</textarea>
     // NOTES STREAMING ANIMATION
     // ==========================================
     function revealNotes() {
-      var placeholder = document.getElementById('notesPlaceholder');
       var sections = [
         document.getElementById('noteSection0'),
         document.getElementById('noteSection1'),
         document.getElementById('noteSection2'),
         document.getElementById('noteSection3')
       ];
-
-      // Fade out placeholder
-      if (placeholder) {
-        placeholder.classList.add('notes-placeholder--hiding');
-        setTimeout(function() { placeholder.style.display = 'none'; }, 300);
-      }
 
       // Stagger each section reveal
       var sectionDelays = [1500, 4500, 7500, 10500];
@@ -1602,7 +1545,7 @@ Kontrol 2-3 uger — revurdér knæstabilitet</textarea>
     }
 
     // ==========================================
-    // TONE DROPDOWN FUNCTIONALITY (Forskningsprojekt · AAU)
+    // TONE DROPDOWN FUNCTIONALITY (Forskningsprojekt · FEA)
     // ==========================================
 
     var toneBtn = document.getElementById('toneDropdownBtn');
@@ -1654,6 +1597,78 @@ Kontrol 2-3 uger — revurdér knæstabilitet</textarea>
         templateMenu.classList.remove('panel-dropdown-menu--open');
       });
 
+      // Template-specific huskeliste content
+      var huskelisteMap = {
+        'soap': [
+          'Mål BT + puls ved alle konsultationer',
+          'Spørg til medicinkomplians',
+          'Tjek vaccinationsstatus (influenza, pneumokok)',
+          'Tjek seneste blodprøver / labsvar',
+          'Overvej henvisning ved alarm-symptomer'
+        ],
+        'psoap': [
+          'Afklar patientens egen oplevelse af problemet',
+          'Spørg til forventninger og bekymringer',
+          'Mål BT + puls',
+          'Tjek medicinkomplians',
+          'Afstem plan med patienten'
+        ],
+        'soap-kort': [
+          'Fokusér på primær henvendelsesårsag',
+          'Mål relevante vitale parametre',
+          'Kort og præcis plan'
+        ],
+        'soap-psykisk': [
+          'Spørg til søvn, appetit og energiniveau',
+          'Vurdér selvmordsrisiko ved depression',
+          'Spørg til alkohol- og substansforbrug',
+          'Vurdér behov for sygemelding',
+          'Overvej psykologhenvisning',
+          'Opfølgning inden 2 uger'
+        ],
+        'soap-baggrund': [
+          'Mål BT + puls ved alle konsultationer',
+          'Spørg til medicinkomplians',
+          'Tjek vaccinationsstatus (influenza, pneumokok)',
+          'Spørg til rygestatus (tilbyd rygestop)',
+          'Tjek seneste blodprøver / labsvar',
+          'Husk: opfølgning på tidligere plan',
+          'Overvej henvisning ved alarm-symptomer',
+          'Spørg til psykisk trivsel / søvn'
+        ],
+        'fritekst': [
+          'Dokumentér alle relevante fund',
+          'Notér aftaler med patienten',
+          'Angiv opfølgningsplan'
+        ],
+        'struktureret': [
+          'Udfyld alle obligatoriske felter',
+          'Mål BT + puls + vægt',
+          'Tjek medicin og allergier',
+          'Notér cave og risikofaktorer',
+          'Dokumentér informeret samtykke ved indgreb'
+        ],
+        'aarskontrol': [
+          'Mål BT, puls, vægt, BMI',
+          'Tjek kolesterol og blodsukker',
+          'Spørg til rygestatus og alkoholforbrug',
+          'Vurdér vaccinationsstatus',
+          'Gennemgå medicinliste',
+          'Spørg til psykisk trivsel og søvn',
+          'Vurdér behov for kræftscreening',
+          'Opdatér cave-liste'
+        ]
+      };
+
+      function updateHuskeliste(templateId) {
+        var list = document.getElementById('huskelisteList');
+        if (!list || !huskelisteMap[templateId]) return;
+        var items = huskelisteMap[templateId];
+        list.innerHTML = items.map(function(item) {
+          return '<li>' + item + '</li>';
+        }).join('');
+      }
+
       templateMenu.querySelectorAll('.panel-dropdown-menu__item').forEach(function(item) {
         item.addEventListener('click', function() {
           var templateId = this.getAttribute('data-template');
@@ -1665,6 +1680,9 @@ Kontrol 2-3 uger — revurdér knæstabilitet</textarea>
           });
           this.classList.add('panel-dropdown-menu__item--active');
           templateMenu.classList.remove('panel-dropdown-menu--open');
+
+          // Update huskeliste based on selected template
+          updateHuskeliste(templateId);
         });
       });
     }
@@ -1832,70 +1850,37 @@ Kontrol 2-3 uger — revurdér knæstabilitet</textarea>
         await wait(7500);
         if (tourCancelled) return;
 
-        // Trin 9: Transskriptions-panelet
-        setProgress(48);
+        // Trin 9: Huskeliste
+        setProgress(50);
         hideTooltip(); await wait(500);
         if (tourCancelled) return;
-        var transcriptPanel = document.querySelectorAll('.consultation-panel')[0];
-        showSpotlight(transcriptPanel, 4);
-        showTooltip(transcriptPanel, 9, '<strong>Transskription</strong> — Samtalen transskriberes i realtid. Både læge- og patient-dialog adskilles automatisk.', 'right');
-        startTooltipTimer(7500);
-        await wait(7500);
+        var huskePanel = document.querySelectorAll('.consultation-panel')[0];
+        showSpotlight(huskePanel, 4);
+        showTooltip(huskePanel, 9, '<strong>Huskeliste</strong> — Din personlige huskeliste tilpasses automatisk efter den valgte notatskabelon. Hjælper dig med at huske vigtige punkter under konsultationen.', 'right');
+        startTooltipTimer(7000);
+        await wait(7000);
         if (tourCancelled) return;
 
-        // Trin 10: Vent på transskription (den dukker op automatisk via countdown)
-        setProgress(52);
-        hideTooltip(); await wait(400);
-        if (tourCancelled) return;
-        showTooltip(transcriptPanel, 10, 'Transskriptionen vises automatisk når samtalen starter...', 'right');
-
-        // Wait for transcript to appear (check every 500ms)
-        var maxWait = 25000; var elapsed = 0;
-        await new Promise(function(resolve) {
-          var iv = setInterval(function() {
-            elapsed += 500;
-            if (tourCancelled) { clearInterval(iv); resolve(); return; }
-            var lines = document.getElementById('transcriptLines');
-            if ((lines && lines.style.display !== 'none') || elapsed >= maxWait) {
-              clearInterval(iv); resolve();
-            }
-          }, 500);
-        });
-        if (tourCancelled) return;
-        await wait(2000);
-        if (tourCancelled) return;
-
-        // Trin 11: Notater-panelet
-        setProgress(60);
+        // Trin 10: Notater-panelet
+        setProgress(58);
         hideTooltip(); await wait(500);
         if (tourCancelled) return;
-        var notesPanel = document.querySelectorAll('.consultation-panel')[2];
+        var notesPanel = document.querySelectorAll('.consultation-panel')[1];
         showSpotlight(notesPanel, 4);
-        showTooltip(notesPanel, 11, '<strong>AI-genereret notat</strong> — Baseret på transskriptionen genererer People\'s Clinic automatisk et struktureret SOAP-notat. Ord streamer ind mens samtalen kører.', 'left');
+        showTooltip(notesPanel, 10, '<strong>AI-genereret notat</strong> — Samtalen transskriberes og omdannes automatisk til et struktureret SOAP-notat. Countdown-indikatoren viser at People\'s Clinic lytter med.', 'left');
         startTooltipTimer(8500);
         await wait(8500);
         if (tourCancelled) return;
 
-        // Trin 12: Patient resume
+        // Trin 11: Patient resume
         setProgress(66);
         hideTooltip(); await wait(500);
         if (tourCancelled) return;
-        var resumePanel = document.querySelectorAll('.consultation-panel')[3];
+        var resumePanel = document.querySelectorAll('.consultation-panel')[2];
         showSpotlight(resumePanel, 4);
-        showTooltip(resumePanel, 12, '<strong>Patientresume</strong> — AI\'en udtrækker automatisk nøgleinformation: symptomer, risikofaktorer, objektive fund. Du kan stille spørgsmål via chat-feltet.', 'left');
+        showTooltip(resumePanel, 11, '<strong>Patientresume</strong> — AI\'en udtrækker automatisk nøgleinformation: symptomer, risikofaktorer, objektive fund. Du kan stille spørgsmål via chat-feltet.', 'left');
         startTooltipTimer(7500);
         await wait(7500);
-        if (tourCancelled) return;
-
-        // Trin 13: Huskeliste
-        setProgress(72);
-        hideTooltip(); await wait(500);
-        if (tourCancelled) return;
-        var huskePanel = document.querySelectorAll('.consultation-panel')[1];
-        showSpotlight(huskePanel, 4);
-        showTooltip(huskePanel, 13, '<strong>Huskeliste</strong> — Din personlige huskeliste med ting du skal huske under konsultationer. Gemmes automatisk mellem sessioner.', 'right');
-        startTooltipTimer(6500);
-        await wait(6500);
         if (tourCancelled) return;
 
         // Trin 14: Action buttons (not full bar, just the buttons)
@@ -1917,7 +1902,7 @@ Kontrol 2-3 uger — revurdér knæstabilitet</textarea>
         spotlight.style.width = (combinedRight - combinedLeft + pad * 2) + 'px';
         spotlight.style.height = (combinedBottom - combinedTop + pad * 2) + 'px';
         spotlight.classList.add('visible');
-        showTooltip(copyBtn, 14, '<strong>Afslut</strong> — Når konsultationen er færdig, pauser du optagelsen og klikker her for at gennemgå og redigere notatet.', 'top');
+        showTooltip(copyBtn, 12, '<strong>Afslut</strong> — Når konsultationen er færdig, pauser du optagelsen og klikker her for at gennemgå og redigere notatet.', 'top');
         startTooltipTimer(6500);
         await wait(6500);
         if (tourCancelled) return;

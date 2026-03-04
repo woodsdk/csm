@@ -10,28 +10,6 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="../Design System/platform.css">
   <style>
-    /* Inline demo button */
-    .demo-launch-inline {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 9px 20px; background: linear-gradient(135deg, #3B4D7A, #5669A4);
-      color: white; border: none; border-radius: 50px;
-      font-family: inherit; font-size: 0.82rem; font-weight: 600;
-      cursor: pointer; box-shadow: 0 4px 16px rgba(59, 77, 122, 0.25);
-      transition: all 0.2s ease; letter-spacing: 0.01em; flex-shrink: 0;
-    }
-    .demo-launch-inline:hover {
-      background: linear-gradient(135deg, #2F3D62, #4A5D96);
-      transform: translateY(-1px); box-shadow: 0 6px 20px rgba(59, 77, 122, 0.35);
-    }
-    .demo-launch-inline svg { width: 14px; height: 14px; }
-    .demo-launch-inline__pulse {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: #34D399; animation: demoInlinePulse 2s ease-in-out infinite;
-    }
-    @keyframes demoInlinePulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(1.5); }
-    }
     /* Page-specific overrides */
     .card {
       padding: 24px;
@@ -333,6 +311,23 @@
     .template-item__description {
       font-size: var(--font-size-sm);
       color: var(--color-navy-400);
+    }
+
+    .template-item:first-child .template-item__info::after {
+      content: "★ STANDARDSKABELON";
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--color-primary);
+      background: var(--color-primary-light, rgba(99, 102, 241, 0.08));
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      margin-top: 2px;
+      white-space: nowrap;
     }
 
     /* Drag and drop states */
@@ -843,39 +838,17 @@
       </div>
       <div class="topbar__right">
         <div class="clinic-dropdown">
-          <span>Valby Lægehus</span>
-          <svg><use href="#chevron-down"/></svg>
+          <span>Current clinic: Valby Lægehus</span>
+          <i data-lucide="chevron-down"></i>
         </div>
         <div class="flags">
           <div class="flag flag--dk"></div>
           <div class="flag flag--uk"></div>
         </div>
         <div class="user-menu" id="userMenu">
+          <div class="user-avatar">A</div>
           <span class="user-name">Dr. Anna Nielsen</span>
-          <div class="user-avatar">AN</div>
-          <!-- User Dropdown -->
-          <div class="user-dropdown">
-            <div class="user-dropdown__label">Brugerpanel</div>
-            <a href="beskeder.html" class="user-dropdown__item">
-              <svg><use href="#alert-circle"/></svg>
-              Systemnotifikationer
-            </a>
-            <a href="indstillinger.html" class="user-dropdown__item">
-              <svg><use href="#sliders"/></svg>
-              Brugerindstillinger
-            </a>
-            <div class="user-dropdown__divider"></div>
-            <div class="user-dropdown__label">Klinikadministration</div>
-            <a href="admin-dashboard.html" class="user-dropdown__item">
-              <svg><use href="#settings"/></svg>
-              Klinikadministration
-            </a>
-            <div class="user-dropdown__divider"></div>
-            <a href="#" class="user-dropdown__item">
-              <svg><use href="#log-out"/></svg>
-              Log ud
-            </a>
-          </div>
+          <i data-lucide="chevron-down"></i>
         </div>
       </div>
     </header>
@@ -937,11 +910,6 @@
             <h1 class="page-header__title">Indstillinger</h1>
             <p class="page-header__subtitle">Tilpas din profil og applikationsindstillinger</p>
           </div>
-          <button class="demo-launch-inline" id="demoLaunchInline" onclick="window.location.href='indstillinger.html?demo'">
-            <span class="demo-launch-inline__pulse"></span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            Se demo
-          </button>
         </div>
 
         <!-- Tabs -->
@@ -1115,32 +1083,11 @@
 
         <!-- Tab 3: Notatskabeloner -->
         <div class="settings-tab-panel settings-tab-panel--active" data-panel="templates">
-          <!-- Default template selector -->
-          <div class="card settings-list">
-            <h2 class="settings-section__title">Min standardskabelon</h2>
-            <div class="settings-row">
-              <div class="settings-row__label">
-                <span class="settings-row__title">Standardskabelon</span>
-                <span class="settings-row__description">Denne skabelon vælges automatisk når du starter en ny konsultation</span>
-              </div>
-              <select class="settings-select" id="defaultTemplateDropdown">
-                <option>SOAP</option>
-                <option>PSOAP</option>
-                <option>SOAP - Kort</option>
-                <option>SOAP - Psykisk</option>
-                <option selected>SOAP med baggrund</option>
-                <option>Årskontrol</option>
-                <option>Fritekst</option>
-                <option>Struktureret</option>
-              </select>
-            </div>
-          </div>
-
           <!-- Template visibility & ordering (personal) -->
           <div class="card">
             <div class="template-list-header">
               <h2 class="template-list__title">Min rækkefølge & synlighed</h2>
-              <p class="template-list-description">Tilpas din personlige visning. Træk for at ændre rækkefølge. Skjul skabeloner du ikke bruger. Tilgængelige skabeloner styres af klinikadministrator.</p>
+              <p class="template-list-description">Træk for at ændre rækkefølge. Øverste skabelon bruges automatisk som standardskabelon. Skjul skabeloner du ikke bruger.</p>
             </div>
             <div class="template-list">
               <div class="template-item">
@@ -1209,7 +1156,7 @@
                     <svg><use href="#grip-vertical"/></svg>
                   </span>
                   <div class="template-item__info">
-                    <span class="template-item__name">SOAP med baggrund</span>
+                    <span class="template-item__name">SOAP m. baggrund</span>
                     <span class="template-item__description">SOAP med udvidet baggrundssektion</span>
                   </div>
                 </div>
@@ -1855,7 +1802,7 @@
       { id: 'soap', name: 'SOAP', description: 'Subjektiv, Objektiv, Analyse, Plan', visible: true, order: 0 },
       { id: 'soap-kort', name: 'SOAP - Kort', description: 'Kortfattet SOAP-format', visible: true, order: 1 },
       { id: 'soap-psykisk', name: 'SOAP - Psykisk', description: 'SOAP tilpasset psykiske lidelser', visible: true, order: 2 },
-      { id: 'soap-baggrund', name: 'SOAP med baggrund', description: 'SOAP med udvidet baggrundssektion', visible: true, order: 3 },
+      { id: 'soap-baggrund', name: 'SOAP m. baggrund', description: 'SOAP med udvidet baggrundssektion', visible: true, order: 3 },
       { id: 'aarskontrol', name: 'Årskontrol', description: 'Skabelon til årlig helbredskontrol', visible: true, order: 4 },
       { id: 'kiropraktor', name: 'Kiropraktor Notat', description: 'Tilpasset kiropraktisk behandling', visible: false, order: 5 },
       { id: 'fysioterapeut', name: 'Fysioterapeut Notat', description: 'Tilpasset fysioterapeutisk behandling', visible: false, order: 6 },
@@ -1902,7 +1849,7 @@
       templates.sort((a, b) => a.order - b.order);
 
       // Rebuild the list
-      templateList.innerHTML = templates.map(template => `
+      templateList.innerHTML = templates.map((template, index) => `
         <div class="template-item" data-template-id="${template.id}">
           <div class="template-item__left">
             <span class="template-item__drag" data-drag-handle>
@@ -2454,7 +2401,7 @@
     // Load learning state
     function loadLearningEnabled() {
       var stored = localStorage.getItem(LEARNING_ENABLED_KEY);
-      if (stored === null) return true; // Default ON for demo
+      if (stored === null) return true; // Default ON
       return stored === 'true';
     }
 
@@ -2561,257 +2508,6 @@
 
     // Initialize
     renderLearningStats();
-
-    // Hide inline demo button when in demo mode
-    if (window.location.search.includes('demo')) {
-      var inlineBtn = document.getElementById('demoLaunchInline');
-      if (inlineBtn) inlineBtn.style.display = 'none';
-    }
-
-    // ═══════════════════════════════════════
-    // BRUGERINDSTILLINGER GUIDED TOUR (?demo)
-    // ═══════════════════════════════════════
-    (function() {
-      if (!window.location.search.includes('demo')) return;
-
-      var s = document.createElement('style');
-      s.textContent = `
-        .demo-overlay { position:fixed;inset:0;z-index:9000;background:rgba(15,23,42,0.70);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.4s ease; }
-        .demo-overlay.visible { opacity:1; }
-        .demo-overlay.hidden { pointer-events:none;opacity:0; }
-        .demo-modal { position:relative;background:white;border-radius:20px;max-width:560px;width:90%;padding:48px 44px 40px;box-shadow:0 25px 80px rgba(0,0,0,0.25);transform:translateY(20px) scale(0.97);transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);text-align:center; }
-        .demo-overlay.visible .demo-modal { transform:translateY(0) scale(1); }
-        .demo-modal__close { position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;border:none;background:#f1f5f9;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#64748b;transition:all 0.2s ease; }
-        .demo-modal__close:hover { background:#e2e8f0;color:#334155; }
-        .demo-modal__close svg { width:20px;height:20px; }
-        .demo-modal__icon { width:64px;height:64px;margin:0 auto 20px;border-radius:16px;background:linear-gradient(135deg,#3B4D7A,#5669A4);display:flex;align-items:center;justify-content:center; }
-        .demo-modal__icon svg { width:30px;height:30px;color:white; }
-        .demo-modal__title { font-size:22px;font-weight:700;color:#1a202c;margin-bottom:8px; }
-        .demo-modal__subtitle { font-size:14px;color:#64748b;margin-bottom:28px;line-height:1.6; }
-        .demo-modal__features { display:flex;flex-direction:column;gap:14px;text-align:left;margin-bottom:32px; }
-        .demo-feature { display:flex;align-items:flex-start;gap:14px; }
-        .demo-feature__num { width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#3B4D7A,#5669A4);color:white;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0; }
-        .demo-feature__text { font-size:14px;line-height:1.5;color:#334155; }
-        .demo-feature__text strong { color:#1a202c; }
-        .demo-btn { display:inline-flex;align-items:center;gap:10px;padding:14px 36px;background:linear-gradient(135deg,#3B4D7A,#5669A4);color:white;border:none;border-radius:14px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.2s ease;box-shadow:0 4px 16px rgba(59,77,122,0.3); }
-        .demo-btn:hover { background:linear-gradient(135deg,#2F3D62,#4A5D96);transform:translateY(-1px); }
-        .demo-btn svg { width:18px;height:18px; }
-        .demo-spotlight { position:fixed;z-index:8500;border:3px solid #5669A4;border-radius:12px;box-shadow:0 0 0 9999px rgba(15,23,42,0.55),0 0 30px rgba(86,105,164,0.3);transition:all 0.6s cubic-bezier(0.16,1,0.3,1);pointer-events:none;opacity:0; }
-        .demo-spotlight.visible { opacity:1; }
-        .demo-tooltip { position:fixed;z-index:8600;background:white;border-radius:14px;padding:18px 22px;max-width:360px;box-shadow:0 12px 40px rgba(0,0,0,0.18);opacity:0;transform:translateY(8px);transition:all 0.4s cubic-bezier(0.16,1,0.3,1);pointer-events:none; }
-        .demo-tooltip.visible { opacity:1;transform:translateY(0);pointer-events:auto; }
-        .demo-tooltip__step { display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:#5669A4;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px; }
-        .demo-tooltip__text { font-size:14px;line-height:1.6;color:#334155; }
-        .demo-tooltip__text strong { color:#1a202c; }
-        .demo-progress { position:fixed;top:0;left:0;right:0;height:4px;z-index:9500;background:rgba(86,105,164,0.15); }
-        .demo-progress__fill { height:100%;width:0%;background:linear-gradient(90deg,#3B4D7A,#5669A4);transition:width 0.8s ease;border-radius:0 2px 2px 0; }
-        .demo-complete-overlay { position:fixed;inset:0;z-index:9600;background:rgba(15,23,42,0.6);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.5s ease; }
-        .demo-complete-overlay.visible { opacity:1; }
-        .demo-complete-modal { background:white;border-radius:20px;padding:44px 48px;max-width:520px;width:90%;text-align:center;transform:scale(0.9);transition:transform 0.5s cubic-bezier(0.16,1,0.3,1);box-shadow:0 25px 60px rgba(0,0,0,0.25); }
-        .demo-complete-overlay.visible .demo-complete-modal { transform:scale(1); }
-        .demo-complete__icon { width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#22C55E,#16A34A);display:flex;align-items:center;justify-content:center;margin:0 auto 18px; }
-        .demo-complete__icon svg { width:28px;height:28px;color:white; }
-        .demo-complete__title { font-size:1.4rem;font-weight:700;color:#1a202c;margin-bottom:6px; }
-        .demo-complete__subtitle { font-size:0.9rem;color:#5669A4;margin-bottom:24px;line-height:1.5; }
-        .demo-complete__features { display:flex;gap:14px;justify-content:center;margin-bottom:28px;flex-wrap:wrap; }
-        .demo-complete__feature { display:flex;align-items:center;gap:6px;padding:8px 14px;background:#f1f5f9;border-radius:10px;font-size:0.78rem;font-weight:600;color:#334155; }
-        .demo-complete__feature svg { width:14px;height:14px;color:#5669A4; }
-        .demo-complete__btn { display:inline-flex;align-items:center;gap:8px;padding:14px 36px;background:linear-gradient(135deg,#3B4D7A,#5669A4);color:white;border:none;border-radius:50px;font-family:inherit;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(59,77,122,0.35);transition:all 0.3s ease; }
-        .demo-complete__btn:hover { transform:translateY(-2px);box-shadow:0 8px 28px rgba(59,77,122,0.45); }
-        .demo-complete__btn svg { width:16px;height:16px; }
-        .demo-tooltip__timer { display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid #f1f5f9; }
-        .demo-tooltip__timer-bar { flex:1;height:3px;background:rgba(86,105,164,0.12);border-radius:2px;overflow:hidden; }
-        .demo-tooltip__timer-fill { height:100%;width:100%;background:linear-gradient(90deg,#5669A4,#3B4D7A);border-radius:2px; }
-        .demo-tooltip__timer-text { font-size:11px;font-weight:700;color:#5669A4;min-width:20px;text-align:right;font-variant-numeric:tabular-nums; }
-        .demo-cancel-btn { position:fixed;top:12px;right:16px;z-index:9700;display:flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border:1px solid rgba(86,105,164,0.2);border-radius:50px;font-family:inherit;font-size:12px;font-weight:600;color:#5669A4;cursor:pointer;transition:all 0.2s ease;opacity:0;pointer-events:none; }
-        .demo-cancel-btn.visible { opacity:1;pointer-events:auto; }
-        .demo-cancel-btn:hover { background:white;border-color:#5669A4;box-shadow:0 2px 12px rgba(86,105,164,0.15); }
-        .demo-cancel-btn svg { width:14px;height:14px; }
-      `;
-      document.head.appendChild(s);
-
-      var overlay = document.createElement('div');
-      overlay.className = 'demo-overlay';
-      overlay.innerHTML =
-        '<div class="demo-modal">' +
-          '<button class="demo-modal__close" id="demoCloseBtn" title="Luk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
-          '<div class="demo-modal__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></div>' +
-          '<div class="demo-modal__title">Brugerindstillinger</div>' +
-          '<div class="demo-modal__subtitle">Tilpas din profil, notatskabeloner, standardfraser og sikkerhed</div>' +
-          '<div class="demo-modal__features">' +
-            '<div class="demo-feature"><div class="demo-feature__num">1</div><div class="demo-feature__text"><strong>Notatskabeloner</strong> — Vælg standardskabelon og tilpas rækkefølge og synlighed af dine skabeloner.</div></div>' +
-            '<div class="demo-feature"><div class="demo-feature__num">2</div><div class="demo-feature__text"><strong>Standardfraser</strong> — Opret og administrer hurtige fraser du kan indsætte med /trigger i notater.</div></div>' +
-            '<div class="demo-feature"><div class="demo-feature__num">3</div><div class="demo-feature__text"><strong>AI-tilpasning & sikkerhed</strong> — Lad AI\'en lære af dine rettelser, og konfigurer 2FA og adgangskode.</div></div>' +
-          '</div>' +
-          '<button class="demo-btn" id="demoStartBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Se demo</button>' +
-        '</div>';
-      document.body.appendChild(overlay);
-
-      var spotlight = document.createElement('div'); spotlight.className = 'demo-spotlight'; document.body.appendChild(spotlight);
-      var tooltip = document.createElement('div'); tooltip.className = 'demo-tooltip'; document.body.appendChild(tooltip);
-      var pb = document.createElement('div'); pb.className = 'demo-progress'; pb.innerHTML = '<div class="demo-progress__fill" id="demoProgressFill"></div>'; document.body.appendChild(pb);
-
-      var cancelBtn = document.createElement('button');
-      cancelBtn.className = 'demo-cancel-btn';
-      cancelBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Afslut tour';
-      document.body.appendChild(cancelBtn);
-
-      requestAnimationFrame(function() { requestAnimationFrame(function() { overlay.classList.add('visible'); }); });
-
-      function wait(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
-      function setProgress(p) { document.getElementById('demoProgressFill').style.width = p + '%'; }
-      function showSpotlight(el, pad) { pad = pad || 8; var r = el.getBoundingClientRect(); spotlight.style.top = (r.top - pad) + 'px'; spotlight.style.left = (r.left - pad) + 'px'; spotlight.style.width = (r.width + pad * 2) + 'px'; spotlight.style.height = (r.height + pad * 2) + 'px'; spotlight.classList.add('visible'); }
-      function hideSpotlight() { spotlight.classList.remove('visible'); }
-      function showTooltip(el, step, text, pos) {
-        pos = pos || 'right'; var r = el.getBoundingClientRect();
-        var vw = window.innerWidth, vh = window.innerHeight;
-        tooltip.innerHTML = '<div class="demo-tooltip__step">Trin ' + step + '</div><div class="demo-tooltip__text">' + text + '</div><div class="demo-tooltip__timer"><div class="demo-tooltip__timer-bar"><div class="demo-tooltip__timer-fill"></div></div><span class="demo-tooltip__timer-text"></span></div>';
-        tooltip.classList.remove('visible'); tooltip.style.bottom = 'auto';
-        tooltip.style.top = '-9999px'; tooltip.style.left = '-9999px';
-        tooltip.style.display = 'block';
-        requestAnimationFrame(function() {
-          var tw = tooltip.offsetWidth || 360, th = tooltip.offsetHeight || 140;
-          var t, l;
-          if (pos === 'right') { t = r.top + r.height / 2 - th / 2; l = r.right + 16; if (l + tw > vw - 16) { l = r.left - tw - 16; } }
-          else if (pos === 'left') { t = r.top + r.height / 2 - th / 2; l = r.left - tw - 16; if (l < 16) { l = r.right + 16; } }
-          else if (pos === 'top') { t = r.top - th - 16; l = r.left + r.width / 2 - tw / 2; if (t < 16) { t = r.bottom + 16; } }
-          else if (pos === 'bottom') { t = r.bottom + 16; l = r.left + r.width / 2 - tw / 2; if (t + th > vh - 16) { t = r.top - th - 16; } }
-          if (l < 16) l = 16; if (l + tw > vw - 16) l = vw - tw - 16;
-          if (t < 16) t = 16; if (t + th > vh - 16) t = vh - th - 16;
-          tooltip.style.top = t + 'px'; tooltip.style.left = l + 'px';
-          requestAnimationFrame(function() { tooltip.classList.add('visible'); });
-        });
-      }
-      function hideTooltip() { tooltip.classList.remove('visible'); }
-
-      var tourCancelled = false;
-      var timerInterval = null;
-      function startTooltipTimer(ms) {
-        if (timerInterval) clearInterval(timerInterval);
-        var fill = tooltip.querySelector('.demo-tooltip__timer-fill');
-        var txt = tooltip.querySelector('.demo-tooltip__timer-text');
-        if (!fill || !txt) return;
-        var secs = Math.ceil(ms / 1000);
-        txt.textContent = secs + 's';
-        fill.style.transition = 'none';
-        fill.style.width = '100%';
-        requestAnimationFrame(function() {
-          fill.style.transition = 'width ' + (ms / 1000) + 's linear';
-          fill.style.width = '0%';
-        });
-        timerInterval = setInterval(function() {
-          secs--;
-          if (txt) txt.textContent = Math.max(0, secs) + 's';
-          if (secs <= 0) { clearInterval(timerInterval); timerInterval = null; }
-        }, 1000);
-      }
-      cancelBtn.addEventListener('click', function() {
-        tourCancelled = true;
-        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-        hideTooltip(); hideSpotlight();
-        cancelBtn.classList.remove('visible');
-        pb.style.display = 'none';
-        window.location.href = window.location.pathname;
-      });
-
-      document.getElementById('demoCloseBtn').addEventListener('click', function() { window.location.href = 'indstillinger.html'; });
-
-      document.getElementById('demoStartBtn').addEventListener('click', async function() {
-        overlay.classList.remove('visible'); overlay.classList.add('hidden');
-        cancelBtn.classList.add('visible');
-        await wait(800);
-
-        // Trin 1: Tab-navigation
-        setProgress(8);
-        var tabs = document.querySelector('.settings-tabs');
-        showSpotlight(tabs, 6);
-        showTooltip(tabs, 1, '<strong>Faner</strong> — Naviger mellem notatskabeloner, standardfraser, profil, indstillinger og sikkerhed.', 'bottom');
-        startTooltipTimer(7000);
-        await wait(7000);
-        if (tourCancelled) return;
-
-        // Trin 2: Notatskabeloner (default tab)
-        setProgress(18);
-        hideTooltip(); await wait(500);
-        document.querySelector('.settings-tab[data-tab="templates"]').click();
-        await wait(600);
-        var templatePanel = document.querySelector('[data-panel="templates"]');
-        var templateList = templatePanel.querySelector('.template-list') || templatePanel.querySelector('.card');
-        showSpotlight(templatePanel, 4);
-        showTooltip(templatePanel, 2, '<strong>Notatskabeloner</strong> — Vælg din standardskabelon og tilpas rækkefølge med drag & drop. Slå skabeloner til/fra med toggles.', 'right');
-        startTooltipTimer(8000);
-        await wait(8000);
-        if (tourCancelled) return;
-
-        // Trin 3: Standardfraser
-        setProgress(30);
-        hideTooltip(); await wait(500);
-        document.querySelector('.settings-tab[data-tab="phrases"]').click();
-        await wait(600);
-        var phrasesPanel = document.querySelector('[data-panel="phrases"]');
-        showSpotlight(phrasesPanel, 4);
-        showTooltip(phrasesPanel, 3, '<strong>Standardfraser</strong> — Opret hurtige fraser du indsætter med <em>/trigger</em> i notater. Fx <code>/abd-ia</code> for abdomen-undersøgelse. Du kan tilpasse, deaktivere eller oprette egne.', 'right');
-        startTooltipTimer(8500);
-        await wait(8500);
-        if (tourCancelled) return;
-
-        // Trin 4: Profil
-        setProgress(44);
-        hideTooltip(); await wait(500);
-        document.querySelector('.settings-tab[data-tab="profile"]').click();
-        await wait(600);
-        var profilePanel = document.querySelector('[data-panel="profile"]');
-        showSpotlight(profilePanel, 4);
-        showTooltip(profilePanel, 4, '<strong>Rediger profil</strong> — Opdater dit navn, e-mail, telefon og specialisering. Autorisations-ID og klinik er read-only felter.', 'right');
-        startTooltipTimer(7500);
-        await wait(7500);
-        if (tourCancelled) return;
-
-        // Trin 5: Indstillinger — AI tilpasning
-        setProgress(58);
-        hideTooltip(); await wait(500);
-        document.querySelector('.settings-tab[data-tab="settings"]').click();
-        await wait(600);
-        var settingsPanel = document.querySelector('[data-panel="settings"]');
-        var aiCard = document.getElementById('aiAdaptationCard');
-        showSpotlight(aiCard, 4);
-        showTooltip(aiCard, 5, '<strong>AI-tilpasning</strong> — Aktivér "Lær af mine rettelser" så AI\'en tilpasser sig din skrivestil over tid. Du kan se statistik og nulstille data.', 'right');
-        startTooltipTimer(8000);
-        await wait(8000);
-        if (tourCancelled) return;
-
-        // Trin 6: Sikkerhed
-        setProgress(72);
-        hideTooltip(); await wait(500);
-        var secCards = settingsPanel.querySelectorAll('.card.settings-list');
-        var securityCard = secCards[secCards.length - 2];
-        showSpotlight(securityCard, 4);
-        showTooltip(securityCard, 6, '<strong>Sikkerhed</strong> — Konfigurer to-faktor autentificering, automatisk log ud og skift adgangskode.', 'right');
-        startTooltipTimer(7000);
-        await wait(7000);
-        if (tourCancelled) return;
-
-        // Trin 7: Sikkerhed & Compliance tab
-        setProgress(86);
-        hideTooltip(); await wait(500);
-        document.querySelector('.settings-tab[data-tab="security"]').click();
-        await wait(600);
-        var compliancePanel = document.querySelector('[data-panel="security"]');
-        showSpotlight(compliancePanel, 4);
-        showTooltip(compliancePanel, 7, '<strong>Sikkerhed & Compliance</strong> — Overblik over GDPR- og EU AI Act-overholdelse, datakryptering, audit logs og AI-transparens.', 'right');
-        startTooltipTimer(7500);
-        await wait(7500);
-        if (tourCancelled) return;
-
-        // Completion
-        setProgress(100);
-        cancelBtn.classList.remove('visible');
-        hideTooltip(); hideSpotlight(); await wait(800);
-        var c = document.createElement('div'); c.className = 'demo-complete-overlay';
-        c.innerHTML = '<div class="demo-complete-modal"><div class="demo-complete__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div><div class="demo-complete__title">Demo afsluttet!</div><div class="demo-complete__subtitle">Du har nu set alle brugerindstillinger — fra skabeloner til sikkerhed.</div><div class="demo-complete__features"><div class="demo-complete__feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>Skabeloner & fraser</div><div class="demo-complete__feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil</div><div class="demo-complete__feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Sikkerhed</div></div><button class="demo-complete__btn" onclick="window.location.href=\'indstillinger.html\'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9"/><polyline points="3 3 3 9 9 3"/></svg>Tilbage til indstillinger</button></div>';
-        document.body.appendChild(c); await wait(100); c.classList.add('visible');
-      });
-    })();
 
   </script>
 </body>

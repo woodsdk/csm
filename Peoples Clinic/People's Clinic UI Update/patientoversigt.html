@@ -11,7 +11,7 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     /* ───────────────────────────────────────
-       EXPANDABLE TABLE ROWS
+       TABLE ROWS
     ─────────────────────────────────────── */
     .table--overview { border-collapse: collapse; }
 
@@ -19,41 +19,9 @@
     .table--overview td { padding: 12px 16px; }
 
     .row-main {
-      cursor: pointer;
       transition: background 0.15s ease;
     }
     .row-main:hover { background: var(--color-gray-100); }
-    .row-main.expanded {
-      background: var(--color-gray-100);
-      border-bottom: none;
-    }
-    .row-main.expanded td { border-bottom: none; }
-
-    /* Expand toggle button */
-    .expand-toggle {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      border-radius: var(--radius-full);
-      border: 1px solid var(--color-gray-200);
-      background: var(--color-white);
-      cursor: pointer;
-      transition: all var(--transition-fast);
-    }
-    .expand-toggle:hover {
-      border-color: var(--color-navy-400);
-      background: var(--color-gray-100);
-    }
-    .row-chevron {
-      width: 18px;
-      height: 18px;
-      color: var(--color-navy-400);
-      transition: transform 0.25s ease;
-      flex-shrink: 0;
-    }
-    .row-main.expanded .row-chevron { transform: rotate(180deg); }
 
     /* Patient name cell */
     .patient-cell {
@@ -99,73 +67,22 @@
     .status-mini--dismissed .status-mini__dot { background: var(--color-navy-400); }
 
     /* ───────────────────────────────────────
-       EXPANDED PANEL
+       INLINE ACTION BUTTONS
     ─────────────────────────────────────── */
-    .row-expand { display: none; }
-    .row-expand.open { display: table-row; }
-    .row-expand td {
-      padding: 0 16px 16px;
-      border-bottom: 1px solid var(--color-gray-200);
-      background: var(--color-gray-100);
-    }
-
-    .expand-panel {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 16px;
-    }
-
-    .action-section {
-      background: var(--color-white);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      border: 1px solid var(--color-gray-200);
-      transition: box-shadow 0.15s ease;
+    .row-actions {
       display: flex;
-      flex-direction: column;
-    }
-    .action-section:hover {
-      box-shadow: 0 2px 12px rgba(38, 48, 79, 0.06);
+      gap: 6px;
+      flex-wrap: nowrap;
     }
 
-    .action-section__header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--color-gray-100);
-    }
-    .action-section__icon {
-      width: 18px;
-      height: 18px;
-      color: var(--color-navy-400);
-    }
-    .action-section__title {
-      font-size: var(--font-size-sm);
-      font-weight: 600;
-      color: var(--color-text);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .action-section__body {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    /* Action buttons inside expanded panel — matches platform.css */
     .action-btn {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
+      gap: 6px;
+      padding: 5px 12px;
       border-radius: var(--radius-full);
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
       color: var(--color-navy-500);
       background: transparent;
       border: 1px solid var(--color-gray-200);
@@ -179,51 +96,10 @@
       background: var(--color-gray-100);
     }
     .action-btn svg {
-      width: 14px;
-      height: 14px;
+      width: 13px;
+      height: 13px;
       color: var(--color-navy-400);
       flex-shrink: 0;
-    }
-
-    .action-btn--primary {
-      background: var(--gradient-button-primary);
-      color: var(--color-white);
-      border: none;
-    }
-    .action-btn--primary:hover {
-      box-shadow: var(--shadow-button-hover);
-      background: linear-gradient(135deg, #2F3D62 0%, #4A5D96 100%);
-    }
-    .action-btn--primary svg { color: var(--color-white); }
-
-    /* Honorar info in section */
-    .honorar-info {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      background: var(--color-gray-100);
-      border-radius: var(--radius-md);
-      margin-bottom: 4px;
-    }
-    .honorar-info__count {
-      font-size: var(--font-size-sm);
-      font-weight: 600;
-      color: var(--color-text);
-    }
-
-    /* ── Unified heights: all action-section elements align ── */
-    .action-section__body .action-btn,
-    .action-section__body .consult-select,
-    .action-section__body .honorar-info {
-      height: 34px;
-      box-sizing: border-box;
-    }
-    .action-section__body .action-btn--primary {
-      border: 1px solid transparent;
-    }
-    .action-section__body .honorar-info {
-      margin-bottom: 0;
     }
 
     /* ───────────────────────────────────────
@@ -293,41 +169,6 @@
     }
 
     #modalHonorar .modal { max-width: 600px; }
-
-    /* Consultation dropdown in henvisning section */
-    .consult-select {
-      width: 100%;
-      padding: 6px 14px;
-      font-family: inherit;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--color-navy-500);
-      background: transparent;
-      border: 1px solid var(--color-gray-200);
-      border-radius: var(--radius-full);
-      cursor: pointer;
-      transition: all var(--transition-fast);
-      appearance: none;
-      -webkit-appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235669A4' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 10px center;
-      background-size: 14px;
-      padding-right: 30px;
-      text-transform: none;
-      letter-spacing: normal;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .consult-select:hover {
-      border-color: var(--color-navy-400);
-      background-color: var(--color-gray-100);
-    }
-    .consult-select:focus {
-      outline: none;
-      border-color: var(--color-navy-500);
-    }
 
     /* CPR under patient name */
     .patient-cpr {
@@ -400,7 +241,7 @@
           <div class="flag flag--dk"></div>
           <div class="flag flag--uk"></div>
         </div>
-        <div class="user-menu">
+        <div class="user-menu" id="userMenu">
           <div class="user-avatar">A</div>
           <span class="user-name">Dr. Anna Nielsen</span>
           <i data-lucide="chevron-down"></i>
@@ -480,10 +321,9 @@
               <thead>
                 <tr>
                   <th>Patient</th>
-                  <th>Seneste konsultation</th>
+                  <th>Tidspunkt</th>
                   <th>Emne</th>
-                  <th>Honorar</th>
-                  <th style="width: 48px;"></th>
+                  <th>Handlinger</th>
                 </tr>
               </thead>
               <tbody id="tableBody">
@@ -539,14 +379,9 @@
           <div class="honorar-patient__meta" id="honorarPatientMeta"></div>
         </div>
         <div class="honorar-codes" id="honorarCodes"></div>
-        <div class="honorar-add-code">
-          <input type="text" class="form-input" id="addCodeInput" placeholder="Tilføj ydelseskode (f.eks. 0101)...">
-          <button class="table-btn table-btn--outline" onclick="addCustomCode()">Tilføj</button>
-        </div>
       </div>
       <div class="modal__footer">
         <button class="btn-secondary" onclick="closeHonorarModal()">Luk</button>
-        <button class="btn-primary" onclick="saveHonorar()">Gem ændringer</button>
       </div>
     </div>
   </div>
@@ -690,13 +525,9 @@
     // ═══════════════════════════════════════
     // RENDER TABLE
     // ═══════════════════════════════════════
-    var expandedIndex = -1;
-
-    function getStatusLabel(status) {
-      if (status === 'pending') return 'Afventer';
-      if (status === 'accepted') return 'Accepteret';
-      if (status === 'dismissed') return 'Afvist';
-      return '';
+    function getTimeFromDate(dateStr) {
+      var parts = dateStr.split(' ');
+      return parts.length > 1 ? parts[1] : dateStr;
     }
 
     function renderTable() {
@@ -704,78 +535,20 @@
       var html = '';
 
       patients.forEach(function(p, i) {
-        var isExpanded = (i === expandedIndex);
-
-        // Main row
-        html += '<tr class="row-main' + (isExpanded ? ' expanded' : '') + '" onclick="toggleRow(' + i + ')">';
+        html += '<tr class="row-main">';
         html += '<td><span class="patient-cell"><span>' + p.patient + '<br><span class="patient-cpr">' + p.cpr + '</span></span></span></td>';
-        html += '<td>' + p.date + '</td>';
+        html += '<td>' + getTimeFromDate(p.date) + '</td>';
         html += '<td>' + p.emne + '</td>';
-        html += '<td><span class="status-mini status-mini--' + p.honorarStatus + '"><span class="status-mini__dot"></span>' + p.honorarCount + ' koder &middot; ' + getStatusLabel(p.honorarStatus) + '</span></td>';
-        html += '<td><button class="expand-toggle" title="' + (isExpanded ? 'Luk' : 'Udvid') + '"><svg class="row-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button></td>';
-        html += '</tr>';
-
-        // Expand row
-        html += '<tr class="row-expand' + (isExpanded ? ' open' : '') + '">';
-        html += '<td colspan="5">';
-        html += '<div class="expand-panel">';
-
-        // Section 1: Konsultation
-        html += '<div class="action-section">';
-        html += '  <div class="action-section__header">';
-        html += '    <svg class="action-section__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>';
-        html += '    <span class="action-section__title">Konsultation</span>';
-        html += '  </div>';
-        html += '  <div class="action-section__body">';
-        html += '    <a href="#" class="action-btn" onclick="copyNote(' + i + '); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Kopier notat</a>';
-        html += '    <a href="#" class="action-btn" onclick="return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Vis & Rediger</a>';
-        html += '  </div>';
-        html += '</div>';
-
-        // Section 2: Henvisning
-        html += '<div class="action-section">';
-        html += '  <div class="action-section__header">';
-        html += '    <svg class="action-section__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>';
-        html += '    <span class="action-section__title">Henvisning</span>';
-        html += '  </div>';
-        html += '  <div class="action-section__body">';
-        var consultOpts = getPatientConsultations(p.patient);
-        html += '    <select class="consult-select" id="consultSelect_' + i + '">';
-        html += '      <option value="">' + (consultOpts.length > 0 ? 'Vælg konsultation...' : 'Ingen konsultationer') + '</option>';
-        consultOpts.forEach(function(c, ci) {
-          html += '<option value="' + ci + '"' + (ci === 0 ? ' selected' : '') + '>' + c.date + ' — ' + c.snippet.substring(0, 50) + '</option>';
-        });
-        html += '    </select>';
-        html += '    <a href="#" class="action-btn action-btn--primary" onclick="generateReferral(' + i + '); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>Generer henvisning</a>';
-        html += '  </div>';
-        html += '</div>';
-
-        // Section 3: Honorar
-        html += '<div class="action-section">';
-        html += '  <div class="action-section__header">';
-        html += '    <svg class="action-section__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>';
-        html += '    <span class="action-section__title">Honorar</span>';
-        html += '  </div>';
-        html += '  <div class="action-section__body">';
-        html += '    <div class="honorar-info"><span class="honorar-info__count">' + p.honorarCount + ' ydelseskoder</span><span class="status-mini status-mini--' + p.honorarStatus + '"><span class="status-mini__dot"></span>' + getStatusLabel(p.honorarStatus) + '</span></div>';
-        html += '    <a href="#" class="action-btn' + (p.honorarStatus === 'pending' ? ' action-btn--primary' : '') + '" onclick="openHonorarModal(' + i + '); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>' + (p.honorarStatus === 'pending' ? 'Gennemgå forslag' : 'Vis forslag') + '</a>';
-        html += '  </div>';
-        html += '</div>';
-
-        html += '</div>'; // expand-panel
-        html += '</td>';
+        html += '<td><div class="row-actions">';
+        html += '<a href="#" class="action-btn" onclick="copyNote(' + i + '); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Kopi\u00e9r</a>';
+        html += '<a href="#" class="action-btn" onclick="return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Redig\u00e9r notat</a>';
+        html += '<a href="#" class="action-btn" onclick="openHonorarModal(' + i + '); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>Se honorarforslag</a>';
+        html += '<a href="#" class="action-btn" onclick="generateReferral(' + i + '); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>Generer henvisning</a>';
+        html += '</div></td>';
         html += '</tr>';
       });
 
       tbody.innerHTML = html;
-    }
-
-    // ═══════════════════════════════════════
-    // EXPAND / COLLAPSE
-    // ═══════════════════════════════════════
-    function toggleRow(index) {
-      expandedIndex = (expandedIndex === index) ? -1 : index;
-      renderTable();
     }
 
     // ═══════════════════════════════════════
@@ -845,28 +618,13 @@
       var p = patients[currentHonorarIndex];
       var html = '';
       p.codes.forEach(function(code, i) {
-        var itemClass = 'honorar-code-item';
-        if (code.status === 'accepted') itemClass += ' honorar-code-item--accepted';
-        if (code.status === 'rejected') itemClass += ' honorar-code-item--rejected';
-
-        var acceptClass = 'honorar-code__btn honorar-code__btn--accept' + (code.status === 'accepted' ? ' honorar-code__btn--accepted' : '');
-        var rejectClass = 'honorar-code__btn honorar-code__btn--reject' + (code.status === 'rejected' ? ' honorar-code__btn--rejected' : '');
-
-        html += '<div class="' + itemClass + '">' +
+        html += '<div class="honorar-code-item">' +
           '<div class="honorar-code__info">' +
             '<div class="honorar-code__top">' +
               '<span class="honorar-code__id">' + code.id + '</span>' +
               '<span class="honorar-code__name">' + code.name + '</span>' +
             '</div>' +
             '<div class="honorar-code__desc">' + code.desc + '</div>' +
-          '</div>' +
-          '<div class="honorar-code__actions">' +
-            '<button class="' + acceptClass + '" title="Godkend" onclick="toggleCode(' + i + ', \'accepted\')">' +
-              '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' +
-            '</button>' +
-            '<button class="' + rejectClass + '" title="Afvis" onclick="toggleCode(' + i + ', \'rejected\')">' +
-              '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>' +
-            '</button>' +
           '</div>' +
         '</div>';
       });
@@ -878,22 +636,6 @@
       code.status = (code.status === newStatus) ? 'pending' : newStatus;
       renderCodes();
     }
-
-    function addCustomCode() {
-      var input = document.getElementById('addCodeInput');
-      var val = input.value.trim();
-      if (!val) return;
-      patients[currentHonorarIndex].codes.push({
-        id: val, name: 'Manuelt tilføjet', desc: 'Tilføjet af bruger', status: 'accepted'
-      });
-      patients[currentHonorarIndex].honorarCount = patients[currentHonorarIndex].codes.length;
-      input.value = '';
-      renderCodes();
-    }
-
-    document.getElementById('addCodeInput').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') { e.preventDefault(); addCustomCode(); }
-    });
 
     function saveHonorar() { closeHonorarModal(); }
 

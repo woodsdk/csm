@@ -906,26 +906,17 @@
       </div>
       <div class="topbar__right">
         <div class="clinic-dropdown">
-          <span>Valby Lægehus</span>
-          <svg><use href="#chevron-down"/></svg>
+          <span>Current clinic: Valby Lægehus</span>
+          <i data-lucide="chevron-down"></i>
         </div>
         <div class="flags">
           <div class="flag flag--dk"></div>
           <div class="flag flag--uk"></div>
         </div>
         <div class="user-menu" id="userMenu">
+          <div class="user-avatar">A</div>
           <span class="user-name">Dr. Anna Nielsen</span>
-          <div class="user-avatar">AN</div>
-          <div class="user-dropdown">
-            <div class="user-dropdown__label">Brugerpanel</div>
-            <a href="beskeder.html" class="user-dropdown__item"><svg><use href="#alert-circle"/></svg>Systemnotifikationer</a>
-            <a href="indstillinger.html" class="user-dropdown__item"><svg><use href="#sliders"/></svg>Brugerindstillinger</a>
-            <div class="user-dropdown__divider"></div>
-            <div class="user-dropdown__label">Klinikadministration</div>
-            <a href="admin-dashboard.html" class="user-dropdown__item"><svg><use href="#settings"/></svg>Klinikadministration</a>
-            <div class="user-dropdown__divider"></div>
-            <a href="#" class="user-dropdown__item"><svg><use href="#log-out"/></svg>Log ud</a>
-          </div>
+          <i data-lucide="chevron-down"></i>
         </div>
       </div>
     </header>
@@ -1014,11 +1005,6 @@
                 <div class="ba-template-section" id="templateSection">
                   <div class="ba-template-label">V&#230;lg skabelon til svarudkast:</div>
                   <div class="ba-template-chips" id="templateChips">
-                    <button class="ba-template-chip" data-template="receptfornyelse" data-placeholder="Beskriv hvilken medicin der skal fornyes...">
-                      <i data-lucide="pill" class="ba-template-chip__icon"></i>
-                      <i data-lucide="check" class="ba-template-chip__check"></i>
-                      Receptfornyelse
-                    </button>
                     <button class="ba-template-chip" data-template="proevesvar" data-placeholder="Beskriv hvilke pr&#248;vesvar der skal formidles...">
                       <i data-lucide="flask-conical" class="ba-template-chip__icon"></i>
                       <i data-lucide="check" class="ba-template-chip__check"></i>
@@ -1047,7 +1033,7 @@
                 <div class="ba-chat__history" id="chatHistory"></div>
                 <div class="ba-chat__input-row">
                   <div class="ba-chat__input-bar">
-                    <textarea class="ba-chat__textarea" id="chatInput" rows="1" placeholder="Skriv en instruktion — fx &quot;skriv et høfligt svar om receptfornyelse&quot;"></textarea>
+                    <textarea class="ba-chat__textarea" id="chatInput" rows="1" placeholder="Skriv en instruktion — fx &quot;skriv et høfligt svar om prøvesvar&quot;"></textarea>
                     <button class="ba-chat__send" id="chatSend" title="Send prompt"><i data-lucide="arrow-up"></i></button>
                   </div>
                   <div class="ba-action-buttons" id="actionButtons" style="display:none;">
@@ -1090,7 +1076,7 @@
       </div>
       <div class="compliance-modal__title">Regulatorisk vejledning</div>
       <div class="compliance-modal__body">
-        Du forsøger at anvende et administrativt modul til klinisk rådgivning. Kliniske funktioner kræver aktivt forskningssamarbejde med Aalborg Universitet og aktiveres via Min Assistent &rarr; Klinisk rådgivning.
+        Du forsøger at anvende et administrativt modul til klinisk rådgivning. Kliniske funktioner kræver aktivt forskningssamarbejde med Forskningsenhederne for Almen Praksis og aktiveres via Min Assistent &rarr; Klinisk r&aring;dgivning.
       </div>
       <div class="compliance-modal__actions">
         <button class="compliance-modal__btn" id="complianceStay">Forstået &mdash; bliv her</button>
@@ -1128,14 +1114,13 @@
     // ═══════════════════════════════════════
     var mockMessages = [
       { id: 1, source: 'min_laege', sender: 'Karen Møller', cpr: '120356-****', subject: 'Svimmelhed efter medicinændring', body: 'Kære læge, jeg har taget den nye medicin (Amlodipin 5mg) i en uge nu, og jeg oplever svimmelhed, især når jeg rejser mig op. Er det normalt? Jeg er bekymret for, om dosis er for høj. Skal jeg stoppe med at tage den?', time: 'I dag, 09:12', triage: 'orange', unread: true, draftText: '<p>Kære Karen,</p><p>Tak for din henvendelse vedrørende din Amlodipin-behandling.</p><p>Svimmelhed ved stillingsskift (ortostatisk hypotension) er en kendt bivirkning af Amlodipin, især i starten af behandlingen. Det er vigtigt, at du <strong>ikke stopper medicinen på egen hånd</strong>.</p><p>Vi anbefaler, at du:</p><ul><li>Rejser dig langsomt fra siddende/liggende stilling</li><li>Måler dit blodtryk hjemme (morgen og aften) og noterer værdierne</li><li>Bestiller en kontroltid hos os inden for den næste uge</li></ul><p>Hvis du oplever kraftig svimmelhed, besvimelse eller blodtryk under 90/60, bedes du kontakte os samme dag på tlf. 33 12 34 56.</p><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Valby Lægehus</p>' },
-      { id: 2, source: 'min_laege', sender: 'Peter Hansen', cpr: '150678-****', subject: 'Receptfornyelse Metformin', body: 'Hej, min Metformin 500mg er ved at løbe ud. Kan I forny recepten og sende den til Apoteket på Valby Langgade? Tak.', time: 'I dag, 08:45', triage: 'green', unread: true, draftText: '<p>Kære Peter,</p><p>Tak for din henvendelse om receptfornyelse.</p><p>Vi har fornyet din recept på <strong>Metformin 500 mg</strong> (2 tabletter dagligt) og sendt den elektronisk til Apoteket på Valby Langgade. Recepten bør være tilgængelig inden for få timer.</p><p>Bemærk venligst, at vi anbefaler en kontrolblodprøve (HbA1c) inden din næste fornyelse. Du kan bestille tid til blodprøve via Min Læge eller ring til os.</p><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Valby Lægehus</p>' },
       { id: 3, source: 'min_laege', sender: 'Lars Sørensen', cpr: '081255-****', subject: 'Spørgsmål om blodprøveresultater', body: 'Hej Dr. Nielsen, jeg fik taget blodprøver i fredags. Er resultaterne klar? Og er alt normalt?', time: 'I dag, 08:30', triage: 'yellow', unread: true, draftText: '<p>Kære Lars,</p><p>Tak for din henvendelse om dine blodprøveresultater.</p><p>Dine prøvesvar er nu klar, og jeg kan bekræfte, at <strong>alle værdier ligger inden for normalområdet</strong>. Der er ingen umiddelbar anledning til bekymring.</p><p>Du er velkommen til at bestille en opfølgende konsultation, hvis du ønsker en nærmere gennemgang af resultaterne.</p><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Valby Lægehus</p>' },
       { id: 4, source: 'min_laege', sender: 'Mette Andersen', cpr: '080492-****', subject: 'Tidsbestilling til jordemoderbesøg', body: 'Hej, jeg er nu i uge 36 og skal bestille tid til jordemoderbesøg samt aftale om fødselsforberedelse. Har I ledige tider i næste uge?', time: 'I dag, 08:15', triage: 'yellow', unread: true, draftText: '<p>Kære Mette,</p><p>Tak for din henvendelse vedrørende tidsbestilling.</p><p>Vi har ledige tider til jordemoderbesøg i næste uge:</p><ul><li>Tirsdag d. 4. marts kl. 10:30</li><li>Torsdag d. 6. marts kl. 14:00</li></ul><p>Vedrørende fødselsforberedelse kan vores jordemoder vejlede dig ved besøget. Du er også velkommen til at kontakte jordemoder direkte på tlf. 33 12 34 58.</p><p>Ring eller book online via Min Læge for at bekræfte en tid.</p><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Valby Lægehus</p>' },
       { id: 5, source: 'email', sender: 'Codan Forsikring', cpr: null, subject: 'Anmodning om lægeerklæring — sag #2025-4812', body: 'Til Valby Lægehus,\n\nVi anmoder hermed om en lægeerklæring for vores forsikrede Henrik Madsen (CPR 220765-****) i forbindelse med sygedagpengesag #2025-4812.\n\nVenligst bekræft diagnose, behandlingsforløb og forventet varighed af sygemelding.\n\nMed venlig hilsen,\nCodan Forsikring\nSkadeafdelingen', time: 'I dag, 08:02', triage: 'green', unread: true, draftText: '<p>Til Codan Forsikring,<br>Skadeafdelingen</p><p>Vedr. sag #2025-4812 — Henrik Madsen, CPR 220765-****</p><p>Hermed bekræftes følgende:</p><p><strong>Diagnoser:</strong></p><ul><li>Kroniske lænderygsmerter med diskusprolaps L4/L5 (DM545)</li><li>Moderat depressiv enkeltepisode (DF329)</li></ul><p><strong>Behandlingsforløb:</strong><br>Patienten har været sygemeldt siden september 2024. Aktuelt i fysioterapeutisk behandling (2x/uge) samt psykologforløb.</p><p><strong>Prognose:</strong><br>Gradvis tilbagevenden til arbejde med skånehensyn forventes inden for 2-3 måneder.</p><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Aut.ID: XXXXX<br>Valby Lægehus</p>' },
       { id: 6, source: 'min_laege', sender: 'Nancy Ann Berggren', cpr: '010145-****', subject: 'Ondt i venstre knæ', body: 'Kære læge, mit venstre knæ er stadig hævet efter det vrid jeg fik for 3 uger siden. Jeg føler mig usikker når jeg går på trapper, og det knækker nogle gange. Er det noget jeg skal bekymre mig om?', time: 'I dag, 07:48', triage: 'yellow', unread: true, draftText: null },
       { id: 7, source: 'min_laege', sender: 'Jens Kristensen', cpr: '230988-****', subject: 'Ændring af tid til torsdag', body: 'Hej, kan jeg flytte min tid fra onsdag d. 5. til torsdag d. 6. marts? Helst om formiddagen. Tak!', time: 'I går, 16:45', triage: 'green', unread: false, draftText: '<p>Kære Jens,</p><p>Tak for din besked. Vi har flyttet din tid fra onsdag d. 5. marts til <strong>torsdag d. 6. marts kl. 09:30</strong>.</p><p>Husk at medbringe dit sundhedskort.</p><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Valby Lægehus</p>' },
       { id: 8, source: 'email', sender: 'Region Hovedstaden', cpr: null, subject: 'Epikrise — Mette Andersen indlæggelse 18.02', body: 'Vedhæftet epikrise for Mette Andersen (CPR 080492-****) efter indlæggelse på Hvidovre Hospital d. 18.02.2025. Diagnose: Præeklampsi, mild. Patienten er udskrevet i velbefindende.', time: 'I går, 14:20', triage: 'yellow', unread: false, draftText: null },
-      { id: 9, source: 'min_laege', sender: 'Sofie Lund', cpr: '150395-****', subject: 'Fornyelse af p-piller', body: 'Hej, kan I forny min recept på p-piller (Cilest)? Har taget dem i flere år uden problemer.', time: 'I går, 11:30', triage: 'green', unread: false, draftText: '<p>Kære Sofie,</p><p>Tak for din henvendelse om receptfornyelse.</p><p>Vi har fornyet din recept på <strong>Cilest</strong> og sendt den elektronisk til dit sædvanlige apotek.</p><p>Da det er over et år siden din sidste kontrol, anbefaler vi, at du bestiller tid til en forebyggende helbredsundersøgelse inkl. blodtryksmåling.</p><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Valby Lægehus</p>' },
+      { id: 9, source: 'min_laege', sender: 'Sofie Lund', cpr: '150395-****', subject: 'Fornyelse af p-piller', body: 'Hej, kan I forny min recept på p-piller (Cilest)? Har taget dem i flere år uden problemer.', time: 'I går, 11:30', triage: 'green', unread: false, draftText: '<p>Kære Sofie,</p><p>Tak for din henvendelse.</p><p>Vi har fornyet din recept på <strong>Cilest</strong> og sendt den elektronisk til dit sædvanlige apotek.</p><p>Da det er over et år siden din sidste kontrol, anbefaler vi, at du bestiller tid til en forebyggende helbredsundersøgelse inkl. blodtryksmåling.</p><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Valby Lægehus</p>' },
       { id: 10, source: 'epj', sender: 'Labsvar — Blodprøvepakke', cpr: '150678-****', subject: 'Peter Hansen — HbA1c resultat klar', body: 'Nye laboratorieresultater for Peter Hansen (CPR 150678-****):\n\nHbA1c: 49 mmol/mol (ref: < 48)\nFaste-glukose: 7.2 mmol/L (ref: < 6.1)\nKreatinin: 82 µmol/L (normalt)\neGFR: > 90 (normalt)\n\nLet forhøjet HbA1c og faste-glukose.', time: 'I går, 10:15', triage: 'yellow', unread: false, draftText: '<p>Kære Peter,</p><p>Dine seneste blodprøveresultater er nu klar.</p><p><strong>Resultatoversigt:</strong></p><ul><li>HbA1c: 49 mmol/mol — <em>let over normalområdet</em></li><li>Faste-glukose: 7,2 mmol/L — <em>let forhøjet</em></li><li>Nyrefunktion: Normal</li></ul><p>Vi vil gerne drøfte din behandling ved en kontrolkonsultation. Bestil venligst en tid inden for de næste 2-3 uger.</p><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Valby Lægehus</p>' },
       { id: 11, source: 'email', sender: 'Birthe Holm', cpr: '060548-****', subject: 'Tak for konsultationen', body: 'Kære Dr. Nielsen,\n\nTak for den gode konsultation i går. Jeg ville bare bekræfte, at jeg har fået bestilt tid hos øjenlægen som anbefalet.\n\nVenlig hilsen,\nBirthe', time: '22. feb, 15:30', triage: 'green', unread: false, draftText: '<p>Kære Birthe,</p><p>Tak for din besked og godt at høre, at du har fået bestilt tid hos øjenlægen.</p><p>Kontakt os gerne efter din undersøgelse, hvis der er noget vi skal følge op på.</p><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Valby Lægehus</p>' },
       { id: 12, source: 'min_laege', sender: 'Thomas Petersen', cpr: '290180-****', subject: 'Ondt i halsen — behov for antibiotika?', body: 'Hej, jeg har haft ondt i halsen i 3 dage nu med let feber (38,2). Har forsøgt med smertestillende. Har jeg brug for antibiotika?', time: '22. feb, 10:15', triage: 'yellow', unread: false, draftText: '<p>Kære Thomas,</p><p>Tak for din henvendelse.</p><p>Halssmerter med let feber skyldes i langt de fleste tilfælde virusinfektion, hvor antibiotika ikke har effekt. Vi anbefaler:</p><ul><li>Fortsat smertestillende (Paracetamol/Ibuprofen)</li><li>Rigeligt væske og hvile</li><li>Halspastiller kan lindre lokalt</li></ul><p>Kontakt os igen, hvis feberen stiger over 39 grader eller symptomerne ikke bedres inden for 5-7 dage.</p><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Valby Lægehus</p>' },
@@ -1281,7 +1266,6 @@
     }
 
     var templateLabels = {
-      'receptfornyelse': 'Receptfornyelse',
       'proevesvar': 'Pr\u00f8vesvar',
       'generelt-svar': 'Generelt svar',
       'akut-henvendelse': 'Akut henvendelse',
@@ -1554,7 +1538,7 @@
     // ═══════════════════════════════════════
     // TEMPLATE CHIPS — F-7.A skabelonvalg
     // ═══════════════════════════════════════
-    var defaultPlaceholder = 'Skriv en instruktion \u2014 fx "skriv et h\u00f8fligt svar om receptfornyelse"';
+    var defaultPlaceholder = 'Skriv en instruktion \u2014 fx "skriv et h\u00f8fligt svar om pr\u00f8vesvar"';
 
     function clearTemplateSelection() {
       state.activeTemplate = null;

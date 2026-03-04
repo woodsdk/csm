@@ -988,6 +988,183 @@
     .toast i { width: 16px; height: 16px; }
 
     /* ═══════════════════════════════════════
+       MODE TABS (input bar — small, inline)
+       ═══════════════════════════════════════ */
+    .chat-mode-tabs {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 3px;
+      margin-right: 8px;
+      background: var(--color-gray-100);
+      border-radius: var(--radius-full);
+      flex-shrink: 0;
+    }
+    .chat-mode-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 12px;
+      border: none;
+      background: none;
+      border-radius: var(--radius-full);
+      font-family: inherit;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-navy-400);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+    }
+    .chat-mode-tab i, .chat-mode-tab svg { width: 12px; height: 12px; }
+    .chat-mode-tab:hover { color: var(--color-navy-600); }
+    .chat-mode-tab--active {
+      background: var(--color-white);
+      color: var(--color-navy-700);
+      box-shadow: 0 1px 3px rgba(38, 48, 79, 0.1);
+    }
+    .chat-mode-tab--support.chat-mode-tab--active {
+      color: #A34840;
+    }
+
+    /* ═══════════════════════════════════════
+       SUPPORT MODE OVERRIDES
+       (activated by .mode-support on .ai-layout)
+       ═══════════════════════════════════════ */
+    .mode-support .chat-input-bar {
+      border-color: rgba(212, 101, 92, 0.35);
+    }
+    .mode-support .chat-input-bar:focus-within {
+      border-color: #D4655C;
+      box-shadow: 0 2px 20px rgba(212, 101, 92, 0.12);
+    }
+    .mode-support .chat-send-btn {
+      background: linear-gradient(135deg, #A34840 0%, #D4655C 100%);
+    }
+    .mode-support .chat-send-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, #8B3B34 0%, #C4534A 100%);
+    }
+    .mode-support .chat-attach-btn { color: #D4655C; }
+    .mode-support .chat-attach-btn:hover { background: rgba(212, 101, 92, 0.08); color: #A34840; }
+    .mode-support .chat-msg--ai .chat-msg__content {
+      background: rgba(212, 101, 92, 0.04);
+      border-color: rgba(212, 101, 92, 0.15);
+    }
+    .mode-support .chat-msg--ai .chat-msg__avatar {
+      background: linear-gradient(135deg, rgba(212, 101, 92, 0.1) 0%, rgba(212, 101, 92, 0.18) 100%);
+      color: #D4655C;
+    }
+    .mode-support .chat-msg__actions { display: none; }
+    .mode-support .chat-suggestion-chip {
+      border-color: rgba(212, 101, 92, 0.25);
+      color: #A34840;
+    }
+    .mode-support .chat-suggestion-chip i,
+    .mode-support .chat-suggestion-chip svg { color: #D4655C; }
+    .mode-support .chat-suggestion-chip:hover {
+      border-color: #D4655C;
+      background: rgba(212, 101, 92, 0.06);
+      color: #8B3B34;
+    }
+    .mode-support .chat-suggestion-chip--active {
+      border-color: #D4655C;
+      background: rgba(212, 101, 92, 0.1);
+      color: #8B3B34;
+      font-weight: 600;
+    }
+    .mode-support .chat-welcome__icon {
+      background: linear-gradient(135deg, rgba(212, 101, 92, 0.08) 0%, rgba(212, 101, 92, 0.15) 100%);
+      color: #D4655C;
+    }
+    .mode-support .chat-welcome__text { color: #A34840; }
+    .mode-support .chat-welcome__footer { color: #D4655C; }
+    .mode-support .chat-welcome__mode-tabs { background: rgba(212, 101, 92, 0.06); }
+    .mode-support .chat-welcome__mode-tab:hover { color: #A34840; }
+    .mode-support .chat-welcome__mode-tab--active {
+      background: var(--color-white);
+      color: #A34840;
+    }
+    .mode-support .chat-mode-tabs { background: rgba(212, 101, 92, 0.06); }
+    .mode-support .chat-mode-tab--active { color: #A34840; }
+    .mode-support .generating-dots span { background: #D4655C; }
+    .mode-support .ai-context-sidebar { display: none; }
+    .mode-support .ai-sidebar-toggle { display: none !important; }
+    .mode-support .btn-history-toggle {
+      color: #A34840;
+      border-color: rgba(212, 101, 92, 0.3);
+    }
+    .mode-support .btn-history-toggle:hover {
+      color: #8B3B34;
+      border-color: #D4655C;
+      background: rgba(212, 101, 92, 0.06);
+    }
+    .mode-support .demo-launch-inline {
+      background: linear-gradient(135deg, #A34840, #D4655C);
+      box-shadow: 0 4px 16px rgba(163, 72, 64, 0.25);
+    }
+    .mode-support .demo-launch-inline:hover {
+      background: linear-gradient(135deg, #8B3B34, #C4534A);
+      box-shadow: 0 6px 20px rgba(163, 72, 64, 0.35);
+    }
+    .mode-support .chat-mode-tab { color: #B87570; }
+    .mode-support .chat-mode-tab:hover { color: #A34840; }
+    .mode-support .chat-welcome__mode-tab { color: #B87570; }
+    .mode-support .chat-welcome__mode-tab:hover { color: #A34840; }
+    .mode-support .chat-input-btn { color: #D4655C; }
+    .mode-support .chat-input-btn:hover {
+      color: #A34840;
+      background: rgba(212, 101, 92, 0.08);
+    }
+    .mode-support .chat-textarea::placeholder {
+      color: rgba(163, 72, 64, 0.45);
+    }
+    .mode-support .chat-history-menu__new { color: #A34840; }
+    .mode-support .chat-history-menu__label { color: #B87570; }
+    .mode-support .chat-history-item__meta { color: #B87570; }
+    .mode-support .chat-history-item__mode-dot { background: #D4655C; }
+
+    .chat-history-item__mode-dot--support { background: #D4655C; }
+
+    /* ═══════════════════════════════════════
+       WELCOME MODE TABS (large, centered)
+       ═══════════════════════════════════════ */
+    .chat-welcome__mode-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      background: var(--color-gray-100);
+      border-radius: var(--radius-full);
+      margin-top: 16px;
+    }
+    .chat-welcome__mode-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 20px;
+      border: none;
+      background: none;
+      border-radius: var(--radius-full);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-navy-400);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+    }
+    .chat-welcome__mode-tab i, .chat-welcome__mode-tab svg { width: 16px; height: 16px; }
+    .chat-welcome__mode-tab:hover { color: var(--color-navy-600); }
+    .chat-welcome__mode-tab--active {
+      background: var(--color-white);
+      color: var(--color-navy-700);
+      box-shadow: 0 1px 4px rgba(38, 48, 79, 0.12);
+    }
+    .chat-welcome__mode-tab--support.chat-welcome__mode-tab--active {
+      color: #A34840;
+    }
+
+    /* ═══════════════════════════════════════
        RESPONSIVE
        ═══════════════════════════════════════ */
     @media (max-width: 1280px) {
@@ -1091,25 +1268,16 @@
     <div class="topbar__right">
       <div class="clinic-dropdown">
         <span>Current clinic: Valby Lægehus</span>
-        <svg><use href="#chevron-down"/></svg>
+        <i data-lucide="chevron-down"></i>
       </div>
       <div class="flags">
         <div class="flag flag--dk"></div>
         <div class="flag flag--uk"></div>
       </div>
       <div class="user-menu" id="userMenu">
-        <span class="user-name">Dr. Anna Nielsen</span>
         <div class="user-avatar">A</div>
-        <div class="user-dropdown">
-          <div class="user-dropdown__label">Brugerpanel</div>
-          <a href="beskeder.html" class="user-dropdown__item"><svg><use href="#alert-circle"/></svg>Systemnotifikationer</a>
-          <a href="indstillinger.html" class="user-dropdown__item"><svg><use href="#sliders"/></svg>Brugerindstillinger</a>
-          <div class="user-dropdown__divider"></div>
-          <div class="user-dropdown__label">Klinikadministration</div>
-          <a href="admin-dashboard.html" class="user-dropdown__item"><svg><use href="#settings"/></svg>Klinikadministration</a>
-          <div class="user-dropdown__divider"></div>
-          <a href="#" class="user-dropdown__item"><svg><use href="#log-out"/></svg>Log ud</a>
-        </div>
+        <span class="user-name">Dr. Anna Nielsen</span>
+        <i data-lucide="chevron-down"></i>
       </div>
     </div>
   </header>
@@ -1193,10 +1361,14 @@
           <div class="chat-messages" id="chatMessages">
             <div class="chat-welcome" id="chatWelcome">
               <div class="chat-welcome__icon"><i data-lucide="sparkles"></i></div>
+              <div class="chat-welcome__mode-tabs" id="welcomeModeTabs">
+                <button class="chat-welcome__mode-tab chat-welcome__mode-tab--assistant chat-welcome__mode-tab--active" data-mode="assistant"><i data-lucide="sparkles"></i>Assistent</button>
+                <button class="chat-welcome__mode-tab chat-welcome__mode-tab--support" data-mode="support"><i data-lucide="life-buoy"></i>Support</button>
+              </div>
               <p class="chat-welcome__text">Vælg en skabelon nedenfor for at komme i gang.</p>
               <div class="chat-welcome__footer">
                 <i data-lucide="shield-check"></i>
-                Kliniske skabeloner (AAU) kræver aktivt forskningssamarbejde
+                Kliniske skabeloner (FEA) kræver aktivt forskningssamarbejde
               </div>
             </div>
           </div>
@@ -1205,10 +1377,9 @@
           <div class="chat-quick-prompts" id="quickPrompts">
             <div class="chat-quick-prompts__row">
               <button class="chat-suggestion-chip" data-template="svarudkast"><i data-lucide="mail-open"></i>Svarudkast</button>
-              <button class="chat-suggestion-chip" data-template="resume"><i data-lucide="file-text"></i>Journalresumé <span class="chip-sdu-tag">AAU</span></button>
-              <button class="chat-suggestion-chip" data-template="klinisk"><i data-lucide="stethoscope"></i>Klinisk rådgivning <span class="chip-sdu-tag">AAU</span></button>
+              <button class="chat-suggestion-chip" data-template="resume"><i data-lucide="file-text"></i>Journalresumé <span class="chip-sdu-tag">FEA</span></button>
               <button class="chat-suggestion-chip" data-template="henvisning"><i data-lucide="arrow-right-circle"></i>Henvisning</button>
-              <button class="chat-suggestion-chip" data-template="attest"><i data-lucide="file-signature"></i>Attest <span class="chip-sdu-tag">AAU</span></button>
+              <button class="chat-suggestion-chip" data-template="attest"><i data-lucide="file-signature"></i>Attest <span class="chip-sdu-tag">FEA</span></button>
             </div>
           </div>
 
@@ -1216,7 +1387,7 @@
           <div class="chat-input-area" id="chatInputArea">
             <div class="clinical-warning" id="clinicalWarning">
               <i data-lucide="alert-triangle"></i>
-              <div><strong>Klinisk skabelon</strong> — Kliniske udkast er tilgængelige via forskningssamarbejdet med Aalborg Universitet.</div>
+              <div><strong>Klinisk skabelon</strong> — Kliniske udkast er tilgængelige via forskningssamarbejdet med Forskningsenhederne for Almen Praksis.</div>
             </div>
             <div class="transfer-banner" id="transferBanner" style="display: none;">
               <div class="transfer-banner__dot"></div>
@@ -1227,6 +1398,10 @@
               <button class="chat-input-btn" id="btnAttach" title="Vedhæft filer"><i data-lucide="paperclip"></i></button>
               <input type="file" id="fileInput" style="display:none;" multiple accept=".fnx,.pdf,.doc,.docx,.txt,.xlsx,.pptx,.png,.jpg,.jpeg">
               <textarea class="chat-textarea" id="chatTextarea" placeholder="Beskriv hvad du har brug for..." rows="1"></textarea>
+              <div class="chat-mode-tabs" id="chatModeTabs">
+                <button class="chat-mode-tab chat-mode-tab--assistant chat-mode-tab--active" data-mode="assistant" id="tabAssistant"><i data-lucide="sparkles"></i>Assistent</button>
+                <button class="chat-mode-tab chat-mode-tab--support" data-mode="support" id="tabSupport"><i data-lucide="life-buoy"></i>Support</button>
+              </div>
               <button class="chat-send-btn" id="btnSend" disabled title="Send"><i data-lucide="arrow-up"></i></button>
             </div>
           </div>
@@ -1328,7 +1503,8 @@
       sidebarOpen: false,
       sessions: [],
       currentSessionId: null,
-      historyOpen: false
+      historyOpen: false,
+      chatMode: 'assistant'
     };
 
     // ═══════════════════════════════════════
@@ -1348,10 +1524,89 @@
     };
     var templatePlaceholders = {
       svarudkast: 'Beskriv patientens henvendelse og ønsket svartype...',
-      resume: 'Beskriv hvad resuméet skal fokusere på (AAU forskningssamarbejde)...',
-      klinisk: 'Beskriv den kliniske kontekst (AAU forskningssamarbejde)...',
+      resume: 'Beskriv hvad resuméet skal fokusere på (FEA forskningssamarbejde)...',
+      klinisk: 'Beskriv den kliniske kontekst (FEA forskningssamarbejde)...',
       henvisning: 'Beskriv henvisningen — hvem, hvortil og hvorfor...',
       attest: 'Beskriv attesttype og relevant klinisk baggrund...'
+    };
+
+    // ═══════════════════════════════════════
+    // SUPPORT MODE CONFIG
+    // ═══════════════════════════════════════
+    var supportChips = [
+      { key: 'support_help',    label: 'Hvordan bruger jeg...?', icon: 'help-circle' },
+      { key: 'support_gdpr',    label: 'GDPR & datasikkerhed',  icon: 'shield' },
+      { key: 'support_ai',      label: 'AI & pålidelighed',     icon: 'cpu' },
+      { key: 'support_contact', label: 'Kontakt support',        icon: 'headphones' }
+    ];
+    var supportPlaceholders = {
+      support_help:    'Hvad vil du gerne vide mere om?',
+      support_gdpr:    'Stil et spørgsmål om GDPR eller datasikkerhed...',
+      support_ai:      'Spørg om AI-funktionaliteten...',
+      support_contact: 'Beskriv dit problem eller spørgsmål...'
+    };
+    var supportGeneratingTexts = {
+      support_help:    'Finder svar...',
+      support_gdpr:    'Slår op i sikkerhedsdokumentation...',
+      support_ai:      'Forbereder svar...',
+      support_contact: 'Finder kontaktoplysninger...'
+    };
+    var supportLabels = {
+      support_help: 'Platformhjælp',
+      support_gdpr: 'GDPR & sikkerhed',
+      support_ai: 'AI & pålidelighed',
+      support_contact: 'Kontakt support'
+    };
+    var supportIcons = {
+      support_help: 'help-circle',
+      support_gdpr: 'shield',
+      support_ai: 'cpu',
+      support_contact: 'headphones'
+    };
+    var supportDraftResponses = {
+      support_help: '<p><strong>Velkommen til People\'s Clinic</strong></p>' +
+        '<p>Her er en oversigt over de vigtigste funktioner:</p>' +
+        '<ul>' +
+        '<li><strong>Min Assistent</strong> — Din AI-assistent til at skrive journalnotater, besvarelser, henvisninger og attester. Vælg en skabelon, tilføj patientkontekst og få et udkast du kan redigere.</li>' +
+        '<li><strong>Beskedassistent</strong> — Automatisk sortering og prioritering af indgående patientbeskeder med forslag til svar.</li>' +
+        '<li><strong>Konsultation</strong> — Start og dokumentér konsultationer med automatisk SOAP-notat baseret på optagelse.</li>' +
+        '<li><strong>Klinikdrift</strong> — Overblik over klinikkens nøgletal, økonomi og bemanding.</li>' +
+        '</ul>' +
+        '<p>Du kan altid bruge <strong>quick prompts</strong> nedenfor eller skrive frit i chatfeltet.</p>',
+      support_gdpr: '<p><strong>GDPR & Datasikkerhed i People\'s Clinic</strong></p>' +
+        '<p>People\'s Clinic er bygget med databeskyttelse som fundament:</p>' +
+        '<ul>' +
+        '<li><strong>Datavært:</strong> Alle data hostes på EU-baserede servere i overensstemmelse med GDPR og den danske databeskyttelseslov.</li>' +
+        '<li><strong>Kryptering:</strong> End-to-end kryptering (AES-256) for data i transit og i hvile. TLS 1.3 for alle forbindelser.</li>' +
+        '<li><strong>Adgangsstyring:</strong> Rollebaseret adgang (RBAC) sikrer at kun autoriseret sundhedspersonale kan tilgå patientdata.</li>' +
+        '<li><strong>Databehandleraftale:</strong> Der foreligger databehandleraftale (DPA) i henhold til GDPR art. 28.</li>' +
+        '<li><strong>AI-behandling:</strong> Patientdata sendes ikke til tredjeparter. AI-modellen kører i et isoleret miljø inden for EU.</li>' +
+        '<li><strong>Logning:</strong> Alle handlinger logges i en audit trail, som opbevares i minimum 5 år jf. sundhedsloven.</li>' +
+        '</ul>' +
+        '<p>For yderligere information, se vores <strong>sikkerhedsdokumentation</strong> eller kontakt vores DPO.</p>',
+      support_ai: '<p><strong>AI & Pålidelighed i People\'s Clinic</strong></p>' +
+        '<p>Sådan fungerer AI-assistenten:</p>' +
+        '<ul>' +
+        '<li><strong>Rolle:</strong> AI\'en genererer <em>udkast</em> — aldrig færdige dokumenter. Lægen gennemgår, redigerer og godkender altid inden afsendelse.</li>' +
+        '<li><strong>Human-in-the-loop:</strong> Intet AI-genereret indhold forlader systemet uden eksplicit lægegodkendelse.</li>' +
+        '<li><strong>Transparens:</strong> Alle AI-udkast er markeret tydeligt og kan redigeres direkte i chatvinduet.</li>' +
+        '<li><strong>Kliniske skabeloner (FEA):</strong> Skabeloner mærket "FEA" er udviklet i forskningssamarbejde med Forskningsenhederne for Almen Praksis.</li>' +
+        '<li><strong>Nøjagtighed:</strong> Modellen er trænet på dansk medicinsk fagsprog, men kan lave fejl. Lægens faglige vurdering er altid afgørende.</li>' +
+        '<li><strong>Kontekst:</strong> AI\'en bruger kun den information du aktivt giver den (patient, filer, konsultation). Den har ikke adgang til hele journalsystemet.</li>' +
+        '</ul>',
+      support_contact: '<p><strong>Kontakt People\'s Clinic Support</strong></p>' +
+        '<p>Vi er her for at hjælpe:</p>' +
+        '<ul>' +
+        '<li><strong>Email:</strong> support@peoplesclinic.dk</li>' +
+        '<li><strong>Telefon:</strong> +45 70 20 30 40</li>' +
+        '<li><strong>Åbningstider:</strong> Mandag\u2013fredag 08:00\u201317:00</li>' +
+        '</ul>' +
+        '<p><strong>Akut teknisk support</strong> (uden for åbningstid):</p>' +
+        '<ul>' +
+        '<li>Ring +45 70 20 30 41 (kun kritiske systemfejl)</li>' +
+        '</ul>' +
+        '<p>Du kan også oprette en supportsag direkte fra <strong>Klinikadministration \u2192 Support</strong> i menuen.</p>' +
+        '<p>Gennemsnitlig svartid: Under 4 timer på hverdage.</p>'
     };
 
     // ═══════════════════════════════════════
@@ -1462,7 +1717,7 @@
     var draftResponses = {
       svarudkast: '<p>Kære Karen,</p><p>Tak for din henvendelse.</p><p>Vi har gennemgået din forespørgsel og vil gerne give dig følgende svar:</p><p>På baggrund af din aktuelle behandlingsplan og seneste konsultation den 18.02.2025, vil vi anbefale en opfølgende konsultation for at vurdere din nuværende medicinering. Vi kan se, at du har rapporteret svimmelhed, som kan være relateret til din Amlodipin-behandling.</p><p>Du er velkommen til at kontakte os for at bestille en tid.</p><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Valby Lægehus</p>',
       resume: '<p><strong>Resumé: Klinisk vejledning — Type 2 Diabetes i almen praksis</strong></p><p>Vejledningen beskriver de aktuelle nationale anbefalinger for diagnostik, behandling og opfølgning af type 2 diabetes.</p><p><strong>Diagnostik</strong></p><ul><li>HbA1c ≥ 48 mmol/mol eller fastende plasma-glukose ≥ 7,0 mmol/L</li><li>Diagnosen bør bekræftes med mindst to målinger på forskellige dage</li></ul><p><strong>Behandlingsmål</strong></p><ul><li>HbA1c &lt; 53 mmol/mol for de fleste patienter</li><li>Individualiseret mål for ældre og komorbide patienter</li><li>BT-mål: &lt; 130/80 mmHg</li></ul><p><strong>Farmakologisk behandling</strong></p><ul><li>Førstevalg: Metformin som monoterapi (startdosis 500 mg dagligt)</li><li>Ved insufficient effekt: Tillæg af SGLT2-hæmmer eller GLP-1-receptoragonist</li><li>Insulin overvejes ved HbA1c &gt; 70 mmol/mol trods kombinationsbehandling</li></ul><p><strong>Opfølgning</strong></p><ul><li>Minimum årlig kontrol inkl. HbA1c, nyrefunktion, lipidprofil</li><li>Årlig screening for diabetisk retinopati</li><li>Fodundersøgelse mindst én gang årligt</li></ul>',
-      klinisk: '<p><em>Denne skabelon genererer kliniske udkast baseret på konsultationsdata og er tilgængelig som led i forskningssamarbejdet med Aalborg Universitet.</em></p><p>Det kliniske udkast vil her tage afsæt i den specifikke konsultationshistorik og tilgængelig patientdata for at sikre et præcist og kontekstuelt relevant svar.</p><p>Funktionaliteten frigives i takt med igangsættelse af relaterede forskningsprojekter under ordnede og lovlige rammer.</p>',
+      klinisk: '<p><em>Denne skabelon genererer kliniske udkast baseret på konsultationsdata og er tilgængelig som led i forskningssamarbejdet med Forskningsenhederne for Almen Praksis.</em></p><p>Det kliniske udkast vil her tage afsæt i den specifikke konsultationshistorik og tilgængelig patientdata for at sikre et præcist og kontekstuelt relevant svar.</p><p>Funktionaliteten frigives i takt med igangsættelse af relaterede forskningsprojekter under ordnede og lovlige rammer.</p>',
       henvisning: '<p><strong>Henvisning til øjenlæge</strong></p><p><strong>Patient:</strong> Mette Andersen, CPR 080492-****</p><p><strong>Henvisende læge:</strong> Dr. Anna Nielsen, Valby Lægehus</p><p><strong>Henvisningsdiagnose:</strong> Synsforstyrrelser, obs. corpus vitreum-forandringer (DH433)</p><p><strong>Anamnese:</strong> 32-årig kvinde med tilbagevendende synsforstyrrelser i form af flydende pletter og lysflash i højre øje over de seneste 3 måneder. Ingen tidligere øjensygdom. Ingen familiær disposition til nethindeløsning. Ingen traume.</p><p><strong>Objektiv undersøgelse:</strong> Visus normal bilateralt. Ingen påfaldende fund ved ekstern inspektion.</p><p><strong>Ønsket vurdering:</strong> Vurdering mhp. nethindepathologi. Fundoskopi og evt. OCT ønskes.</p><p><strong>Prioritet:</strong> Subakut (inden for 4 uger)</p><p>Venlig hilsen,<br><strong>Dr. Anna Nielsen</strong><br>Valby Lægehus<br>Tlf. 33 12 34 56</p>',
       attest: '<p><strong>Statusattest (LÆ 125)</strong></p><p><strong>Rekvirent:</strong> Valby Jobcenter, Sygedagpengeafdelingen</p><p><strong>Patient:</strong> Henrik Madsen, CPR 220765-****</p><p><strong>Dato:</strong> 25.02.2026</p><hr><p><strong>Diagnoser:</strong></p><ul><li>Kroniske lænderygsmerter med diskusprolaps L4/L5 (DM545)</li><li>Moderat depressiv enkeltepisode (DF329)</li></ul><p><strong>Forløb og behandling:</strong></p><p>Patienten har været sygemeldt siden september 2025. MR-skanning (oktober 2025) viste diskusprolaps med let rodpåvirkning. Aktuel behandling: fysioterapi 2x/uge, Sertralin 100 mg dagligt, psykologforløb påbegyndt januar 2026.</p><p><strong>Aktuel status:</strong></p><p>Fortsat smerter ved belastning (VAS 5-6 ved aktivitet). Den depressive tilstand er i bedring med forbedret søvnkvalitet. Nedsat energi og koncentrationsbesvær persisterer.</p><p><strong>Vurdering:</strong></p><p>Tilstanden vurderes ikke stationær. Der forventes yderligere bedring over de kommende 2-3 måneder. Gradvis tilbagevenden til arbejde med skånehensyn vurderes realistisk inden for denne tidshorisont.</p><hr><p><strong>Dr. Anna Nielsen</strong><br>Aut.ID: XXXXX<br>Valby Lægehus</p>'
     };
@@ -1522,7 +1777,7 @@
 
       // Placeholder
       if (state.currentTemplate) {
-        chatTextarea.placeholder = templatePlaceholders[state.currentTemplate] || 'Beskriv hvad du har brug for...';
+        chatTextarea.placeholder = templatePlaceholders[state.currentTemplate] || supportPlaceholders[state.currentTemplate] || 'Beskriv hvad du har brug for...';
       } else {
         chatTextarea.placeholder = 'Beskriv hvad du har brug for...';
       }
@@ -1558,15 +1813,75 @@
 
     function rebuildQuickPrompts() {
       var row = document.querySelector('.chat-quick-prompts__row');
-      row.innerHTML =
-        '<button class="chat-suggestion-chip" data-template="svarudkast"><i data-lucide="mail-open"></i>Svarudkast</button>' +
-        '<button class="chat-suggestion-chip" data-template="resume"><i data-lucide="file-text"></i>Journalresumé <span class="chip-sdu-tag">AAU</span></button>' +
-        '<button class="chat-suggestion-chip" data-template="klinisk"><i data-lucide="stethoscope"></i>Klinisk rådgivning <span class="chip-sdu-tag">AAU</span></button>' +
-        '<button class="chat-suggestion-chip" data-template="henvisning"><i data-lucide="arrow-right-circle"></i>Henvisning</button>' +
-        '<button class="chat-suggestion-chip" data-template="attest"><i data-lucide="file-signature"></i>Attest <span class="chip-sdu-tag">AAU</span></button>';
+      if (state.chatMode === 'support') {
+        row.innerHTML = supportChips.map(function(chip) {
+          return '<button class="chat-suggestion-chip" data-template="' + chip.key + '">' +
+            '<i data-lucide="' + chip.icon + '"></i>' + chip.label + '</button>';
+        }).join('');
+      } else {
+        row.innerHTML =
+          '<button class="chat-suggestion-chip" data-template="svarudkast"><i data-lucide="mail-open"></i>Svarudkast</button>' +
+          '<button class="chat-suggestion-chip" data-template="resume"><i data-lucide="file-text"></i>Journalresumé <span class="chip-sdu-tag">FEA</span></button>' +
+          '<button class="chat-suggestion-chip" data-template="henvisning"><i data-lucide="arrow-right-circle"></i>Henvisning</button>' +
+          '<button class="chat-suggestion-chip" data-template="attest"><i data-lucide="file-signature"></i>Attest <span class="chip-sdu-tag">FEA</span></button>';
+      }
       lucide.createIcons();
       bindChipClicks();
     }
+
+    // ═══════════════════════════════════════
+    // MODE SWITCHING
+    // ═══════════════════════════════════════
+    function switchMode(newMode) {
+      if (newMode === state.chatMode) return;
+
+      // Auto-save current session if there are messages
+      if (state.messages.length > 0) {
+        saveCurrentSession();
+      }
+
+      state.chatMode = newMode;
+
+      // Toggle .mode-support on .ai-layout
+      var aiLayout = document.querySelector('.ai-layout');
+      if (newMode === 'support') {
+        aiLayout.classList.add('mode-support');
+      } else {
+        aiLayout.classList.remove('mode-support');
+      }
+
+      // Update tab visuals
+      document.querySelectorAll('.chat-mode-tab').forEach(function(tab) {
+        tab.classList.toggle('chat-mode-tab--active', tab.dataset.mode === newMode);
+      });
+
+      // Reset chat UI (mode-aware)
+      resetChatUI();
+
+      // Rebuild quick prompt chips
+      rebuildQuickPrompts();
+
+      // Render history with mode dots
+      renderHistory();
+    }
+
+    // Mode tab clicks (input bar tabs)
+    document.querySelectorAll('.chat-mode-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        switchMode(this.dataset.mode);
+      });
+    });
+
+    // Welcome mode tabs
+    function bindWelcomeModeTabs() {
+      var welcomeTabs = document.querySelectorAll('.chat-welcome__mode-tab');
+      welcomeTabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          switchMode(this.dataset.mode);
+        });
+      });
+    }
+    bindWelcomeModeTabs();
 
     // ═══════════════════════════════════════
     // FILE UPLOAD
@@ -1949,7 +2264,7 @@
             '<button class="chat-msg-action" data-action="copy-doc"><i data-lucide="copy"></i>Kopi\u00e9r henvisning</button>' +
             '<button class="chat-msg-action chat-msg-action--primary" data-action="approve-doc"><i data-lucide="check-circle"></i>Godkend &amp; gem</button>' +
           '</div>' +
-          '<div class="doc-output__disclaimer"><i data-lucide="shield-check"></i>AI-genereret under AAU-forskningssamarbejdet. Kr\u00e6ver l\u00e6gefaglig godkendelse.</div>' +
+          '<div class="doc-output__disclaimer"><i data-lucide="shield-check"></i>AI-genereret under FEA-forskningssamarbejdet. Kr\u00e6ver l\u00e6gefaglig godkendelse.</div>' +
         '</div>' +
       '</div>';
     }
@@ -2017,7 +2332,7 @@
             '<button class="chat-msg-action" data-action="copy-doc"><i data-lucide="copy"></i>Kopi\u00e9r attest</button>' +
             '<button class="chat-msg-action chat-msg-action--primary" data-action="approve-doc"><i data-lucide="check-circle"></i>Godkend &amp; gem</button>' +
           '</div>' +
-          '<div class="doc-output__disclaimer"><i data-lucide="shield-check"></i>AI-genereret under AAU-forskningssamarbejdet. Kr\u00e6ver l\u00e6gefaglig godkendelse.</div>' +
+          '<div class="doc-output__disclaimer"><i data-lucide="shield-check"></i>AI-genereret under FEA-forskningssamarbejdet. Kr\u00e6ver l\u00e6gefaglig godkendelse.</div>' +
         '</div>' +
       '</div>';
     }
@@ -2054,6 +2369,7 @@
       // Structured document outputs for henvisning & attest
       if (template === 'henvisning') return buildHenvisningDocumentHTML();
       if (template === 'attest') return buildAttestDocumentHTML();
+      if (template && supportDraftResponses[template]) return supportDraftResponses[template];
       return draftResponses[template] || draftResponses['svarudkast'];
     }
 
@@ -2091,8 +2407,8 @@
       }
 
       if (msg.template) {
-        var badgeIcon = templateIcons[msg.template] || 'sparkles';
-        var badgeLabel = templateLabels[msg.template] || '';
+        var badgeIcon = templateIcons[msg.template] || supportIcons[msg.template] || 'sparkles';
+        var badgeLabel = templateLabels[msg.template] || supportLabels[msg.template] || '';
         html += '<div class="chat-msg__meta"><span class="chat-msg__template-badge"><i data-lucide="' + badgeIcon + '"></i>' + badgeLabel + '</span></div>';
       }
 
@@ -2120,7 +2436,7 @@
     }
 
     function showTypingIndicator() {
-      var text = state.currentTemplate ? (generatingTexts[state.currentTemplate] || 'Genererer...') : 'Genererer...';
+      var text = state.currentTemplate ? (generatingTexts[state.currentTemplate] || supportGeneratingTexts[state.currentTemplate] || 'Genererer...') : 'Genererer...';
       var html = '<div class="chat-msg chat-msg--ai" id="typingIndicator">';
       html += '<div class="chat-msg__avatar"><i data-lucide="sparkles"></i></div>';
       html += '<div class="chat-msg__content">';
@@ -2231,6 +2547,7 @@
         patientName: state.patientContext ? state.patientContext.name : null,
         patientCpr: state.patientContext ? state.patientContext.cpr : null,
         template: state.currentTemplate || (state.messages[0] ? state.messages[0].template : null),
+        mode: state.chatMode,
         firstMessage: state.messages[0] ? state.messages[0].content : '',
         timestamp: new Date(),
         messageCount: state.messages.length
@@ -2264,11 +2581,12 @@
       }
       list.innerHTML = state.sessions.map(function(s) {
         var name = s.patientName || '(Dokument)';
-        var templateName = s.template ? (templateLabels[s.template] || '') : '';
+        var templateName = s.template ? (templateLabels[s.template] || supportLabels[s.template] || '') : '';
         var time = formatSessionTime(s.timestamp instanceof Date ? s.timestamp : new Date(s.timestamp));
         var isActive = s.id === state.currentSessionId;
+        var modeDotClass = (s.mode === 'support') ? 'chat-history-item__mode-dot--support' : 'chat-history-item__mode-dot--assistant';
         return '<button class="chat-history-item' + (isActive ? ' chat-history-item--active' : '') + '" data-session-id="' + s.id + '">' +
-          '<div class="chat-history-item__name"><span class="chat-history-item__mode-dot chat-history-item__mode-dot--assistant"></span>' + name + '</div>' +
+          '<div class="chat-history-item__name"><span class="chat-history-item__mode-dot ' + modeDotClass + '"></span>' + name + '</div>' +
           '<div class="chat-history-item__meta">' +
             (templateName ? '<span>' + templateName + '</span><span>&middot;</span>' : '') +
             '<span>' + time + '</span>' +
@@ -2354,13 +2672,25 @@
       state.currentTemplate = null;
       state.currentSessionId = null;
 
+      var isSupport = state.chatMode === 'support';
+      var welcomeIcon = isSupport ? 'life-buoy' : 'sparkles';
+      var welcomeText = isSupport ? 'Stil et spørgsmål om platformen, GDPR, sikkerhed eller andet.' : 'Vælg en skabelon nedenfor for at komme i gang.';
+      var welcomeFooter = isSupport ? 'Support-samtaler gemmes ikke og deles ikke med klinikpersonale' : 'Kliniske skabeloner (FEA) kræver aktivt forskningssamarbejde';
+      var assistantTabActive = isSupport ? '' : ' chat-welcome__mode-tab--active';
+      var supportTabActive = isSupport ? ' chat-welcome__mode-tab--active' : '';
+
       chatMessages.innerHTML = '';
       chatMessages.innerHTML = '<div class="chat-welcome" id="chatWelcome">' +
-        '<div class="chat-welcome__icon"><i data-lucide="sparkles"></i></div>' +
-        '<p class="chat-welcome__text">Vælg en skabelon nedenfor for at komme i gang.</p>' +
-        '<div class="chat-welcome__footer"><i data-lucide="shield-check"></i>Kliniske skabeloner (AAU) kræver aktivt forskningssamarbejde</div>' +
+        '<div class="chat-welcome__icon"><i data-lucide="' + welcomeIcon + '"></i></div>' +
+        '<div class="chat-welcome__mode-tabs" id="welcomeModeTabs">' +
+          '<button class="chat-welcome__mode-tab chat-welcome__mode-tab--assistant' + assistantTabActive + '" data-mode="assistant"><i data-lucide="sparkles"></i>Assistent</button>' +
+          '<button class="chat-welcome__mode-tab chat-welcome__mode-tab--support' + supportTabActive + '" data-mode="support"><i data-lucide="life-buoy"></i>Support</button>' +
+        '</div>' +
+        '<p class="chat-welcome__text">' + welcomeText + '</p>' +
+        '<div class="chat-welcome__footer"><i data-lucide="shield-check"></i>' + welcomeFooter + '</div>' +
       '</div>';
       chatWelcome = document.getElementById('chatWelcome');
+      bindWelcomeModeTabs();
 
       clearAttachments();
       chatTextarea.value = '';
@@ -2371,7 +2701,7 @@
       document.querySelectorAll('.chat-suggestion-chip').forEach(function(chip) {
         chip.classList.remove('chat-suggestion-chip--active');
       });
-      chatTextarea.placeholder = 'Beskriv hvad du har brug for...';
+      chatTextarea.placeholder = isSupport ? 'Stil et spørgsmål...' : 'Beskriv hvad du har brug for...';
       lucide.createIcons();
     }
 
@@ -2419,7 +2749,9 @@
     var urlParams = new URLSearchParams(window.location.search);
     var templateParam = urlParams.get('type');
     var fromParam = urlParams.get('from');
+    var modeParam = urlParams.get('mode');
 
+    if (modeParam === 'support') switchMode('support');
     if (templateParam) setTemplate(templateParam);
 
     if (fromParam === 'konsultation' || fromParam === 'patientoversigt') {
@@ -2814,7 +3146,7 @@
         if (tourCancelled) return;
 
         // ══════════════════════════════
-        // Step 3: Highlight an AAU badge
+        // Step 3: Highlight an FEA badge
         // ══════════════════════════════
         setProgress(40);
         hideTooltip();
@@ -2824,7 +3156,7 @@
 
         var sduChip = document.querySelector('.chat-suggestion-chip[data-template="resume"]');
         showSpotlight(sduChip, 6);
-        showTooltip(sduChip, 3, '<strong>AAU Forskningssamarbejde</strong> \u2014 Skabeloner markeret med <strong>AAU</strong> er kliniske skabeloner udviklet i samarbejde med Aalborg Universitet. Disse kr\u00e6ver et aktivt forskningssamarbejde.', 'bottom');
+        showTooltip(sduChip, 3, '<strong>FEA Forskningssamarbejde</strong> \u2014 Skabeloner markeret med <strong>FEA</strong> er kliniske skabeloner udviklet i samarbejde med Forskningsenhederne for Almen Praksis. Disse kr\u00e6ver et aktivt forskningssamarbejde.', 'bottom');
         startTooltipTimer(7000);
         await wait(7000);
         if (tourCancelled) return;
@@ -2860,6 +3192,31 @@
         startTooltipTimer(7000);
         await wait(7000);
         if (tourCancelled) return;
+
+        // ══════════════════════════════
+        // Step 6: Switch to Support mode
+        // ══════════════════════════════
+        setProgress(88);
+        hideTooltip();
+        hideSpotlight();
+        await wait(600);
+        if (tourCancelled) return;
+
+        // Switch to support mode
+        switchMode('support');
+        await wait(800);
+        if (tourCancelled) return;
+
+        var supportChipsEl = document.querySelector('.chat-quick-prompts');
+        showSpotlight(supportChipsEl, 6);
+        showTooltip(supportChipsEl, 6, '<strong>Support-tilstand</strong> \u2014 Skift til Support for at f\u00e5 hj\u00e6lp med platformen, GDPR, datasikkerhed og AI-funktionalitet. Support-svar er kontekstuelle og baseret p\u00e5 People\'s Clinic dokumentation.', 'top');
+        startTooltipTimer(7000);
+        await wait(7000);
+        if (tourCancelled) return;
+
+        // Switch back to assistant for completion
+        switchMode('assistant');
+        await wait(400);
 
         // ══════════════════════════════
         // DEMO COMPLETE
