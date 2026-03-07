@@ -2624,6 +2624,345 @@
 
 <div class="slide-container">
 <!-- ====================================================================
+     SLIDE — APP STORE ECOSYSTEM
+     ==================================================================== -->
+<div class="slide slide--white" style="display: flex; flex-direction: column; justify-content: center; padding: 120px 96px 72px;">
+
+  <!-- Header -->
+  <div style="text-align: center; margin-bottom: 56px;">
+    <div class="label" style="text-align: center;">&Aring;ben platform</div>
+    <h2 style="font-size: 52px; font-weight: 500; line-height: 1.1; letter-spacing: -1px; color: var(--navy-900); margin-bottom: 12px;">Egne produkter. <span style="color: var(--navy-500);">&Aring;bent &oslash;kosystem.</span></h2>
+    <p class="subtitle" style="text-align: center; margin: 0 auto; max-width: 780px;">Vores platform er &aring;ben &mdash; tredjeparter kan integrere direkte<br>via MCP, FHIR og &aring;bne API&rsquo;er.</p>
+  </div>
+
+  <!-- Ecosystem: tree hierarchy with People's Doctor as umbrella -->
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 0;">
+
+    <!-- People's Doctor ApS — umbrella bar -->
+    <div style="background: linear-gradient(135deg, var(--navy-600), var(--navy-500)); border-radius: 20px; padding: 22px 56px; display: flex; align-items: center; justify-content: center; gap: 14px; width: fit-content; box-shadow: 0 6px 24px rgba(19,16,44,0.15);">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      <span style="font-size: 24px; font-weight: 600; color: #fff; letter-spacing: -0.3px;">People&rsquo;s Doctor ApS</span>
+    </div>
+
+    <!-- Connector: clean SVG tree lines -->
+    <svg width="100%" height="64" viewBox="0 0 1300 64" preserveAspectRatio="xMidYMid meet" style="max-width: 1300px; display: block; overflow: visible;">
+      <!-- Vertical stem from center (umbrella) down to horizontal bar -->
+      <line x1="650" y1="0" x2="650" y2="28" stroke="#C8CEE0" stroke-width="2" stroke-linecap="round"/>
+      <!-- Horizontal bar connecting all three columns -->
+      <line x1="290" y1="28" x2="1134" y2="28" stroke="#C8CEE0" stroke-width="2" stroke-linecap="round"/>
+      <!-- Drop to People's Clinic (left) -->
+      <line x1="290" y1="28" x2="290" y2="64" stroke="#C8CEE0" stroke-width="2" stroke-linecap="round"/>
+      <!-- Drop to People's Doctor (center) -->
+      <line x1="774" y1="28" x2="774" y2="64" stroke="#C8CEE0" stroke-width="2" stroke-linecap="round"/>
+      <!-- Drop to People's Health (right) -->
+      <line x1="1134" y1="28" x2="1134" y2="64" stroke="#C8CEE0" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+
+    <!-- Three product columns -->
+    <div style="width: 100%; max-width: 1300px; display: grid; grid-template-columns: 1.4fr 0.8fr 0.8fr; gap: 28px; align-items: start;">
+
+      <!-- People's Clinic + App Store tjenester -->
+      <div>
+        <!-- People's Clinic card — dark gradient to show LIVE -->
+        <div style="background: linear-gradient(135deg, #13192C 0%, #5669A4 100%); border-radius: 20px; padding: 28px 32px; box-shadow: 0 4px 32px rgba(19,25,44,0.25);">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div style="width: 44px; height: 44px; border-radius: 13px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <div>
+              <div style="font-size: 22px; font-weight: 500; color: #fff; letter-spacing: -0.3px;">People&rsquo;s Clinic</div>
+              <div style="font-size: 15px; color: rgba(255,255,255,0.7);">AI-journal og klinikdrift</div>
+            </div>
+            <div style="margin-left: auto; font-size: 13px; font-weight: 600; color: #fff; background: rgba(255,255,255,0.18); padding: 5px 14px; border-radius: 100px;">LIVE</div>
+          </div>
+        </div>
+
+        <!-- App Store label -->
+        <div style="margin: 20px 0 12px 16px; display: flex; align-items: center; gap: 10px;">
+          <div style="width: 20px; height: 1px; background: var(--navy-200);"></div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--navy-400)" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          <span style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--navy-400);">Via App Store</span>
+          <div style="flex: 1; height: 1px; background: var(--navy-200);"></div>
+        </div>
+
+        <!-- Third-party apps row -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+          <div style="background: #fff; border-radius: 14px; padding: 20px 16px; box-shadow: 0 2px 20px rgba(38, 48, 79, 0.07); text-align: center;">
+            <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--navy-100); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy-400)" stroke-width="1.5"><path d="M9 3h6v6l4 8H5l4-8V3z"/><line x1="9" y1="3" x2="15" y2="3"/></svg>
+            </div>
+            <div style="font-size: 15px; font-weight: 500; color: var(--navy-900); margin-bottom: 3px;">LabNord</div>
+            <div style="font-size: 12px; color: var(--navy-400); line-height: 1.4;">Pr&oslash;vesvar med AI-flagging</div>
+          </div>
+
+          <div style="background: #fff; border-radius: 14px; padding: 20px 16px; box-shadow: 0 2px 20px rgba(38, 48, 79, 0.07); text-align: center;">
+            <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--navy-100); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy-400)" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div style="font-size: 15px; font-weight: 500; color: var(--navy-900); margin-bottom: 3px;">MinDialog</div>
+            <div style="font-size: 12px; color: var(--navy-400); line-height: 1.4;">Asynkron e-konsultation</div>
+          </div>
+
+          <div style="background: #fff; border-radius: 14px; padding: 20px 16px; box-shadow: 0 2px 20px rgba(38, 48, 79, 0.07); text-align: center;">
+            <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--navy-100); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy-400)" stroke-width="1.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            </div>
+            <div style="font-size: 15px; font-weight: 500; color: var(--navy-900); margin-bottom: 3px;">Netv&aelig;rkspraksis Danmark</div>
+            <div style="font-size: 12px; color: var(--navy-400); line-height: 1.4;">Klinisk indhold &amp; guidelines</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- People's Doctor -->
+      <div style="background: #fff; border-radius: 20px; padding: 28px 32px; box-shadow: 0 2px 30px rgba(38, 48, 79, 0.10);">
+        <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px;">
+          <div style="width: 44px; height: 44px; border-radius: 13px; background: var(--navy-100); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy-500)" stroke-width="1.5" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          </div>
+          <div>
+            <div style="font-size: 22px; font-weight: 500; color: var(--navy-900); letter-spacing: -0.3px;">People&rsquo;s Doctor</div>
+            <div style="font-size: 15px; color: var(--navy-500); margin-top: 4px;">Patientprodukt &mdash; app til behandlingsforl&oslash;b</div>
+          </div>
+          <div style="font-size: 13px; font-weight: 500; color: var(--navy-500); background: var(--navy-100); padding: 5px 14px; border-radius: 100px;">2027</div>
+        </div>
+      </div>
+
+      <!-- People's Health -->
+      <div style="background: #fff; border-radius: 20px; padding: 28px 32px; box-shadow: 0 2px 30px rgba(38, 48, 79, 0.10);">
+        <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px;">
+          <div style="width: 44px; height: 44px; border-radius: 13px; background: var(--navy-100); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy-500)" stroke-width="1.5" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <div>
+            <div style="font-size: 22px; font-weight: 500; color: var(--navy-900); letter-spacing: -0.3px;">People&rsquo;s Health</div>
+            <div style="font-size: 15px; color: var(--navy-500); margin-top: 4px;">Forskningsprodukt &mdash; patienten ejer sin data</div>
+          </div>
+          <div style="font-size: 13px; font-weight: 500; color: var(--navy-500); background: var(--navy-100); padding: 5px 14px; border-radius: 100px;">2027</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <img src="billeder/peoples clinic dark.svg" alt="" class="slide-logo-bottom">
+  <span class="page-num">26 / 30</span>
+</div>
+</div>
+
+
+<div class="slide-container">
+<!-- ====================================================================
+     SLIDE — APP STORE (product showcase)
+     ==================================================================== -->
+<div class="slide slide--white" style="display: flex; align-items: center; gap: 72px;">
+
+  <!-- Left column: text -->
+  <div style="flex: 0 0 520px; display: flex; flex-direction: column; justify-content: center;">
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+      <span style="font-size: 13px; font-weight: 500; color: var(--navy-500); text-transform: uppercase; letter-spacing: 1.5px;">&Aring;ben platform</span>
+    </div>
+    <h2 class="title">App Store</h2>
+    <p class="subtitle" style="margin-bottom: 36px;">Tredjeparter kan integrere direkte med People&rsquo;s Clinic via API og MCP &mdash; og distribuere til alle tilsluttede klinikker.</p>
+
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <div style="font-size: 20px; font-weight: 500; color: var(--navy-800); line-height: 1.5; padding-left: 32px; position: relative;"><svg width="20" height="20" viewBox="0 0 24 24" fill="var(--navy-500)" style="position: absolute; left: 0; top: 4px;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>&Aring;bne API&rsquo;er, FHIR og MCP-protokol</div>
+      <div style="font-size: 20px; font-weight: 500; color: var(--navy-800); line-height: 1.5; padding-left: 32px; position: relative;"><svg width="20" height="20" viewBox="0 0 24 24" fill="var(--navy-500)" style="position: absolute; left: 0; top: 4px;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Tredjeparter bygger produkter ind i platformen</div>
+      <div style="font-size: 20px; font-weight: 500; color: var(--navy-800); line-height: 1.5; padding-left: 32px; position: relative;"><svg width="20" height="20" viewBox="0 0 24 24" fill="var(--navy-500)" style="position: absolute; left: 0; top: 4px;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Klinikken v&aelig;lger og tilk&oslash;ber selv</div>
+      <div style="font-size: 20px; font-weight: 500; color: var(--navy-800); line-height: 1.5; padding-left: 32px; position: relative;"><svg width="20" height="20" viewBox="0 0 24 24" fill="var(--navy-500)" style="position: absolute; left: 0; top: 4px;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Alle tjenester skal overholde compliance og kunne hostes p&aring; Gefion</div>
+    </div>
+    <p style="margin-top: 28px; font-size: 13px; color: var(--navy-400); line-height: 1.5; font-style: italic;">Enhver sundhedsakt&oslash;r kan udvikle og distribuere tjenester til alle tilsluttede klinikker via People&rsquo;s Clinic App Store.</p>
+  </div>
+
+  <!-- Right column: screenshot -->
+  <div style="flex: 1; display: flex; align-items: center;">
+    <div class="browser" style="width: 100%;">
+      <div class="browser__bar">
+        <div class="browser__dot"></div>
+        <div class="browser__dot"></div>
+        <div class="browser__dot"></div>
+      </div>
+      <img src="billeder/appstore.png" alt="App Store"
+           style="width: 100%; display: block;"
+           onerror="this.outerHTML='<div class=\'browser__fallback\'>billeder/appstore.png</div>'">
+    </div>
+  </div>
+
+  <img src="billeder/peoples clinic dark.svg" alt="" class="slide-logo-bottom">
+  <span class="page-num">27 / 30</span>
+</div>
+</div>
+
+
+<div class="slide-container">
+<!-- ====================================================================
+     SLIDE 29 — ROADMAP (visual timeline)
+     ==================================================================== -->
+<div class="slide slide--dark" style="display: flex; flex-direction: column; justify-content: center; padding: 72px 120px 72px;">
+
+  <!-- Header (centered vertically with content) -->
+  <div style="text-align: center; margin-bottom: 56px;">
+    <div class="label" style="color: var(--navy-400); margin-bottom: 12px; text-align: center;">Roadmap</div>
+    <h2 style="font-size: 44px; font-weight: 500; line-height: 1.1; letter-spacing: -1px; color: #fff; margin-bottom: 8px; text-align: center;">Fra journalassistent til AI-sundhedsplatform</h2>
+    <p style="font-size: 20px; color: var(--navy-400); font-weight: 400; text-align: center;">2026 &ndash; 2027</p>
+  </div>
+
+  <!-- Timeline — single CSS Grid, everything aligned by column -->
+  <div style="position: relative; display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: auto 28px 22px 22px 22px 28px auto; column-gap: 28px; row-gap: 0; align-items: stretch;">
+
+    <!-- ═══ HORIZONTAL TIMELINE LINE (spans full width at row 4) ═══ -->
+    <div style="grid-column: 1 / -1; grid-row: 4; position: relative; pointer-events: none;">
+      <div style="position: absolute; top: 50%; left: -60px; right: -60px; height: 3px; transform: translateY(-50%); background: rgba(255,255,255,0.3); border-radius: 2px;"></div>
+    </div>
+
+    <!-- ═══ TOP CARDS (row 1) ═══ -->
+    <!-- Q1 -->
+    <div style="grid-column: 1; grid-row: 1; background: rgba(255,255,255,0.11); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.16); border-radius: 18px; padding: 24px 22px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);">
+      <div style="font-size: 19px; font-weight: 600; color: #fff; margin-bottom: 6px; line-height: 1.25;">People&rsquo;s Clinic</div>
+      <div style="font-size: 15px; color: #fff; line-height: 1.5;">Voice-to-text journalf&oslash;ring. AI-genererede konsultationsnotater.</div>
+    </div>
+    <!-- Q3 -->
+    <div style="grid-column: 3; grid-row: 1; background: rgba(255,255,255,0.11); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.16); border-radius: 18px; padding: 24px 22px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);">
+      <div style="font-size: 19px; font-weight: 600; color: #fff; margin-bottom: 6px; line-height: 1.25;">Gefion-migration</div>
+      <div style="font-size: 15px; color: #fff; line-height: 1.5;">Dansk datasuver&aelig;nitet og hurtig performance via Gefion.</div>
+    </div>
+    <!-- 2027 -->
+    <div style="grid-column: 5; grid-row: 1; background: rgba(255,255,255,0.11); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.16); border-radius: 18px; padding: 24px 22px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);">
+      <div style="font-size: 19px; font-weight: 600; color: #fff; margin-bottom: 6px; line-height: 1.25;">People&rsquo;s Doctor</div>
+      <div style="font-size: 15px; color: #fff; line-height: 1.5;">Patientrettet app. Bedre behandlingsforl&oslash;b mellem konsultationer.</div>
+    </div>
+
+    <!-- ═══ TOP STEMS (row 2) — vertical lines from cards to labels ═══ -->
+    <div style="grid-column: 1; grid-row: 2; display: flex; justify-content: center;"><div style="width: 2px; height: 100%; background: rgba(255,255,255,0.3);"></div></div>
+    <div style="grid-column: 3; grid-row: 2; display: flex; justify-content: center;"><div style="width: 2px; height: 100%; background: rgba(255,255,255,0.3);"></div></div>
+    <div style="grid-column: 5; grid-row: 2; display: flex; justify-content: center;"><div style="width: 2px; height: 100%; background: rgba(255,255,255,0.3);"></div></div>
+
+    <!-- ═══ TOP LABELS (row 3) ═══ -->
+    <div style="grid-column: 1; grid-row: 3; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.9); letter-spacing: 1.5px;">Q1</div>
+    <div style="grid-column: 3; grid-row: 3; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.9); letter-spacing: 1.5px;">Q3</div>
+    <div style="grid-column: 5; grid-row: 3; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.8); letter-spacing: 1.5px;">2027</div>
+
+    <!-- ═══ DOTS (row 4) — one per column, overlapping the line ═══ -->
+    <div style="grid-column: 1; grid-row: 4; display: flex; align-items: center; justify-content: center; z-index: 1;">
+      <div style="width: 14px; height: 14px; border-radius: 50%; background: #fff; box-shadow: 0 0 14px rgba(255,255,255,0.4);"></div>
+    </div>
+    <div style="grid-column: 2; grid-row: 4; display: flex; align-items: center; justify-content: center; z-index: 1;">
+      <div style="width: 14px; height: 14px; border-radius: 50%; background: rgba(255,255,255,0.85); box-shadow: 0 0 12px rgba(255,255,255,0.3);"></div>
+    </div>
+    <div style="grid-column: 3; grid-row: 4; display: flex; align-items: center; justify-content: center; z-index: 1;">
+      <div style="width: 14px; height: 14px; border-radius: 50%; background: rgba(255,255,255,0.85); box-shadow: 0 0 12px rgba(255,255,255,0.3);"></div>
+    </div>
+    <div style="grid-column: 4; grid-row: 4; display: flex; align-items: center; justify-content: center; z-index: 1;">
+      <div style="width: 14px; height: 14px; border-radius: 50%; background: rgba(255,255,255,0.8); box-shadow: 0 0 10px rgba(255,255,255,0.2);"></div>
+    </div>
+    <div style="grid-column: 5; grid-row: 4; display: flex; align-items: center; justify-content: center; z-index: 1;">
+      <div style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.7); box-shadow: 0 0 8px rgba(255,255,255,0.15);"></div>
+    </div>
+    <div style="grid-column: 6; grid-row: 4; display: flex; align-items: center; justify-content: center; z-index: 1;">
+      <div style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.6); box-shadow: 0 0 8px rgba(255,255,255,0.1);"></div>
+    </div>
+
+    <!-- ═══ BOTTOM LABELS (row 5) ═══ -->
+    <div style="grid-column: 2; grid-row: 5; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.9); letter-spacing: 1.5px;">Q2</div>
+    <div style="grid-column: 4; grid-row: 5; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.85); letter-spacing: 1.5px;">Q4</div>
+    <div style="grid-column: 6; grid-row: 5; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.7); letter-spacing: 1.5px;">2027</div>
+
+    <!-- ═══ BOTTOM STEMS (row 6) ═══ -->
+    <div style="grid-column: 2; grid-row: 6; display: flex; justify-content: center;"><div style="width: 2px; height: 100%; background: rgba(255,255,255,0.3);"></div></div>
+    <div style="grid-column: 4; grid-row: 6; display: flex; justify-content: center;"><div style="width: 2px; height: 100%; background: rgba(255,255,255,0.3);"></div></div>
+    <div style="grid-column: 6; grid-row: 6; display: flex; justify-content: center;"><div style="width: 2px; height: 100%; background: rgba(255,255,255,0.3);"></div></div>
+
+    <!-- ═══ BOTTOM CARDS (row 7) ═══ -->
+    <!-- Q2 -->
+    <div style="grid-column: 2; grid-row: 7; background: rgba(255,255,255,0.11); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.16); border-radius: 18px; padding: 24px 22px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);">
+      <div style="font-size: 19px; font-weight: 600; color: #fff; margin-bottom: 6px; line-height: 1.25;">PLO-pilot</div>
+      <div style="font-size: 15px; color: #fff; line-height: 1.5;">Pilotdrift med de f&oslash;rste 50 klinikker. 30-dages forl&oslash;b.</div>
+    </div>
+    <!-- Q4 -->
+    <div style="grid-column: 4; grid-row: 7; background: rgba(255,255,255,0.11); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.16); border-radius: 18px; padding: 24px 22px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);">
+      <div style="font-size: 19px; font-weight: 600; color: #fff; margin-bottom: 6px; line-height: 1.25;">Klinikdrift + App Store</div>
+      <div style="font-size: 15px; color: #fff; line-height: 1.5;">&Aring;bent &oslash;kosystem med klinikdrift og nye App Store-lanceringer.</div>
+    </div>
+    <!-- 2027 -->
+    <div style="grid-column: 6; grid-row: 7; background: rgba(255,255,255,0.11); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.16); border-radius: 18px; padding: 24px 22px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);">
+      <div style="font-size: 19px; font-weight: 600; color: #fff; margin-bottom: 6px; line-height: 1.25;">People&rsquo;s Health</div>
+      <div style="font-size: 15px; color: #fff; line-height: 1.5;">Forsknings- og partnerprodukt. Patienten ejer sin egen data.</div>
+    </div>
+
+  </div>
+
+  <img src="billeder/peoplesclinic light.svg" alt="" class="slide-logo-bottom">
+  <span class="page-num">28 / 30</span>
+</div>
+</div>
+
+
+<div class="slide-container">
+<!-- ====================================================================
+     SLIDE — CLOSING (white, clean)
+     ==================================================================== -->
+<div class="slide slide--white" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 120px 96px 72px;">
+
+  <!-- Title -->
+  <h2 style="font-size: 72px; font-weight: 500; color: var(--navy-900); margin-bottom: 14px; letter-spacing: -1.5px;">Af læger. Til læger. <span style="color: var(--navy-500);">For patienter.</span></h2>
+  <p style="font-size: 29px; color: var(--navy-500); margin-bottom: 62px; max-width: 900px; line-height: 1.5; font-weight: 400;">Dansk. Sikkert. Forskningsforankret. Klar i morgen.</p>
+
+  <!-- Team with round photos -->
+  <div style="display: flex; gap: 56px; align-items: flex-start; margin-bottom: 52px; flex-wrap: wrap; justify-content: center;">
+
+    <!-- Carl Brandt -->
+    <div style="text-align: center; width: 228px;">
+      <img src="billeder/Carl-Brandt.jpg" alt="Carl Brandt" style="width: 166px; height: 166px; border-radius: 50%; object-fit: cover; margin-bottom: 16px; border: 3px solid var(--navy-100);">
+      <div style="font-size: 24px; font-weight: 500; color: var(--navy-900);">Carl Brandt</div>
+      <div style="font-size: 19px; color: var(--navy-500); margin-top: 4px;">Chairman &middot; MD, PhD</div>
+    </div>
+
+    <!-- Lars Kensmark -->
+    <div style="text-align: center; width: 228px;">
+      <img src="billeder/kensmark.jpg" alt="Lars Kensmark" style="width: 166px; height: 166px; border-radius: 50%; object-fit: cover; margin-bottom: 16px; border: 3px solid var(--navy-100);">
+      <div style="font-size: 24px; font-weight: 500; color: var(--navy-900);">Lars Kensmark</div>
+      <div style="font-size: 19px; color: var(--navy-500); margin-top: 4px;">Founder &middot; MD, GP</div>
+    </div>
+
+    <!-- Anders Hasle Nielsen -->
+    <div style="text-align: center; width: 228px;">
+      <img src="billeder/anders-hv.jpg" alt="Anders Hasle Nielsen" style="width: 166px; height: 166px; border-radius: 50%; object-fit: cover; margin-bottom: 16px; border: 3px solid var(--navy-100);">
+      <div style="font-size: 24px; font-weight: 500; color: var(--navy-900);">Anders H. Nielsen</div>
+      <div style="font-size: 19px; color: var(--navy-500); margin-top: 4px;">CTO &middot; AI-ekspert &middot; MSc&nbsp;IT</div>
+    </div>
+
+    <!-- Lars Munch Johansen -->
+    <div style="text-align: center; width: 228px;">
+      <img src="billeder/Lars-Munch-Johansen.png" alt="Lars Munch Johansen" style="width: 166px; height: 166px; border-radius: 50%; object-fit: cover; margin-bottom: 16px; border: 3px solid var(--navy-100);">
+      <div style="font-size: 24px; font-weight: 500; color: var(--navy-900);">Lars M. Johansen</div>
+      <div style="font-size: 19px; color: var(--navy-500); margin-top: 4px;">Board &middot; BSc Eng.</div>
+    </div>
+
+    <!-- Michael Hejmadi -->
+    <div style="text-align: center; width: 228px;">
+      <img src="billeder/michael-hejmadi.jpg" alt="Michael Hejmadi" style="width: 166px; height: 166px; border-radius: 50%; object-fit: cover; margin-bottom: 16px; border: 3px solid var(--navy-100);">
+      <div style="font-size: 24px; font-weight: 500; color: var(--navy-900);">Michael Hejmadi</div>
+      <div style="font-size: 19px; color: var(--navy-500); margin-top: 4px;">Founding Doctor &middot; MD</div>
+    </div>
+
+  </div>
+
+  <!-- Contact — bigger -->
+  <div style="display: flex; align-items: center; gap: 38px;">
+    <span style="font-size: 22px; font-weight: 500; color: var(--navy-700);">People's Doctor ApS</span>
+    <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--navy-300);"></span>
+    <span style="font-size: 22px; color: var(--navy-500);">info@peoplesdoctor.dk</span>
+    <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--navy-300);"></span>
+    <span style="font-size: 22px; color: var(--navy-500);">peoplesdoctor.dk</span>
+  </div>
+
+  <img src="billeder/peoples clinic dark.svg" alt="" class="slide-logo-bottom">
+  <span class="page-num">29 / 30</span>
+</div>
+</div>
+
+
+<div class="slide-container">
+<!-- ====================================================================
      SLIDE — PEOPLE'S DOCTOR × MIN LÆGE
      ==================================================================== -->
 <div class="slide slide--soft" style="display: flex; flex-direction: column; justify-content: center; padding: 120px 96px 72px;">
@@ -2796,345 +3135,6 @@
       </div>
     </div>
 
-  </div>
-
-  <img src="billeder/peoples clinic dark.svg" alt="" class="slide-logo-bottom">
-  <span class="page-num">26 / 30</span>
-</div>
-</div>
-
-
-<div class="slide-container">
-<!-- ====================================================================
-     SLIDE — APP STORE ECOSYSTEM
-     ==================================================================== -->
-<div class="slide slide--white" style="display: flex; flex-direction: column; justify-content: center; padding: 120px 96px 72px;">
-
-  <!-- Header -->
-  <div style="text-align: center; margin-bottom: 56px;">
-    <div class="label" style="text-align: center;">&Aring;ben platform</div>
-    <h2 style="font-size: 52px; font-weight: 500; line-height: 1.1; letter-spacing: -1px; color: var(--navy-900); margin-bottom: 12px;">Egne produkter. <span style="color: var(--navy-500);">&Aring;bent &oslash;kosystem.</span></h2>
-    <p class="subtitle" style="text-align: center; margin: 0 auto; max-width: 780px;">Vores platform er &aring;ben &mdash; tredjeparter kan integrere direkte<br>via MCP, FHIR og &aring;bne API&rsquo;er.</p>
-  </div>
-
-  <!-- Ecosystem: tree hierarchy with People's Doctor as umbrella -->
-  <div style="display: flex; flex-direction: column; align-items: center; gap: 0;">
-
-    <!-- People's Doctor ApS — umbrella bar -->
-    <div style="background: linear-gradient(135deg, var(--navy-600), var(--navy-500)); border-radius: 20px; padding: 22px 56px; display: flex; align-items: center; justify-content: center; gap: 14px; width: fit-content; box-shadow: 0 6px 24px rgba(19,16,44,0.15);">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-      <span style="font-size: 24px; font-weight: 600; color: #fff; letter-spacing: -0.3px;">People&rsquo;s Doctor ApS</span>
-    </div>
-
-    <!-- Connector: clean SVG tree lines -->
-    <svg width="100%" height="64" viewBox="0 0 1300 64" preserveAspectRatio="xMidYMid meet" style="max-width: 1300px; display: block; overflow: visible;">
-      <!-- Vertical stem from center (umbrella) down to horizontal bar -->
-      <line x1="650" y1="0" x2="650" y2="28" stroke="#C8CEE0" stroke-width="2" stroke-linecap="round"/>
-      <!-- Horizontal bar connecting all three columns -->
-      <line x1="290" y1="28" x2="1134" y2="28" stroke="#C8CEE0" stroke-width="2" stroke-linecap="round"/>
-      <!-- Drop to People's Clinic (left) -->
-      <line x1="290" y1="28" x2="290" y2="64" stroke="#C8CEE0" stroke-width="2" stroke-linecap="round"/>
-      <!-- Drop to People's Doctor (center) -->
-      <line x1="774" y1="28" x2="774" y2="64" stroke="#C8CEE0" stroke-width="2" stroke-linecap="round"/>
-      <!-- Drop to People's Health (right) -->
-      <line x1="1134" y1="28" x2="1134" y2="64" stroke="#C8CEE0" stroke-width="2" stroke-linecap="round"/>
-    </svg>
-
-    <!-- Three product columns -->
-    <div style="width: 100%; max-width: 1300px; display: grid; grid-template-columns: 1.4fr 0.8fr 0.8fr; gap: 28px; align-items: start;">
-
-      <!-- People's Clinic + App Store tjenester -->
-      <div>
-        <!-- People's Clinic card — dark gradient to show LIVE -->
-        <div style="background: linear-gradient(135deg, #13192C 0%, #5669A4 100%); border-radius: 20px; padding: 28px 32px; box-shadow: 0 4px 32px rgba(19,25,44,0.25);">
-          <div style="display: flex; align-items: center; gap: 14px;">
-            <div style="width: 44px; height: 44px; border-radius: 13px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            </div>
-            <div>
-              <div style="font-size: 22px; font-weight: 500; color: #fff; letter-spacing: -0.3px;">People&rsquo;s Clinic</div>
-              <div style="font-size: 15px; color: rgba(255,255,255,0.7);">AI-journal og klinikdrift</div>
-            </div>
-            <div style="margin-left: auto; font-size: 13px; font-weight: 600; color: #fff; background: rgba(255,255,255,0.18); padding: 5px 14px; border-radius: 100px;">LIVE</div>
-          </div>
-        </div>
-
-        <!-- App Store label -->
-        <div style="margin: 20px 0 12px 16px; display: flex; align-items: center; gap: 10px;">
-          <div style="width: 20px; height: 1px; background: var(--navy-200);"></div>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--navy-400)" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-          <span style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--navy-400);">Via App Store</span>
-          <div style="flex: 1; height: 1px; background: var(--navy-200);"></div>
-        </div>
-
-        <!-- Third-party apps row -->
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-          <div style="background: #fff; border-radius: 14px; padding: 20px 16px; box-shadow: 0 2px 20px rgba(38, 48, 79, 0.07); text-align: center;">
-            <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--navy-100); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy-400)" stroke-width="1.5"><path d="M9 3h6v6l4 8H5l4-8V3z"/><line x1="9" y1="3" x2="15" y2="3"/></svg>
-            </div>
-            <div style="font-size: 15px; font-weight: 500; color: var(--navy-900); margin-bottom: 3px;">LabNord</div>
-            <div style="font-size: 12px; color: var(--navy-400); line-height: 1.4;">Pr&oslash;vesvar med AI-flagging</div>
-          </div>
-
-          <div style="background: #fff; border-radius: 14px; padding: 20px 16px; box-shadow: 0 2px 20px rgba(38, 48, 79, 0.07); text-align: center;">
-            <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--navy-100); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy-400)" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            </div>
-            <div style="font-size: 15px; font-weight: 500; color: var(--navy-900); margin-bottom: 3px;">MinDialog</div>
-            <div style="font-size: 12px; color: var(--navy-400); line-height: 1.4;">Asynkron e-konsultation</div>
-          </div>
-
-          <div style="background: #fff; border-radius: 14px; padding: 20px 16px; box-shadow: 0 2px 20px rgba(38, 48, 79, 0.07); text-align: center;">
-            <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--navy-100); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy-400)" stroke-width="1.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-            </div>
-            <div style="font-size: 15px; font-weight: 500; color: var(--navy-900); margin-bottom: 3px;">Netv&aelig;rkspraksis Danmark</div>
-            <div style="font-size: 12px; color: var(--navy-400); line-height: 1.4;">Klinisk indhold &amp; guidelines</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- People's Doctor -->
-      <div style="background: #fff; border-radius: 20px; padding: 28px 32px; box-shadow: 0 2px 30px rgba(38, 48, 79, 0.10);">
-        <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px;">
-          <div style="width: 44px; height: 44px; border-radius: 13px; background: var(--navy-100); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy-500)" stroke-width="1.5" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-          </div>
-          <div>
-            <div style="font-size: 22px; font-weight: 500; color: var(--navy-900); letter-spacing: -0.3px;">People&rsquo;s Doctor</div>
-            <div style="font-size: 15px; color: var(--navy-500); margin-top: 4px;">Patientprodukt &mdash; app til behandlingsforl&oslash;b</div>
-          </div>
-          <div style="font-size: 13px; font-weight: 500; color: var(--navy-500); background: var(--navy-100); padding: 5px 14px; border-radius: 100px;">2027</div>
-        </div>
-      </div>
-
-      <!-- People's Health -->
-      <div style="background: #fff; border-radius: 20px; padding: 28px 32px; box-shadow: 0 2px 30px rgba(38, 48, 79, 0.10);">
-        <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px;">
-          <div style="width: 44px; height: 44px; border-radius: 13px; background: var(--navy-100); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--navy-500)" stroke-width="1.5" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          </div>
-          <div>
-            <div style="font-size: 22px; font-weight: 500; color: var(--navy-900); letter-spacing: -0.3px;">People&rsquo;s Health</div>
-            <div style="font-size: 15px; color: var(--navy-500); margin-top: 4px;">Forskningsprodukt &mdash; patienten ejer sin data</div>
-          </div>
-          <div style="font-size: 13px; font-weight: 500; color: var(--navy-500); background: var(--navy-100); padding: 5px 14px; border-radius: 100px;">2027</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <img src="billeder/peoples clinic dark.svg" alt="" class="slide-logo-bottom">
-  <span class="page-num">27 / 30</span>
-</div>
-</div>
-
-
-<div class="slide-container">
-<!-- ====================================================================
-     SLIDE — APP STORE (product showcase)
-     ==================================================================== -->
-<div class="slide slide--white" style="display: flex; align-items: center; gap: 72px;">
-
-  <!-- Left column: text -->
-  <div style="flex: 0 0 520px; display: flex; flex-direction: column; justify-content: center;">
-    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-      <span style="font-size: 13px; font-weight: 500; color: var(--navy-500); text-transform: uppercase; letter-spacing: 1.5px;">&Aring;ben platform</span>
-    </div>
-    <h2 class="title">App Store</h2>
-    <p class="subtitle" style="margin-bottom: 36px;">Tredjeparter kan integrere direkte med People&rsquo;s Clinic via API og MCP &mdash; og distribuere til alle tilsluttede klinikker.</p>
-
-    <div style="display: flex; flex-direction: column; gap: 16px;">
-      <div style="font-size: 20px; font-weight: 500; color: var(--navy-800); line-height: 1.5; padding-left: 32px; position: relative;"><svg width="20" height="20" viewBox="0 0 24 24" fill="var(--navy-500)" style="position: absolute; left: 0; top: 4px;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>&Aring;bne API&rsquo;er, FHIR og MCP-protokol</div>
-      <div style="font-size: 20px; font-weight: 500; color: var(--navy-800); line-height: 1.5; padding-left: 32px; position: relative;"><svg width="20" height="20" viewBox="0 0 24 24" fill="var(--navy-500)" style="position: absolute; left: 0; top: 4px;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Tredjeparter bygger produkter ind i platformen</div>
-      <div style="font-size: 20px; font-weight: 500; color: var(--navy-800); line-height: 1.5; padding-left: 32px; position: relative;"><svg width="20" height="20" viewBox="0 0 24 24" fill="var(--navy-500)" style="position: absolute; left: 0; top: 4px;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Klinikken v&aelig;lger og tilk&oslash;ber selv</div>
-      <div style="font-size: 20px; font-weight: 500; color: var(--navy-800); line-height: 1.5; padding-left: 32px; position: relative;"><svg width="20" height="20" viewBox="0 0 24 24" fill="var(--navy-500)" style="position: absolute; left: 0; top: 4px;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Alle tjenester skal overholde compliance og kunne hostes p&aring; Gefion</div>
-    </div>
-    <p style="margin-top: 28px; font-size: 13px; color: var(--navy-400); line-height: 1.5; font-style: italic;">Enhver sundhedsakt&oslash;r kan udvikle og distribuere tjenester til alle tilsluttede klinikker via People&rsquo;s Clinic App Store.</p>
-  </div>
-
-  <!-- Right column: screenshot -->
-  <div style="flex: 1; display: flex; align-items: center;">
-    <div class="browser" style="width: 100%;">
-      <div class="browser__bar">
-        <div class="browser__dot"></div>
-        <div class="browser__dot"></div>
-        <div class="browser__dot"></div>
-      </div>
-      <img src="billeder/appstore.png" alt="App Store"
-           style="width: 100%; display: block;"
-           onerror="this.outerHTML='<div class=\'browser__fallback\'>billeder/appstore.png</div>'">
-    </div>
-  </div>
-
-  <img src="billeder/peoples clinic dark.svg" alt="" class="slide-logo-bottom">
-  <span class="page-num">28 / 30</span>
-</div>
-</div>
-
-
-<div class="slide-container">
-<!-- ====================================================================
-     SLIDE 29 — ROADMAP (visual timeline)
-     ==================================================================== -->
-<div class="slide slide--dark" style="display: flex; flex-direction: column; justify-content: center; padding: 72px 120px 72px;">
-
-  <!-- Header (centered vertically with content) -->
-  <div style="text-align: center; margin-bottom: 56px;">
-    <div class="label" style="color: var(--navy-400); margin-bottom: 12px; text-align: center;">Roadmap</div>
-    <h2 style="font-size: 44px; font-weight: 500; line-height: 1.1; letter-spacing: -1px; color: #fff; margin-bottom: 8px; text-align: center;">Fra journalassistent til AI-sundhedsplatform</h2>
-    <p style="font-size: 20px; color: var(--navy-400); font-weight: 400; text-align: center;">2026 &ndash; 2027</p>
-  </div>
-
-  <!-- Timeline — single CSS Grid, everything aligned by column -->
-  <div style="position: relative; display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: auto 28px 22px 22px 22px 28px auto; column-gap: 28px; row-gap: 0; align-items: stretch;">
-
-    <!-- ═══ HORIZONTAL TIMELINE LINE (spans full width at row 4) ═══ -->
-    <div style="grid-column: 1 / -1; grid-row: 4; position: relative; pointer-events: none;">
-      <div style="position: absolute; top: 50%; left: -60px; right: -60px; height: 3px; transform: translateY(-50%); background: rgba(255,255,255,0.3); border-radius: 2px;"></div>
-    </div>
-
-    <!-- ═══ TOP CARDS (row 1) ═══ -->
-    <!-- Q1 -->
-    <div style="grid-column: 1; grid-row: 1; background: rgba(255,255,255,0.11); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.16); border-radius: 18px; padding: 24px 22px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);">
-      <div style="font-size: 19px; font-weight: 600; color: #fff; margin-bottom: 6px; line-height: 1.25;">People&rsquo;s Clinic</div>
-      <div style="font-size: 15px; color: #fff; line-height: 1.5;">Voice-to-text journalf&oslash;ring. AI-genererede konsultationsnotater.</div>
-    </div>
-    <!-- Q3 -->
-    <div style="grid-column: 3; grid-row: 1; background: rgba(255,255,255,0.11); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.16); border-radius: 18px; padding: 24px 22px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);">
-      <div style="font-size: 19px; font-weight: 600; color: #fff; margin-bottom: 6px; line-height: 1.25;">Gefion-migration</div>
-      <div style="font-size: 15px; color: #fff; line-height: 1.5;">Dansk datasuver&aelig;nitet og hurtig performance via Gefion.</div>
-    </div>
-    <!-- 2027 -->
-    <div style="grid-column: 5; grid-row: 1; background: rgba(255,255,255,0.11); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.16); border-radius: 18px; padding: 24px 22px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);">
-      <div style="font-size: 19px; font-weight: 600; color: #fff; margin-bottom: 6px; line-height: 1.25;">People&rsquo;s Doctor</div>
-      <div style="font-size: 15px; color: #fff; line-height: 1.5;">Patientrettet app. Bedre behandlingsforl&oslash;b mellem konsultationer.</div>
-    </div>
-
-    <!-- ═══ TOP STEMS (row 2) — vertical lines from cards to labels ═══ -->
-    <div style="grid-column: 1; grid-row: 2; display: flex; justify-content: center;"><div style="width: 2px; height: 100%; background: rgba(255,255,255,0.3);"></div></div>
-    <div style="grid-column: 3; grid-row: 2; display: flex; justify-content: center;"><div style="width: 2px; height: 100%; background: rgba(255,255,255,0.3);"></div></div>
-    <div style="grid-column: 5; grid-row: 2; display: flex; justify-content: center;"><div style="width: 2px; height: 100%; background: rgba(255,255,255,0.3);"></div></div>
-
-    <!-- ═══ TOP LABELS (row 3) ═══ -->
-    <div style="grid-column: 1; grid-row: 3; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.9); letter-spacing: 1.5px;">Q1</div>
-    <div style="grid-column: 3; grid-row: 3; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.9); letter-spacing: 1.5px;">Q3</div>
-    <div style="grid-column: 5; grid-row: 3; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.8); letter-spacing: 1.5px;">2027</div>
-
-    <!-- ═══ DOTS (row 4) — one per column, overlapping the line ═══ -->
-    <div style="grid-column: 1; grid-row: 4; display: flex; align-items: center; justify-content: center; z-index: 1;">
-      <div style="width: 14px; height: 14px; border-radius: 50%; background: #fff; box-shadow: 0 0 14px rgba(255,255,255,0.4);"></div>
-    </div>
-    <div style="grid-column: 2; grid-row: 4; display: flex; align-items: center; justify-content: center; z-index: 1;">
-      <div style="width: 14px; height: 14px; border-radius: 50%; background: rgba(255,255,255,0.85); box-shadow: 0 0 12px rgba(255,255,255,0.3);"></div>
-    </div>
-    <div style="grid-column: 3; grid-row: 4; display: flex; align-items: center; justify-content: center; z-index: 1;">
-      <div style="width: 14px; height: 14px; border-radius: 50%; background: rgba(255,255,255,0.85); box-shadow: 0 0 12px rgba(255,255,255,0.3);"></div>
-    </div>
-    <div style="grid-column: 4; grid-row: 4; display: flex; align-items: center; justify-content: center; z-index: 1;">
-      <div style="width: 14px; height: 14px; border-radius: 50%; background: rgba(255,255,255,0.8); box-shadow: 0 0 10px rgba(255,255,255,0.2);"></div>
-    </div>
-    <div style="grid-column: 5; grid-row: 4; display: flex; align-items: center; justify-content: center; z-index: 1;">
-      <div style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.7); box-shadow: 0 0 8px rgba(255,255,255,0.15);"></div>
-    </div>
-    <div style="grid-column: 6; grid-row: 4; display: flex; align-items: center; justify-content: center; z-index: 1;">
-      <div style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.6); box-shadow: 0 0 8px rgba(255,255,255,0.1);"></div>
-    </div>
-
-    <!-- ═══ BOTTOM LABELS (row 5) ═══ -->
-    <div style="grid-column: 2; grid-row: 5; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.9); letter-spacing: 1.5px;">Q2</div>
-    <div style="grid-column: 4; grid-row: 5; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.85); letter-spacing: 1.5px;">Q4</div>
-    <div style="grid-column: 6; grid-row: 5; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.7); letter-spacing: 1.5px;">2027</div>
-
-    <!-- ═══ BOTTOM STEMS (row 6) ═══ -->
-    <div style="grid-column: 2; grid-row: 6; display: flex; justify-content: center;"><div style="width: 2px; height: 100%; background: rgba(255,255,255,0.3);"></div></div>
-    <div style="grid-column: 4; grid-row: 6; display: flex; justify-content: center;"><div style="width: 2px; height: 100%; background: rgba(255,255,255,0.3);"></div></div>
-    <div style="grid-column: 6; grid-row: 6; display: flex; justify-content: center;"><div style="width: 2px; height: 100%; background: rgba(255,255,255,0.3);"></div></div>
-
-    <!-- ═══ BOTTOM CARDS (row 7) ═══ -->
-    <!-- Q2 -->
-    <div style="grid-column: 2; grid-row: 7; background: rgba(255,255,255,0.11); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.16); border-radius: 18px; padding: 24px 22px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);">
-      <div style="font-size: 19px; font-weight: 600; color: #fff; margin-bottom: 6px; line-height: 1.25;">PLO-pilot</div>
-      <div style="font-size: 15px; color: #fff; line-height: 1.5;">Pilotdrift med de f&oslash;rste 50 klinikker. 30-dages forl&oslash;b.</div>
-    </div>
-    <!-- Q4 -->
-    <div style="grid-column: 4; grid-row: 7; background: rgba(255,255,255,0.11); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.16); border-radius: 18px; padding: 24px 22px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);">
-      <div style="font-size: 19px; font-weight: 600; color: #fff; margin-bottom: 6px; line-height: 1.25;">Klinikdrift + App Store</div>
-      <div style="font-size: 15px; color: #fff; line-height: 1.5;">&Aring;bent &oslash;kosystem med klinikdrift og nye App Store-lanceringer.</div>
-    </div>
-    <!-- 2027 -->
-    <div style="grid-column: 6; grid-row: 7; background: rgba(255,255,255,0.11); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.16); border-radius: 18px; padding: 24px 22px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);">
-      <div style="font-size: 19px; font-weight: 600; color: #fff; margin-bottom: 6px; line-height: 1.25;">People&rsquo;s Health</div>
-      <div style="font-size: 15px; color: #fff; line-height: 1.5;">Forsknings- og partnerprodukt. Patienten ejer sin egen data.</div>
-    </div>
-
-  </div>
-
-  <img src="billeder/peoplesclinic light.svg" alt="" class="slide-logo-bottom">
-  <span class="page-num">29 / 30</span>
-</div>
-</div>
-
-
-<div class="slide-container">
-<!-- ====================================================================
-     SLIDE — CLOSING (white, clean)
-     ==================================================================== -->
-<div class="slide slide--white" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 120px 96px 72px;">
-
-  <!-- Title -->
-  <h2 style="font-size: 72px; font-weight: 500; color: var(--navy-900); margin-bottom: 14px; letter-spacing: -1.5px;">Af læger. Til læger. <span style="color: var(--navy-500);">For patienter.</span></h2>
-  <p style="font-size: 29px; color: var(--navy-500); margin-bottom: 62px; max-width: 900px; line-height: 1.5; font-weight: 400;">Dansk. Sikkert. Forskningsforankret. Klar i morgen.</p>
-
-  <!-- Team with round photos -->
-  <div style="display: flex; gap: 56px; align-items: flex-start; margin-bottom: 52px; flex-wrap: wrap; justify-content: center;">
-
-    <!-- Carl Brandt -->
-    <div style="text-align: center; width: 228px;">
-      <img src="billeder/Carl-Brandt.jpg" alt="Carl Brandt" style="width: 166px; height: 166px; border-radius: 50%; object-fit: cover; margin-bottom: 16px; border: 3px solid var(--navy-100);">
-      <div style="font-size: 24px; font-weight: 500; color: var(--navy-900);">Carl Brandt</div>
-      <div style="font-size: 19px; color: var(--navy-500); margin-top: 4px;">Chairman &middot; MD, PhD</div>
-    </div>
-
-    <!-- Lars Kensmark -->
-    <div style="text-align: center; width: 228px;">
-      <img src="billeder/kensmark.jpg" alt="Lars Kensmark" style="width: 166px; height: 166px; border-radius: 50%; object-fit: cover; margin-bottom: 16px; border: 3px solid var(--navy-100);">
-      <div style="font-size: 24px; font-weight: 500; color: var(--navy-900);">Lars Kensmark</div>
-      <div style="font-size: 19px; color: var(--navy-500); margin-top: 4px;">Founder &middot; MD, GP</div>
-    </div>
-
-    <!-- Anders Hasle Nielsen -->
-    <div style="text-align: center; width: 228px;">
-      <img src="billeder/anders-hv.jpg" alt="Anders Hasle Nielsen" style="width: 166px; height: 166px; border-radius: 50%; object-fit: cover; margin-bottom: 16px; border: 3px solid var(--navy-100);">
-      <div style="font-size: 24px; font-weight: 500; color: var(--navy-900);">Anders H. Nielsen</div>
-      <div style="font-size: 19px; color: var(--navy-500); margin-top: 4px;">CTO &middot; AI-ekspert &middot; MSc&nbsp;IT</div>
-    </div>
-
-    <!-- Lars Munch Johansen -->
-    <div style="text-align: center; width: 228px;">
-      <img src="billeder/Lars-Munch-Johansen.png" alt="Lars Munch Johansen" style="width: 166px; height: 166px; border-radius: 50%; object-fit: cover; margin-bottom: 16px; border: 3px solid var(--navy-100);">
-      <div style="font-size: 24px; font-weight: 500; color: var(--navy-900);">Lars M. Johansen</div>
-      <div style="font-size: 19px; color: var(--navy-500); margin-top: 4px;">Board &middot; BSc Eng.</div>
-    </div>
-
-    <!-- Michael Hejmadi -->
-    <div style="text-align: center; width: 228px;">
-      <img src="billeder/michael-hejmadi.jpg" alt="Michael Hejmadi" style="width: 166px; height: 166px; border-radius: 50%; object-fit: cover; margin-bottom: 16px; border: 3px solid var(--navy-100);">
-      <div style="font-size: 24px; font-weight: 500; color: var(--navy-900);">Michael Hejmadi</div>
-      <div style="font-size: 19px; color: var(--navy-500); margin-top: 4px;">Founding Doctor &middot; MD</div>
-    </div>
-
-  </div>
-
-  <!-- Contact — bigger -->
-  <div style="display: flex; align-items: center; gap: 38px;">
-    <span style="font-size: 22px; font-weight: 500; color: var(--navy-700);">People's Doctor ApS</span>
-    <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--navy-300);"></span>
-    <span style="font-size: 22px; color: var(--navy-500);">info@peoplesdoctor.dk</span>
-    <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--navy-300);"></span>
-    <span style="font-size: 22px; color: var(--navy-500);">peoplesdoctor.dk</span>
   </div>
 
   <img src="billeder/peoples clinic dark.svg" alt="" class="slide-logo-bottom">
