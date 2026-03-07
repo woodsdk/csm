@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>People's Doctor - App Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../Design System/platform.css?v=2">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* ============================================
+       APP STORE — VIEW STYLES
+       ============================================ */
+    .appstore-content {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Tabs – remove gap margin inside appstore */
+    .appstore-content .tabs {
+      margin-bottom: 0;
+    }
+
+    /* App grid */
+    .appstore-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    /* App card */
+    .app-card {
+      background: var(--color-white);
+      border: none;
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+      transition: all 0.2s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-card:hover {
+      box-shadow: 0 4px 40px rgba(38, 48, 79, 0.16);
+      transform: translateY(-1px);
+    }
+
+    .app-card__top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .app-card__icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .app-card__icon svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .app-card__badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 3px 9px;
+      border-radius: var(--radius-full);
+    }
+
+    .app-card__badge--installed {
+      background: var(--color-navy-100);
+      color: var(--color-success);
+    }
+
+    .app-card__badge--new {
+      background: var(--color-navy-100);
+      color: var(--color-navy-500);
+    }
+
+    .app-card__badge--ai {
+      background: var(--color-navy-100);
+      color: var(--color-navy-700);
+    }
+
+    .app-card__category {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--color-navy-400);
+      margin-bottom: 4px;
+    }
+
+    .app-card__name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--color-navy-900);
+      margin-bottom: 6px;
+    }
+
+    .app-card__desc {
+      font-size: var(--font-size-base);
+      line-height: 1.55;
+      color: var(--color-navy-600);
+      margin-bottom: 16px;
+      flex: 1;
+    }
+
+    .app-card__tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .app-card__tag {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: var(--radius-full);
+      background: var(--color-navy-100);
+      color: var(--color-navy-600);
+    }
+
+    .app-card__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--color-navy-100);
+    }
+
+    .app-card__price {
+      font-size: var(--font-size-md);
+      font-weight: 700;
+      color: var(--color-navy-900);
+    }
+
+    .app-card__price span {
+      font-size: var(--font-size-sm);
+      font-weight: 400;
+      color: var(--color-navy-500);
+    }
+
+    .app-card__btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+      background: var(--gradient-button-primary);
+      color: #fff;
+      box-shadow: var(--shadow-button);
+    }
+
+    .app-card__btn:hover {
+      box-shadow: var(--shadow-button-hover);
+      transform: translateY(-1px);
+    }
+
+    .app-card__btn svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    .app-card__btn--installed {
+      background: var(--color-navy-100);
+      color: var(--color-navy-500);
+      box-shadow: none;
+    }
+
+    .app-card__btn--installed:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Trust footer */
+    .appstore-trust {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      padding: 16px 0 4px;
+    }
+
+    .appstore-trust__item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-navy-500);
+    }
+
+    .appstore-trust__item svg {
+      width: 15px;
+      height: 15px;
+      color: var(--color-navy-400);
+    }
+  </style>
+</head>
+<body>
+  <div class="platform">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar__logo">
+        <a href="platform-preview.html">
+          <img src="../Design System/assets/Peoples Clinic.svg" alt="People's Clinic" class="topbar__logo-img">
+        </a>
+      </div>
+      <div class="topbar__right">
+        <div class="clinic-dropdown">
+          <span>Current clinic: Valby L&aelig;gehus</span>
+          <i data-lucide="chevron-down"></i>
+        </div>
+        <div class="flags">
+          <div class="flag flag--dk"></div>
+          <div class="flag flag--uk"></div>
+        </div>
+        <div class="user-menu" id="userMenu">
+          <div class="user-avatar">A</div>
+          <span class="user-name">Dr. Anna Nielsen</span>
+          <i data-lucide="chevron-down"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <div class="content-area">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <nav class="sidebar__nav">
+          <a href="platform-preview.html" class="nav-btn nav-btn--primary">
+            <i data-lucide="play"></i>
+            Start Konsultation
+          </a>
+          <a href="patientoversigt.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="layout-list"></i>
+            Seneste konsultationer
+          </a>
+          <a href="ai-assistent.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="sparkles"></i>
+            Min Assistent
+          </a>
+          <a href="beskedassistent.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="inbox"></i>
+            Beskedassistent
+          </a>
+          <a href="klinikdrift-dashboard.html" class="nav-btn nav-btn--secondary">
+            <i data-lucide="activity"></i>
+            Klinikdrift
+          </a>
+          <a href="app-store.html" class="nav-btn nav-btn--secondary nav-btn--active">
+            <i data-lucide="grid-3x3"></i>
+            App Store
+          </a>
+        </nav>
+
+        <div class="sidebar__bottom-box">
+          <div class="bottom-section-label">Brugerpanel</div>
+          <a href="beskeder.html" class="bottom-link">
+            <i data-lucide="alert-circle"></i>
+            Systemnotifikationer
+          </a>
+          <a href="indstillinger.html" class="bottom-link">
+            <i data-lucide="sliders"></i>
+            Brugerindstillinger
+          </a>
+          <a href="admin-dashboard.html" class="bottom-link">
+            <i data-lucide="settings"></i>
+            Klinikadministration
+          </a>
+          <a href="#" class="bottom-link bottom-link--separated">
+            <i data-lucide="log-out"></i>
+            Log ud
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main">
+        <div class="appstore-content">
+
+          <!-- Header -->
+          <div class="page-header">
+            <div class="page-header__left">
+              <h1 class="page-title">App Store</h1>
+            </div>
+            <div class="page-header__right">
+              <div class="search-box">
+                <i data-lucide="search"></i>
+                <input type="text" placeholder="S&oslash;g apps og integrationer...">
+              </div>
+            </div>
+          </div>
+
+          <!-- Categories -->
+          <div class="tabs">
+            <button class="tab tab--active">Alle</button>
+            <button class="tab">Telemedicin</button>
+            <button class="tab">AI-v&aelig;rkt&oslash;jer</button>
+            <button class="tab">Patient &amp; Data</button>
+            <button class="tab">Klinisk drift</button>
+            <button class="tab">Indhold</button>
+          </div>
+
+          <!-- App grid: 6 progressive apps -->
+          <div class="appstore-grid">
+
+            <!-- 1: Videokonsultation -->
+            <div class="app-card">
+              <div class="app-card__top">
+                <div class="app-card__icon" style="background: var(--color-navy-100);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#5669A4" stroke-width="2" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                </div>
+                <span class="app-card__badge app-card__badge--installed">Installeret</span>
+              </div>
+              <div class="app-card__category">Telemedicin</div>
+              <div class="app-card__name">Visita</div>
+              <div class="app-card__desc">Krypteret video direkte i konsultationsvinduet. Journalen opdateres automatisk efter samtalen.</div>
+              <div class="app-card__tags">
+                <span class="app-card__tag">E2E-krypteret</span>
+                <span class="app-card__tag">Auto-journal</span>
+              </div>
+              <div class="app-card__footer">
+                <div class="app-card__price">399 kr <span>/ md.</span></div>
+                <button class="app-card__btn app-card__btn--installed">
+                  <i data-lucide="check"></i>
+                  Installeret
+                </button>
+              </div>
+            </div>
+
+            <!-- 2: Labresultater med AI -->
+            <div class="app-card">
+              <div class="app-card__top">
+                <div class="app-card__icon" style="background: var(--color-navy-100);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#5669A4" stroke-width="2" stroke-linecap="round"><path d="M9 3h6v6l4 8H5l4-8V3z"/><line x1="9" y1="3" x2="15" y2="3"/></svg>
+                </div>
+                <span class="app-card__badge app-card__badge--ai">AI</span>
+              </div>
+              <div class="app-card__category">AI-v&aelig;rkt&oslash;jer</div>
+              <div class="app-card__name">LabNord</div>
+              <div class="app-card__desc">Pr&oslash;vesvar direkte i journalen. AI flagger afvigende v&aelig;rdier og foresl&aring;r opf&oslash;lgning.</div>
+              <div class="app-card__tags">
+                <span class="app-card__tag">FHIR</span>
+                <span class="app-card__tag">AI-analyse</span>
+                <span class="app-card__tag">Alerts</span>
+              </div>
+              <div class="app-card__footer">
+                <div class="app-card__price">199 kr <span>/ md.</span></div>
+                <button class="app-card__btn">
+                  <i data-lucide="plus"></i>
+                  Tilf&oslash;j
+                </button>
+              </div>
+            </div>
+
+            <!-- 3: E-konsultation med AI-triage -->
+            <div class="app-card">
+              <div class="app-card__top">
+                <div class="app-card__icon" style="background: var(--color-navy-100);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#5669A4" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <span class="app-card__badge app-card__badge--ai">AI</span>
+              </div>
+              <div class="app-card__category">Telemedicin</div>
+              <div class="app-card__name">MinDialog</div>
+              <div class="app-card__desc">Asynkron beskedudveksling med AI-triagering. Patienten skriver &mdash; AI kategoriserer og journalf&oslash;rer.</div>
+              <div class="app-card__tags">
+                <span class="app-card__tag">AI-triage</span>
+                <span class="app-card__tag">Asynkron</span>
+              </div>
+              <div class="app-card__footer">
+                <div class="app-card__price">249 kr <span>/ md.</span></div>
+                <button class="app-card__btn">
+                  <i data-lucide="plus"></i>
+                  Tilf&oslash;j
+                </button>
+              </div>
+            </div>
+
+            <!-- 4: Patientspørgeskemaer (PRO) -->
+            <div class="app-card">
+              <div class="app-card__top">
+                <div class="app-card__icon" style="background: var(--color-navy-100);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#5669A4" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                </div>
+                <span class="app-card__badge app-card__badge--new">Ny</span>
+              </div>
+              <div class="app-card__category">Patient &amp; data</div>
+              <div class="app-card__name">PROMlink</div>
+              <div class="app-card__desc">Validerede PRO-skemaer f&oslash;r konsultation. Svar integreres automatisk i journalnotatet.</div>
+              <div class="app-card__tags">
+                <span class="app-card__tag">PRO-data</span>
+                <span class="app-card__tag">Auto-journal</span>
+              </div>
+              <div class="app-card__footer">
+                <div class="app-card__price">179 kr <span>/ md.</span></div>
+                <button class="app-card__btn">
+                  <i data-lucide="plus"></i>
+                  Tilf&oslash;j
+                </button>
+              </div>
+            </div>
+
+            <!-- 5: Netværkspraksis Danmark -->
+            <div class="app-card">
+              <div class="app-card__top">
+                <div class="app-card__icon" style="background: var(--color-navy-100);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#5669A4" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                </div>
+                <span class="app-card__badge app-card__badge--new">Ny</span>
+              </div>
+              <div class="app-card__category">Indhold</div>
+              <div class="app-card__name">Netv&aelig;rkspraksis Danmark</div>
+              <div class="app-card__desc">Klinisk indhold og opdaterede guidelines direkte i konsultationen. Leveret af Netv&aelig;rkspraksis Danmark.</div>
+              <div class="app-card__tags">
+                <span class="app-card__tag">Guidelines</span>
+                <span class="app-card__tag">Klinisk indhold</span>
+              </div>
+              <div class="app-card__footer">
+                <div class="app-card__price">149 kr <span>/ md.</span></div>
+                <button class="app-card__btn">
+                  <i data-lucide="plus"></i>
+                  Tilf&oslash;j
+                </button>
+              </div>
+            </div>
+
+            <!-- 6: Klinisk beslutningsstøtte -->
+            <div class="app-card">
+              <div class="app-card__top">
+                <div class="app-card__icon" style="background: var(--color-navy-100);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#5669A4" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </div>
+                <span class="app-card__badge app-card__badge--ai">AI</span>
+              </div>
+              <div class="app-card__category">AI-v&aelig;rkt&oslash;jer</div>
+              <div class="app-card__name">ClinIQ</div>
+              <div class="app-card__desc">AI-drevet beslutningsst&oslash;tte baseret p&aring; guidelines. Foresl&aring;r udredning og behandling i realtid.</div>
+              <div class="app-card__tags">
+                <span class="app-card__tag">Guidelines</span>
+                <span class="app-card__tag">Realtid</span>
+              </div>
+              <div class="app-card__footer">
+                <div class="app-card__price">349 kr <span>/ md.</span></div>
+                <button class="app-card__btn">
+                  <i data-lucide="plus"></i>
+                  Tilf&oslash;j
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Trust footer -->
+          <div class="appstore-trust">
+            <div class="appstore-trust__item">
+              <i data-lucide="shield-check"></i>
+              GDPR-compliant
+            </div>
+            <div class="appstore-trust__item">
+              <i data-lucide="server"></i>
+              Dansk hosting
+            </div>
+            <div class="appstore-trust__item">
+              <i data-lucide="link"></i>
+              MCP &amp; FHIR
+            </div>
+            <div class="appstore-trust__item">
+              <i data-lucide="key-round"></i>
+              &Eacute;t login
+            </div>
+          </div>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

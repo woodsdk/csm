@@ -344,6 +344,8 @@
     .ba-draft__body p { margin-bottom: 12px; }
     .ba-draft__body p:last-child { margin-bottom: 0; }
     .ba-draft__body strong { font-weight: 600; }
+    .ba-draft__body ul, .ba-draft__body ol { padding-left: 1.5em; margin: 8px 0; }
+    .ba-draft__body li { margin-bottom: 4px; }
 
     /* Generating state */
     .ba-draft--generating .ba-draft__body {
@@ -751,6 +753,174 @@
       border-top: 1px solid var(--color-gray-100);
     }
 
+    /* ═══════════════════════════════════════
+       APPROVE-BEFORE-SEND MODAL (F-7.B)
+       ═══════════════════════════════════════ */
+    .approve-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      background: rgba(19, 16, 44, 0.35);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    .approve-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .approve-modal {
+      background: var(--color-white);
+      border-radius: var(--radius-2xl);
+      max-width: 520px;
+      width: 90%;
+      padding: 28px 28px 22px;
+      box-shadow: 0 8px 32px rgba(19, 16, 44, 0.12), 0 2px 8px rgba(19, 16, 44, 0.06);
+      transform: translateY(12px) scale(0.98);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+    }
+    .approve-overlay.active .approve-modal {
+      transform: translateY(0) scale(1);
+    }
+    .approve-modal__header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .approve-modal__icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-lg);
+      background: var(--color-navy-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-navy-500);
+      flex-shrink: 0;
+    }
+    .approve-modal__icon svg { width: 20px; height: 20px; }
+    .approve-modal__title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-navy-800);
+      letter-spacing: -0.01em;
+    }
+    .approve-modal__subtitle {
+      font-size: 0.75rem;
+      color: var(--color-navy-400);
+      margin-top: 3px;
+      font-weight: 500;
+    }
+    .approve-modal__preview {
+      background: var(--color-navy-100);
+      border: none;
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+      margin-bottom: 18px;
+      max-height: 180px;
+      overflow-y: auto;
+      font-size: var(--font-size-sm);
+      line-height: 1.7;
+      color: var(--color-navy-600);
+    }
+    .approve-modal__preview ul,
+    .approve-modal__preview ol { padding-left: 1.4em; margin: 6px 0; }
+    .approve-modal__preview li { margin-bottom: 2px; }
+    .approve-modal__preview::-webkit-scrollbar { width: 4px; }
+    .approve-modal__preview::-webkit-scrollbar-track { background: transparent; }
+    .approve-modal__preview::-webkit-scrollbar-thumb {
+      background: var(--color-navy-300);
+      border-radius: var(--radius-full);
+    }
+    .approve-modal__checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 22px;
+      padding: 12px 14px;
+      background: rgba(86, 105, 164, 0.04);
+      border: 1px solid var(--color-navy-200);
+      border-radius: var(--radius-lg);
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      color: var(--color-navy-600);
+      cursor: pointer;
+      transition: border-color var(--transition-fast), background var(--transition-fast);
+    }
+    .approve-modal__checkbox:hover {
+      border-color: var(--color-navy-400);
+      background: rgba(86, 105, 164, 0.06);
+    }
+    .approve-modal__checkbox:has(input:checked) {
+      border-color: var(--color-navy-500);
+      background: rgba(86, 105, 164, 0.06);
+    }
+    .approve-modal__checkbox input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 1px;
+      flex-shrink: 0;
+      accent-color: var(--color-navy-500);
+      cursor: pointer;
+    }
+    .approve-modal__actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .approve-modal__btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 22px;
+      border-radius: var(--radius-full);
+      font-family: inherit;
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      border: 1px solid var(--color-navy-200);
+      background: var(--color-white);
+      color: var(--color-navy-600);
+    }
+    .approve-modal__btn:hover {
+      border-color: var(--color-navy-400);
+      background: var(--color-navy-100);
+    }
+    .approve-modal__btn--primary {
+      background: var(--color-navy-800);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 2px 8px rgba(19, 16, 44, 0.18);
+    }
+    .approve-modal__btn--primary:hover {
+      background: var(--color-navy-900);
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(19, 16, 44, 0.22);
+    }
+    .approve-modal__btn--primary:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .approve-modal__btn--primary svg { width: 15px; height: 15px; }
+    .approve-modal__info {
+      font-size: 0.6875rem;
+      line-height: 1.55;
+      color: var(--color-navy-400);
+      padding-top: 14px;
+      margin-top: 18px;
+      border-top: 1px solid var(--color-gray-100);
+      text-align: center;
+    }
+
     /* Inline demo button (top-right of page header) */
     .demo-launch-inline {
       display: inline-flex;
@@ -1084,6 +1254,36 @@
       </div>
       <div class="compliance-modal__info">
         Denne overvågning sikrer korrekthed og beskytter klinikken mod juridiske risici i dokumentationsarbejdet.
+      </div>
+    </div>
+  </div>
+
+  <!-- Approve Before Send Modal (PLO F-7.B) -->
+  <div class="approve-overlay" id="approveOverlay">
+    <div class="approve-modal">
+      <div class="approve-modal__header">
+        <div class="approve-modal__icon">
+          <i data-lucide="shield-check"></i>
+        </div>
+        <div>
+          <div class="approve-modal__title">Godkend f&oslash;r afsendelse</div>
+          <div class="approve-modal__subtitle" id="approvePatientName"></div>
+        </div>
+      </div>
+      <div class="approve-modal__preview" id="approvePreview"></div>
+      <label class="approve-modal__checkbox">
+        <input type="checkbox" id="approveCheck">
+        Jeg har gennemg&aring;et udkastet og bekr&aelig;fter, at indholdet er korrekt, fagligt forsvarligt og klar til afsendelse.
+      </label>
+      <div class="approve-modal__actions">
+        <button class="approve-modal__btn" id="approveCancel">Annull&eacute;r</button>
+        <button class="approve-modal__btn approve-modal__btn--primary" id="approveConfirm" disabled>
+          <i data-lucide="check"></i>
+          <span id="approveConfirmLabel">Godkend &amp; kopi&eacute;r</span>
+        </button>
+      </div>
+      <div class="approve-modal__info">
+        Alle godkendte svar logges med tidsstempel og l&aelig;ge-ID. Kliniske skabeloner er del af FEA-forskningssamarbejdet med Aalborg Universitet.
       </div>
     </div>
   </div>
@@ -1456,14 +1656,66 @@
       clearTemplateSelection();
     }
 
-    document.getElementById('btnCopy').addEventListener('click', copyDraft);
-    document.getElementById('btnApprove').addEventListener('click', function() {
-      if (!state.selectedId) return;
-      state.sentMessages.push(state.selectedId);
-      showToast('Notat godkendt og gemt');
-      if (state.batchMode) { nextBatchMessage(); }
-      else { clearDetail(); renderMessageList(); }
+    // ═══════════════════════════════════════
+    // APPROVE-BEFORE-SEND MODAL (F-7.B)
+    // ═══════════════════════════════════════
+    var pendingApproveAction = null; // 'copy' or 'approve'
+
+    function showApproveModal(action) {
+      pendingApproveAction = action;
+      var draftBody = document.getElementById('draftBody');
+      if (!draftBody) return;
+      var preview = draftBody.innerText || draftBody.textContent;
+      document.getElementById('approvePreview').textContent = preview;
+
+      // Set patient name
+      var msg = mockMessages.find(function(m) { return m.id === state.selectedId; });
+      document.getElementById('approvePatientName').textContent = msg ? msg.sender : '';
+
+      // Set button label
+      var label = document.getElementById('approveConfirmLabel');
+      label.textContent = action === 'copy' ? 'Godkend & kopiér' : 'Godkend & gem notat';
+
+      // Reset checkbox
+      var check = document.getElementById('approveCheck');
+      check.checked = false;
+      document.getElementById('approveConfirm').disabled = true;
+
+      var overlay = document.getElementById('approveOverlay');
+      overlay.classList.add('active');
+      lucide.createIcons();
+    }
+
+    function hideApproveModal() {
+      document.getElementById('approveOverlay').classList.remove('active');
+      pendingApproveAction = null;
+    }
+
+    document.getElementById('approveCheck').addEventListener('change', function() {
+      document.getElementById('approveConfirm').disabled = !this.checked;
     });
+
+    document.getElementById('approveCancel').addEventListener('click', hideApproveModal);
+    document.getElementById('approveOverlay').addEventListener('click', function(e) {
+      if (e.target === this) hideApproveModal();
+    });
+
+    document.getElementById('approveConfirm').addEventListener('click', function() {
+      if (!pendingApproveAction) return;
+      hideApproveModal();
+      if (pendingApproveAction === 'copy') {
+        copyDraft();
+      } else {
+        if (!state.selectedId) return;
+        state.sentMessages.push(state.selectedId);
+        showToast('Notat godkendt og gemt');
+        if (state.batchMode) { nextBatchMessage(); }
+        else { clearDetail(); renderMessageList(); }
+      }
+    });
+
+    document.getElementById('btnCopy').addEventListener('click', function() { showApproveModal('copy'); });
+    document.getElementById('btnApprove').addEventListener('click', function() { showApproveModal('approve'); });
 
     // ═══════════════════════════════════════
     // BATCH MODE

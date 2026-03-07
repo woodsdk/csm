@@ -317,10 +317,13 @@
       min-height: 0;
     }
 
-    /* Left column panels: 50/50 split */
+    /* Left column panels */
     .left-column .consultation-panel {
       flex: 1;
       min-height: 0;
+    }
+    .left-column .proactive-questions {
+      flex: 0 0 auto;
     }
 
     .panel-header {
@@ -716,12 +719,90 @@
       padding-left: 20px;
       margin: 0;
       font-family: inherit;
-      font-size: 0.938rem;
+      font-size: 0.8125rem;
       line-height: 1.8;
       color: var(--color-text);
     }
     .huskeliste-list li {
       padding: 2px 0;
+    }
+
+    /* ═══════════════════════════════════════
+       F-9.A: PROACTIVE CLINICAL QUESTIONS
+       ═══════════════════════════════════════ */
+    .proactive-questions {
+      margin-top: 12px;
+      background: var(--color-white);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+    .proactive-questions__header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 26px;
+      min-height: 48px;
+      border-bottom: 1px solid var(--color-gray-200);
+    }
+    .proactive-questions__title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #13102C;
+    }
+    .proactive-questions__title i {
+      width: 14px; height: 14px;
+      color: var(--color-navy-400);
+      vertical-align: -2px;
+    }
+    .proactive-questions__list {
+      list-style: disc;
+      padding: 18px 26px 14px 46px;
+      margin: 0;
+      font-size: 0.8125rem;
+      line-height: 1.55;
+      color: var(--color-text);
+    }
+    .proactive-question {
+      padding: 2px 0;
+      animation: fadeInQuestion 0.4s ease both;
+    }
+    .proactive-question:nth-child(2) { animation-delay: 0.12s; }
+    .proactive-question:nth-child(3) { animation-delay: 0.24s; }
+    .proactive-question strong {
+      color: var(--color-navy-600);
+      font-weight: 600;
+    }
+    .proactive-question__new {
+      display: inline-flex;
+      align-items: center;
+      padding: 0px 5px;
+      background: rgba(86, 105, 164, 0.08);
+      border-radius: var(--radius-sm);
+      font-size: 8px;
+      font-weight: 600;
+      color: var(--color-navy-400);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-left: 4px;
+    }
+    .proactive-questions__note {
+      padding: 0 26px 14px;
+      font-size: 0.6875rem;
+      color: var(--color-navy-400);
+      line-height: 1.45;
+      display: flex;
+      align-items: flex-start;
+      gap: 5px;
+    }
+    .proactive-questions__note i {
+      width: 12px; height: 12px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    @keyframes fadeInQuestion {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     /* Template dropdown for notes panel (matches konsultation-rediger) */
@@ -770,6 +851,69 @@
       font-weight: 600;
       color: var(--color-navy-700);
       background: var(--color-gray-50);
+    }
+
+    /* Fixed-width labels to prevent layout shift on selection */
+    #toneDropdownLabel { display: inline-block; min-width: 80px; text-align: left; }
+    #templateDropdownLabel { display: inline-block; min-width: 130px; text-align: left; }
+
+    /* Radio button items in dropdown */
+    .panel-dropdown-menu__radio {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 8px 12px;
+      font-family: inherit;
+      font-size: var(--font-size-sm);
+      color: var(--color-text);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background var(--transition-fast);
+      box-sizing: border-box;
+    }
+    .panel-dropdown-menu__radio:hover {
+      background: var(--color-gray-50);
+    }
+    .panel-dropdown-menu__radio input[type="radio"] {
+      accent-color: var(--color-navy-500);
+      width: 14px;
+      height: 14px;
+      margin: 0;
+      cursor: pointer;
+    }
+    .panel-dropdown-menu__radio input[type="radio"]:checked + span {
+      font-weight: 600;
+      color: var(--color-navy-700);
+    }
+    .panel-dropdown-menu__footer {
+      border-top: 1px solid var(--color-gray-200);
+      margin-top: 6px;
+      padding: 8px 6px 4px;
+    }
+    .panel-dropdown-menu__regenerate {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      width: 100%;
+      padding: 8px 16px;
+      background: var(--gradient-button-primary);
+      border: none;
+      color: var(--color-white);
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      box-shadow: var(--shadow-button);
+    }
+    .panel-dropdown-menu__regenerate:hover {
+      background: linear-gradient(135deg, #2F3D62 0%, #4A5D96 100%);
+    }
+    .panel-dropdown-menu__regenerate svg {
+      width: 13px;
+      height: 13px;
     }
 
     /* SDU research badge for Patientresume */
@@ -1110,7 +1254,7 @@
             <div class="consultation-panel consultation-panel--flex">
               <div class="panel-header">
                 <h2 class="panel-title">Huskeliste</h2>
-                <span style="font-size:0.6rem;font-weight:600;color:var(--color-navy-400);background:rgba(86,105,164,0.08);padding:2px 7px;border-radius:var(--radius-full);margin-left:auto;" id="huskelisteBadge">Tilpasset efter notatskabelon</span>
+                <span style="display:inline-flex;align-items:center;height:28px;font-size:0.625rem;font-weight:600;color:var(--color-navy-400);background:rgba(86,105,164,0.08);padding:0 10px;border-radius:var(--radius-full);margin-left:auto;white-space:nowrap;" id="huskelisteBadge">Tilpasset efter notatskabelon</span>
               </div>
               <div class="panel-content" style="flex: 1; overflow-y: auto;" id="huskelisteContent">
                 <ul class="huskeliste-list" id="huskelisteList">
@@ -1123,6 +1267,26 @@
                   <li>Overvej henvisning ved alarm-symptomer</li>
                   <li>Spørg til psykisk trivsel / søvn</li>
                 </ul>
+
+              </div>
+            </div>
+
+            <!-- ═══ F-9.A: Proactive Clinical Questions (egen boks) ═══ -->
+            <div class="proactive-questions" id="proactiveQuestions">
+              <div class="proactive-questions__header">
+                <h2 class="proactive-questions__title">AI-foreslåede spørgsmål</h2>
+              </div>
+              <ul class="proactive-questions__list" id="proactiveList">
+                <li class="proactive-question">
+                  <span>Er der oplevet episoder med knæet, der <strong>"giver efter"</strong> under gang eller trappegang? <span class="proactive-question__new">NY</span></span>
+                </li>
+                <li class="proactive-question">
+                  <span>Er der natlige smerter eller hvilesmerter, der vækker patienten?</span>
+                </li>
+              </ul>
+              <div class="proactive-questions__note">
+                <i data-lucide="info"></i>
+                <span>AI-genereret via FEA-forskningssamarbejdet. Baseret på den igangværende konsultation.</span>
               </div>
             </div>
           </div>
@@ -1134,20 +1298,26 @@
               <div style="display: flex; align-items: center; gap: 8px;">
                 <div class="panel-dropdown-wrapper">
                   <button class="panel-dropdown" id="toneDropdownBtn">
-                    <i data-lucide="speech" style="width: 11px; height: 11px; color: var(--color-navy-400);"></i>
+                    <i data-lucide="speech" style="width: 9px; height: 9px; color: var(--color-navy-400);"></i>
                     <span style="font-weight: 700;" id="toneDropdownLabel">Neutral</span>
                     <i data-lucide="chevron-down"></i>
                   </button>
                   <div class="panel-dropdown-menu" id="toneDropdownMenu">
-                    <div style="padding: 6px 12px 8px; border-bottom: 1px solid var(--color-gray-100); margin-bottom: 4px;">
+                    <div style="padding: 6px 12px 8px; border-bottom: 1px solid var(--color-gray-100); margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
                       <div style="display: flex; align-items: center; gap: 5px; font-size: 0.625rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-navy-400); white-space: nowrap;">
-                        <i data-lucide="speech" style="width: 10px; height: 10px; flex-shrink: 0;"></i>
-                        Forskningsprojekt · FEA
+                        Tone
                       </div>
+                      <span style="display: inline-flex; padding: 1px 6px; background: rgba(86, 105, 164, 0.1); border-radius: 9999px; font-size: 0.5625rem; font-weight: 600; color: var(--color-navy-500); letter-spacing: 0.03em;">FEA</span>
                     </div>
-                    <button class="panel-dropdown-menu__item" data-tone="formel">Formel</button>
-                    <button class="panel-dropdown-menu__item panel-dropdown-menu__item--active" data-tone="neutral">Neutral</button>
-                    <button class="panel-dropdown-menu__item" data-tone="rolig">Rolig</button>
+                    <label class="panel-dropdown-menu__radio" data-tone="formel"><input type="radio" name="tone" value="formel"><span>Formel</span></label>
+                    <label class="panel-dropdown-menu__radio" data-tone="neutral"><input type="radio" name="tone" value="neutral" checked><span>Neutral</span></label>
+                    <label class="panel-dropdown-menu__radio" data-tone="rolig"><input type="radio" name="tone" value="rolig"><span>Rolig</span></label>
+                    <div class="panel-dropdown-menu__footer">
+                      <button class="panel-dropdown-menu__regenerate" id="toneRegenBtn">
+                        <i data-lucide="refresh-cw"></i>
+                        Regenerér
+                      </button>
+                    </div>
                   </div>
                 </div>
                 <div class="panel-dropdown-wrapper">
@@ -1157,14 +1327,20 @@
                     <i data-lucide="chevron-down"></i>
                   </button>
                   <div class="panel-dropdown-menu" id="templateDropdownMenu">
-                    <button class="panel-dropdown-menu__item" data-template="soap">SOAP</button>
-                    <button class="panel-dropdown-menu__item" data-template="psoap">PSOAP</button>
-                    <button class="panel-dropdown-menu__item" data-template="soap-kort">SOAP - Kort</button>
-                    <button class="panel-dropdown-menu__item" data-template="soap-psykisk">SOAP - Psykisk</button>
-                    <button class="panel-dropdown-menu__item panel-dropdown-menu__item--active" data-template="soap-baggrund">SOAP m. baggrund</button>
-                    <button class="panel-dropdown-menu__item" data-template="fritekst">Fritekst</button>
-                    <button class="panel-dropdown-menu__item" data-template="struktureret">Struktureret</button>
-                    <button class="panel-dropdown-menu__item" data-template="aarskontrol">Årskontrol</button>
+                    <label class="panel-dropdown-menu__radio" data-template="soap"><input type="radio" name="template" value="soap"><span>SOAP</span></label>
+                    <label class="panel-dropdown-menu__radio" data-template="psoap"><input type="radio" name="template" value="psoap"><span>PSOAP</span></label>
+                    <label class="panel-dropdown-menu__radio" data-template="soap-kort"><input type="radio" name="template" value="soap-kort"><span>SOAP - Kort</span></label>
+                    <label class="panel-dropdown-menu__radio" data-template="soap-psykisk"><input type="radio" name="template" value="soap-psykisk"><span>SOAP - Psykisk</span></label>
+                    <label class="panel-dropdown-menu__radio" data-template="soap-baggrund"><input type="radio" name="template" value="soap-baggrund" checked><span>SOAP m. baggrund</span></label>
+                    <label class="panel-dropdown-menu__radio" data-template="fritekst"><input type="radio" name="template" value="fritekst"><span>Fritekst</span></label>
+                    <label class="panel-dropdown-menu__radio" data-template="struktureret"><input type="radio" name="template" value="struktureret"><span>Struktureret</span></label>
+                    <label class="panel-dropdown-menu__radio" data-template="aarskontrol"><input type="radio" name="template" value="aarskontrol"><span>Årskontrol</span></label>
+                    <div class="panel-dropdown-menu__footer">
+                      <button class="panel-dropdown-menu__regenerate" id="templateRegenBtn">
+                        <i data-lucide="refresh-cw"></i>
+                        Regenerér
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1564,16 +1740,26 @@
         toneMenu.classList.remove('panel-dropdown-menu--open');
       });
 
-      toneMenu.querySelectorAll('.panel-dropdown-menu__item').forEach(function(item) {
-        item.addEventListener('click', function() {
-          toneLabel.textContent = this.textContent;
-          toneMenu.querySelectorAll('.panel-dropdown-menu__item').forEach(function(i) {
-            i.classList.remove('panel-dropdown-menu__item--active');
-          });
-          this.classList.add('panel-dropdown-menu__item--active');
-          toneMenu.classList.remove('panel-dropdown-menu--open');
+      toneMenu.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+
+      // Radio buttons update label on change
+      toneMenu.querySelectorAll('.panel-dropdown-menu__radio input[type="radio"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+          var label = this.closest('.panel-dropdown-menu__radio').querySelector('span');
+          toneLabel.textContent = label.textContent;
         });
       });
+
+      // Tone Regenerér button
+      var toneRegenBtn = document.getElementById('toneRegenBtn');
+      if (toneRegenBtn) {
+        toneRegenBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          toneMenu.classList.remove('panel-dropdown-menu--open');
+        });
+      }
     }
 
     // ==========================================
@@ -1668,22 +1854,32 @@
         }).join('');
       }
 
-      templateMenu.querySelectorAll('.panel-dropdown-menu__item').forEach(function(item) {
-        item.addEventListener('click', function() {
-          var templateId = this.getAttribute('data-template');
-          templateLabel.textContent = this.textContent;
+      templateMenu.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
 
-          // Update active state
-          templateMenu.querySelectorAll('.panel-dropdown-menu__item').forEach(function(i) {
-            i.classList.remove('panel-dropdown-menu__item--active');
-          });
-          this.classList.add('panel-dropdown-menu__item--active');
+      // Radio buttons update label on change
+      templateMenu.querySelectorAll('.panel-dropdown-menu__radio input[type="radio"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+          var label = this.closest('.panel-dropdown-menu__radio').querySelector('span');
+          templateLabel.textContent = label.textContent;
+        });
+      });
+
+      // Template Regenerér button
+      var templateRegenBtn = document.getElementById('templateRegenBtn');
+      if (templateRegenBtn) {
+        templateRegenBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var selectedRadio = templateMenu.querySelector('input[type="radio"]:checked');
+          if (!selectedRadio) return;
+          var templateId = selectedRadio.value;
           templateMenu.classList.remove('panel-dropdown-menu--open');
 
           // Update huskeliste based on selected template
           updateHuskeliste(templateId);
         });
-      });
+      }
     }
 
     // ==========================================

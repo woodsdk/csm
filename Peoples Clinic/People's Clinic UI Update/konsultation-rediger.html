@@ -300,6 +300,97 @@
       background: var(--color-gray-50);
     }
 
+    /* Radio button items in template dropdown */
+    .panel-dropdown-menu__radio {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 8px 12px;
+      font-family: inherit;
+      font-size: var(--font-size-sm);
+      color: var(--color-text);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background var(--transition-fast);
+      box-sizing: border-box;
+    }
+    .panel-dropdown-menu__radio:hover {
+      background: var(--color-gray-50);
+    }
+    .panel-dropdown-menu__radio input[type="radio"] {
+      accent-color: var(--color-navy-500);
+      width: 14px;
+      height: 14px;
+      margin: 0;
+      cursor: pointer;
+    }
+    .panel-dropdown-menu__radio input[type="radio"]:checked + span {
+      font-weight: 600;
+      color: var(--color-navy-700);
+    }
+    /* Length badge in dropdown */
+    .panel-dropdown-menu__length {
+      margin-left: auto;
+      font-size: 0.5625rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      padding: 1px 7px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .panel-dropdown-menu__length--kort {
+      background: rgba(34, 197, 94, 0.08);
+      color: #15803D;
+      border: 1px solid rgba(34, 197, 94, 0.2);
+    }
+    .panel-dropdown-menu__length--mellem {
+      background: rgba(59, 130, 246, 0.08);
+      color: #1D4ED8;
+      border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+    .panel-dropdown-menu__length--lang {
+      background: rgba(139, 92, 246, 0.08);
+      color: #6D28D9;
+      border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+    /* Group divider */
+    .panel-dropdown-menu__divider {
+      height: 1px;
+      background: var(--color-gray-100);
+      margin: 4px 8px;
+    }
+    .panel-dropdown-menu__footer {
+      border-top: 1px solid var(--color-gray-200);
+      margin-top: 6px;
+      padding: 8px 6px 4px;
+    }
+    .panel-dropdown-menu__regenerate {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      width: 100%;
+      padding: 8px 16px;
+      background: var(--gradient-button-primary);
+      border: none;
+      color: var(--color-white);
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      box-shadow: var(--shadow-button);
+    }
+    .panel-dropdown-menu__regenerate:hover {
+      background: linear-gradient(135deg, #2F3D62 0%, #4A5D96 100%);
+    }
+    .panel-dropdown-menu__regenerate svg {
+      width: 13px;
+      height: 13px;
+    }
+
     .panel-content {
       flex: 1;
       padding: 20px 26px;
@@ -939,7 +1030,15 @@
     }
 
     .code-chip__system {
-      display: none;
+      font-size: 0.5625rem;
+      font-weight: 700;
+      color: var(--color-navy-500);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-right: 4px;
+      padding: 1px 5px;
+      background: var(--color-gray-100);
+      border-radius: var(--radius-sm);
     }
 
     .code-chip__code {
@@ -1103,6 +1202,206 @@
       color: var(--color-navy-500);
     }
 
+    /* ──────────────────────────────────────────────
+       F-9.A / F-9.B: Clinical red-flags — hover popover
+       ────────────────────────────────────────────── */
+    .redflags-trigger-wrap {
+      position: relative;
+      padding: 8px 26px 14px;
+      border-top: 1px solid var(--color-gray-200);
+      flex-shrink: 0;
+    }
+
+    .redflags-trigger {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      width: 100%;
+      padding: 7px 12px;
+      background: rgba(245, 158, 11, 0.04);
+      border: 1px solid rgba(245, 158, 11, 0.12);
+      border-radius: var(--radius-lg);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #92400E;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .redflags-trigger:hover {
+      background: rgba(245, 158, 11, 0.08);
+      border-color: rgba(245, 158, 11, 0.25);
+    }
+    .redflags-trigger > i:first-child {
+      width: 13px; height: 13px;
+      color: #D97706;
+      flex-shrink: 0;
+    }
+    .redflags-trigger__chevron {
+      width: 12px !important; height: 12px !important;
+      margin-left: auto;
+      color: #B45309;
+      opacity: 0.4;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    .redflags-trigger-wrap:hover .redflags-trigger__chevron {
+      transform: rotate(90deg);
+      opacity: 0.8;
+    }
+
+    /* Popover */
+    .redflags-popover {
+      position: absolute;
+      left: 26px; right: 26px;
+      bottom: calc(100% + 4px);
+      background: white;
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 8px 30px rgba(19, 16, 44, 0.10), 0 2px 8px rgba(19, 16, 44, 0.04);
+      padding: 14px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(4px);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 100;
+    }
+    .redflags-trigger-wrap:hover .redflags-popover,
+    .redflags-popover.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .redflags-popover__header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--color-navy-700);
+    }
+    .redflags-popover__header > i:first-child {
+      width: 13px; height: 13px;
+      color: #D97706;
+    }
+
+    .redflags-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 1px 7px;
+      margin-left: auto;
+      background: rgba(245, 158, 11, 0.06);
+      border: 1px solid rgba(245, 158, 11, 0.18);
+      border-radius: var(--radius-full);
+      font-size: 0.5625rem;
+      font-weight: 600;
+      color: #B45309;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .redflags-badge i { width: 8px; height: 8px; }
+
+    .redflags-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .redflags-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      padding: 7px 10px;
+      background: rgba(245, 158, 11, 0.03);
+      border: none;
+      border-left: 2px solid rgba(245, 158, 11, 0.30);
+      border-radius: var(--radius-md);
+      font-size: 0.75rem;
+      line-height: 1.5;
+      color: var(--color-text);
+    }
+    .redflags-item i {
+      width: 12px; height: 12px;
+      color: #D97706;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .redflags-item strong {
+      color: #92400E;
+    }
+
+    .redflags-popover__footer {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--color-gray-100);
+      font-size: 0.5625rem;
+      color: var(--color-navy-300);
+    }
+    .redflags-popover__footer i {
+      width: 9px; height: 9px;
+      flex-shrink: 0;
+    }
+
+    /* ──────────────────────────────────────────────
+       F-14.A: Learned phrases indicator
+       ────────────────────────────────────────────── */
+    .learned-phrase {
+      position: relative;
+      border-bottom: 1.5px dotted rgba(34, 197, 94, 0.5);
+      cursor: default;
+    }
+
+    .learned-phrase-tooltip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 4px);
+      left: 0;
+      white-space: nowrap;
+      padding: 4px 8px;
+      background: var(--color-navy-700);
+      color: var(--color-white);
+      border-radius: var(--radius-md);
+      font-size: 0.625rem;
+      font-weight: 500;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .learned-phrase:hover .learned-phrase-tooltip {
+      display: block;
+    }
+
+    .learned-phrases-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 12px;
+      height: 30px;
+      box-sizing: border-box;
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      border-radius: var(--radius-full);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: #15803D;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+      cursor: default;
+    }
+
+    .learned-phrases-badge svg {
+      width: 12px;
+      height: 12px;
+    }
+
     /* AI input — kept for sidebar only */
     .ai-input-section {
       padding: 12px 26px 16px;
@@ -1206,14 +1505,16 @@
       gap: 8px;
     }
     .resume-approve-bar__note {
-      font-size: 0.6875rem;
-      line-height: 1.4;
+      font-size: 0.625rem;
+      line-height: 1.3;
       color: var(--color-navy-400);
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 5px;
+      white-space: nowrap;
     }
-    .resume-approve-bar__note i { width: 11px; height: 11px; flex-shrink: 0; }
+    .resume-approve-bar__note svg { width: 12px; height: 12px; flex-shrink: 0; }
     .resume-approve-bar__note--approved {
       color: #16a34a;
     }
@@ -1401,67 +1702,58 @@
     }
 
     /* ──────────────────────────────────────────────
-       TRANSLATE SLIDE-OVER PANEL
+       EXPORT MODAL
        ────────────────────────────────────────────── */
-    .translate-overlay {
+    .export-overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0.3);
       z-index: 900;
+      align-items: center;
+      justify-content: center;
     }
-
-    .translate-overlay.active {
-      display: block;
+    .export-overlay.active {
+      display: flex;
     }
-
-    .translate-panel {
-      position: fixed;
-      top: 0;
-      right: 0;
-      width: 480px;
-      max-width: 90vw;
-      height: 100vh;
+    .export-modal {
       background: var(--color-white);
-      box-shadow: -8px 0 40px rgba(0, 0, 0, 0.12);
-      z-index: 901;
+      border-radius: var(--radius-2xl);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      width: 640px;
+      max-width: 92vw;
+      max-height: 85vh;
       display: flex;
       flex-direction: column;
-      transform: translateX(100%);
-      transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+      overflow: hidden;
+      animation: exportModalIn 0.25s ease;
     }
-
-    .translate-overlay.active .translate-panel {
-      transform: translateX(0);
+    @keyframes exportModalIn {
+      from { opacity: 0; transform: scale(0.97) translateY(8px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
     }
-
-    .translate-panel__header {
+    .export-modal__header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 20px 24px;
+      padding: 20px 28px;
       border-bottom: 1px solid var(--color-gray-200);
       flex-shrink: 0;
     }
-
-    .translate-panel__title {
-      font-size: 1rem;
+    .export-modal__title {
+      font-size: 1.125rem;
       font-weight: 600;
       color: var(--color-text);
       display: flex;
       align-items: center;
       gap: 8px;
     }
-
-    .translate-panel__title i {
-      width: 18px;
-      height: 18px;
+    .export-modal__title svg {
+      width: 18px; height: 18px;
       color: var(--color-navy-500);
     }
-
-    .translate-panel__close {
-      width: 32px;
-      height: 32px;
+    .export-modal__close {
+      width: 32px; height: 32px;
       border-radius: 50%;
       border: none;
       background: transparent;
@@ -1472,143 +1764,160 @@
       color: var(--color-navy-400);
       transition: background 0.2s ease;
     }
+    .export-modal__close:hover { background: var(--color-gray-100); }
+    .export-modal__close svg { width: 18px; height: 18px; }
 
-    .translate-panel__close:hover {
-      background: var(--color-gray-100);
-    }
-
-    .translate-panel__close i {
-      width: 18px;
-      height: 18px;
-    }
-
-    .translate-panel__controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 16px 24px;
-      border-bottom: 1px solid var(--color-gray-100);
-      flex-shrink: 0;
-    }
-
-    .translate-panel__select {
-      flex: 1;
-      padding: 10px 14px;
-      border: 1px solid var(--color-gray-200);
-      border-radius: var(--radius-lg);
-      font-family: inherit;
-      font-size: 0.8125rem;
-      color: var(--color-text);
-      background: var(--color-white);
-      cursor: pointer;
-      outline: none;
-      transition: border-color 0.2s ease;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235669A4' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      padding-right: 32px;
-    }
-
-    .translate-panel__select:focus {
-      border-color: var(--color-navy-500);
-    }
-
-    .translate-panel__generate {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 10px 20px;
-      background: var(--gradient-button-primary);
-      border: none;
-      color: var(--color-white);
-      font-family: inherit;
-      font-size: 0.8125rem;
-      font-weight: 600;
-      border-radius: var(--radius-full);
-      cursor: pointer;
-      box-shadow: var(--shadow-button);
-      transition: background 0.3s ease, box-shadow 0.3s ease;
-      white-space: nowrap;
-      box-sizing: border-box;
-      height: 40px;
-    }
-    .translate-panel__select {
-      height: 40px;
-      box-sizing: border-box;
-    }
-
-    .translate-panel__generate:hover {
-      background: linear-gradient(135deg, #2F3D62 0%, #4A5D96 100%);
-      box-shadow: 0 4px 18px rgba(56, 69, 109, 0.3);
-    }
-
-    .translate-panel__generate i {
-      width: 14px;
-      height: 14px;
-    }
-
-    .translate-panel__body {
+    /* Scrollable body */
+    .export-modal__body {
       flex: 1;
       overflow-y: auto;
-      padding: 20px 24px;
+      padding: 24px 28px;
     }
 
-    .translate-panel__empty {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      gap: 12px;
+    /* Notes preview */
+    .export-modal__section-label {
+      font-size: 0.625rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
       color: var(--color-navy-400);
+      margin-bottom: 12px;
     }
-
-    .translate-panel__empty i {
-      width: 36px;
-      height: 36px;
-      opacity: 0.4;
-    }
-
-    .translate-panel__empty span {
-      font-size: 0.8125rem;
-    }
-
-    .translate-panel__output {
-      display: none;
+    .export-modal__notes {
       font-size: 0.8125rem;
       line-height: 1.7;
       color: var(--color-text);
     }
-
-    .translate-panel__output .notes-label {
+    .export-modal__notes .notes-label {
       font-weight: 700;
       margin-top: 14px;
       margin-bottom: 3px;
     }
-
-    .translate-panel__output .notes-label:first-child {
+    .export-modal__notes .notes-label:first-child {
       margin-top: 0;
     }
 
-    .translate-panel__footer {
-      display: none;
+    /* Translate section */
+    .export-modal__divider {
+      border: none;
+      border-top: 1px solid var(--color-gray-200);
+      margin: 24px 0 20px;
+    }
+    .export-modal__translate-header {
+      display: flex;
       align-items: center;
       gap: 10px;
-      padding: 16px 24px;
+      margin-bottom: 14px;
+    }
+    .export-modal__translate-title {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .export-modal__translate-title svg {
+      width: 15px; height: 15px;
+      color: var(--color-navy-400);
+    }
+    .export-modal__translate-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .export-modal__lang-select {
+      padding: 7px 32px 7px 12px;
+      height: 34px;
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-lg);
+      font-family: inherit;
+      font-size: 0.75rem;
+      color: var(--color-text);
+      background: var(--color-white);
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235669A4' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      box-sizing: border-box;
+    }
+    .export-modal__lang-select:focus { border-color: var(--color-navy-500); }
+    .export-modal__generate-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 16px;
+      height: 34px;
+      background: var(--gradient-button-primary);
+      border: none;
+      color: var(--color-white);
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      box-shadow: var(--shadow-button);
+      white-space: nowrap;
+      box-sizing: border-box;
+    }
+    .export-modal__generate-btn:hover {
+      background: linear-gradient(135deg, #2F3D62 0%, #4A5D96 100%);
+    }
+    .export-modal__generate-btn svg { width: 13px; height: 13px; }
+    .export-modal__translate-output {
+      display: none;
+      margin-top: 14px;
+      padding: 16px 20px;
+      background: var(--color-gray-50);
+      border-radius: var(--radius-lg);
+      font-size: 0.8125rem;
+      line-height: 1.7;
+      color: var(--color-text);
+    }
+    .export-modal__translate-output .notes-label {
+      font-weight: 700;
+      margin-top: 14px;
+      margin-bottom: 3px;
+    }
+    .export-modal__translate-output .notes-label:first-child {
+      margin-top: 0;
+    }
+    .export-modal__lang-badge {
+      display: inline-flex;
+      padding: 2px 8px;
+      background: var(--color-gray-100);
+      border-radius: var(--radius-full);
+      font-size: 0.625rem;
+      font-weight: 600;
+      color: var(--color-navy-500);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-left: 8px;
+    }
+    .export-modal__disclaimer {
+      display: block;
+      margin-top: 8px;
+      font-size: 0.6875rem;
+      color: var(--color-navy-400);
+      line-height: 1.4;
+    }
+
+    /* Footer */
+    .export-modal__footer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 28px;
       border-top: 1px solid var(--color-gray-200);
       flex-shrink: 0;
     }
-
-    .translate-panel__footer.active {
-      display: flex;
-    }
-
-    .translate-panel__copy {
+    .export-modal__btn-primary {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 10px 20px;
+      padding: 10px 22px;
       background: var(--gradient-button-primary);
       border: none;
       color: var(--color-white);
@@ -1618,29 +1927,16 @@
       border-radius: var(--radius-full);
       cursor: pointer;
       box-shadow: var(--shadow-button);
-      transition: background 0.3s ease, box-shadow 0.3s ease;
     }
-
-    .translate-panel__copy:hover {
+    .export-modal__btn-primary:hover {
       background: linear-gradient(135deg, #2F3D62 0%, #4A5D96 100%);
-      box-shadow: 0 4px 18px rgba(56, 69, 109, 0.3);
     }
-
-    .translate-panel__copy:active {
-      background: linear-gradient(135deg, #2F3D62 0%, #4A5D96 100%);
-      box-shadow: 0 4px 18px rgba(56, 69, 109, 0.3);
-    }
-
-    .translate-panel__copy i {
-      width: 14px;
-      height: 14px;
-    }
-
-    .translate-panel__print {
+    .export-modal__btn-primary svg { width: 14px; height: 14px; }
+    .export-modal__btn-secondary {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 10px 20px;
+      padding: 10px 22px;
       background: var(--color-white);
       border: 1.5px solid var(--color-gray-200);
       color: var(--color-navy-500);
@@ -1649,46 +1945,20 @@
       font-weight: 600;
       border-radius: var(--radius-full);
       cursor: pointer;
-      transition: border-color 0.2s ease, color 0.2s ease;
     }
-
-    .translate-panel__print:hover {
+    .export-modal__btn-secondary:hover {
       border-color: var(--color-navy-500);
       color: var(--color-navy-800);
     }
-
-    .translate-panel__print i {
-      width: 14px;
-      height: 14px;
-    }
-
-    .translate-panel__disclaimer {
-      flex: 1;
-      font-size: 0.6875rem;
-      color: var(--color-navy-400);
-      line-height: 1.4;
-    }
-
-    .translate-panel__lang-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 10px;
-      background: var(--color-gray-100);
-      border-radius: var(--radius-full);
-      font-size: 0.6875rem;
-      font-weight: 600;
-      color: var(--color-navy-500);
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-    }
+    .export-modal__btn-secondary svg { width: 14px; height: 14px; }
+    .export-modal__footer-spacer { flex: 1; }
 
     /* ──────────────────────────────────────────────
        PRINT STYLES
        ────────────────────────────────────────────── */
     @media print {
       .topbar, .bottom-nav, .action-bar, .review-sidebar,
-      .rating-overlay, .translate-overlay, .codes-section,
+      .rating-overlay, .export-overlay, .codes-section,
       .panel-header, .ai-input-section {
         display: none !important;
       }
@@ -1822,6 +2092,10 @@
               <div class="panel-header">
                 <h2 class="panel-title">Notat</h2>
                 <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="learned-phrases-badge" title="Systemet har tilpasset formuleringer baseret på dine tidligere rettelser">
+                    <i data-lucide="sparkles"></i>
+                    L&aelig;rte formuleringer aktiv
+                  </span>
                   <button class="panel-badge transcript-btn" id="showTranscriptBtn" onclick="document.getElementById('transcriptOverlay').classList.add('active')">
                     <i data-lucide="file-text"></i>
                     Vis transskription
@@ -1833,32 +2107,46 @@
                       <i data-lucide="chevron-down"></i>
                     </button>
                     <div class="panel-dropdown-menu" id="toneDropdownMenu">
-                      <div style="padding: 6px 12px 8px; border-bottom: 1px solid var(--color-gray-100); margin-bottom: 4px;">
+                      <div style="padding: 6px 12px 8px; border-bottom: 1px solid var(--color-gray-100); margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
                         <div style="display: flex; align-items: center; gap: 5px; font-size: 0.625rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-navy-400); white-space: nowrap;">
-                          <i data-lucide="speech" style="width: 10px; height: 10px; flex-shrink: 0;"></i>
-                          Forskningsprojekt · FEA
+                          Tone
                         </div>
+                        <span style="display: inline-flex; padding: 1px 6px; background: rgba(86, 105, 164, 0.1); border-radius: 9999px; font-size: 0.5625rem; font-weight: 600; color: var(--color-navy-500); letter-spacing: 0.03em;">FEA</span>
                       </div>
-                      <button class="panel-dropdown-menu__item" data-tone="formel">Formel</button>
-                      <button class="panel-dropdown-menu__item panel-dropdown-menu__item--active" data-tone="neutral">Neutral</button>
-                      <button class="panel-dropdown-menu__item" data-tone="rolig">Rolig</button>
+                      <label class="panel-dropdown-menu__radio" data-tone="formel"><input type="radio" name="tone" value="formel"><span>Formel</span></label>
+                      <label class="panel-dropdown-menu__radio" data-tone="neutral"><input type="radio" name="tone" value="neutral" checked><span>Neutral</span></label>
+                      <label class="panel-dropdown-menu__radio" data-tone="rolig"><input type="radio" name="tone" value="rolig"><span>Rolig</span></label>
+                      <div class="panel-dropdown-menu__footer">
+                        <button class="panel-dropdown-menu__regenerate" id="toneRegenBtn">
+                          <i data-lucide="refresh-cw"></i>
+                          Regenerér
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <div class="panel-dropdown-wrapper">
                     <button class="panel-dropdown" id="templateDropdownBtn">
                       <i data-lucide="file-text" style="width: 11px; height: 11px; color: var(--color-navy-400);"></i>
-                      <span style="font-weight: 700;" id="templateDropdownLabel">SOAP m. baggrund</span>
+                      <span style="font-weight: 700;" id="templateDropdownLabel">SOAP - Lang</span>
                       <i data-lucide="chevron-down"></i>
                     </button>
                     <div class="panel-dropdown-menu" id="templateDropdownMenu">
-                      <button class="panel-dropdown-menu__item" data-template="soap">SOAP</button>
-                      <button class="panel-dropdown-menu__item" data-template="psoap">PSOAP</button>
-                      <button class="panel-dropdown-menu__item" data-template="soap-kort">SOAP - Kort</button>
-                      <button class="panel-dropdown-menu__item" data-template="soap-psykisk">SOAP - Psykisk</button>
-                      <button class="panel-dropdown-menu__item panel-dropdown-menu__item--active" data-template="soap-baggrund">SOAP m. baggrund</button>
-                      <button class="panel-dropdown-menu__item" data-template="fritekst">Fritekst</button>
-                      <button class="panel-dropdown-menu__item" data-template="struktureret">Struktureret</button>
-                      <button class="panel-dropdown-menu__item" data-template="aarskontrol">Årskontrol</button>
+                      <label class="panel-dropdown-menu__radio" data-template="soap-kort"><input type="radio" name="template" value="soap-kort"><span>SOAP - Kort</span></label>
+                      <label class="panel-dropdown-menu__radio" data-template="soap"><input type="radio" name="template" value="soap"><span>SOAP - Mellem</span></label>
+                      <label class="panel-dropdown-menu__radio" data-template="soap-baggrund"><input type="radio" name="template" value="soap-baggrund" checked><span>SOAP - Lang</span></label>
+                      <div class="panel-dropdown-menu__divider"></div>
+                      <label class="panel-dropdown-menu__radio" data-template="psoap"><input type="radio" name="template" value="psoap"><span>PSOAP</span></label>
+                      <label class="panel-dropdown-menu__radio" data-template="soap-psykisk"><input type="radio" name="template" value="soap-psykisk"><span>SOAP - Psykisk</span></label>
+                      <label class="panel-dropdown-menu__radio" data-template="aarskontrol"><input type="radio" name="template" value="aarskontrol"><span>Årskontrol</span></label>
+                      <div class="panel-dropdown-menu__divider"></div>
+                      <label class="panel-dropdown-menu__radio" data-template="fritekst"><input type="radio" name="template" value="fritekst"><span>Fritekst</span></label>
+                      <label class="panel-dropdown-menu__radio" data-template="struktureret"><input type="radio" name="template" value="struktureret"><span>Struktureret</span></label>
+                      <div class="panel-dropdown-menu__footer">
+                        <button class="panel-dropdown-menu__regenerate" id="templateRegenBtn">
+                          <i data-lucide="refresh-cw"></i>
+                          Regenerér
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1866,7 +2154,7 @@
               <div class="panel-content">
                 <div class="notes-section">
                   <div class="notes-label">Anamnese</div>
-                  <div class="notes-content" contenteditable="true">Patient med 3 ugers tiltagende smerter i venstre knæ, opstået efter et vrid under havearbejde. Oplever usikkerhed ved gang, særligt ved trappegang og ujævnt terræn. Intermitterende hævelse over medialt knæ. Ingen locking-episoder. Kan belaste fuldt. Ingen feber eller rødme. Tidligere rask i knæene. Bruger dagligt gangstok udendørs.</div>
+                  <div class="notes-content" contenteditable="true"><span class="learned-phrase">Pt. med 3 ugers tiltagende smerter i ve. knæ<span class="learned-phrase-tooltip">L&aelig;rt formulering — tilpasset din skrivestil</span></span>, opstået efter et vrid under havearbejde. Oplever usikkerhed ved gang, særligt ved trappegang og ujævnt terræn. Intermitterende hævelse over medialt knæ. <span class="learned-phrase">Ingen locking-episoder. Kan belaste fuldt.<span class="learned-phrase-tooltip">L&aelig;rt formulering — tilpasset din skrivestil</span></span> Ingen feber eller rødme. Tidligere rask i knæene. Bruger dagligt gangstok udendørs.</div>
                 </div>
                 <div class="notes-section">
                   <div class="notes-label">Objektivt</div>
@@ -1892,20 +2180,54 @@
 
                 <div class="code-chips" id="codeChips">
                   <div class="code-chip" id="chip-1">
+                    <span class="code-chip__system">ICPC-2</span>
                     <span class="code-chip__code">L78</span>
                     <span class="code-chip__desc">Forstuvning/forstrækning af knæ</span>
                   </div>
                   <div class="code-chip" id="chip-2">
+                    <span class="code-chip__system">ICD-10</span>
                     <span class="code-chip__code">DS835</span>
                     <span class="code-chip__desc">Forstuvning af korsbånd i knæ</span>
                   </div>
                   <div class="code-chip" id="chip-3">
+                    <span class="code-chip__system">ICPC-2</span>
                     <span class="code-chip__code">L96</span>
                     <span class="code-chip__desc">Akut knæskade</span>
                   </div>
                   <div class="code-chip" id="chip-4">
+                    <span class="code-chip__system">ICD-10</span>
                     <span class="code-chip__code">DM171</span>
                     <span class="code-chip__desc">Primær gonartrose, knæ</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ═══ F-9.A / F-9.B: Clinical red-flags hover trigger ═══ -->
+              <div class="redflags-trigger-wrap">
+                <button class="redflags-trigger" id="redflagsTrigger">
+                  <i data-lucide="shield-alert"></i>
+                  <span>2 kliniske opmærksomhedspunkter</span>
+                  <i data-lucide="chevron-right" class="redflags-trigger__chevron"></i>
+                </button>
+                <div class="redflags-popover" id="redflagsPopover">
+                  <div class="redflags-popover__header">
+                    <i data-lucide="shield-alert"></i>
+                    <span>Klinisk opmærksomhed</span>
+                    <span class="redflags-badge"><i data-lucide="triangle-alert"></i>2 fund</span>
+                  </div>
+                  <ul class="redflags-list">
+                    <li class="redflags-item">
+                      <i data-lucide="alert-triangle"></i>
+                      <span><strong>Usikker Lachman-test</strong> — overvej MR-scanning ved persisterende instabilitet efter 2 uger for at udelukke ACL-ruptur.</span>
+                    </li>
+                    <li class="redflags-item">
+                      <i data-lucide="alert-triangle"></i>
+                      <span><strong>Ibuprofen + let overvægt</strong> — monitorér GI-symptomer. Overvej paracetamol som førstevalgspræparat.</span>
+                    </li>
+                  </ul>
+                  <div class="redflags-popover__footer">
+                    <i data-lucide="graduation-cap"></i>
+                    Forskningsprojekt &middot; AAU — AI-identificerede fund. Godkendes af lægen.
                   </div>
                 </div>
               </div>
@@ -1997,17 +2319,9 @@
             <i data-lucide="copy"></i>
             Kopier notat
           </button>
-          <button class="action-btn action-btn--secondary" id="btnRegenerate">
-            <i data-lucide="refresh-cw"></i>
-            Regenerer
-          </button>
-          <span class="template-pending-badge" id="templatePendingBadge">
-            <i data-lucide="arrow-right"></i>
-            Ny skabelon valgt
-          </span>
-          <button class="action-btn action-btn--secondary" id="btnTranslate">
-            <i data-lucide="globe"></i>
-            Oversæt
+          <button class="action-btn action-btn--secondary" id="btnExport">
+            <i data-lucide="file-output"></i>
+            Eksportér
           </button>
           <div class="action-bar__spacer"></div>
           <a href="konsultation-aktiv.html" class="action-btn action-btn--secondary" id="resumeBtn">
@@ -2086,52 +2400,62 @@ Patient: Det lyder fint, tak skal du have.</div>
       </div>
     </div>
 
-    <!-- Translate Slide-Over Panel -->
-    <div class="translate-overlay" id="translateOverlay">
-      <div class="translate-panel">
-        <div class="translate-panel__header">
-          <div class="translate-panel__title">
-            <i data-lucide="globe"></i>
-            Oversæt notat
+    <!-- Export Modal -->
+    <div class="export-overlay" id="exportOverlay">
+      <div class="export-modal">
+        <div class="export-modal__header">
+          <div class="export-modal__title">
+            <i data-lucide="file-output"></i>
+            Eksportér notat
           </div>
-          <button class="translate-panel__close" id="translateClose">
+          <button class="export-modal__close" id="exportClose">
             <i data-lucide="x"></i>
           </button>
         </div>
-        <div class="translate-panel__controls">
-          <select class="translate-panel__select" id="translateLang">
-            <option value="en">English</option>
-            <option value="de">Deutsch</option>
-            <option value="ar">العربية (Arabisk)</option>
-            <option value="tr">Türkçe (Tyrkisk)</option>
-            <option value="pl">Polski (Polsk)</option>
-            <option value="ur">اردو (Urdu)</option>
-            <option value="so">Soomaali (Somalisk)</option>
-            <option value="fa">فارسی (Farsi)</option>
-          </select>
-          <button class="translate-panel__generate" id="translateGenerate">
-            <i data-lucide="sparkles"></i>
-            Generér
-          </button>
-        </div>
-        <div class="translate-panel__body">
-          <div class="translate-panel__empty" id="translateEmpty">
-            <i data-lucide="languages"></i>
-            <span>Vælg sprog og klik Generér</span>
+        <div class="export-modal__body">
+          <div class="export-modal__section-label">Notat-indhold</div>
+          <div class="export-modal__notes" id="exportNotesPreview"></div>
+
+          <hr class="export-modal__divider">
+
+          <div class="export-modal__translate-header">
+            <div class="export-modal__translate-title">
+              <i data-lucide="globe"></i>
+              Tilføj oversættelse
+            </div>
+            <div class="export-modal__translate-controls">
+              <select class="export-modal__lang-select" id="exportLang">
+                <option value="en">English</option>
+                <option value="de">Deutsch</option>
+                <option value="ar">العربية (Arabisk)</option>
+                <option value="tr">Türkçe (Tyrkisk)</option>
+                <option value="pl">Polski (Polsk)</option>
+                <option value="ur">اردو (Urdu)</option>
+                <option value="so">Soomaali (Somalisk)</option>
+                <option value="fa">فارسی (Farsi)</option>
+              </select>
+              <button class="export-modal__generate-btn" id="exportGenerate">
+                <i data-lucide="sparkles"></i>
+                Generér
+              </button>
+            </div>
           </div>
-          <div class="translate-panel__output" id="translateOutput"></div>
+          <div class="export-modal__translate-output" id="exportTranslateOutput"></div>
+          <div id="exportTranslateMeta" style="display:none;">
+            <span class="export-modal__lang-badge" id="exportLangBadge"></span>
+            <span class="export-modal__disclaimer">AI-oversættelse — bør gennemgås af kvalificeret person</span>
+          </div>
         </div>
-        <div class="translate-panel__footer" id="translateFooter">
-          <button class="translate-panel__copy" id="translateCopy">
-            <i data-lucide="copy"></i>
-            Kopiér oversættelse
-          </button>
-          <button class="translate-panel__print" id="translatePrint">
+        <div class="export-modal__footer">
+          <button class="export-modal__btn-primary" id="exportPrint">
             <i data-lucide="printer"></i>
             Print
           </button>
-          <span class="translate-panel__lang-badge" id="translateBadge"></span>
-          <span class="translate-panel__disclaimer">AI-oversættelse — bør gennemgås af kvalificeret person</span>
+          <button class="export-modal__btn-secondary" id="exportCopy">
+            <i data-lucide="copy"></i>
+            Kopiér
+          </button>
+          <div class="export-modal__footer-spacer"></div>
         </div>
       </div>
     </div>
@@ -2210,33 +2534,38 @@ Patient: Det lyder fint, tak skal du have.</div>
       e.stopPropagation();
     });
 
-    toneMenu.querySelectorAll('.panel-dropdown-menu__item').forEach(function(item) {
-      item.addEventListener('click', function() {
-        var toneId = this.getAttribute('data-tone');
-
-        // Update dropdown label
-        toneLabel.textContent = this.textContent;
-
-        // Update active state
-        toneMenu.querySelectorAll('.panel-dropdown-menu__item').forEach(function(i) {
-          i.classList.remove('panel-dropdown-menu__item--active');
-        });
-        this.classList.add('panel-dropdown-menu__item--active');
-        toneMenu.classList.remove('panel-dropdown-menu--open');
-
-        // If different from current, trigger regenerate pulse
-        if (toneId !== currentTone) {
-          pendingTone = toneId;
-          var btnRegen = document.getElementById('btnRegenerate');
-          var badge = document.getElementById('templatePendingBadge');
-          if (btnRegen) btnRegen.classList.add('action-btn--regenerate-pulse');
-          if (badge) badge.classList.add('template-pending-badge--visible');
-        } else {
-          pendingTone = null;
-        }
-
-        currentTone = toneId;
+    // Radio buttons update label on change
+    toneMenu.querySelectorAll('.panel-dropdown-menu__radio input[type="radio"]').forEach(function(radio) {
+      radio.addEventListener('change', function() {
+        var label = this.closest('.panel-dropdown-menu__radio').querySelector('span');
+        toneLabel.textContent = label.textContent;
+        pendingTone = this.value;
       });
+    });
+
+    // Tone Regenerér button
+    document.getElementById('toneRegenBtn').addEventListener('click', function(e) {
+      e.stopPropagation();
+      var selectedRadio = toneMenu.querySelector('input[type="radio"]:checked');
+      if (!selectedRadio) return;
+      var toneId = selectedRadio.value;
+
+      toneMenu.classList.remove('panel-dropdown-menu--open');
+
+      if (toneId === currentTone) return;
+
+      currentTone = toneId;
+      pendingTone = null;
+
+      // Reapply current template with new tone (simulated)
+      setTimeout(function() {
+        applyTemplate(currentActiveTemplate);
+        addPhraseButtons();
+        snapshotOriginalNotes();
+        addCorrectionButtons();
+        updateLearningBadge();
+        lucide.createIcons();
+      }, 1200);
     });
 
     // ─── Template Dropdown ──────────────────────────────────────
@@ -2314,9 +2643,6 @@ Patient: Det lyder fint, tak skal du have.</div>
     var currentActiveTemplate = 'soap';
     var pendingTemplate = null;
 
-    var btnRegenerate = document.getElementById('btnRegenerate');
-    var templatePendingBadge = document.getElementById('templatePendingBadge');
-
     function applyTemplate(templateId) {
       var sections = templateSections[templateId];
       if (!sections) return;
@@ -2331,65 +2657,34 @@ Patient: Det lyder fint, tak skal du have.</div>
 
       currentActiveTemplate = templateId;
       pendingTemplate = null;
-
-      // Clear regenerate pulse
-      btnRegenerate.classList.remove('action-btn--regenerate-pulse');
-      templatePendingBadge.classList.remove('template-pending-badge--visible');
     }
 
-    templateMenu.querySelectorAll('.panel-dropdown-menu__item').forEach(function(item) {
-      item.addEventListener('click', function() {
-        var templateId = this.getAttribute('data-template');
-        if (!templateSections[templateId]) return;
-
-        // Update dropdown label
-        templateLabel.textContent = this.textContent;
-
-        // Update active state in dropdown
-        templateMenu.querySelectorAll('.panel-dropdown-menu__item').forEach(function(i) {
-          i.classList.remove('panel-dropdown-menu__item--active');
-        });
-        this.classList.add('panel-dropdown-menu__item--active');
-        templateMenu.classList.remove('panel-dropdown-menu--open');
-
-        // If same as current → apply instantly (no point regenerating)
-        if (templateId === currentActiveTemplate) {
-          pendingTemplate = null;
-          btnRegenerate.classList.remove('action-btn--regenerate-pulse');
-          templatePendingBadge.classList.remove('template-pending-badge--visible');
-          return;
-        }
-
-        // Set pending template and pulse the Regenerer button
-        pendingTemplate = templateId;
-        btnRegenerate.classList.add('action-btn--regenerate-pulse');
-        templatePendingBadge.classList.add('template-pending-badge--visible');
+    // Radio buttons update label on change
+    templateMenu.querySelectorAll('.panel-dropdown-menu__radio input[type="radio"]').forEach(function(radio) {
+      radio.addEventListener('change', function() {
+        var label = this.closest('.panel-dropdown-menu__radio').querySelector('span');
+        templateLabel.textContent = label.textContent;
+        pendingTemplate = this.value;
       });
     });
 
-    // Regenerer button: applies pending template with loading animation
-    btnRegenerate.addEventListener('click', function() {
-      if (!pendingTemplate) {
-        // No pending change — just do a quick visual "refreshed" feedback
-        btnRegenerate.classList.add('action-btn--regenerating');
-        btnRegenerate.querySelector('i').setAttribute('data-lucide', 'loader');
-        lucide.createIcons();
-        setTimeout(function() {
-          btnRegenerate.classList.remove('action-btn--regenerating');
-          btnRegenerate.querySelector('i').setAttribute('data-lucide', 'refresh-cw');
-          lucide.createIcons();
-        }, 800);
-        return;
-      }
+    // Regenerér button inside template dropdown
+    var templateRegenBtn = document.getElementById('templateRegenBtn');
+    templateRegenBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var selectedRadio = templateMenu.querySelector('input[type="radio"]:checked');
+      if (!selectedRadio) return;
+      var templateId = selectedRadio.value;
 
-      var targetTemplate = pendingTemplate;
+      // Close dropdown
+      templateMenu.classList.remove('panel-dropdown-menu--open');
 
-      // Show loading state
-      btnRegenerate.classList.remove('action-btn--regenerate-pulse');
-      btnRegenerate.classList.add('action-btn--regenerating');
-      var btnIcon = btnRegenerate.querySelector('i');
-      btnIcon.setAttribute('data-lucide', 'loader');
-      lucide.createIcons();
+      // If same as current, skip
+      if (templateId === currentActiveTemplate) return;
+
+      // Show loading state on the in-dropdown button briefly
+      var targetTemplate = templateId;
+      pendingTemplate = targetTemplate;
 
       // Simulate AI regeneration delay
       setTimeout(function() {
@@ -2400,10 +2695,6 @@ Patient: Det lyder fint, tak skal du have.</div>
         snapshotOriginalNotes();
         addCorrectionButtons();
         updateLearningBadge();
-
-        // Restore button
-        btnRegenerate.classList.remove('action-btn--regenerating');
-        btnIcon.setAttribute('data-lucide', 'refresh-cw');
         lucide.createIcons();
       }, 1200);
     });
@@ -2517,7 +2808,7 @@ Patient: Det lyder fint, tak skal du have.</div>
     const autocomplete = document.getElementById('codeAutocomplete');
     let chipCounter = 10;
 
-    searchInput.addEventListener('input', function() {
+    if (searchInput) searchInput.addEventListener('input', function() {
       const query = this.value.toLowerCase().trim();
       if (query.length < 1) {
         autocomplete.classList.remove('active');
@@ -2559,7 +2850,7 @@ Patient: Det lyder fint, tak skal du have.</div>
 
     // Close autocomplete on outside click
     document.addEventListener('click', function(e) {
-      if (!e.target.closest('#codeSearch')) {
+      if (autocomplete && !e.target.closest('#codeSearch')) {
         autocomplete.classList.remove('active');
       }
     });
@@ -2586,25 +2877,44 @@ Patient: Det lyder fint, tak skal du have.</div>
       lucide.createIcons();
     }
 
-    // ─── Translate Slide-Over ──────────────────────────────────
-    const translateOverlay = document.getElementById('translateOverlay');
-    const translateOutput = document.getElementById('translateOutput');
-    const translateEmpty = document.getElementById('translateEmpty');
-    const translateFooter = document.getElementById('translateFooter');
-    const translateBadge = document.getElementById('translateBadge');
-    const translateLang = document.getElementById('translateLang');
+    // ─── Export Modal ──────────────────────────────────────────
+    const exportOverlay = document.getElementById('exportOverlay');
+    const exportNotesPreview = document.getElementById('exportNotesPreview');
+    const exportTranslateOutput = document.getElementById('exportTranslateOutput');
+    const exportTranslateMeta = document.getElementById('exportTranslateMeta');
+    const exportLangBadge = document.getElementById('exportLangBadge');
+    const exportLang = document.getElementById('exportLang');
 
-    document.getElementById('btnTranslate').addEventListener('click', function() {
-      translateOverlay.classList.add('active');
+    // Gather SOAP notes from the page
+    function gatherNotesHTML() {
+      var sections = document.querySelectorAll('.panel-content .notes-section');
+      var html = '';
+      sections.forEach(function(sec) {
+        var label = sec.querySelector('.notes-label');
+        var content = sec.querySelector('.notes-content');
+        if (label && content) {
+          html += '<div class="notes-label">' + label.textContent + '</div>';
+          html += '<div>' + content.innerHTML + '</div>';
+        }
+      });
+      return html;
+    }
+
+    // Open modal
+    document.getElementById('btnExport').addEventListener('click', function() {
+      exportNotesPreview.innerHTML = gatherNotesHTML();
+      exportTranslateOutput.style.display = 'none';
+      exportTranslateMeta.style.display = 'none';
+      exportOverlay.classList.add('active');
       lucide.createIcons();
     });
 
-    document.getElementById('translateClose').addEventListener('click', function() {
-      translateOverlay.classList.remove('active');
+    // Close modal
+    document.getElementById('exportClose').addEventListener('click', function() {
+      exportOverlay.classList.remove('active');
     });
-
-    translateOverlay.addEventListener('click', function(e) {
-      if (e.target === translateOverlay) translateOverlay.classList.remove('active');
+    exportOverlay.addEventListener('click', function(e) {
+      if (e.target === exportOverlay) exportOverlay.classList.remove('active');
     });
 
     // Demo translations
@@ -2674,68 +2984,80 @@ Patient: Det lyder fint, tak skal du have.</div>
       ]}
     };
 
-    document.getElementById('translateGenerate').addEventListener('click', function() {
-      const lang = translateLang.value;
+    // Generate translation
+    document.getElementById('exportGenerate').addEventListener('click', function() {
+      const lang = exportLang.value;
       const t = translations[lang];
       if (!t) return;
 
-      // Show loading briefly
-      translateEmpty.innerHTML = '<i data-lucide="loader" style="animation: spin 1s linear infinite;"></i><span>Oversætter til ' + t.label + '...</span>';
+      // Show loading
+      var btn = this;
+      var origHTML = btn.innerHTML;
+      btn.innerHTML = '<i data-lucide="loader" style="animation: spin 1s linear infinite;"></i> Oversætter...';
+      btn.disabled = true;
       lucide.createIcons();
 
       setTimeout(function() {
-        // Build output
-        translateOutput.innerHTML = t.sections.map(s =>
-          '<div class="notes-label">' + s.title + '</div><div>' + s.text.replace(/\n/g, '<br>') + '</div>'
-        ).join('');
+        exportTranslateOutput.innerHTML = t.sections.map(function(s) {
+          return '<div class="notes-label">' + s.title + '</div><div>' + s.text.replace(/\n/g, '<br>') + '</div>';
+        }).join('');
 
-        translateEmpty.style.display = 'none';
-        translateOutput.style.display = 'block';
-        translateFooter.classList.add('active');
-        translateBadge.textContent = t.label;
+        exportTranslateOutput.style.display = 'block';
+        exportTranslateMeta.style.display = 'block';
+        exportLangBadge.textContent = t.label;
+
+        btn.innerHTML = origHTML;
+        btn.disabled = false;
+        lucide.createIcons();
       }, 1200);
     });
 
-    document.getElementById('translateCopy').addEventListener('click', function() {
-      const text = translateOutput.innerText;
-      navigator.clipboard.writeText(text);
-      // Brief feedback
-      const btn = this;
-      const original = btn.innerHTML;
-      btn.innerHTML = '<i data-lucide="check"></i> Kopieret!';
-      lucide.createIcons();
-      setTimeout(() => { btn.innerHTML = original; lucide.createIcons(); }, 1500);
+    // Reset translation when language changes
+    exportLang.addEventListener('change', function() {
+      exportTranslateOutput.style.display = 'none';
+      exportTranslateMeta.style.display = 'none';
     });
 
-    // Print translation
-    document.getElementById('translatePrint').addEventListener('click', function() {
-      const content = translateOutput.innerHTML;
-      const lang = translateBadge.textContent;
-      const printWin = window.open('', '_blank', 'width=700,height=900');
-      printWin.document.write(`
-        <html><head><title>Oversættelse — ${lang}</title>
-        <style>
-          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 40px; color: #1a1a2e; line-height: 1.7; font-size: 13px; }
-          .notes-label { font-weight: 700; margin-top: 18px; margin-bottom: 4px; }
-          .notes-label:first-child { margin-top: 0; }
-          .header { font-size: 11px; color: #5669A4; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0; }
-        </style></head><body>
-        <div class="header">Oversættelse — ${lang}</div>
-        ${content}
-        </body></html>
-      `);
+    // Copy all visible content
+    document.getElementById('exportCopy').addEventListener('click', function() {
+      var text = exportNotesPreview.innerText;
+      if (exportTranslateOutput.style.display !== 'none') {
+        text += '\n\n--- ' + exportLangBadge.textContent + ' ---\n\n' + exportTranslateOutput.innerText;
+      }
+      navigator.clipboard.writeText(text);
+      var btn = this;
+      var original = btn.innerHTML;
+      btn.innerHTML = '<i data-lucide="check"></i> Kopieret!';
+      lucide.createIcons();
+      setTimeout(function() { btn.innerHTML = original; lucide.createIcons(); }, 1500);
+    });
+
+    // Print
+    document.getElementById('exportPrint').addEventListener('click', function() {
+      var notesHTML = exportNotesPreview.innerHTML;
+      var hasTranslation = exportTranslateOutput.style.display !== 'none';
+      var translationHTML = hasTranslation ? exportTranslateOutput.innerHTML : '';
+      var lang = exportLangBadge.textContent;
+      var printWin = window.open('', '_blank', 'width=700,height=900');
+      printWin.document.write(
+        '<html><head><title>Notat — Eksportér</title>' +
+        '<style>' +
+          'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; padding: 40px; color: #1a1a2e; line-height: 1.7; font-size: 13px; }' +
+          '.notes-label { font-weight: 700; margin-top: 18px; margin-bottom: 4px; }' +
+          '.notes-label:first-child { margin-top: 0; }' +
+          '.header { font-size: 11px; color: #5669A4; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0; }' +
+          '.divider { border: none; border-top: 1px solid #e2e8f0; margin: 28px 0 20px; }' +
+          '.learned-phrase { all: unset; }' +
+          '.learned-phrase-tooltip { display: none; }' +
+        '</style></head><body>' +
+        '<div class="header">Konsultationsnotat</div>' +
+        notesHTML +
+        (hasTranslation ? '<hr class="divider"><div class="header">Oversættelse — ' + lang + '</div>' + translationHTML : '') +
+        '</body></html>'
+      );
       printWin.document.close();
       printWin.focus();
       printWin.print();
-    });
-
-    // Reset when language changes
-    translateLang.addEventListener('change', function() {
-      translateEmpty.innerHTML = '<i data-lucide="languages"></i><span>Vælg sprog og klik Generér</span>';
-      translateEmpty.style.display = 'flex';
-      translateOutput.style.display = 'none';
-      translateFooter.classList.remove('active');
-      lucide.createIcons();
     });
 
     // ═══════════════════════════════════════════════════════════
@@ -2949,7 +3271,7 @@ Patient: Det lyder fint, tak skal du have.</div>
     function addPhraseButtons() {
       document.querySelectorAll('.notes-section').forEach(function(section) {
         var label = section.querySelector('.notes-label');
-        if (!label || label.querySelector('.phrase-insert-btn')) return;
+        if (!label || section.querySelector('.phrase-insert-btn')) return;
 
         var btn = document.createElement('button');
         btn.className = 'phrase-insert-btn';
@@ -3140,25 +3462,28 @@ Patient: Det lyder fint, tak skal du have.</div>
 
     // ── localStorage helpers ──
     function isLearningEnabled() {
-      var stored = localStorage.getItem(LEARNING_ENABLED_KEY);
+      var stored = localStorage.getItem('peoplesClinic_learningEnabled');
       if (stored === null) {
-        localStorage.setItem(LEARNING_ENABLED_KEY, 'true');
+        localStorage.setItem('peoplesClinic_learningEnabled', 'true');
         return true;
       }
       return stored === 'true';
     }
 
     function loadCorrections() {
-      var stored = localStorage.getItem(CORRECTIONS_KEY);
+      var stored = localStorage.getItem('peoplesClinic_corrections');
       if (stored) {
-        try { return JSON.parse(stored); }
+        try {
+          var parsed = JSON.parse(stored);
+          return Array.isArray(parsed) ? parsed : [];
+        }
         catch(e) { return []; }
       }
       return [];
     }
 
     function saveCorrections(corrections) {
-      localStorage.setItem(CORRECTIONS_KEY, JSON.stringify(corrections));
+      localStorage.setItem('peoplesClinic_corrections', JSON.stringify(corrections));
       window.dispatchEvent(new CustomEvent('learningPreferencesChanged', { detail: corrections }));
     }
 
@@ -3173,7 +3498,17 @@ Patient: Det lyder fint, tak skal du have.</div>
     (function seedDemoCorrections() {
       var existing = loadCorrections();
       if (existing.length === 0) {
-        saveCorrections(DEMO_CORRECTIONS);
+        var demoSeed = [
+          { id: 'corr_demo_1', physician: 'Dr. Anna Nielsen', section: 'objektiv', original: 'Cor auskultes med regelmæssig rytme uden mislyde', corrected: 'Cor: Regelmæssig rytme, ingen mislyde', timestamp: Date.now() - 259200000, template: 'soap', useCount: 5 },
+          { id: 'corr_demo_2', physician: 'Dr. Anna Nielsen', section: 'objektiv', original: 'BT måles til 138/82 mmHg', corrected: 'BT 132/78, puls 78 reg.', timestamp: Date.now() - 172800000, template: 'soap', useCount: 3 },
+          { id: 'corr_demo_3', physician: 'Dr. Anna Nielsen', section: 'objektiv', original: 'Lungerne auskulteres med normal vesikulær respiration bilateralt', corrected: 'Pulm: Vesikulær respiration bilateralt, ingen krepitation', timestamp: Date.now() - 86400000, template: 'soap', useCount: 4 },
+          { id: 'corr_demo_4', physician: 'Dr. Anna Nielsen', section: 'vurdering', original: 'Tilstanden vurderes at være forenelig med', corrected: 'Fund forenelige med', timestamp: Date.now() - 345600000, template: 'soap', useCount: 7 },
+          { id: 'corr_demo_5', physician: 'Dr. Anna Nielsen', section: 'vurdering', original: 'Der er klinisk mistanke om diagnosen', corrected: 'Klinisk mistanke om', timestamp: Date.now() - 432000000, template: 'soap', useCount: 6 },
+          { id: 'corr_demo_6', physician: 'Dr. Anna Nielsen', section: 'plan', original: 'Patienten rådes til at undgå hård fysisk belastning', corrected: 'Aftalt med patient: Undgå hård fysisk belastning', timestamp: Date.now() - 172800000, template: 'soap', useCount: 4 },
+          { id: 'corr_demo_7', physician: 'Dr. Anna Nielsen', section: 'plan', original: 'Der bestilles blodprøver med henblik på vurdering af', corrected: 'Blodprøver bestilt inkl.', timestamp: Date.now() - 86400000, template: 'soap', useCount: 8 },
+          { id: 'corr_demo_8', physician: 'Dr. Anna Nielsen', section: 'anamnese', original: 'Patienten henvender sig grundet tiltagende', corrected: 'Henvendt pga.', timestamp: Date.now() - 518400000, template: 'soap', useCount: 9 }
+        ];
+        localStorage.setItem('peoplesClinic_corrections', JSON.stringify(demoSeed));
       }
     })();
 
@@ -3188,7 +3523,7 @@ Patient: Det lyder fint, tak skal du have.</div>
           snapshot[key] = content.textContent.trim();
         }
       });
-      localStorage.setItem(ORIGINAL_NOTES_KEY, JSON.stringify(snapshot));
+      localStorage.setItem('peoplesClinic_originalNotes', JSON.stringify(snapshot));
     }
 
     snapshotOriginalNotes();
@@ -3205,7 +3540,7 @@ Patient: Det lyder fint, tak skal du have.</div>
       primaryBtn.addEventListener('click', function() {
         if (!isLearningEnabled()) return;
 
-        var snapshotRaw = localStorage.getItem(ORIGINAL_NOTES_KEY);
+        var snapshotRaw = localStorage.getItem('peoplesClinic_originalNotes');
         if (!snapshotRaw) return;
 
         var snapshot;
@@ -3470,15 +3805,31 @@ Patient: Det lyder fint, tak skal du have.</div>
     });
 
     window.addEventListener('storage', function(e) {
-      if (e.key === LEARNING_ENABLED_KEY || e.key === CORRECTIONS_KEY) {
+      if (e.key === 'peoplesClinic_learningEnabled' || e.key === 'peoplesClinic_corrections') {
         updateCorrectionButtons();
         updateLearningBadge();
       }
     });
 
-    // ── Initialize ──
-    addCorrectionButtons();
-    updateLearningBadge();
+    // ── Initialize (with delay to ensure DOM + seed complete) ──
+    setTimeout(function() {
+      // Re-seed if needed (belt and suspenders)
+      if (loadCorrections().length === 0) {
+        var fallbackSeed = [
+          { id: 'corr_fb_1', physician: 'Dr. Anna Nielsen', section: 'objektiv', original: 'Cor auskultes med regelmæssig rytme uden mislyde', corrected: 'Cor: Regelmæssig rytme, ingen mislyde', timestamp: Date.now() - 259200000, template: 'soap', useCount: 5 },
+          { id: 'corr_fb_2', physician: 'Dr. Anna Nielsen', section: 'objektiv', original: 'BT måles til 138/82 mmHg', corrected: 'BT 132/78, puls 78 reg.', timestamp: Date.now() - 172800000, template: 'soap', useCount: 3 },
+          { id: 'corr_fb_3', physician: 'Dr. Anna Nielsen', section: 'objektiv', original: 'Lungerne auskulteres med normal vesikulær respiration bilateralt', corrected: 'Pulm: Vesikulær respiration bilateralt, ingen krepitation', timestamp: Date.now() - 86400000, template: 'soap', useCount: 4 },
+          { id: 'corr_fb_4', physician: 'Dr. Anna Nielsen', section: 'vurdering', original: 'Tilstanden vurderes at være forenelig med', corrected: 'Fund forenelige med', timestamp: Date.now() - 345600000, template: 'soap', useCount: 7 },
+          { id: 'corr_fb_5', physician: 'Dr. Anna Nielsen', section: 'vurdering', original: 'Der er klinisk mistanke om diagnosen', corrected: 'Klinisk mistanke om', timestamp: Date.now() - 432000000, template: 'soap', useCount: 6 },
+          { id: 'corr_fb_6', physician: 'Dr. Anna Nielsen', section: 'plan', original: 'Der bestilles blodprøver med henblik på vurdering af', corrected: 'Blodprøver bestilt inkl.', timestamp: Date.now() - 86400000, template: 'soap', useCount: 8 },
+          { id: 'corr_fb_7', physician: 'Dr. Anna Nielsen', section: 'anamnese', original: 'Patienten henvender sig grundet tiltagende', corrected: 'Henvendt pga.', timestamp: Date.now() - 518400000, template: 'soap', useCount: 9 }
+        ];
+        localStorage.setItem('peoplesClinic_corrections', JSON.stringify(fallbackSeed));
+      }
+      addPhraseButtons();
+      addCorrectionButtons();
+      updateLearningBadge();
+    }, 100);
 
     // ═══════════════════════════════════════
     // KONSULTATION GUIDED TOUR — FASE 3 (?demo)
@@ -3731,6 +4082,72 @@ Patient: Det lyder fint, tak skal du have.</div>
       })();
     })();
 
+  </script>
+
+  <!-- Separate init script to guarantee phrase/correction buttons render -->
+  <script>
+    (function initButtons() {
+      function doInit() {
+        // Seed corrections if empty
+        var raw = localStorage.getItem('peoplesClinic_corrections');
+        var corrections = [];
+        if (raw) { try { corrections = JSON.parse(raw); } catch(e) {} }
+        if (!Array.isArray(corrections)) corrections = [];
+
+        if (corrections.length === 0) {
+          var seed = [
+            { id:'c1', physician:'Dr. Anna Nielsen', section:'objektiv', original:'Cor auskultes med regelmæssig rytme uden mislyde', corrected:'Cor: Regelmæssig rytme, ingen mislyde', timestamp:Date.now()-259200000, template:'soap', useCount:5 },
+            { id:'c2', physician:'Dr. Anna Nielsen', section:'objektiv', original:'BT måles til 138/82 mmHg', corrected:'BT 132/78, puls 78 reg.', timestamp:Date.now()-172800000, template:'soap', useCount:3 },
+            { id:'c3', physician:'Dr. Anna Nielsen', section:'objektiv', original:'Lungerne auskulteres med vesikulær respiration bilateralt', corrected:'Pulm: Vesikulær respiration bilat., ingen krepitation', timestamp:Date.now()-86400000, template:'soap', useCount:4 },
+            { id:'c4', physician:'Dr. Anna Nielsen', section:'vurdering', original:'Tilstanden vurderes at være forenelig med', corrected:'Fund forenelige med', timestamp:Date.now()-345600000, template:'soap', useCount:7 },
+            { id:'c5', physician:'Dr. Anna Nielsen', section:'vurdering', original:'Der er klinisk mistanke om diagnosen', corrected:'Klinisk mistanke om', timestamp:Date.now()-432000000, template:'soap', useCount:6 },
+            { id:'c6', physician:'Dr. Anna Nielsen', section:'plan', original:'Der bestilles blodprøver med henblik på vurdering af', corrected:'Blodprøver bestilt inkl.', timestamp:Date.now()-86400000, template:'soap', useCount:8 },
+            { id:'c7', physician:'Dr. Anna Nielsen', section:'plan', original:'Patienten rådes til at undgå hård fysisk belastning', corrected:'Aftalt med pt.: Undgå hård fysisk belastning', timestamp:Date.now()-172800000, template:'soap', useCount:4 },
+            { id:'c8', physician:'Dr. Anna Nielsen', section:'anamnese', original:'Patienten henvender sig grundet tiltagende', corrected:'Henvendt pga.', timestamp:Date.now()-518400000, template:'soap', useCount:9 }
+          ];
+          localStorage.setItem('peoplesClinic_corrections', JSON.stringify(seed));
+          localStorage.setItem('peoplesClinic_learningEnabled', 'true');
+        }
+
+        // Ensure popover elements exist
+        if (!document.getElementById('phrasePopover')) {
+          var pp = document.createElement('div');
+          pp.className = 'phrase-popover';
+          pp.id = 'phrasePopover';
+          document.body.appendChild(pp);
+        }
+        if (!document.getElementById('correctionPopover')) {
+          var cp = document.createElement('div');
+          cp.className = 'correction-popover';
+          cp.id = 'correctionPopover';
+          document.body.appendChild(cp);
+        }
+        if (!document.getElementById('correctionToast')) {
+          var ct = document.createElement('div');
+          ct.className = 'correction-toast';
+          ct.id = 'correctionToast';
+          ct.innerHTML = '<i data-lucide="brain"></i><span></span>';
+          document.body.appendChild(ct);
+        }
+
+        // Link popover variables to the main script scope
+        window.correctionPopover = document.getElementById('correctionPopover');
+        window.phrasePopover = document.getElementById('phrasePopover');
+        window.correctionPopoverTarget = window.correctionPopoverTarget || null;
+        window.popoverTargetField = window.popoverTargetField || null;
+
+        // Add buttons
+        if (typeof addPhraseButtons === 'function') addPhraseButtons();
+        if (typeof addCorrectionButtons === 'function') addCorrectionButtons();
+        if (typeof updateLearningBadge === 'function') updateLearningBadge();
+      }
+
+      if (document.readyState === 'complete') {
+        setTimeout(doInit, 50);
+      } else {
+        window.addEventListener('load', function() { setTimeout(doInit, 50); });
+      }
+    })();
   </script>
 </body>
 </html>
