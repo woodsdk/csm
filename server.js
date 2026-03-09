@@ -32,6 +32,9 @@ const server = http.createServer((req, res) => {
   } else if (urlPath === '/onboarding') {
     // Onboarding presentation
     filePath = path.join(UI_DIR, 'slides/onboarding.html');
+  } else if (urlPath === '/investor-pitch') {
+    // Investor pitch presentation
+    filePath = path.join(UI_DIR, 'slides/investor-pitch.html');
   } else if (urlPath.startsWith('/billeder/')) {
     // Slide images (referenced by onboarding.html)
     filePath = path.join(UI_DIR, 'slides', urlPath);

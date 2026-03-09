@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>People's Doctor — Investor Pitch 2026</title>
+<style>
+  /* ============================================
+     DESIGN TOKENS
+     ============================================ */
+  :root {
+    --dark: #0D0F1A;
+    --navy: #131038;
+    --navy-800: #1E1B4B;
+    --navy-700: #2D2A5E;
+    --navy-600: #3E3A72;
+    --navy-500: #5669A4;
+    --navy-400: #7B8CBF;
+    --navy-300: #A5B4D9;
+    --navy-200: #D0D8EE;
+    --navy-100: #E8ECF6;
+    --navy-50: #F4F5FA;
+    --accent: #6C5CE7;
+    --accent-light: #A29BFE;
+    --green: #00B894;
+    --green-light: #55EFC4;
+    --coral: #FF6B6B;
+    --gold: #FDCB6E;
+    --white: #FFFFFF;
+    --slide-scale: 0.65;
+  }
+
+  /* ============================================
+     BASE / RESET
+     ============================================ */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    background: #F0F1F5;
+    color: var(--navy);
+    -webkit-font-smoothing: antialiased;
+    padding: 48px 0;
+  }
+
+  /* ============================================
+     SLIDE CONTAINER
+     ============================================ */
+  .slide-container {
+    padding: 48px 64px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(1080px * var(--slide-scale) + 96px);
+  }
+
+  .slide-container:first-of-type {
+    padding-top: 100px;
+    height: calc(1080px * var(--slide-scale) + 148px);
+  }
+
+  /* ============================================
+     SLIDE BASE
+     ============================================ */
+  .slide {
+    width: 1920px;
+    height: 1080px;
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+    transform: scale(var(--slide-scale));
+    transform-origin: top center;
+    flex-shrink: 0;
+  }
+
+  /* ============================================
+     SLIDE VARIANTS
+     ============================================ */
+  .slide--dark {
+    background: linear-gradient(145deg, #131038 0%, #1E1B4B 40%, #2D2A5E 100%);
+    color: #fff;
+  }
+
+  .slide--hero {
+    background: linear-gradient(145deg, #0D0F1A 0%, #131038 35%, #1E1B4B 70%, #2D2A5E 100%);
+    color: #fff;
+  }
+
+  .slide--light {
+    background: linear-gradient(180deg, #FFFFFF 0%, #F4F5FA 100%);
+    color: var(--navy);
+  }
+
+  .slide--accent {
+    background: linear-gradient(145deg, #6C5CE7 0%, #5641D4 50%, #4834B8 100%);
+    color: #fff;
+  }
+
+  .slide--green {
+    background: linear-gradient(145deg, #00B894 0%, #009B7D 50%, #007D65 100%);
+    color: #fff;
+  }
+
+  /* ============================================
+     COMMON ELEMENTS
+     ============================================ */
+  .label {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    opacity: 0.7;
+  }
+
+  .slide-logo {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    opacity: 0.3;
+  }
+
+  .page-num {
+    position: absolute;
+    bottom: 28px;
+    right: 48px;
+    font-size: 13px;
+    opacity: 0.3;
+  }
+
+  .url-footer {
+    position: absolute;
+    bottom: 28px;
+    left: 48px;
+    font-size: 13px;
+    opacity: 0.3;
+  }
+
+  /* ============================================
+     STAT CALLOUT
+     ============================================ */
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 72px;
+    font-weight: 700;
+    letter-spacing: -3px;
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 16px;
+    opacity: 0.7;
+    margin-top: 8px;
+  }
+
+  /* ============================================
+     CARD
+     ============================================ */
+  .card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 32px 28px;
+    backdrop-filter: blur(10px);
+  }
+
+  .card--light {
+    background: #fff;
+    border: 1px solid rgba(86,105,164,0.10);
+    border-radius: 20px;
+    padding: 32px 28px;
+    box-shadow: 0 4px 20px rgba(19,16,44,0.06);
+  }
+
+  /* ============================================
+     RESPONSIVE SCALING
+     ============================================ */
+  @media (max-width: 1400px) {
+    :root { --slide-scale: 0.55; }
+  }
+  @media (max-width: 1100px) {
+    :root { --slide-scale: 0.45; }
+    .slide-container { padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+
+<!-- ====================================================================
+     SLIDE 1 — COVER
+     ==================================================================== -->
+<div class="slide-container">
+<div class="slide slide--hero" style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 80px 96px;">
+
+  <!-- Floating accent circles -->
+  <div style="position: absolute; top: -120px; right: -80px; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(108,92,231,0.15) 0%, transparent 70%);"></div>
+  <div style="position: absolute; bottom: -100px; left: -60px; width: 350px; height: 350px; border-radius: 50%; background: radial-gradient(circle, rgba(0,184,148,0.10) 0%, transparent 70%);"></div>
+
+  <!-- Valuation badge -->
+  <div style="background: linear-gradient(135deg, rgba(108,92,231,0.25), rgba(108,92,231,0.10)); border: 1px solid rgba(108,92,231,0.3); border-radius: 100px; padding: 10px 32px; margin-bottom: 40px; display: inline-flex; align-items: center; gap: 10px;">
+    <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green);"></div>
+    <span style="font-size: 15px; font-weight: 500; color: var(--accent-light); letter-spacing: 1px;">RAISING &bull; MARCH 2026</span>
+  </div>
+
+  <!-- Logo + Title -->
+  <div style="font-size: 20px; font-weight: 600; letter-spacing: 6px; text-transform: uppercase; color: var(--navy-300); margin-bottom: 24px;">PEOPLE'S DOCTOR</div>
+
+  <h1 style="font-size: 76px; font-weight: 600; line-height: 1.05; letter-spacing: -3px; text-align: center; margin-bottom: 28px; max-width: 1200px;">
+    Democratizing Healthcare<br>
+    <span style="color: var(--accent-light);">via AI Doctors</span>
+  </h1>
+
+  <p style="font-size: 26px; color: var(--navy-300); text-align: center; max-width: 800px; line-height: 1.5; margin-bottom: 48px;">
+    24/7 AI Doctors &bull; Clinical Automation &bull; Health Data Ownership
+  </p>
+
+  <!-- 3 key metrics -->
+  <div style="display: flex; gap: 64px;">
+    <div class="stat">
+      <div class="stat-num" style="color: var(--green-light);">92%</div>
+      <div class="stat-label" style="color: var(--navy-300);">Diagnostic accuracy</div>
+    </div>
+    <div style="width: 1px; height: 80px; background: rgba(255,255,255,0.1); align-self: center;"></div>
+    <div class="stat">
+      <div class="stat-num" style="color: var(--accent-light);">389</div>
+      <div class="stat-label" style="color: var(--navy-300);">Doctors onboarded</div>
+    </div>
+    <div style="width: 1px; height: 80px; background: rgba(255,255,255,0.1); align-self: center;"></div>
+    <div class="stat">
+      <div class="stat-num" style="color: var(--gold);">8.2B</div>
+      <div class="stat-label" style="color: var(--navy-300);">People addressable</div>
+    </div>
+  </div>
+
+  <div class="url-footer" style="color: rgba(255,255,255,0.3);">www.peoplesdoctor.com</div>
+  <span class="page-num" style="color: rgba(255,255,255,0.3);">1 / 15</span>
+</div>
+</div>
+
+
+<!-- ====================================================================
+     SLIDE 2 — PROBLEM
+     ==================================================================== -->
+<div class="slide-container">
+<div class="slide slide--light" style="display: flex; flex-direction: column; justify-content: center; padding: 80px 120px;">
+
+  <div style="display: flex; align-items: flex-start; gap: 80px;">
+
+    <!-- Left: headline -->
+    <div style="flex: 0 0 520px;">
+      <div class="label" style="color: var(--coral); margin-bottom: 16px;">THE PROBLEM</div>
+      <h2 style="font-size: 48px; font-weight: 600; line-height: 1.1; letter-spacing: -1.5px; color: var(--navy); margin-bottom: 24px;">
+        Today&rsquo;s Healthcare<br>System Is Broken
+      </h2>
+      <p style="font-size: 20px; color: var(--navy-500); line-height: 1.6; max-width: 440px;">
+        Rushed consultations, stressed doctors and patients, and dangerously low predictability.
+      </p>
+
+      <!-- Big stat -->
+      <div style="margin-top: 48px; background: linear-gradient(135deg, #FFF5F5, #FFF0F0); border-radius: 20px; padding: 32px 36px; border-left: 4px solid var(--coral);">
+        <div style="font-size: 64px; font-weight: 700; color: var(--coral); letter-spacing: -2px; line-height: 1;">61%</div>
+        <div style="font-size: 18px; color: var(--navy-600); margin-top: 8px;">Average diagnostic accuracy today</div>
+      </div>
+    </div>
+
+    <!-- Right: 3 phases -->
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 24px;">
+
+      <!-- Phase 1 -->
+      <div style="background: #fff; border-radius: 20px; padding: 36px 32px; box-shadow: 0 4px 24px rgba(19,16,44,0.06); border-left: 4px solid var(--navy-200);">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+          <div style="width: 48px; height: 48px; border-radius: 14px; background: var(--navy-100); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 600; color: var(--navy-500);">1</div>
+          <div style="font-size: 22px; font-weight: 600; color: var(--navy);">Pre-Consultation</div>
+        </div>
+        <div style="font-size: 17px; color: var(--navy-500); line-height: 1.6;">
+          Paper-based data collection &bull; Long waiting times &bull; Zero-knowledge consultations
+        </div>
+      </div>
+
+      <!-- Phase 2 -->
+      <div style="background: #fff; border-radius: 20px; padding: 36px 32px; box-shadow: 0 4px 24px rgba(19,16,44,0.06); border-left: 4px solid var(--coral);">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+          <div style="width: 48px; height: 48px; border-radius: 14px; background: #FFF0F0; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 600; color: var(--coral);">2</div>
+          <div style="font-size: 22px; font-weight: 600; color: var(--navy);">Medical Consultation</div>
+        </div>
+        <div style="font-size: 17px; color: var(--navy-500); line-height: 1.6;">
+          10&ndash;20 min per patient &bull; Time spent entering data &bull; No eye contact &bull; Patient feels stressed
+        </div>
+      </div>
+
+      <!-- Phase 3 -->
+      <div style="background: #fff; border-radius: 20px; padding: 36px 32px; box-shadow: 0 4px 24px rgba(19,16,44,0.06); border-left: 4px solid var(--navy-200);">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+          <div style="width: 48px; height: 48px; border-radius: 14px; background: var(--navy-100); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 600; color: var(--navy-500);">3</div>
+          <div style="font-size: 22px; font-weight: 600; color: var(--navy);">Post-Consultation</div>
+        </div>
+        <div style="font-size: 17px; color: var(--navy-500); line-height: 1.6;">
+          &ldquo;What did the doctor say?&rdquo; &bull; Patients forget key information &bull; No ongoing support
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <span class="page-num" style="color: var(--navy-400);">2 / 15</span>
+  <div class="url-footer" style="color: var(--navy-400);">www.peoplesdoctor.com</div>
+</div>
+</div>
+
+
+<!-- ====================================================================
+     SLIDE 3 — SOLUTION
+     ==================================================================== -->
+<div class="slide-container">
+<div class="slide slide--dark" style="display: flex; flex-direction: column; justify-content: center; padding: 80px 120px;">
+
+  <div style="display: flex; align-items: flex-start; gap: 80px;">
+
+    <!-- Left -->
+    <div style="flex: 0 0 520px;">
+      <div class="label" style="color: var(--green-light); margin-bottom: 16px;">THE SOLUTION</div>
+      <h2 style="font-size: 46px; font-weight: 600; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 24px;">
+        Empowering Patients<br>With 24/7 AI Access
+      </h2>
+      <p style="font-size: 20px; color: var(--navy-300); line-height: 1.6; max-width: 440px;">
+        Freeing up doctors to look the patient in the eyes while AI handles admin and data.
+      </p>
+
+      <div style="margin-top: 48px; background: rgba(0,184,148,0.10); border-radius: 20px; padding: 32px 36px; border-left: 4px solid var(--green);">
+        <div style="font-size: 64px; font-weight: 700; color: var(--green-light); letter-spacing: -2px; line-height: 1;">92%</div>
+        <div style="font-size: 18px; color: var(--navy-300); margin-top: 8px;">Diagnostic accuracy with People&rsquo;s Doctor</div>
+      </div>
+    </div>
+
+    <!-- Right: 3 phases solved -->
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 24px;">
+
+      <div class="card" style="border-left: 4px solid var(--green);">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+          <div style="width: 48px; height: 48px; border-radius: 14px; background: rgba(0,184,148,0.15); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 600; color: var(--green-light);">1</div>
+          <div style="font-size: 22px; font-weight: 600;">Pre-Consultation</div>
+        </div>
+        <div style="font-size: 17px; color: var(--navy-300); line-height: 1.6;">
+          Patient talks to AI Doctor 5&ndash;10 min &bull; AI collects symptoms, history &bull; Sends summary to Doctor
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 4px solid var(--accent);">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+          <div style="width: 48px; height: 48px; border-radius: 14px; background: rgba(108,92,231,0.15); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 600; color: var(--accent-light);">2</div>
+          <div style="font-size: 22px; font-weight: 600;">Medical Consultation</div>
+        </div>
+        <div style="font-size: 17px; color: var(--navy-300); line-height: 1.6;">
+          Doctor reviews AI summary &bull; Full focus on examining the patient &bull; AI writes journal in real-time
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 4px solid var(--green);">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+          <div style="width: 48px; height: 48px; border-radius: 14px; background: rgba(0,184,148,0.15); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 600; color: var(--green-light);">3</div>
+          <div style="font-size: 22px; font-weight: 600;">Post-Consultation</div>
+        </div>
+        <div style="font-size: 17px; color: var(--navy-300); line-height: 1.6;">
+          AI Doctor summarizes outcomes &bull; Answers questions in real-time &bull; Family members can be authorized
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <span class="page-num" style="color: rgba(255,255,255,0.3);">3 / 15</span>
+  <div class="url-footer" style="color: rgba(255,255,255,0.3);">www.peoplesdoctor.com</div>
+</div>
+</div>
+
+
+<!-- ====================================================================
+     SLIDE 4 — PRODUCT
+     ==================================================================== -->
+<div class="slide-container">
+<div class="slide slide--light" style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 80px 120px;">
+
+  <div style="text-align: center; margin-bottom: 56px;">
+    <div class="label" style="color: var(--accent); margin-bottom: 12px;">PRODUCT</div>
+    <h2 style="font-size: 48px; font-weight: 600; line-height: 1.1; letter-spacing: -1.5px; color: var(--navy); margin-bottom: 16px;">Two Products, One Marketplace</h2>
+    <p style="font-size: 20px; color: var(--navy-500);">A multi-sided platform connecting patients, doctors, and data</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; max-width: 1500px; width: 100%;">
+
+    <!-- People's Doctor -->
+    <div style="background: linear-gradient(145deg, #131038, #1E1B4B); border-radius: 24px; padding: 44px 36px; color: #fff; position: relative; overflow: hidden;">
+      <div style="position: absolute; top: -40px; right: -40px; width: 120px; height: 120px; border-radius: 50%; background: rgba(108,92,231,0.2);"></div>
+      <div style="width: 64px; height: 64px; border-radius: 18px; background: rgba(108,92,231,0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="var(--accent-light)" stroke-width="1.5"/><circle cx="12" cy="7" r="4" stroke="var(--accent-light)" stroke-width="1.5"/></svg>
+      </div>
+      <div style="font-size: 14px; font-weight: 600; color: var(--accent-light); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px;">For Patients</div>
+      <div style="font-size: 28px; font-weight: 600; margin-bottom: 16px;">People&rsquo;s Doctor</div>
+      <div style="font-size: 16px; color: var(--navy-300); line-height: 1.7;">
+        24/7 AI Doctor on your phone<br>
+        AI collects data before consultation<br>
+        Own and monetize your health data
+      </div>
+    </div>
+
+    <!-- People's Clinic -->
+    <div style="background: linear-gradient(145deg, #007D65, #00B894); border-radius: 24px; padding: 44px 36px; color: #fff; position: relative; overflow: hidden;">
+      <div style="position: absolute; top: -40px; right: -40px; width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,0.1);"></div>
+      <div style="width: 64px; height: 64px; border-radius: 18px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div style="font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px;">For Doctors</div>
+      <div style="font-size: 28px; font-weight: 600; margin-bottom: 16px;">People&rsquo;s Clinic</div>
+      <div style="font-size: 16px; color: rgba(255,255,255,0.8); line-height: 1.7;">
+        AI-powered recording &amp; reporting<br>
+        75% more patient face-time<br>
+        Real-time medical journal &amp; analytics
+      </div>
+    </div>
+
+    <!-- People's Book -->
+    <div style="background: linear-gradient(145deg, #B85042, #D35F51); border-radius: 24px; padding: 44px 36px; color: #fff; position: relative; overflow: hidden;">
+      <div style="position: absolute; top: -40px; right: -40px; width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,0.1);"></div>
+      <div style="width: 64px; height: 64px; border-radius: 18px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M4 19.5A2.5 2.5 0 016.5 17H20" stroke="#fff" stroke-width="1.5"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" stroke="#fff" stroke-width="1.5"/></svg>
+      </div>
+      <div style="font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px;">Data Layer</div>
+      <div style="font-size: 28px; font-weight: 600; margin-bottom: 16px;">People&rsquo;s Book</div>
+      <div style="font-size: 16px; color: rgba(255,255,255,0.8); line-height: 1.7;">
+        Patient-owned live AI medical journal<br>
+        Web3 wallet &amp; People&rsquo;s Coin<br>
+        Monetizable anonymized health data
+      </div>
+    </div>
+
+  </div>
+
+  <span class="page-num" style="color: var(--navy-400);">4 / 15</span>
+  <div class="url-footer" style="color: var(--navy-400);">www.peoplesdoctor.com</div>
+</div>
+</div>
+
+
+<!-- ====================================================================
+     SLIDE 5 — PREDICTION POWER
+     ==================================================================== -->
+<div class="slide-container">
+<div class="slide slide--dark" style="display: flex; flex-direction: column; justify-content: center; padding: 80px 120px;">
+
+  <div style="text-align: center; margin-bottom: 56px;">
+    <div class="label" style="color: var(--green-light); margin-bottom: 12px;">KEY DIFFERENTIATOR</div>
+    <h2 style="font-size: 48px; font-weight: 600; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 16px;">Prediction Power</h2>
+    <p style="font-size: 20px; color: var(--navy-300);">More data sources combined = higher disease prediction accuracy</p>
+  </div>
+
+  <!-- Bar chart visualization -->
+  <div style="display: flex; align-items: flex-end; justify-content: center; gap: 48px; max-width: 1300px; margin: 0 auto; width: 100%;">
+
+    <!-- 61% -->
+    <div style="flex: 1; text-align: center;">
+      <div style="font-size: 52px; font-weight: 700; color: var(--navy-400); margin-bottom: 16px;">61%</div>
+      <div style="width: 100%; height: 200px; border-radius: 16px 16px 8px 8px; background: linear-gradient(180deg, rgba(123,140,191,0.4), rgba(123,140,191,0.15)); position: relative; margin-bottom: 20px;">
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 61%; border-radius: 16px 16px 0 0; background: linear-gradient(180deg, var(--navy-400), var(--navy-500));"></div>
+      </div>
+      <div style="font-size: 15px; color: var(--navy-300); line-height: 1.5;">Health data<br>alone</div>
+    </div>
+
+    <!-- 74% -->
+    <div style="flex: 1; text-align: center;">
+      <div style="font-size: 52px; font-weight: 700; color: var(--accent-light); margin-bottom: 16px;">74%</div>
+      <div style="width: 100%; height: 200px; border-radius: 16px 16px 8px 8px; background: linear-gradient(180deg, rgba(108,92,231,0.3), rgba(108,92,231,0.10)); position: relative; margin-bottom: 20px;">
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 74%; border-radius: 16px 16px 0 0; background: linear-gradient(180deg, var(--accent-light), var(--accent));"></div>
+      </div>
+      <div style="font-size: 15px; color: var(--navy-300); line-height: 1.5;">+ Eye test<br>+ Health tracker</div>
+    </div>
+
+    <!-- 84% -->
+    <div style="flex: 1; text-align: center;">
+      <div style="font-size: 52px; font-weight: 700; color: var(--gold); margin-bottom: 16px;">84%</div>
+      <div style="width: 100%; height: 200px; border-radius: 16px 16px 8px 8px; background: linear-gradient(180deg, rgba(253,203,110,0.3), rgba(253,203,110,0.10)); position: relative; margin-bottom: 20px;">
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 84%; border-radius: 16px 16px 0 0; background: linear-gradient(180deg, var(--gold), #E5A800);"></div>
+      </div>
+      <div style="font-size: 15px; color: var(--navy-300); line-height: 1.5;">+ DNA data<br>+ Biomarkers</div>
+    </div>
+
+    <!-- 92% -->
+    <div style="flex: 1; text-align: center;">
+      <div style="font-size: 52px; font-weight: 700; color: var(--green-light); margin-bottom: 16px;">92%</div>
+      <div style="width: 100%; height: 200px; border-radius: 16px 16px 8px 8px; background: linear-gradient(180deg, rgba(0,184,148,0.3), rgba(0,184,148,0.10)); position: relative; margin-bottom: 20px;">
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 92%; border-radius: 16px 16px 0 0; background: linear-gradient(180deg, var(--green-light), var(--green));"></div>
+      </div>
+      <div style="font-size: 15px; color: var(--navy-300); line-height: 1.5;">All combined<br><strong style="color: var(--green-light);">People&rsquo;s Doctor</strong></div>
+    </div>
+
+  </div>
+
+  <p style="font-size: 13px; color: var(--navy-600); text-align: center; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto; line-height: 1.6;">
+    Sources: Khera et al. 2018, Nature Genetics &bull; Han et al. 2024, Science Transl. Med. &bull; Poplin et al. 2018, Nature Biomed. Eng. &bull; Perez et al. 2019, NEJM &bull; Rajpurkar et al. 2022, Nature Medicine
+  </p>
+
+  <span class="page-num" style="color: rgba(255,255,255,0.3);">5 / 15</span>
+  <div class="url-footer" style="color: rgba(255,255,255,0.3);">www.peoplesdoctor.com</div>
+</div>
+</div>
+
+
+<!-- ====================================================================
+     SLIDE 6 — VISION
+     ==================================================================== -->
+<div class="slide-container">
+<div class="slide slide--accent" style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 80px 120px;">
+
+  <div class="label" style="color: rgba(255,255,255,0.6); margin-bottom: 24px;">VISION</div>
+
+  <h2 style="font-size: 60px; font-weight: 600; line-height: 1.15; letter-spacing: -2px; text-align: center; margin-bottom: 40px; max-width: 1100px;">
+    A Doctor in Your Pocket,<br>Available 24/7
+  </h2>
+
+  <!-- Hub diagram -->
+  <div style="position: relative; width: 700px; height: 340px; margin: 0 auto;">
+    <!-- Center -->
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 180px; height: 180px; border-radius: 50%; background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; z-index: 2;">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" style="margin-bottom: 6px;"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="#fff" stroke-width="1.5"/><circle cx="12" cy="7" r="4" stroke="#fff" stroke-width="1.5"/></svg>
+      <div style="font-size: 15px; font-weight: 600;">People&rsquo;s<br>Doctor</div>
+    </div>
+
+    <!-- Spokes -->
+    <div style="position: absolute; top: 10px; left: 60px; background: rgba(255,255,255,0.10); border-radius: 14px; padding: 14px 20px; font-size: 14px; font-weight: 500;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="vertical-align: middle; margin-right: 6px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#fff" stroke-width="1.5"/></svg>
+      DNA Data
+    </div>
+    <div style="position: absolute; top: 10px; right: 60px; background: rgba(255,255,255,0.10); border-radius: 14px; padding: 14px 20px; font-size: 14px; font-weight: 500;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="vertical-align: middle; margin-right: 6px;"><path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Patient Data
+    </div>
+    <div style="position: absolute; bottom: 10px; left: 30px; background: rgba(255,255,255,0.10); border-radius: 14px; padding: 14px 20px; font-size: 14px; font-weight: 500;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="vertical-align: middle; margin-right: 6px;"><rect x="2" y="3" width="20" height="14" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke="#fff" stroke-width="1.5"/></svg>
+      IoT &amp; Apps
+    </div>
+    <div style="position: absolute; bottom: 10px; right: 30px; background: rgba(255,255,255,0.10); border-radius: 14px; padding: 14px 20px; font-size: 14px; font-weight: 500;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="vertical-align: middle; margin-right: 6px;"><circle cx="12" cy="12" r="3" stroke="#fff" stroke-width="1.5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M16.36 16.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M16.36 7.64l1.42-1.42" stroke="#fff" stroke-width="1.5"/></svg>
+      Specialist Data
+    </div>
+    <div style="position: absolute; top: 50%; left: -10px; transform: translateY(-50%); background: rgba(255,255,255,0.10); border-radius: 14px; padding: 14px 20px; font-size: 14px; font-weight: 500;">
+      Therapist Data
+    </div>
+    <div style="position: absolute; top: 50%; right: -10px; transform: translateY(-50%); background: rgba(255,255,255,0.10); border-radius: 14px; padding: 14px 20px; font-size: 14px; font-weight: 500;">
+      Tests &amp; Blood
+    </div>
+  </div>
+
+  <p style="font-size: 22px; color: rgba(255,255,255,0.7); text-align: center; margin-top: 36px; max-width: 800px; font-style: italic;">
+    &ldquo;Think of it as a Doctor in your pocket, available 24/7, based on one source of health data.&rdquo;
+    <br><span style="font-size: 16px; font-style: normal; opacity: 0.6;">&mdash; Sir Keir Starmer, British PM, on the NHS vision</span>
+  </p>
+
+  <span class="page-num" style="color: rgba(255,255,255,0.3);">6 / 15</span>
+  <div class="url-footer" style="color: rgba(255,255,255,0.3);">www.peoplesdoctor.com</div>
+</div>
+</div>
+
+
+<!-- ====================================================================
+     SLIDE 7 — MARKET
+     ==================================================================== -->
+<div class="slide-container">
+<div class="slide slide--light" style="display: flex; flex-direction: column; justify-content: center; padding: 72px 120px;">
+
+  <div style="text-align: center; margin-bottom: 48px;">
+    <div class="label" style="color: var(--accent); margin-bottom: 12px;">MARKET OPPORTUNITY</div>
+    <h2 style="font-size: 46px; font-weight: 600; line-height: 1.1; letter-spacing: -1.5px; color: var(--navy); margin-bottom: 12px;">6-Phase Market Roadmap</h2>
+    <p style="font-size: 20px; color: var(--navy-500);">Addressing 8.2B people and 16M doctors worldwide</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1550px; margin: 0 auto; width: 100%;">
+
+    <!-- Phase 1 -->
+    <div style="background: #fff; border-radius: 18px; padding: 28px 24px; box-shadow: 0 4px 20px rgba(19,16,44,0.06); border-top: 4px solid var(--green);">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+        <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(0,184,148,0.12); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: var(--green);">1</div>
+        <div style="font-size: 18px; font-weight: 600; color: var(--navy);">People&rsquo;s Clinic</div>
+      </div>
+      <div style="font-size: 15px; color: var(--navy-500); line-height: 1.6;">Entry point via EHR partners. 16M doctors worldwide. TAM $25.9B/yr at $135/mo per doctor.</div>
+    </div>
+
+    <!-- Phase 2 -->
+    <div style="background: #fff; border-radius: 18px; padding: 28px 24px; box-shadow: 0 4px 20px rgba(19,16,44,0.06); border-top: 4px solid var(--accent);">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+        <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(108,92,231,0.12); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: var(--accent);">2</div>
+        <div style="font-size: 18px; font-weight: 600; color: var(--navy);">People&rsquo;s Book</div>
+      </div>
+      <div style="font-size: 15px; color: var(--navy-500); line-height: 1.6;">Web3 wallet via Clinic. Each doctor connects ~500 citizens. Scales via telecoms, banks, retail.</div>
+    </div>
+
+    <!-- Phase 3 -->
+    <div style="background: #fff; border-radius: 18px; padding: 28px 24px; box-shadow: 0 4px 20px rgba(19,16,44,0.06); border-top: 4px solid var(--coral);">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+        <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(255,107,107,0.12); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: var(--coral);">3</div>
+        <div style="font-size: 18px; font-weight: 600; color: var(--navy);">People&rsquo;s Doctor</div>
+      </div>
+      <div style="font-size: 15px; color: var(--navy-500); line-height: 1.6;">Book + AI + Avatar = mobile AI Doctor. Delivers medical insights directly to citizens.</div>
+    </div>
+
+    <!-- Phase 4 -->
+    <div style="background: #fff; border-radius: 18px; padding: 28px 24px; box-shadow: 0 4px 20px rgba(19,16,44,0.06); border-top: 4px solid var(--gold);">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+        <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(253,203,110,0.15); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #C98700;">4</div>
+        <div style="font-size: 18px; font-weight: 600; color: var(--navy);">People&rsquo;s SDK</div>
+      </div>
+      <div style="font-size: 15px; color: var(--navy-500); line-height: 1.6;">Third-party developers build on People&rsquo;s Book. Open innovation and ecosystem integration.</div>
+    </div>
+
+    <!-- Phase 5 -->
+    <div style="background: #fff; border-radius: 18px; padding: 28px 24px; box-shadow: 0 4px 20px rgba(19,16,44,0.06); border-top: 4px solid var(--navy-500);">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+        <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--navy-100); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: var(--navy-500);">5</div>
+        <div style="font-size: 18px; font-weight: 600; color: var(--navy);">People&rsquo;s Coin</div>
+      </div>
+      <div style="font-size: 15px; color: var(--navy-500); line-height: 1.6;">Reward points for healthy living. Redeemable with regional third-party reward ecosystems.</div>
+    </div>
+
+    <!-- Phase 6 -->
+    <div style="background: #fff; border-radius: 18px; padding: 28px 24px; box-shadow: 0 4px 20px rgba(19,16,44,0.06); border-top: 4px solid var(--navy);">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+        <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--navy-100); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: var(--navy);">6</div>
+        <div style="font-size: 18px; font-weight: 600; color: var(--navy);">People&rsquo;s Data</div>
+      </div>
+      <div style="font-size: 15px; color: var(--navy-500); line-height: 1.6;">$200B health data market. Citizen-owned, opt-in, anonymized data brokered by platform.</div>
+    </div>
+
+  </div>
+
+  <span class="page-num" style="color: var(--navy-400);">7 / 15</span>
+  <div class="url-footer" style="color: var(--navy-400);">www.peoplesdoctor.com</div>
+</div>
+</div>
+
+
+<!-- ====================================================================
+     SLIDE 8 — BUSINESS MODEL
+     ==================================================================== -->
+<div class="slide-container">
+<div class="slide slide--dark" style="display: flex; flex-direction: column; justify-content: center; padding: 80px 120px;">
+
+  <div style="display: flex; gap: 80px; align-items: flex-start;">
+
+    <div style="flex: 0 0 480px;">
+      <div class="label" style="color: var(--green-light); margin-bottom: 16px;">BUSINESS MODEL</div>
+      <h2 style="font-size: 46px; font-weight: 600; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 24px;">Freemium to<br>Multi-Stream Revenue</h2>
+      <p style="font-size: 20px; color: var(--navy-300); line-height: 1.6; margin-bottom: 40px;">
+        Free core access for doctors and citizens. Revenue from SaaS, data, pharma partnerships, and tokenized economy.
+      </p>
+
+      <!-- TAM Denmark -->
+      <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 28px; border: 1px solid rgba(255,255,255,0.08);">
+        <div style="font-size: 14px; color: var(--navy-400); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px;">Denmark TAM</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div>
+            <div style="font-size: 32px; font-weight: 700; color: var(--green-light);">46&ndash;48K</div>
+            <div style="font-size: 13px; color: var(--navy-400);">Private clinic users</div>
+          </div>
+          <div>
+            <div style="font-size: 32px; font-weight: 700; color: var(--accent-light);">80&ndash;90K</div>
+            <div style="font-size: 13px; color: var(--navy-400);">Extended primary health</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Revenue streams -->
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
+
+      <div class="card">
+        <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(0,184,148,0.15); display: flex; align-items: center; justify-content: center;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 100 7h5a3.5 3.5 0 110 7H6" stroke="var(--green-light)" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div style="font-size: 20px; font-weight: 600;">SaaS Subscriptions</div>
+        </div>
+        <div style="font-size: 16px; color: var(--navy-300); line-height: 1.6;">Premium modules: Connector, Resume Builder, Fee Finder. Subscription-based per user.</div>
+      </div>
+
+      <div class="card">
+        <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(108,92,231,0.15); display: flex; align-items: center; justify-content: center;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="var(--accent-light)" stroke-width="1.5"/><path d="M9 12l2 2 4-4" stroke="var(--accent-light)" stroke-width="1.5"/></svg>
+          </div>
+          <div style="font-size: 20px; font-weight: 600;">Data Monetization (Opt-In)</div>
+        </div>
+        <div style="font-size: 16px; color: var(--navy-300); line-height: 1.6;">75% revenue to users / 25% to People&rsquo;s Doctor via People&rsquo;s Coin. Patient-controlled.</div>
+      </div>
+
+      <div class="card">
+        <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(253,203,110,0.15); display: flex; align-items: center; justify-content: center;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div style="font-size: 20px; font-weight: 600;">Pharma &amp; Research</div>
+        </div>
+        <div style="font-size: 16px; color: var(--navy-300); line-height: 1.6;">Ethically managed, evidence-based data access for pharmaceutical and research organizations.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <span class="page-num" style="color: rgba(255,255,255,0.3);">8 / 15</span>
+  <div class="url-footer" style="color: rgba(255,255,255,0.3);">www.peoplesdoctor.com</div>
+</div>
+</div>
+
+
+<!-- ====================================================================
+     SLIDE 9 — GTM
+     ==================================================================== -->
+<div class="slide-container">
+<div class="slide slide--light" style="display: flex; flex-direction: column; justify-content: center; padding: 80px 120px;">
+
+  <div style="text-align: center; margin-bottom: 56px;">
+    <div class="label" style="color: var(--accent); margin-bottom: 12px;">GO-TO-MARKET</div>
+    <h2 style="font-size: 46px; font-weight: 600; line-height: 1.1; letter-spacing: -1.5px; color: var(--navy); margin-bottom: 12px;">Three-Strategy Expansion</h2>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; max-width: 1500px; margin: 0 auto; width: 100%;">
+
+    <!-- Strategy 1 -->
+    <div style="background: #fff; border-radius: 24px; padding: 40px 32px; box-shadow: 0 4px 24px rgba(19,16,44,0.06); text-align: center;">
+      <div style="width: 72px; height: 72px; border-radius: 20px; background: rgba(0,184,148,0.10); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="var(--green)" stroke-width="1.5"/><path d="M12 8v8M8 12h8" stroke="var(--green)" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div style="font-size: 22px; font-weight: 600; color: var(--navy); margin-bottom: 12px;">Market Penetration</div>
+      <div style="font-size: 16px; color: var(--navy-500); line-height: 1.6; margin-bottom: 24px;">Stay in Denmark, sell more to existing customers with product expansion</div>
+      <div style="display: flex; justify-content: center; gap: 24px;">
+        <div>
+          <div style="font-size: 28px; font-weight: 700; color: var(--green);">5,183</div>
+          <div style="font-size: 13px; color: var(--navy-400);">Doctors DK</div>
+        </div>
+        <div>
+          <div style="font-size: 28px; font-weight: 700; color: var(--green);">2M</div>
+          <div style="font-size: 13px; color: var(--navy-400);">DKK MRR</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Strategy 2 -->
+    <div style="background: #fff; border-radius: 24px; padding: 40px 32px; box-shadow: 0 4px 24px rgba(19,16,44,0.06); text-align: center;">
+      <div style="width: 72px; height: 72px; border-radius: 20px; background: rgba(108,92,231,0.10); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="var(--accent)" stroke-width="1.5"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" stroke="var(--accent)" stroke-width="1.5"/></svg>
+      </div>
+      <div style="font-size: 22px; font-weight: 600; color: var(--navy); margin-bottom: 12px;">European Expansion</div>
+      <div style="font-size: 16px; color: var(--navy-500); line-height: 1.6; margin-bottom: 24px;">Go European with what already works. Nordic first, then EU-wide</div>
+      <div style="display: flex; justify-content: center; gap: 24px;">
+        <div>
+          <div style="font-size: 28px; font-weight: 700; color: var(--accent);">310K</div>
+          <div style="font-size: 13px; color: var(--navy-400);">Doctors EU</div>
+        </div>
+        <div>
+          <div style="font-size: 28px; font-weight: 700; color: var(--accent);">80M</div>
+          <div style="font-size: 13px; color: var(--navy-400);">DKK MRR</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Strategy 3 -->
+    <div style="background: #fff; border-radius: 24px; padding: 40px 32px; box-shadow: 0 4px 24px rgba(19,16,44,0.06); text-align: center;">
+      <div style="width: 72px; height: 72px; border-radius: 20px; background: rgba(255,107,107,0.10); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="var(--coral)" stroke-width="1.5"/><circle cx="9" cy="7" r="4" stroke="var(--coral)" stroke-width="1.5"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="var(--coral)" stroke-width="1.5"/></svg>
+      </div>
+      <div style="font-size: 22px; font-weight: 600; color: var(--navy); margin-bottom: 12px;">B2B &rarr; B2C Platform</div>
+      <div style="font-size: 16px; color: var(--navy-500); line-height: 1.6; margin-bottom: 24px;">Leverage B2B to build a consumer business. People&rsquo;s Doctor for 150M citizens</div>
+      <div style="display: flex; justify-content: center; gap: 24px;">
+        <div>
+          <div style="font-size: 28px; font-weight: 700; color: var(--coral);">150M</div>
+          <div style="font-size: 13px; color: var(--navy-400);">Users B2C</div>
+        </div>
+        <div>
+          <div style="font-size: 28px; font-weight: 700; color: var(--coral);">3B</div>
+          <div style="font-size: 13px; color: var(--navy-400);">DKK MRR</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <span class="page-num" style="color: var(--navy-400);">9 / 15</span>
+  <div class="url-footer" style="color: var(--navy-400);">www.peoplesdoctor.com</div>
+</div>
+</div>
+
+
+<!-- ====================================================================
+     SLIDE 10 — TRACTION
+     ==================================================================== -->
+<div class="slide-container">
+<div class="slide slide--dark" style="display: flex; flex-direction: column; justify-content: center; padding: 80px 120px;">
+
+  <div style="text-align: center; margin-bottom: 56px;">
+    <div class="label" style="color: var(--green-light); margin-bottom: 12px;">TRACTION</div>
+    <h2 style="font-size: 48px; font-weight: 600; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 12px;">Strong Momentum</h2>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 1400px; margin: 0 auto; width: 100%;">
+
+    <!-- Commercial -->
+    <div class="card">
+      <div style="font-size: 14px; font-weight: 600; color: var(--green-light); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px;">Commercial Rollout</div>
+      <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 14px;">
+        <li style="font-size: 17px; color: var(--navy-200); padding-left: 24px; position: relative; line-height: 1.5;"><span style="position: absolute; left: 0; color: var(--green-light);">&#10003;</span>Freemium platform live and in daily use across Danish clinics</li>
+        <li style="font-size: 17px; color: var(--navy-200); padding-left: 24px; position: relative; line-height: 1.5;"><span style="position: absolute; left: 0; color: var(--green-light);">&#10003;</span>Products consistently rated <strong>8&ndash;10 / 10</strong> by users</li>
+        <li style="font-size: 17px; color: var(--navy-200); padding-left: 24px; position: relative; line-height: 1.5;"><span style="position: absolute; left: 0; color: var(--green-light);">&#10003;</span><strong>389 doctors</strong> onboarded, representing 1,000+ clinicians</li>
+      </ul>
+    </div>
+
+    <!-- Product -->
+    <div class="card">
+      <div style="font-size: 14px; font-weight: 600; color: var(--accent-light); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px;">Product &amp; Market</div>
+      <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 14px;">
+        <li style="font-size: 17px; color: var(--navy-200); padding-left: 24px; position: relative; line-height: 1.5;"><span style="position: absolute; left: 0; color: var(--accent-light);">&#10003;</span>Commercial modules launched with leading EHR provider</li>
+        <li style="font-size: 17px; color: var(--navy-200); padding-left: 24px; position: relative; line-height: 1.5;"><span style="position: absolute; left: 0; color: var(--accent-light);">&#10003;</span>On track to become <strong>market leader in Denmark</strong> by 2H 2026</li>
+        <li style="font-size: 17px; color: var(--navy-200); padding-left: 24px; position: relative; line-height: 1.5;"><span style="position: absolute; left: 0; color: var(--accent-light);">&#10003;</span>Platform undergoing <strong>ISAE 3000</strong> certification with BDO</li>
+      </ul>
+    </div>
+
+    <!-- International -->
+    <div class="card">
+      <div style="font-size: 14px; font-weight: 600; color: var(--gold); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px;">International Expansion</div>
+      <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 14px;">
+        <li style="font-size: 17px; color: var(--navy-200); padding-left: 24px; position: relative; line-height: 1.5;"><span style="position: absolute; left: 0; color: var(--gold);">&#10003;</span>9 clinics onboarded in Nigeria during pilot phase</li>
+        <li style="font-size: 17px; color: var(--navy-200); padding-left: 24px; position: relative; line-height: 1.5;"><span style="position: absolute; left: 0; color: var(--gold);">&#10003;</span>Partnerships: MTN Foundation, AXA, MedPlus</li>
+        <li style="font-size: 17px; color: var(--navy-200); padding-left: 24px; position: relative; line-height: 1.5;"><span style="position: absolute; left: 0; color: var(--gold);">&#10003;</span>Granted EUR 63,000 Danida funding</li>
+      </ul>
+    </div>
+
+    <!-- Funding -->
+    <div class="card">
+      <div style="font-size: 14px; font-weight: 600; color: var(--coral); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px;">Funding &amp; Momentum</div>
+      <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 14px;">
+        <li style="font-size: 17px; color: var(--navy-200); padding-left: 24px; position: relative; line-height: 1.5;"><span style="position: absolute; left: 0; color: var(--coral);">&#10003;</span><strong>EUR 800,000</strong> raised to date</li>
+        <li style="font-size: 17px; color: var(--navy-200); padding-left: 24px; position: relative; line-height: 1.5;"><span style="position: absolute; left: 0; color: var(--coral);">&#10003;</span>Strong investor interest ahead of next round</li>
+        <li style="font-size: 17px; color: var(--navy-200); padding-left: 24px; position: relative; line-height: 1.5;"><span style="position: absolute; left: 0; color: var(--coral);">&#10003;</span>1,750 doctors with XMO access via partnership</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <span class="page-num" style="color: rgba(255,255,255,0.3);">10 / 15</span>
+  <div class="url-footer" style="color: rgba(255,255,255,0.3);">www.peoplesdoctor.com</div>
+</div>
+</div>
+
+
+<!-- ====================================================================
+     SLIDE 11 — TECHNOLOGY & COMPLIANCE
+     ==================================================================== -->
+<div class="slide-container">
+<div class="slide slide--light" style="display: flex; flex-direction: column; justify-content: center; padding: 80px 120px;">
+
+  <div style="text-align: center; margin-bottom: 56px;">
+    <div class="label" style="color: var(--accent); margin-bottom: 12px;">TECHNOLOGY &amp; COMPLIANCE</div>
+    <h2 style="font-size: 46px; font-weight: 600; line-height: 1.1; letter-spacing: -1.5px; color: var(--navy);">Built for Trust and Scale</h2>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; max-width: 1500px; margin: 0 auto; width: 100%;">
+
+    <!-- Architecture -->
+    <div style="background: #fff; border-radius: 20px; padding: 36px 28px; box-shadow: 0 4px 20px rgba(19,16,44,0.06);">
+      <div style="width: 56px; height: 56px; border-radius: 16px; background: rgba(108,92,231,0.10); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="var(--accent)" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke="var(--accent)" stroke-width="1.5"/></svg>
+      </div>
+      <div style="font-size: 22px; font-weight: 600; color: var(--navy); margin-bottom: 14px;">Architecture</div>
+      <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 10px;">
+        <li style="font-size: 16px; color: var(--navy-500); line-height: 1.5; padding-left: 18px; position: relative;"><span style="position: absolute; left: 0; color: var(--accent);">&bull;</span>LLM-agnostic framework</li>
+        <li style="font-size: 16px; color: var(--navy-500); line-height: 1.5; padding-left: 18px; position: relative;"><span style="position: absolute; left: 0; color: var(--accent);">&bull;</span>Web3-enabled data layer</li>
+        <li style="font-size: 16px; color: var(--navy-500); line-height: 1.5; padding-left: 18px; position: relative;"><span style="position: absolute; left: 0; color: var(--accent);">&bull;</span>Cloud-native, real-time AI</li>
+      </ul>
+    </div>
+
+    <!-- Compliance -->
+    <div style="background: #fff; border-radius: 20px; padding: 36px 28px; box-shadow: 0 4px 20px rgba(19,16,44,0.06);">
+      <div style="width: 56px; height: 56px; border-radius: 16px; background: rgba(0,184,148,0.10); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="var(--green)" stroke-width="1.5"/><path d="M9 12l2 2 4-4" stroke="var(--green)" stroke-width="1.5"/></svg>
+      </div>
+      <div style="font-size: 22px; font-weight: 600; color: var(--navy); margin-bottom: 14px;">Compliance</div>
+      <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 10px;">
+        <li style="font-size: 16px; color: var(--navy-500); line-height: 1.5; padding-left: 18px; position: relative;"><span style="position: absolute; left: 0; color: var(--green);">&bull;</span>GDPR &amp; EU AI Act compliant</li>
+        <li style="font-size: 16px; color: var(--navy-500); line-height: 1.5; padding-left: 18px; position: relative;"><span style="position: absolute; left: 0; color: var(--green);">&bull;</span>ISAE 3000 (BDO)</li>
+        <li style="font-size: 16px; color: var(--navy-500); line-height: 1.5; padding-left: 18px; position: relative;"><span style="position: absolute; left: 0; color: var(--green);">&bull;</span>WHO &amp; DHA standards aligned</li>
+      </ul>
+    </div>
+
+    <!-- Performance -->
+    <div style="background: #fff; border-radius: 20px; padding: 36px 28px; box-shadow: 0 4px 20px rgba(19,16,44,0.06);">
+      <div style="width: 56px; height: 56px; border-radius: 16px; background: rgba(253,203,110,0.12); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="#C98700" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div style="font-size: 22px; font-weight: 600; color: var(--navy); margin-bottom: 14px;">Performance</div>
+      <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 10px;">
+        <li style="font-size: 16px; color: var(--navy-500); line-height: 1.5; padding-left: 18px; position: relative;"><span style="position: absolute; left: 0; color: #C98700;">&bull;</span>92% diagnostic accuracy target</li>
+        <li style="font-size: 16px; color: var(--navy-500); line-height: 1.5; padding-left: 18px; position: relative;"><span style="position: absolute; left: 0; color: #C98700;">&bull;</span>1M+ clinical cases analyzed</li>
+        <li style="font-size: 16px; color: var(--navy-500); line-height: 1.5; padding-left: 18px; position: relative;"><span style="position: absolute; left: 0; color: #C98700;">&bull;</span>Continuous learning from real data</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- EHDS callout -->
+  <div style="margin-top: 40px; max-width: 1500px; margin-left: auto; margin-right: auto; width: 100%; background: linear-gradient(135deg, rgba(108,92,231,0.08), rgba(0,184,148,0.06)); border-radius: 16px; padding: 24px 36px; display: flex; align-items: center; gap: 20px;">
+    <div style="flex-shrink: 0; width: 48px; height: 48px; border-radius: 14px; background: var(--accent); display: flex; align-items: center; justify-content: center;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="1.5"/><path d="M12 16v-4M12 8h.01" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </div>
+    <div>
+      <div style="font-size: 17px; font-weight: 600; color: var(--navy);">EU Health Data Space (EHDS) is now in effect</div>
+      <div style="font-size: 15px; color: var(--navy-500);">Effective March 26, 2025 &mdash; full implementation by 2029. People&rsquo;s Doctor is fully aligned.</div>
+    </div>
+  </div>
+
+  <span class="page-num" style="color: var(--navy-400);">11 / 15</span>
+  <div class="url-footer" style="color: var(--navy-400);">www.peoplesdoctor.com</div>
+</div>
+</div>
+
+
+<!-- ====================================================================
+     SLIDE 12 — FINANCIALS
+     ==================================================================== -->
+<div class="slide-container">
+<div class="slide slide--dark" style="display: flex; flex-direction: column; justify-content: center; padding: 80px 120px;">
+
+  <div style="text-align: center; margin-bottom: 56px;">
+    <div class="label" style="color: var(--green-light); margin-bottom: 12px;">FINANCIALS</div>
+    <h2 style="font-size: 46px; font-weight: 600; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 12px;">Path to DKK 1.2B+ Valuation</h2>
+    <p style="font-size: 20px; color: var(--navy-300);">Freemium model scaling to DKK 23.5&ndash;42.5M MRR</p>
+  </div>
+
+  <div style="display: flex; gap: 32px; max-width: 1400px; margin: 0 auto; width: 100%;">
+
+    <!-- Revenue targets -->
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
+
+      <div style="background: rgba(0,184,148,0.08); border: 1px solid rgba(0,184,148,0.15); border-radius: 18px; padding: 28px 24px;">
+        <div style="font-size: 14px; color: var(--green-light); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Denmark</div>
+        <div style="font-size: 40px; font-weight: 700; color: var(--green-light); letter-spacing: -1px;">DKK 2M</div>
+        <div style="font-size: 15px; color: var(--navy-300);">MRR &bull; 5,183 doctors</div>
+      </div>
+
+      <div style="background: rgba(108,92,231,0.08); border: 1px solid rgba(108,92,231,0.15); border-radius: 18px; padding: 28px 24px;">
+        <div style="font-size: 14px; color: var(--accent-light); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Nordics</div>
+        <div style="font-size: 40px; font-weight: 700; color: var(--accent-light); letter-spacing: -1px;">DKK 16.4M</div>
+        <div style="font-size: 15px; color: var(--navy-300);">MRR &bull; 25,000 doctors</div>
+      </div>
+
+      <div style="background: rgba(253,203,110,0.08); border: 1px solid rgba(253,203,110,0.15); border-radius: 18px; padding: 28px 24px;">
+        <div style="font-size: 14px; color: var(--gold); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">EU</div>
+        <div style="font-size: 40px; font-weight: 700; color: var(--gold); letter-spacing: -1px;">DKK 80M</div>
+        <div style="font-size: 15px; color: var(--navy-300);">MRR &bull; 310,000 doctors</div>
+      </div>
+
+    </div>
+
+    <!-- Valuation -->
+    <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+      <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 48px 40px; text-align: center;">
+        <div style="font-size: 16px; color: var(--navy-300); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px;">Target Valuation</div>
+        <div style="font-size: 80px; font-weight: 700; color: #fff; letter-spacing: -3px; line-height: 1;">1.2B</div>
+        <div style="font-size: 28px; color: var(--navy-300); margin-top: 8px;">to 6B DKK</div>
+
+        <div style="width: 80px; height: 1px; background: rgba(255,255,255,0.15); margin: 32px auto;"></div>
+
+        <div style="font-size: 16px; color: var(--navy-300); line-height: 1.7;">
+          MRR DKK 23.5M &ndash; 42.5M<br>
+          B2C: 150M People&rsquo;s Doctor users<br>
+          DKK 3,000M MRR at full potential
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <span class="page-num" style="color: rgba(255,255,255,0.3);">12 / 15</span>
+  <div class="url-footer" style="color: rgba(255,255,255,0.3);">www.peoplesdoctor.com</div>
+</div>
+</div>
+
+
+<!-- ====================================================================
+     SLIDE 13 — TEAM
+     ==================================================================== -->
+<div class="slide-container">
+<div class="slide slide--light" style="display: flex; flex-direction: column; justify-content: center; padding: 80px 120px;">
+
+  <div style="text-align: center; margin-bottom: 48px;">
+    <div class="label" style="color: var(--accent); margin-bottom: 12px;">TEAM</div>
+    <h2 style="font-size: 46px; font-weight: 600; line-height: 1.1; letter-spacing: -1.5px; color: var(--navy); margin-bottom: 12px;">Serial Founders &amp; Domain Experts</h2>
+    <p style="font-size: 20px; color: var(--navy-500);">Doctors, business leaders, and technologists with 200+ years of experience</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; max-width: 1500px; margin: 0 auto; width: 100%;">
+
+    <!-- Carl -->
+    <div style="background: #fff; border-radius: 20px; padding: 32px 20px; box-shadow: 0 4px 20px rgba(19,16,44,0.06); text-align: center;">
+      <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--navy-100), var(--navy-200)); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 28px; font-weight: 600; color: var(--navy-500);">CB</div>
+      <div style="font-size: 18px; font-weight: 600; color: var(--navy); margin-bottom: 4px;">Carl Brandt</div>
+      <div style="font-size: 13px; color: var(--accent); font-weight: 500; margin-bottom: 12px;">Founder &bull; Chairman</div>
+      <div style="font-size: 13px; color: var(--navy-500); line-height: 1.5;">MD, PhD, GP<br>Netdoktor.dk, Livahealth</div>
+    </div>
+
+    <!-- Lars K -->
+    <div style="background: #fff; border-radius: 20px; padding: 32px 20px; box-shadow: 0 4px 20px rgba(19,16,44,0.06); text-align: center;">
+      <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--navy-100), var(--navy-200)); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 28px; font-weight: 600; color: var(--navy-500);">LK</div>
+      <div style="font-size: 18px; font-weight: 600; color: var(--navy); margin-bottom: 4px;">Lars Kensmark</div>
+      <div style="font-size: 13px; color: var(--accent); font-weight: 500; margin-bottom: 12px;">Founder &bull; Board</div>
+      <div style="font-size: 13px; color: var(--navy-500); line-height: 1.5;">MD, GP<br>Peoplesrobots, Med. &Oslash; Vagt</div>
+    </div>
+
+    <!-- Lars M -->
+    <div style="background: #fff; border-radius: 20px; padding: 32px 20px; box-shadow: 0 4px 20px rgba(19,16,44,0.06); text-align: center;">
+      <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--navy-100), var(--navy-200)); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 28px; font-weight: 600; color: var(--navy-500);">LM</div>
+      <div style="font-size: 18px; font-weight: 600; color: var(--navy); margin-bottom: 4px;">Lars M. Johansen</div>
+      <div style="font-size: 13px; color: var(--accent); font-weight: 500; margin-bottom: 12px;">Founder &bull; Mgt</div>
+      <div style="font-size: 13px; color: var(--navy-500); line-height: 1.5;">BSc Eng.<br>IT Factory, Boozt, 125+ startups</div>
+    </div>
+
+    <!-- Anders H -->
+    <div style="background: #fff; border-radius: 20px; padding: 32px 20px; box-shadow: 0 4px 20px rgba(19,16,44,0.06); text-align: center;">
+      <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--navy-100), var(--navy-200)); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 28px; font-weight: 600; color: var(--navy-500);">AH</div>
+      <div style="font-size: 18px; font-weight: 600; color: var(--navy); margin-bottom: 4px;">Anders H. Nielsen</div>
+      <div style="font-size: 13px; color: var(--accent); font-weight: 500; margin-bottom: 12px;">Founder &bull; CTO</div>
+      <div style="font-size: 13px; color: var(--navy-500); line-height: 1.5;">MSc IT<br>Fraia.ai, Lion Brain, Docea</div>
+    </div>
+
+    <!-- Michael -->
+    <div style="background: #fff; border-radius: 20px; padding: 32px 20px; box-shadow: 0 4px 20px rgba(19,16,44,0.06); text-align: center;">
+      <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--navy-100), var(--navy-200)); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 28px; font-weight: 600; color: var(--navy-500);">MH</div>
+      <div style="font-size: 18px; font-weight: 600; color: var(--navy); margin-bottom: 4px;">Michael Hejmadi</div>
+      <div style="font-size: 13px; color: var(--accent); font-weight: 500; margin-bottom: 12px;">Founding Doctor</div>
+      <div style="font-size: 13px; color: var(--navy-500); line-height: 1.5;">MD, Author<br>&ldquo;Last Doctor Standing&rdquo;</div>
+    </div>
+
+  </div>
+
+  <span class="page-num" style="color: var(--navy-400);">13 / 15</span>
+  <div class="url-footer" style="color: var(--navy-400);">www.peoplesdoctor.com</div>
+</div>
+</div>
+
+
+<!-- ====================================================================
+     SLIDE 14 — THE ASK
+     ==================================================================== -->
+<div class="slide-container">
+<div class="slide slide--green" style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 80px 120px;">
+
+  <div class="label" style="color: rgba(255,255,255,0.6); margin-bottom: 24px;">THE ASK</div>
+
+  <h2 style="font-size: 56px; font-weight: 600; line-height: 1.1; letter-spacing: -2px; text-align: center; margin-bottom: 24px;">
+    Join Us in Democratizing<br>Healthcare
+  </h2>
+
+  <p style="font-size: 22px; color: rgba(255,255,255,0.75); text-align: center; max-width: 700px; line-height: 1.6; margin-bottom: 56px;">
+    EUR 800K raised to date. Strong momentum, proven product-market fit, and a clear path to European expansion.
+  </p>
+
+  <div style="display: flex; gap: 40px;">
+    <div style="background: rgba(255,255,255,0.12); border-radius: 20px; padding: 36px 48px; text-align: center; border: 1px solid rgba(255,255,255,0.2);">
+      <div style="font-size: 48px; font-weight: 700; letter-spacing: -2px;">389</div>
+      <div style="font-size: 15px; opacity: 0.7; margin-top: 4px;">Doctors onboarded</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.12); border-radius: 20px; padding: 36px 48px; text-align: center; border: 1px solid rgba(255,255,255,0.2);">
+      <div style="font-size: 48px; font-weight: 700; letter-spacing: -2px;">8&ndash;10</div>
+      <div style="font-size: 15px; opacity: 0.7; margin-top: 4px;">User rating</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.12); border-radius: 20px; padding: 36px 48px; text-align: center; border: 1px solid rgba(255,255,255,0.2);">
+      <div style="font-size: 48px; font-weight: 700; letter-spacing: -2px;">ISAE</div>
+      <div style="font-size: 15px; opacity: 0.7; margin-top: 4px;">3000 certification</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.12); border-radius: 20px; padding: 36px 48px; text-align: center; border: 1px solid rgba(255,255,255,0.2);">
+      <div style="font-size: 48px; font-weight: 700; letter-spacing: -2px;">1.2B</div>
+      <div style="font-size: 15px; opacity: 0.7; margin-top: 4px;">DKK target</div>
+    </div>
+  </div>
+
+  <span class="page-num" style="color: rgba(255,255,255,0.3);">14 / 15</span>
+  <div class="url-footer" style="color: rgba(255,255,255,0.3);">www.peoplesdoctor.com</div>
+</div>
+</div>
+
+
+<!-- ====================================================================
+     SLIDE 15 — THANK YOU / CONTACT
+     ==================================================================== -->
+<div class="slide-container">
+<div class="slide slide--hero" style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 80px 120px;">
+
+  <div style="position: absolute; top: -120px; right: -80px; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(108,92,231,0.15) 0%, transparent 70%);"></div>
+  <div style="position: absolute; bottom: -100px; left: -60px; width: 350px; height: 350px; border-radius: 50%; background: radial-gradient(circle, rgba(0,184,148,0.10) 0%, transparent 70%);"></div>
+
+  <div style="font-size: 20px; font-weight: 600; letter-spacing: 6px; text-transform: uppercase; color: var(--navy-300); margin-bottom: 24px;">PEOPLE'S DOCTOR</div>
+
+  <h2 style="font-size: 68px; font-weight: 600; line-height: 1.1; letter-spacing: -2px; text-align: center; margin-bottom: 48px;">Thank You</h2>
+
+  <div style="display: flex; gap: 48px; margin-bottom: 48px;">
+
+    <!-- Lars -->
+    <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.10); border-radius: 20px; padding: 36px 40px; text-align: center; min-width: 300px;">
+      <div style="width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--navy-700), var(--navy-600)); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 24px; font-weight: 600; color: var(--navy-300);">LM</div>
+      <div style="font-size: 22px; font-weight: 600; margin-bottom: 4px;">Lars Munch Johansen</div>
+      <div style="font-size: 15px; color: var(--navy-400); margin-bottom: 16px;">Founder &amp; Partner</div>
+      <div style="font-size: 15px; color: var(--navy-300);">+45 29 99 20 00</div>
+      <div style="font-size: 15px; color: var(--navy-300);">lmj@peoplesdoctor.com</div>
+    </div>
+
+    <!-- Anders -->
+    <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.10); border-radius: 20px; padding: 36px 40px; text-align: center; min-width: 300px;">
+      <div style="width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--navy-700), var(--navy-600)); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 24px; font-weight: 600; color: var(--navy-300);">AC</div>
+      <div style="font-size: 22px; font-weight: 600; margin-bottom: 4px;">Anders Vest Christensen</div>
+      <div style="font-size: 15px; color: var(--navy-400); margin-bottom: 16px;">Founder &amp; Partner</div>
+      <div style="font-size: 15px; color: var(--navy-300);">+41 76 442 4166</div>
+      <div style="font-size: 15px; color: var(--navy-300);">ac@peoplesdoctor.com</div>
+    </div>
+
+  </div>
+
+  <div style="font-size: 18px; color: var(--navy-400);">www.peoplesdoctor.com</div>
+
+  <span class="page-num" style="color: rgba(255,255,255,0.3);">15 / 15</span>
+</div>
+</div>
+
+
+</body>
+</html>
