@@ -29,6 +29,12 @@ const server = http.createServer((req, res) => {
   if (urlPath === '/' || urlPath === '') {
     // Root serves Start Konsultation page
     filePath = path.join(UI_DIR, 'platform-preview.html');
+  } else if (urlPath === '/onboarding') {
+    // Onboarding presentation
+    filePath = path.join(UI_DIR, 'slides/onboarding.html');
+  } else if (urlPath.startsWith('/billeder/')) {
+    // Slide images (referenced by onboarding.html)
+    filePath = path.join(UI_DIR, 'slides', urlPath);
   } else if (urlPath.startsWith('/Design System/')) {
     // Design System assets
     filePath = './Peoples Clinic' + urlPath;
