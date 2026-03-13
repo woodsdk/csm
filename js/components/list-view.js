@@ -4,13 +4,16 @@
 
 const ListView = {
   _sort: { column: 'deadline', dir: 'asc' },
+  _doneExpanded: false,
 
   async render(tasks) {
     const members = await TeamAPI.getAll();
-    const sorted = this._sortTasks([...tasks]);
     const today = new Date().toISOString().split('T')[0];
 
-    if (sorted.length === 0) {
+    const activeTasks = this._sortTasks(tasks.filter(t => t.status !== 'done'));
+    const doneTasks = this._sortTasks(tasks.filter(t => t.status === 'done'));
+
+    if (activeTasks.length === 0 && doneTasks.length === 0) {
       return `
         <div class="empty-state">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/></svg>
@@ -19,38 +22,68 @@ const ListView = {
       `;
     }
 
+    const theadHtml = `
+      <thead>
+        <tr>
+          <th class="col-title sortable ${this._sort.column === 'title' ? 'sort-active' : ''}" onclick="ListView.toggleSort('title')">
+            Titel ${this._sortIcon('title')}
+          </th>
+          <th class="col-status sortable ${this._sort.column === 'status' ? 'sort-active' : ''}" onclick="ListView.toggleSort('status')">
+            Status ${this._sortIcon('status')}
+          </th>
+          <th class="col-priority sortable ${this._sort.column === 'priority' ? 'sort-active' : ''}" onclick="ListView.toggleSort('priority')">
+            Prioritet ${this._sortIcon('priority')}
+          </th>
+          <th class="col-assignee sortable ${this._sort.column === 'assignee' ? 'sort-active' : ''}" onclick="ListView.toggleSort('assignee')">
+            Ansvarlig ${this._sortIcon('assignee')}
+          </th>
+          <th class="col-type">Type</th>
+          <th class="col-deadline sortable ${this._sort.column === 'deadline' ? 'sort-active' : ''}" onclick="ListView.toggleSort('deadline')">
+            Deadline ${this._sortIcon('deadline')}
+          </th>
+        </tr>
+      </thead>`;
+
+    const doneSection = doneTasks.length > 0 ? `
+      <div class="done-group">
+        <button class="done-group-toggle" onclick="ListView.toggleDone()">
+          <svg class="done-group-chevron ${this._doneExpanded ? 'expanded' : ''}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          Done <span class="done-group-count">${doneTasks.length}</span>
+        </button>
+        ${this._doneExpanded ? `
+          <div class="list-table-wrap">
+            <table class="list-table list-table-done">
+              <tbody>
+                ${doneTasks.map(t => this._renderRow(t, members, today, true)).join('')}
+              </tbody>
+            </table>
+          </div>
+        ` : ''}
+      </div>
+    ` : '';
+
     return `
       <div class="list-table-wrap">
         <table class="list-table">
-          <thead>
-            <tr>
-              <th class="col-title sortable ${this._sort.column === 'title' ? 'sort-active' : ''}" onclick="ListView.toggleSort('title')">
-                Titel ${this._sortIcon('title')}
-              </th>
-              <th class="col-status sortable ${this._sort.column === 'status' ? 'sort-active' : ''}" onclick="ListView.toggleSort('status')">
-                Status ${this._sortIcon('status')}
-              </th>
-              <th class="col-priority sortable ${this._sort.column === 'priority' ? 'sort-active' : ''}" onclick="ListView.toggleSort('priority')">
-                Prioritet ${this._sortIcon('priority')}
-              </th>
-              <th class="col-assignee sortable ${this._sort.column === 'assignee' ? 'sort-active' : ''}" onclick="ListView.toggleSort('assignee')">
-                Ansvarlig ${this._sortIcon('assignee')}
-              </th>
-              <th class="col-type">Type</th>
-              <th class="col-deadline sortable ${this._sort.column === 'deadline' ? 'sort-active' : ''}" onclick="ListView.toggleSort('deadline')">
-                Deadline ${this._sortIcon('deadline')}
-              </th>
-            </tr>
-          </thead>
+          ${theadHtml}
           <tbody>
-            ${sorted.map(t => this._renderRow(t, members, today)).join('')}
+            ${activeTasks.length > 0
+              ? activeTasks.map(t => this._renderRow(t, members, today, false)).join('')
+              : '<tr><td colspan="6" class="text-center text-tertiary" style="padding:var(--space-4)">Ingen aktive opgaver</td></tr>'
+            }
           </tbody>
         </table>
       </div>
+      ${doneSection}
     `;
   },
 
-  _renderRow(task, members, today) {
+  toggleDone() {
+    this._doneExpanded = !this._doneExpanded;
+    App.render();
+  },
+
+  _renderRow(task, members, today, isDone = false) {
     const member = members.find(m => m.id === task.assignee_id);
     const isOverdue = task.deadline && task.deadline < today && task.status !== 'done';
     const statusLabels = { todo: 'To Do', 'in-progress': 'In Progress', review: 'Review', done: 'Done' };
@@ -58,7 +91,7 @@ const ListView = {
     const typeLabels = { onboarding: 'Onboarding', support: 'Support', bug: 'Bug', 'feature-request': 'Feature', 'cs-followup': 'CS Follow-up', internal: 'Internal' };
 
     return `
-      <tr class="task-row" onclick="TaskModal.open('${task.id}')">
+      <tr class="task-row ${isDone ? 'task-row-done' : ''}" onclick="TaskModal.open('${task.id}')">
         <td class="col-title">
           <div class="task-title-cell">
             <span class="priority-dot priority-dot-${task.priority}"></span>

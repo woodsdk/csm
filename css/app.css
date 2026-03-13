@@ -369,6 +369,71 @@
 .col-customer { max-width: 160px; }
 .col-deadline { width: 90px; white-space: nowrap; }
 
+/* ── Done Group (collapsed) ── */
+.done-group {
+  border-top: 1px solid var(--border);
+  margin-top: var(--space-2);
+}
+
+.done-group-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-5);
+  width: 100%;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--navy-400);
+  transition: color var(--transition-fast);
+}
+
+.done-group-toggle:hover {
+  color: var(--navy-600);
+}
+
+.done-group-chevron {
+  transition: transform var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.done-group-chevron.expanded {
+  transform: rotate(90deg);
+}
+
+.done-group-count {
+  background: var(--bg-muted);
+  color: var(--navy-400);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  padding: 1px 8px;
+  border-radius: var(--radius-full);
+}
+
+.task-row-done td {
+  color: var(--navy-400) !important;
+}
+
+.task-row-done .priority-dot {
+  opacity: 0.3;
+}
+
+.task-row-done .badge,
+.task-row-done .tag {
+  opacity: 0.5;
+}
+
+.task-row-done .avatar {
+  opacity: 0.5;
+}
+
+.list-table-done {
+  opacity: 0.75;
+}
+
 /* ── Kanban Board ── */
 .kanban-board {
   display: grid;
