@@ -121,6 +121,10 @@ async function init() {
     CREATE INDEX IF NOT EXISTS idx_bookings_date ON bookings(date);
   `);
 
+  // Clean up old seed data
+  await pool.query(`DELETE FROM tasks WHERE id LIKE 't_seed%'`);
+  await pool.query(`DELETE FROM customers WHERE id LIKE 'cust_%'`);
+
   // Seed team members (always needed)
   await pool.query(`
     INSERT INTO team_members (id, name, role, avatar_color, is_active) VALUES
