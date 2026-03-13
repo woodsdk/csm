@@ -114,7 +114,6 @@ async function init() {
       created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
 
-    CREATE INDEX IF NOT EXISTS idx_tasks_tab ON tasks(tab);
     CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status);
     CREATE INDEX IF NOT EXISTS idx_tasks_assignee ON tasks(assignee_id);
     CREATE INDEX IF NOT EXISTS idx_tasks_deadline ON tasks(deadline);
@@ -123,13 +122,16 @@ async function init() {
     CREATE INDEX IF NOT EXISTS idx_bookings_date ON bookings(date);
   `);
 
-  // Migration: add tab column if missing
+  // Migration: add tab column if missing (must run BEFORE tab index)
   await pool.query(`
     DO $$ BEGIN
       ALTER TABLE tasks ADD COLUMN tab TEXT NOT NULL DEFAULT 'csm';
     EXCEPTION WHEN duplicate_column THEN NULL;
     END $$;
   `);
+
+  // Tab index (after migration ensures column exists)
+  await pool.query(`CREATE INDEX IF NOT EXISTS idx_tasks_tab ON tasks(tab)`);
 
   // Clean up old seed data
   await pool.query(`DELETE FROM tasks WHERE id LIKE 't_seed%'`);
