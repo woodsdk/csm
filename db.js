@@ -121,17 +121,7 @@ async function init() {
     CREATE INDEX IF NOT EXISTS idx_bookings_date ON bookings(date);
   `);
 
-  await seedIfEmpty();
-  console.log('Database initialized');
-}
-
-async function seedIfEmpty() {
-  const { rows } = await pool.query('SELECT COUNT(*)::int AS count FROM tasks');
-  if (rows[0].count > 0) return;
-
-  console.log('Seeding database...');
-
-  // Team members
+  // Seed team members (always needed)
   await pool.query(`
     INSERT INTO team_members (id, name, role, avatar_color, is_active) VALUES
       ('morten', 'Morten', 'lead', '#38456D', true),
@@ -140,29 +130,7 @@ async function seedIfEmpty() {
     ON CONFLICT (id) DO NOTHING
   `);
 
-  // Customers
-  await pool.query(`
-    INSERT INTO customers (id, name, segment, lifecycle, contact_name, contact_email, plan, licenses_total, licenses_used, mrr, dpa_signed, dpa_signed_at, onboarding_started_at, go_live_at, last_active_at, consultations_this_month, health_score, created_at, notes) VALUES
-      ('cust_1', 'Klinik Vesterbro', 'plo', 'onboarding', 'Dr. Hansen', 'hansen@klinikvb.dk', 'premium', 8, 5, 3992, true, '2026-03-01', '2026-03-05', NULL, NULL, NULL, NULL, '2026-03-01T00:00:00Z', '6-læge praksis i Valby. Interesseret i klinikdrift-dashboard.'),
-      ('cust_2', 'Sundhedshuset Amager', 'vores-klinik', 'active', 'Dr. Pedersen', 'info@sundhedshusetamager.dk', 'freemium', 4, 4, 0, true, '2026-02-15', '2026-02-15', '2026-02-20', '2026-03-12', 87, 82, '2026-02-10T00:00:00Z', 'Freemium bruger. Potentiel upsell til premium.'),
-      ('cust_3', 'Lægehuset Nørrebro', 'cgm-xmo', 'trial', 'Dr. Jensen', 'jensen@laegehuset-n.dk', 'premium', 12, 3, 0, false, NULL, NULL, NULL, '2026-03-11', 12, 45, '2026-03-08T00:00:00Z', '12-læge praksis. CGM XMO integration. Trial startet 8/3.'),
-      ('cust_4', 'Rosengård Lægepraksis', 'plo', 'lead', 'Dr. Nielsen', 'nielsen@rosengaard.dk', 'freemium', 0, 0, 0, false, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-10T00:00:00Z', 'Kontaktet via PLO netværk. Afventer demo.')
-    ON CONFLICT (id) DO NOTHING
-  `);
-
-  // Tasks
-  await pool.query(`
-    INSERT INTO tasks (id, title, description, status, priority, type, tags, assignee_id, created_by, deadline, created_at, updated_at, completed_at, customer_id, customer_name, sort_order, is_archived) VALUES
-      ('t_seed1', 'Onboard Klinik Vesterbro — DPA + demo', 'DPA underskrevet 1/3. Demo booket torsdag kl. 14:00. Forbered credentials og klinik-setup i admin.', 'in-progress', 'high', 'onboarding', '["plo","pilot"]', 'simon', 'morten', '2026-03-20', '2026-03-05T09:00:00Z', '2026-03-12T14:00:00Z', NULL, 'cust_1', 'Klinik Vesterbro', 0, false),
-      ('t_seed2', 'Fix login-fejl for Sundhedshuset Amager', 'Bruger rapporterer 403-fejl ved login. Tjek RBAC og session-token.', 'todo', 'critical', 'bug', '["urgent"]', 'shubi', 'shubi', '2026-03-14', '2026-03-13T08:00:00Z', '2026-03-13T08:00:00Z', NULL, 'cust_2', 'Sundhedshuset Amager', 1, false),
-      ('t_seed3', 'Forbered Q1 kunderapport', 'Aggregér usage data, satisfaction scores og churn metrics for Q1. Klar til board-meeting.', 'review', 'medium', 'internal', '["rapport","q1"]', 'morten', 'morten', '2026-03-31', '2026-03-10T10:00:00Z', '2026-03-12T16:00:00Z', NULL, NULL, '', 2, false),
-      ('t_seed4', 'Følg op på Lægehuset Nørrebro trial', 'Kun 3 af 12 licenser aktiveret. Ring og hør hvordan det går med CGM XMO integrationen.', 'todo', 'medium', 'cs-followup', '["cgm-xmo","adoption"]', 'simon', 'simon', '2026-03-18', '2026-03-11T11:00:00Z', '2026-03-11T11:00:00Z', NULL, 'cust_3', 'Lægehuset Nørrebro', 3, false),
-      ('t_seed5', 'PLO pilot-evaluering — 50 brugere', 'Forbered evalueringsrapport for PLO pilot. 70% kvalitet / 30% pris scoring. Deadline for submission.', 'todo', 'high', 'onboarding', '["plo","tender","pilot"]', 'morten', 'morten', '2026-03-25', '2026-03-08T09:00:00Z', '2026-03-08T09:00:00Z', NULL, NULL, '', 4, false),
-      ('t_seed6', 'Opdater onboarding-guide til CGM XMO', 'Tilføj screenshots af nye CGM XMO integration steps. Opdater FAQ-sektion.', 'done', 'low', 'internal', '["docs","cgm-xmo"]', 'shubi', 'morten', '2026-03-12', '2026-03-06T10:00:00Z', '2026-03-12T15:00:00Z', '2026-03-12T15:00:00Z', NULL, '', 5, false)
-    ON CONFLICT (id) DO NOTHING
-  `);
-
-  console.log('Seed data inserted');
+  console.log('Database initialized');
 }
 
 module.exports = { pool, init, genId };
