@@ -1,11 +1,11 @@
 {
   "version": "0.0.1",
   "configurations": [
-    {
-      "name": "clinic-preview",
+{
+      "name": "synergyhub-dev",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8765", "--directory", "/Users/mortenskov/Documents/Peoples Clinic/Peoples Clinic"],
-      "port": 8765
+      "runtimeArgs": ["-m", "http.server", "3001", "-d", "/Users/mortenskov/Documents/Tech Stack - Health/SynergyHub"],
+      "port": 3001
     }
   ]
 }
