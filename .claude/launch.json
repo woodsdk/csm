@@ -1,11 +1,12 @@
 {
   "version": "0.0.1",
   "configurations": [
-{
+    {
       "name": "synergyhub-dev",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "3001", "-d", "/Users/mortenskov/Documents/Tech Stack - Health/SynergyHub"],
-      "port": 3001
+      "runtimeExecutable": "/usr/local/bin/node",
+      "runtimeArgs": ["/Users/mortenskov/Documents/Tech Stack - Health/SynergyHub/server.js"],
+      "port": 3001,
+      "cwd": "/Users/mortenskov/Documents/Tech Stack - Health/SynergyHub"
     }
   ]
 }
