@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════
    SynergyHub Store — localStorage Data Layer
-   Pattern: Lisn store.js (same CRUD interface)
+   Pattern: SynergyHub store.js (same CRUD interface)
    ═══════════════════════════════════════════ */
 
 const Store = {

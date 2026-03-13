@@ -1,69 +1,100 @@
 /* ═══════════════════════════════════════════
    SynergyHub API Facade
 
-   Migration point: swap localStorage → REST API
+   Migration point: now uses REST API (PostgreSQL)
    UI code calls ONLY TaskAPI/CustomerAPI methods.
    All methods return Promises (async-ready).
    ═══════════════════════════════════════════ */
 
+const API_BASE = '/api';
+
 const TaskAPI = {
   async getAll(filters = {}) {
-    let tasks = Store.getTasks();
-
-    if (filters.status) tasks = tasks.filter(t => t.status === filters.status);
-    if (filters.priority) tasks = tasks.filter(t => t.priority === filters.priority);
-    if (filters.type) tasks = tasks.filter(t => t.type === filters.type);
-    if (filters.assignee_id) tasks = tasks.filter(t => t.assignee_id === filters.assignee_id);
-    if (filters.search) {
-      const q = filters.search.toLowerCase();
-      tasks = tasks.filter(t =>
-        t.title.toLowerCase().includes(q) ||
-        (t.description || '').toLowerCase().includes(q) ||
-        (t.customer_name || '').toLowerCase().includes(q) ||
-        (t.tags || []).some(tag => tag.toLowerCase().includes(q))
-      );
-    }
-
-    return tasks;
+    const params = new URLSearchParams();
+    if (filters.status) params.set('status', filters.status);
+    if (filters.priority) params.set('priority', filters.priority);
+    if (filters.type) params.set('type', filters.type);
+    if (filters.assignee_id) params.set('assignee_id', filters.assignee_id);
+    if (filters.search) params.set('search', filters.search);
+    const qs = params.toString();
+    const res = await fetch(`${API_BASE}/tasks${qs ? '?' + qs : ''}`);
+    if (!res.ok) throw new Error('Failed to fetch tasks');
+    return res.json();
   },
 
   async get(id) {
-    return Store.getTask(id);
+    const res = await fetch(`${API_BASE}/tasks/${encodeURIComponent(id)}`);
+    if (!res.ok) return null;
+    return res.json();
   },
 
   async create(data) {
-    return Store.createTask(data);
+    const res = await fetch(`${API_BASE}/tasks`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error('Failed to create task');
+    return res.json();
   },
 
   async update(id, data) {
-    return Store.updateTask(id, data);
+    const res = await fetch(`${API_BASE}/tasks/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error('Failed to update task');
+    return res.json();
   },
 
   async delete(id) {
-    return Store.deleteTask(id);
+    const res = await fetch(`${API_BASE}/tasks/${encodeURIComponent(id)}`, {
+      method: 'DELETE'
+    });
+    if (!res.ok) throw new Error('Failed to delete task');
+    return res.json();
   }
 };
 
 const CustomerAPI = {
   async getAll() {
-    return Store.getCustomers();
+    const res = await fetch(`${API_BASE}/customers`);
+    if (!res.ok) throw new Error('Failed to fetch customers');
+    return res.json();
   },
 
   async get(id) {
-    return Store.getCustomer(id);
+    const res = await fetch(`${API_BASE}/customers/${encodeURIComponent(id)}`);
+    if (!res.ok) return null;
+    return res.json();
   },
 
   async create(data) {
-    return Store.createCustomer(data);
+    const res = await fetch(`${API_BASE}/customers`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error('Failed to create customer');
+    return res.json();
   },
 
   async update(id, data) {
-    return Store.updateCustomer(id, data);
+    const res = await fetch(`${API_BASE}/customers/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error('Failed to update customer');
+    return res.json();
   }
 };
 
 const TeamAPI = {
   async getAll() {
-    return Store.getTeamMembers();
+    const res = await fetch(`${API_BASE}/team`);
+    if (!res.ok) throw new Error('Failed to fetch team');
+    return res.json();
   }
 };

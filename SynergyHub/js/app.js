@@ -15,7 +15,6 @@ const App = {
   },
 
   async init() {
-    Store.seedIfEmpty();
     TaskModal.init();
     EventModal.init();
     CalendarSettings.init();
