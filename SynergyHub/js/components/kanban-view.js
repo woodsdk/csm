@@ -65,7 +65,6 @@ const KanbanView = {
           <span class="badge badge-${task.priority} text-xs">${task.priority}</span>
         </div>
         <div class="kanban-card-title">${this._esc(task.title)}</div>
-        ${task.customer_name ? `<div class="kanban-card-customer text-xs text-secondary">${this._esc(task.customer_name)}</div>` : ''}
         <div class="kanban-card-footer">
           <span class="${isOverdue ? 'text-overdue' : 'text-tertiary'} text-xs">
             ${task.deadline ? this._formatDate(task.deadline) + (isOverdue ? ' !' : '') : ''}

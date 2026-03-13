@@ -37,7 +37,6 @@ const ListView = {
                 Ansvarlig ${this._sortIcon('assignee')}
               </th>
               <th class="col-type">Type</th>
-              <th class="col-customer">Kunde</th>
               <th class="col-deadline sortable ${this._sort.column === 'deadline' ? 'sort-active' : ''}" onclick="ListView.toggleSort('deadline')">
                 Deadline ${this._sortIcon('deadline')}
               </th>
@@ -79,12 +78,6 @@ const ListView = {
           }
         </td>
         <td class="col-type"><span class="tag">${typeLabels[task.type] || task.type}</span></td>
-        <td class="col-customer">
-          ${task.customer_name
-            ? `<span class="text-sm truncate">${this._esc(task.customer_name)}</span>`
-            : '<span class="text-tertiary text-sm">-</span>'
-          }
-        </td>
         <td class="col-deadline ${isOverdue ? 'text-overdue' : ''}">
           ${task.deadline ? this._formatDate(task.deadline) + (isOverdue ? ' !' : '') : '<span class="text-tertiary">-</span>'}
         </td>

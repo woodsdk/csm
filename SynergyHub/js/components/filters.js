@@ -7,9 +7,8 @@ const Filters = {
 
   async render() {
     const members = await TeamAPI.getAll();
-    const customers = await CustomerAPI.getAll();
     const f = App.state.filters;
-    const hasFilters = f.search || f.status || f.priority || f.type || f.assignee_id || f.customer_id;
+    const hasFilters = f.search || f.status || f.priority || f.type || f.assignee_id;
 
     return `
       <div class="filter-bar">
@@ -51,11 +50,6 @@ const Filters = {
           ${members.map(m => `<option value="${m.id}" ${f.assignee_id === m.id ? 'selected' : ''}>${m.name}</option>`).join('')}
         </select>
 
-        <select class="select filter-select filter-select-wide" onchange="Filters.set('customer_id', this.value)">
-          <option value="">Alle kunder</option>
-          ${customers.map(c => `<option value="${c.id}" ${f.customer_id === c.id ? 'selected' : ''}>${this._esc(c.name)}</option>`).join('')}
-        </select>
-
         ${hasFilters ? '<button class="btn btn-ghost btn-sm" onclick="Filters.clear()">Nulstil</button>' : ''}
       </div>
     `;
@@ -75,7 +69,7 @@ const Filters = {
   },
 
   clear() {
-    App.state.filters = { search: '', status: '', priority: '', type: '', assignee_id: '', customer_id: '' };
+    App.state.filters = { search: '', status: '', priority: '', type: '', assignee_id: '' };
     App.render();
   },
 

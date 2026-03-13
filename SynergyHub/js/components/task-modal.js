@@ -20,7 +20,6 @@ const TaskModal = {
 
   async open(taskId = null) {
     const members = await TeamAPI.getAll();
-    const customers = await CustomerAPI.getAll();
     const task = taskId ? await TaskAPI.get(taskId) : null;
     const isEdit = !!task;
 
@@ -85,18 +84,9 @@ const TaskModal = {
             </div>
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="task-deadline">Deadline</label>
-              <input class="input" id="task-deadline" type="date" value="${isEdit && task.deadline ? task.deadline : ''}">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="task-customer">Kunde</label>
-              <select class="select" id="task-customer">
-                <option value="">Ingen kunde</option>
-                ${customers.map(c => `<option value="${c.id}" ${isEdit && task.customer_id === c.id ? 'selected' : ''}>${this._esc(c.name)}</option>`).join('')}
-              </select>
-            </div>
+          <div class="form-group">
+            <label class="form-label" for="task-deadline">Deadline</label>
+            <input class="input" id="task-deadline" type="date" value="${isEdit && task.deadline ? task.deadline : ''}">
           </div>
 
           <div class="form-group">
@@ -131,10 +121,6 @@ const TaskModal = {
       return;
     }
 
-    const customers = await CustomerAPI.getAll();
-    const customerId = document.getElementById('task-customer').value;
-    const customer = customerId ? customers.find(c => c.id === customerId) : null;
-
     const tagsRaw = document.getElementById('task-tags').value;
     const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
 
@@ -146,8 +132,6 @@ const TaskModal = {
       type: document.getElementById('task-type').value,
       assignee_id: document.getElementById('task-assignee').value || null,
       deadline: document.getElementById('task-deadline').value || null,
-      customer_id: customerId || null,
-      customer_name: customer ? customer.name : '',
       tags
     };
 

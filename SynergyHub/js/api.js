@@ -14,7 +14,6 @@ const TaskAPI = {
     if (filters.priority) tasks = tasks.filter(t => t.priority === filters.priority);
     if (filters.type) tasks = tasks.filter(t => t.type === filters.type);
     if (filters.assignee_id) tasks = tasks.filter(t => t.assignee_id === filters.assignee_id);
-    if (filters.customer_id) tasks = tasks.filter(t => t.customer_id === filters.customer_id);
     if (filters.search) {
       const q = filters.search.toLowerCase();
       tasks = tasks.filter(t =>

@@ -10,8 +10,7 @@ const App = {
       status: '',
       priority: '',
       type: '',
-      assignee_id: '',
-      customer_id: ''
+      assignee_id: ''
     }
   },
 
