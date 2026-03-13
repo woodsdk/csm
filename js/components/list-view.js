@@ -6,7 +6,7 @@ const ListView = {
   _sort: { column: 'deadline', dir: 'asc' },
   _doneExpanded: false,
   _dragId: null,
-  _expandedDesc: null, // task id with description open
+  _descPopupOpen: false,
 
   async render(tasks) {
     const members = await TeamAPI.getAll();
@@ -24,6 +24,7 @@ const ListView = {
           <th class="col-title sortable ${this._sort.column === 'title' ? 'sort-active' : ''}" onclick="ListView.toggleSort('title')">
             Titel ${this._sortIcon('title')}
           </th>
+          <th class="col-desc-header">Beskrivelse</th>
           <th class="col-status sortable ${this._sort.column === 'status' ? 'sort-active' : ''}" onclick="ListView.toggleSort('status')">
             Status ${this._sortIcon('status')}
           </th>
@@ -65,7 +66,7 @@ const ListView = {
           ${theadHtml}
           <tbody id="task-tbody">
             <tr class="quick-add-row">
-              <td colspan="8">
+              <td colspan="9">
                 <div class="quick-add-cell">
                   <svg class="quick-add-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                   <input class="quick-add-input" type="text" placeholder="Skriv titel og tryk Enter..."
@@ -76,7 +77,7 @@ const ListView = {
             </tr>
             ${activeTasks.length > 0
               ? activeTasks.map(t => this._renderRow(t, members, today, false)).join('')
-              : isEmpty ? `<tr class="empty-row"><td colspan="8"><div class="empty-state-inline"><p>Ingen opgaver endnu — skriv en titel ovenfor</p></div></td></tr>` : ''
+              : isEmpty ? `<tr class="empty-row"><td colspan="9"><div class="empty-state-inline"><p>Ingen opgaver endnu — skriv en titel ovenfor</p></div></td></tr>` : ''
             }
           </tbody>
         </table>
@@ -177,26 +178,66 @@ const ListView = {
     this._dragId = null;
   },
 
-  // ── Inline Description ──
+  // ── Description Popup ──
 
-  toggleDesc(taskId) {
-    if (this._expandedDesc === taskId) {
-      this._expandedDesc = null;
-    } else {
-      this._expandedDesc = taskId;
-    }
-    App.render().then(() => {
-      const ta = document.getElementById('desc-inline-' + taskId);
-      if (ta) ta.focus();
+  openDescPopup(cell, taskId) {
+    // Close any existing popup
+    const existing = document.getElementById('desc-popup');
+    if (existing) existing.remove();
+
+    // Create popup
+    const popup = document.createElement('div');
+    popup.id = 'desc-popup';
+    popup.className = 'desc-popup';
+    popup.onclick = (e) => e.stopPropagation();
+
+    const ta = document.createElement('textarea');
+    ta.className = 'desc-popup-textarea';
+    ta.placeholder = 'Skriv beskrivelse...';
+
+    // Load current description
+    TaskAPI.get(taskId).then(task => {
+      if (task) ta.value = task.description || '';
     });
-  },
 
-  async saveDesc(taskId) {
-    const ta = document.getElementById('desc-inline-' + taskId);
-    if (!ta) return;
-    await TaskAPI.update(taskId, { description: ta.value });
-    // Keep it open so user sees the saved state
-    App.render();
+    popup.appendChild(ta);
+
+    // Position relative to cell, keep within viewport
+    const rect = cell.getBoundingClientRect();
+    popup.style.position = 'fixed';
+    let left = rect.left;
+    let top = rect.bottom + 4;
+    // Keep within viewport
+    if (left + 400 > window.innerWidth) left = window.innerWidth - 410;
+    if (top + 300 > window.innerHeight) top = rect.top - 304;
+    popup.style.left = left + 'px';
+    popup.style.top = top + 'px';
+
+    document.body.appendChild(popup);
+    ta.focus();
+
+    // Close + save on outside click
+    const closePopup = async (e) => {
+      if (popup.contains(e.target)) return;
+      document.removeEventListener('mousedown', closePopup);
+      const val = ta.value;
+      popup.remove();
+      await TaskAPI.update(taskId, { description: val });
+      App.render();
+    };
+    // Delay listener so the current click doesn't trigger it
+    setTimeout(() => document.addEventListener('mousedown', closePopup), 0);
+
+    // Close on Escape
+    ta.addEventListener('keydown', async (e) => {
+      if (e.key === 'Escape') {
+        document.removeEventListener('mousedown', closePopup);
+        const val = ta.value;
+        popup.remove();
+        await TaskAPI.update(taskId, { description: val });
+        App.render();
+      }
+    });
   },
 
   _renderRow(task, members, today, isDone = false) {
@@ -207,26 +248,10 @@ const ListView = {
     const typeLabels = { onboarding: 'Onboarding', support: 'Support', bug: 'Bug', 'feature-request': 'Feature', 'cs-followup': 'CS Follow-up', internal: 'Internal' };
 
     const hasDesc = task.description && task.description.trim().length > 0;
-    const descPreview = hasDesc ? task.description.trim().substring(0, 80).replace(/\n/g, ' ') : '';
-    const isDescOpen = this._expandedDesc === task.id;
-
-    // Description fold-out row
-    const descRow = isDescOpen ? `
-      <tr class="desc-row">
-        <td></td>
-        <td colspan="7">
-          <div class="desc-inline-wrap">
-            <textarea class="desc-inline-textarea" id="desc-inline-${task.id}" rows="3"
-                      placeholder="Skriv beskrivelse..."
-                      onblur="ListView.saveDesc('${task.id}')"
-                      onkeydown="if(event.key==='Escape'){ListView.toggleDesc('${task.id}')}">${this._esc(task.description || '')}</textarea>
-          </div>
-        </td>
-      </tr>
-    ` : '';
+    const descPreview = hasDesc ? task.description.trim().substring(0, 30).replace(/\n/g, ' ') : '';
 
     return `
-      <tr class="task-row ${isDone ? 'task-row-done' : ''} ${isDescOpen ? 'task-row-desc-open' : ''}" data-id="${task.id}"
+      <tr class="task-row ${isDone ? 'task-row-done' : ''}" data-id="${task.id}"
           draggable="${!isDone}" ondragstart="ListView.dragStart(event, '${task.id}')"
           ondragover="ListView.dragOver(event)" ondrop="ListView.drop(event)"
           ondragend="ListView.dragEnd(event)">
@@ -236,15 +261,15 @@ const ListView = {
         <td class="col-title" onclick="event.stopPropagation()">
           <div class="task-title-cell">
             <span class="priority-dot priority-dot-${task.priority}"></span>
-            <div class="title-and-desc">
-              <div class="title-row">
-                <span class="inline-title truncate" onclick="ListView.editTitle(this, '${task.id}')">${this._esc(task.title)}</span>
-                <button class="btn-desc ${hasDesc ? 'has-content' : ''}" onclick="event.stopPropagation(); ListView.toggleDesc('${task.id}')" title="${hasDesc ? 'Vis/rediger beskrivelse' : 'Tilføj beskrivelse'}">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                </button>
-              </div>
-              ${hasDesc && !isDescOpen ? `<span class="desc-preview" onclick="ListView.toggleDesc('${task.id}')">${this._esc(descPreview)}${task.description.trim().length > 80 ? '...' : ''}</span>` : ''}
-            </div>
+            <span class="inline-title truncate" onclick="ListView.editTitle(this, '${task.id}')">${this._esc(task.title)}</span>
+          </div>
+        </td>
+        <td class="col-desc" onclick="event.stopPropagation()">
+          <div class="desc-cell ${hasDesc ? 'has-note' : ''}" onclick="ListView.openDescPopup(this, '${task.id}')">
+            ${hasDesc
+              ? `<span class="desc-preview-text">${this._esc(descPreview)}${task.description.trim().length > 30 ? '...' : ''}</span>`
+              : `<span class="desc-add-hint">Tilføj beskrivelse</span>`
+            }
           </div>
         </td>
         <td class="col-status" onclick="event.stopPropagation()">
@@ -289,7 +314,6 @@ const ListView = {
           </button>
         </td>
       </tr>
-      ${descRow}
     `;
   },
 
