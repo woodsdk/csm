@@ -994,6 +994,17 @@
   font-size: var(--text-sm);
 }
 
+.empty-state-inline {
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+}
+
+.empty-row td {
+  border-bottom: none !important;
+}
+
 /* ── Responsive ── */
 @media (max-width: 1024px) {
   .kanban-board {

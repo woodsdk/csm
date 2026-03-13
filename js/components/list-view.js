@@ -15,14 +15,7 @@ const ListView = {
     const activeTasks = this._sortTasks(tasks.filter(t => t.status !== 'done'));
     const doneTasks = this._sortTasks(tasks.filter(t => t.status === 'done'));
 
-    if (activeTasks.length === 0 && doneTasks.length === 0) {
-      return `
-        <div class="empty-state">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/></svg>
-          <p>Ingen opgaver matcher dine filtre</p>
-        </div>
-      `;
-    }
+    const isEmpty = activeTasks.length === 0 && doneTasks.length === 0;
 
     const theadHtml = `
       <thead>
@@ -83,7 +76,7 @@ const ListView = {
             </tr>
             ${activeTasks.length > 0
               ? activeTasks.map(t => this._renderRow(t, members, today, false)).join('')
-              : ''
+              : isEmpty ? `<tr class="empty-row"><td colspan="8"><div class="empty-state-inline"><p>Ingen opgaver endnu — skriv en titel ovenfor</p></div></td></tr>` : ''
             }
           </tbody>
         </table>
