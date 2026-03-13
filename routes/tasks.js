@@ -147,4 +147,22 @@ async function remove(id) {
   return { ok: true };
 }
 
-module.exports = { list, get, create, update, remove };
+async function reorder(ids) {
+  // ids is an array of task IDs in the desired order
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    for (let i = 0; i < ids.length; i++) {
+      await client.query('UPDATE tasks SET sort_order = $1 WHERE id = $2', [i, ids[i]]);
+    }
+    await client.query('COMMIT');
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+  return { ok: true };
+}
+
+module.exports = { list, get, create, update, remove, reorder };

@@ -21,6 +21,22 @@
   <!-- Toast container -->
   <div class="toast-container" id="toast-container"></div>
 
+  <!-- Keyboard shortcuts overlay -->
+  <div class="shortcuts-overlay" id="shortcuts-overlay" onclick="App.hideShortcuts()">
+    <div class="shortcuts-panel" onclick="event.stopPropagation()">
+      <h3>Tastaturgenveje</h3>
+      <div class="shortcuts-grid">
+        <div class="shortcut-row"><kbd>N</kbd><span>Ny opgave</span></div>
+        <div class="shortcut-row"><kbd>/</kbd><span>Fokus søgefelt</span></div>
+        <div class="shortcut-row"><kbd>1</kbd><span>Listevisning</span></div>
+        <div class="shortcut-row"><kbd>2</kbd><span>Kanbanvisning</span></div>
+        <div class="shortcut-row"><kbd>3</kbd><span>Kalendervisning</span></div>
+        <div class="shortcut-row"><kbd>?</kbd><span>Vis/skjul genveje</span></div>
+        <div class="shortcut-row"><kbd>Esc</kbd><span>Luk dialog</span></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Google Identity Services (for Calendar OAuth2) -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 

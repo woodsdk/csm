@@ -22,10 +22,7 @@ const Sidebar = {
     return `
       <aside class="sidebar">
         <div class="sidebar-brand">
-          <div class="sidebar-logo">
-            <span class="sidebar-logo-peoples">PEOPLE'S</span>
-            <span class="sidebar-logo-doctor">DOCTOR</span>
-          </div>
+          <img src="assets/peoples.svg" alt="People's Doctor" class="sidebar-logo-img">
         </div>
 
         <div class="sidebar-section-title">Platform</div>

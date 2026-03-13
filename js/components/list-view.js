@@ -5,6 +5,8 @@
 const ListView = {
   _sort: { column: 'deadline', dir: 'asc' },
   _doneExpanded: false,
+  _dragId: null,
+  _expandedDesc: null, // task id with description open
 
   async render(tasks) {
     const members = await TeamAPI.getAll();
@@ -25,6 +27,7 @@ const ListView = {
     const theadHtml = `
       <thead>
         <tr>
+          <th class="col-drag"></th>
           <th class="col-title sortable ${this._sort.column === 'title' ? 'sort-active' : ''}" onclick="ListView.toggleSort('title')">
             Titel ${this._sortIcon('title')}
           </th>
@@ -41,6 +44,7 @@ const ListView = {
           <th class="col-deadline sortable ${this._sort.column === 'deadline' ? 'sort-active' : ''}" onclick="ListView.toggleSort('deadline')">
             Deadline ${this._sortIcon('deadline')}
           </th>
+          <th class="col-actions"></th>
         </tr>
       </thead>`;
 
@@ -66,9 +70,9 @@ const ListView = {
       <div class="list-table-wrap">
         <table class="list-table">
           ${theadHtml}
-          <tbody>
+          <tbody id="task-tbody">
             <tr class="quick-add-row">
-              <td colspan="6">
+              <td colspan="8">
                 <div class="quick-add-cell">
                   <svg class="quick-add-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                   <input class="quick-add-input" type="text" placeholder="Skriv titel og tryk Enter..."
@@ -102,47 +106,104 @@ const ListView = {
     if (input) input.focus();
   },
 
+  editTitle(span, taskId) {
+    if (span.querySelector('input')) return;
+    const current = span.textContent.trim();
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'inline-title-input';
+    input.value = current;
+    span.textContent = '';
+    span.appendChild(input);
+    input.focus();
+    input.select();
+
+    const save = async () => {
+      const val = input.value.trim();
+      if (val && val !== current) {
+        await TaskAPI.update(taskId, { title: val });
+      }
+      App.render();
+    };
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); save(); }
+      if (e.key === 'Escape') { App.render(); }
+    });
+    input.addEventListener('blur', save);
+  },
+
   async inlineUpdate(taskId, field, value) {
     await TaskAPI.update(taskId, { [field]: value || null });
     App.render();
   },
 
-  async openDesc(taskId) {
-    const task = await TaskAPI.get(taskId);
-    if (!task) return;
-    const overlay = document.getElementById('task-modal');
-    overlay.innerHTML = `
-      <div class="modal-panel modal-desc">
-        <div class="modal-header">
-          <h3>${this._esc(task.title)}</h3>
-          <button class="btn-icon" onclick="ListView.closeDesc()" aria-label="Luk">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-        </div>
-        <div class="modal-body">
-          <textarea class="textarea" id="desc-textarea" rows="8" placeholder="Skriv beskrivelse...">${this._esc(task.description || '')}</textarea>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-ghost" onclick="ListView.closeDesc()">Annuller</button>
-          <button class="btn btn-primary" onclick="ListView.saveDesc('${taskId}')">Gem</button>
-        </div>
-      </div>
-    `;
-    overlay.classList.add('open');
-    document.getElementById('desc-textarea').focus();
-  },
-
-  async saveDesc(taskId) {
-    const desc = document.getElementById('desc-textarea').value;
-    await TaskAPI.update(taskId, { description: desc });
-    this.closeDesc();
+  async deleteTask(taskId) {
+    if (!confirm('Er du sikker på, at du vil slette denne opgave?')) return;
+    await TaskAPI.delete(taskId);
     App.render();
   },
 
-  closeDesc() {
-    const overlay = document.getElementById('task-modal');
-    overlay.classList.remove('open');
-    overlay.innerHTML = '';
+  // ── Drag & Drop ──
+
+  dragStart(e, taskId) {
+    this._dragId = taskId;
+    e.dataTransfer.effectAllowed = 'move';
+    e.target.closest('tr').classList.add('dragging');
+  },
+
+  dragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const row = e.target.closest('tr.task-row');
+    if (!row) return;
+    document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+    row.classList.add('drag-over');
+  },
+
+  dragEnd(e) {
+    this._dragId = null;
+    document.querySelectorAll('.dragging, .drag-over').forEach(el => {
+      el.classList.remove('dragging', 'drag-over');
+    });
+  },
+
+  async drop(e) {
+    e.preventDefault();
+    document.querySelectorAll('.dragging, .drag-over').forEach(el => {
+      el.classList.remove('dragging', 'drag-over');
+    });
+    const tbody = document.getElementById('task-tbody');
+    if (!tbody) return;
+    const ids = Array.from(tbody.querySelectorAll('tr.task-row[data-id]'))
+      .map(row => row.dataset.id);
+    if (ids.length > 0) {
+      await TaskAPI.reorder(ids);
+      App.render();
+    }
+    this._dragId = null;
+  },
+
+  // ── Inline Description ──
+
+  toggleDesc(taskId) {
+    if (this._expandedDesc === taskId) {
+      this._expandedDesc = null;
+    } else {
+      this._expandedDesc = taskId;
+    }
+    App.render().then(() => {
+      const ta = document.getElementById('desc-inline-' + taskId);
+      if (ta) ta.focus();
+    });
+  },
+
+  async saveDesc(taskId) {
+    const ta = document.getElementById('desc-inline-' + taskId);
+    if (!ta) return;
+    await TaskAPI.update(taskId, { description: ta.value });
+    // Keep it open so user sees the saved state
+    App.render();
   },
 
   _renderRow(task, members, today, isDone = false) {
@@ -153,16 +214,44 @@ const ListView = {
     const typeLabels = { onboarding: 'Onboarding', support: 'Support', bug: 'Bug', 'feature-request': 'Feature', 'cs-followup': 'CS Follow-up', internal: 'Internal' };
 
     const hasDesc = task.description && task.description.trim().length > 0;
+    const descPreview = hasDesc ? task.description.trim().substring(0, 80).replace(/\n/g, ' ') : '';
+    const isDescOpen = this._expandedDesc === task.id;
+
+    // Description fold-out row
+    const descRow = isDescOpen ? `
+      <tr class="desc-row">
+        <td></td>
+        <td colspan="7">
+          <div class="desc-inline-wrap">
+            <textarea class="desc-inline-textarea" id="desc-inline-${task.id}" rows="3"
+                      placeholder="Skriv beskrivelse..."
+                      onblur="ListView.saveDesc('${task.id}')"
+                      onkeydown="if(event.key==='Escape'){ListView.toggleDesc('${task.id}')}">${this._esc(task.description || '')}</textarea>
+          </div>
+        </td>
+      </tr>
+    ` : '';
 
     return `
-      <tr class="task-row ${isDone ? 'task-row-done' : ''}">
-        <td class="col-title">
+      <tr class="task-row ${isDone ? 'task-row-done' : ''} ${isDescOpen ? 'task-row-desc-open' : ''}" data-id="${task.id}"
+          draggable="${!isDone}" ondragstart="ListView.dragStart(event, '${task.id}')"
+          ondragover="ListView.dragOver(event)" ondrop="ListView.drop(event)"
+          ondragend="ListView.dragEnd(event)">
+        <td class="col-drag" onclick="event.stopPropagation()">
+          ${!isDone ? '<span class="drag-handle" title="Træk for at sortere">⠿</span>' : ''}
+        </td>
+        <td class="col-title" onclick="event.stopPropagation()">
           <div class="task-title-cell">
             <span class="priority-dot priority-dot-${task.priority}"></span>
-            <span class="truncate">${this._esc(task.title)}</span>
-            <button class="btn-desc ${hasDesc ? 'has-content' : ''}" onclick="event.stopPropagation(); ListView.openDesc('${task.id}')" title="${hasDesc ? 'Læs/rediger beskrivelse' : 'Tilføj beskrivelse'}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            </button>
+            <div class="title-and-desc">
+              <div class="title-row">
+                <span class="inline-title truncate" onclick="ListView.editTitle(this, '${task.id}')">${this._esc(task.title)}</span>
+                <button class="btn-desc ${hasDesc ? 'has-content' : ''}" onclick="event.stopPropagation(); ListView.toggleDesc('${task.id}')" title="${hasDesc ? 'Vis/rediger beskrivelse' : 'Tilføj beskrivelse'}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                </button>
+              </div>
+              ${hasDesc && !isDescOpen ? `<span class="desc-preview" onclick="ListView.toggleDesc('${task.id}')">${this._esc(descPreview)}${task.description.trim().length > 80 ? '...' : ''}</span>` : ''}
+            </div>
           </div>
         </td>
         <td class="col-status" onclick="event.stopPropagation()">
@@ -194,10 +283,20 @@ const ListView = {
             ).join('')}
           </select>
         </td>
-        <td class="col-deadline ${isOverdue ? 'text-overdue' : ''}">
-          ${task.deadline ? this._formatDate(task.deadline) + (isOverdue ? ' !' : '') : '<span class="text-tertiary">-</span>'}
+        <td class="col-deadline" onclick="event.stopPropagation()">
+          <div class="deadline-cell">
+            <span class="deadline-label ${isOverdue ? 'text-overdue' : ''} ${!task.deadline ? 'text-tertiary' : ''}" onclick="this.nextElementSibling.showPicker()">${task.deadline ? this._relativeDate(task.deadline, today) : 'Ingen'}</span>
+            <input type="date" class="deadline-input" value="${task.deadline || ''}"
+                   onchange="ListView.inlineUpdate('${task.id}', 'deadline', this.value)">
+          </div>
+        </td>
+        <td class="col-actions" onclick="event.stopPropagation()">
+          <button class="btn-delete" onclick="ListView.deleteTask('${task.id}')" title="Slet opgave">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          </button>
         </td>
       </tr>
+      ${descRow}
     `;
   },
 
@@ -256,9 +355,29 @@ const ListView = {
       : '<span class="sort-arrow active">\u2193</span>';
   },
 
+  _relativeDate(dateStr, today) {
+    const d = new Date(dateStr + 'T00:00:00');
+    const t = new Date(today + 'T00:00:00');
+    const diffDays = Math.round((d - t) / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return 'I dag';
+    if (diffDays === 1) return 'I morgen';
+    if (diffDays === -1) return 'I går';
+    if (diffDays > 1 && diffDays <= 6) return `Om ${diffDays} dage`;
+    if (diffDays < -1 && diffDays >= -6) return `${Math.abs(diffDays)} dage siden`;
+
+    return this._formatDate(dateStr);
+  },
+
   _formatDate(dateStr) {
     const d = new Date(dateStr + 'T00:00:00');
-    return d.toLocaleDateString('da-DK', { day: 'numeric', month: 'short' });
+    const now = new Date();
+    const sameYear = d.getFullYear() === now.getFullYear();
+    if (sameYear) {
+      return d.toLocaleDateString('da-DK', { day: 'numeric', month: 'short' });
+    }
+    const base = d.toLocaleDateString('da-DK', { day: 'numeric', month: 'short' });
+    return base + " '" + String(d.getFullYear()).slice(-2).padStart(2, '0');
   },
 
   _esc(str) {

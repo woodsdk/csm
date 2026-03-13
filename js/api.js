@@ -55,6 +55,16 @@ const TaskAPI = {
     });
     if (!res.ok) throw new Error('Failed to delete task');
     return res.json();
+  },
+
+  async reorder(ids) {
+    const res = await fetch(`${API_BASE}/tasks/reorder`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids })
+    });
+    if (!res.ok) throw new Error('Failed to reorder tasks');
+    return res.json();
   }
 };
 

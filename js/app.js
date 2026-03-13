@@ -35,10 +35,23 @@ const App = {
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
-      if (e.key === 'n' || e.key === 'N') {
-        e.preventDefault();
-        TaskModal.open();
+
+      // Close shortcuts overlay on Escape
+      if (e.key === 'Escape') {
+        this.hideShortcuts();
+        return;
       }
+      if (e.key === '?') { e.preventDefault(); this.toggleShortcuts(); return; }
+      if (e.key === 'n' || e.key === 'N') { e.preventDefault(); TaskModal.open(); return; }
+      if (e.key === '/') {
+        e.preventDefault();
+        const search = document.querySelector('.filter-search');
+        if (search) search.focus();
+        return;
+      }
+      if (e.key === '1') { e.preventDefault(); this.setView('list'); return; }
+      if (e.key === '2') { e.preventDefault(); this.setView('kanban'); return; }
+      if (e.key === '3') { e.preventDefault(); this.setView('calendar'); return; }
     });
 
     await this.render();
@@ -70,6 +83,7 @@ const App = {
         <div class="main-header-left">
           <h2>${this.tabs[this.state.tab].label}</h2>
           <span class="text-tertiary text-sm">${tasks.length} opgave${tasks.length !== 1 ? 'r' : ''}</span>
+          <div class="status-counts">${this._statusCounts(tasks)}</div>
         </div>
         <div class="main-header-right">
           <div class="view-toggle">
@@ -86,10 +100,6 @@ const App = {
               Kalender
             </button>
           </div>
-          <button class="btn btn-primary" onclick="TaskModal.open()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Ny opgave
-          </button>
         </div>
       </div>
       ${filtersHTML}
@@ -124,10 +134,6 @@ const App = {
               Kalender
             </button>
           </div>
-          <button class="btn btn-primary" onclick="TaskModal.open()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Ny opgave
-          </button>
         </div>
       </div>
       <div class="main-content">
@@ -139,6 +145,36 @@ const App = {
   setView(view) {
     this.state.view = view;
     this.render();
+  },
+
+  // ── Keyboard Shortcuts Overlay ──
+
+  toggleShortcuts() {
+    const el = document.getElementById('shortcuts-overlay');
+    if (!el) return;
+    el.classList.toggle('open');
+  },
+
+  showShortcuts() {
+    const el = document.getElementById('shortcuts-overlay');
+    if (el) el.classList.add('open');
+  },
+
+  hideShortcuts() {
+    const el = document.getElementById('shortcuts-overlay');
+    if (el) el.classList.remove('open');
+  },
+
+  // ── Status Counts ──
+
+  _statusCounts(tasks) {
+    const counts = { todo: 0, 'in-progress': 0, review: 0 };
+    const labels = { todo: 'To Do', 'in-progress': 'In Progress', review: 'Review' };
+    tasks.forEach(t => { if (counts[t.status] !== undefined) counts[t.status]++; });
+    return Object.entries(counts)
+      .filter(([, c]) => c > 0)
+      .map(([s, c]) => `<span class="status-count-item"><span class="status-dot status-dot-${s}"></span>${c} ${labels[s]}</span>`)
+      .join(' ');
   },
 
   // ── Toast ──

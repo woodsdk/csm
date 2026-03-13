@@ -71,6 +71,11 @@ async function handleAPI(req, res) {
   try {
     // /api/tasks
     if (parts[1] === 'tasks') {
+      // /api/tasks/reorder
+      if (parts[2] === 'reorder' && parts.length === 3 && method === 'POST') {
+        const body = await parseBody(req);
+        return json(res, await tasks.reorder(body.ids || []));
+      }
       if (parts.length === 2) {
         if (method === 'GET') return json(res, await tasks.list(query));
         if (method === 'POST') return json(res, await tasks.create(await parseBody(req)), 201);
