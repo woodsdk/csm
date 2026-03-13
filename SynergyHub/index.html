@@ -13,20 +13,29 @@
     <div class="main-area" id="main"></div>
   </div>
 
-  <!-- Modal overlay -->
+  <!-- Modal overlays -->
   <div class="modal-overlay" id="task-modal"></div>
+  <div class="modal-overlay" id="event-modal"></div>
+  <div class="modal-overlay" id="settings-modal"></div>
 
   <!-- Toast container -->
   <div class="toast-container" id="toast-container"></div>
 
-  <!-- Scripts (order matters: store → api → components → app) -->
+  <!-- Google Identity Services (for Calendar OAuth2) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <!-- Scripts (order matters: store → api → google-cal → components → app) -->
   <script src="js/store.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/google-calendar.js"></script>
   <script src="js/components/filters.js"></script>
   <script src="js/components/sidebar.js"></script>
   <script src="js/components/list-view.js"></script>
   <script src="js/components/kanban-view.js"></script>
+  <script src="js/components/calendar-view.js"></script>
   <script src="js/components/task-modal.js"></script>
+  <script src="js/components/event-modal.js"></script>
+  <script src="js/components/calendar-settings.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

@@ -190,9 +190,9 @@ h4 { font-size: var(--text-md); font-weight: var(--font-medium); }
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: 8px 16px;
+  padding: 8px 18px;
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   font-family: var(--font-sans);
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
@@ -218,8 +218,14 @@ h4 { font-size: var(--text-md); font-weight: var(--font-medium); }
 }
 
 .btn-primary:hover {
-  filter: brightness(1.08);
+  background: linear-gradient(135deg, var(--navy-800), var(--navy-600));
   box-shadow: var(--shadow-btn-hover);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-btn);
 }
 
 .btn-danger {
@@ -242,7 +248,7 @@ h4 { font-size: var(--text-md); font-weight: var(--font-medium); }
 }
 
 .btn-sm {
-  padding: 5px 12px;
+  padding: 5px 14px;
   font-size: var(--text-xs);
 }
 
@@ -252,7 +258,7 @@ h4 { font-size: var(--text-md); font-weight: var(--font-medium); }
   background: transparent;
   color: var(--text-tertiary);
   cursor: pointer;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   display: inline-flex;
   align-items: center;
   justify-content: center;
