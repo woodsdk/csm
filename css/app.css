@@ -369,6 +369,32 @@
 .col-customer { max-width: 160px; }
 .col-deadline { width: 90px; white-space: nowrap; }
 
+/* ── Inline Status Select ── */
+.inline-status-select {
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  padding: 3px 20px 3px 8px;
+  border-radius: var(--radius-full);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 4px center;
+  transition: opacity var(--transition-fast);
+}
+
+.inline-status-select:hover {
+  opacity: 0.8;
+}
+
+.inline-status-select:focus {
+  outline: 2px solid var(--navy-500);
+  outline-offset: 1px;
+}
+
 /* ── Done Group (collapsed) ── */
 .done-group {
   border-top: 1px solid var(--border);

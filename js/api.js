@@ -11,6 +11,7 @@ const API_BASE = '/api';
 const TaskAPI = {
   async getAll(filters = {}) {
     const params = new URLSearchParams();
+    if (filters.tab) params.set('tab', filters.tab);
     if (filters.status) params.set('status', filters.status);
     if (filters.priority) params.set('priority', filters.priority);
     if (filters.type) params.set('type', filters.type);

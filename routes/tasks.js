@@ -9,6 +9,10 @@ async function list(query) {
   const params = [];
   let idx = 1;
 
+  if (query.tab) {
+    conditions.push(`tab = $${idx++}`);
+    params.push(query.tab);
+  }
   if (query.status) {
     conditions.push(`status = $${idx++}`);
     params.push(query.status);
@@ -50,8 +54,8 @@ async function create(data) {
   const sortOrder = maxRows[0].next;
 
   const { rows } = await pool.query(`
-    INSERT INTO tasks (id, title, description, status, priority, type, tags, assignee_id, created_by, deadline, created_at, updated_at, customer_id, customer_name, sort_order, is_archived)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $11, $12, $13, $14, false)
+    INSERT INTO tasks (id, title, description, status, priority, type, tags, assignee_id, created_by, deadline, created_at, updated_at, customer_id, customer_name, sort_order, is_archived, tab)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $11, $12, $13, $14, false, $15)
     RETURNING *
   `, [
     id,
@@ -67,7 +71,8 @@ async function create(data) {
     now,
     data.customer_id || null,
     data.customer_name || '',
-    sortOrder
+    sortOrder,
+    data.tab || 'csm'
   ]);
 
   // Activity log
@@ -88,7 +93,7 @@ async function update(id, data) {
   const params = [];
   let idx = 1;
 
-  const allowed = ['title', 'description', 'status', 'priority', 'type', 'assignee_id', 'deadline', 'customer_id', 'customer_name', 'sort_order', 'is_archived', 'created_by', 'ticket_ref', 'calendar_event_id', 'parent_task_id'];
+  const allowed = ['title', 'description', 'status', 'priority', 'type', 'assignee_id', 'deadline', 'customer_id', 'customer_name', 'sort_order', 'is_archived', 'created_by', 'ticket_ref', 'calendar_event_id', 'parent_task_id', 'tab'];
 
   for (const key of allowed) {
     if (data[key] !== undefined) {

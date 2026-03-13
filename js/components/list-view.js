@@ -83,6 +83,11 @@ const ListView = {
     App.render();
   },
 
+  async changeStatus(taskId, newStatus) {
+    await TaskAPI.update(taskId, { status: newStatus });
+    App.render();
+  },
+
   _renderRow(task, members, today, isDone = false) {
     const member = members.find(m => m.id === task.assignee_id);
     const isOverdue = task.deadline && task.deadline < today && task.status !== 'done';
@@ -98,8 +103,12 @@ const ListView = {
             <span class="truncate">${this._esc(task.title)}</span>
           </div>
         </td>
-        <td class="col-status">
-          <span class="badge badge-${task.status}">${statusLabels[task.status] || task.status}</span>
+        <td class="col-status" onclick="event.stopPropagation()">
+          <select class="inline-status-select badge badge-${task.status}" onchange="ListView.changeStatus('${task.id}', this.value)">
+            ${Object.entries(statusLabels).map(([val, label]) =>
+              `<option value="${val}" ${task.status === val ? 'selected' : ''}>${label}</option>`
+            ).join('')}
+          </select>
         </td>
         <td class="col-priority">
           <span class="badge badge-${task.priority}">${priorityLabels[task.priority] || task.priority}</span>

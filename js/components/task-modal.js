@@ -140,6 +140,7 @@ const TaskModal = {
       await TaskAPI.update(taskId, data);
       App.toast('Opgave opdateret', 'success');
     } else {
+      data.tab = App.state.tab;
       await TaskAPI.create(data);
       App.toast('Opgave oprettet', 'success');
     }

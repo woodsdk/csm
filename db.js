@@ -72,7 +72,8 @@ async function init() {
       calendar_event_id TEXT,
       parent_task_id    TEXT REFERENCES tasks(id) ON DELETE SET NULL,
       sort_order        INTEGER NOT NULL DEFAULT 0,
-      is_archived       BOOLEAN NOT NULL DEFAULT false
+      is_archived       BOOLEAN NOT NULL DEFAULT false,
+      tab               TEXT NOT NULL DEFAULT 'csm'
     );
 
     CREATE TABLE IF NOT EXISTS activity_log (
@@ -113,12 +114,21 @@ async function init() {
       created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
 
+    CREATE INDEX IF NOT EXISTS idx_tasks_tab ON tasks(tab);
     CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status);
     CREATE INDEX IF NOT EXISTS idx_tasks_assignee ON tasks(assignee_id);
     CREATE INDEX IF NOT EXISTS idx_tasks_deadline ON tasks(deadline);
     CREATE INDEX IF NOT EXISTS idx_activity_task ON activity_log(task_id);
     CREATE INDEX IF NOT EXISTS idx_shifts_date ON shifts(date);
     CREATE INDEX IF NOT EXISTS idx_bookings_date ON bookings(date);
+  `);
+
+  // Migration: add tab column if missing
+  await pool.query(`
+    DO $$ BEGIN
+      ALTER TABLE tasks ADD COLUMN tab TEXT NOT NULL DEFAULT 'csm';
+    EXCEPTION WHEN duplicate_column THEN NULL;
+    END $$;
   `);
 
   // Clean up old seed data
