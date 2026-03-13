@@ -89,10 +89,6 @@ const TaskModal = {
             <input class="input" id="task-deadline" type="date" value="${isEdit && task.deadline ? task.deadline : ''}">
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="task-tags">Tags (kommasepareret)</label>
-            <input class="input" id="task-tags" type="text" placeholder="plo, pilot, urgent..." value="${isEdit && task.tags ? task.tags.join(', ') : ''}">
-          </div>
         </div>
         <div class="modal-footer">
           ${isEdit ? '<button class="btn btn-danger" onclick="TaskModal.delete()">Slet</button>' : '<span></span>'}
@@ -121,9 +117,6 @@ const TaskModal = {
       return;
     }
 
-    const tagsRaw = document.getElementById('task-tags').value;
-    const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
-
     const data = {
       title,
       description: document.getElementById('task-desc').value.trim(),
@@ -131,8 +124,7 @@ const TaskModal = {
       priority: document.getElementById('task-priority').value,
       type: document.getElementById('task-type').value,
       assignee_id: document.getElementById('task-assignee').value || null,
-      deadline: document.getElementById('task-deadline').value || null,
-      tags
+      deadline: document.getElementById('task-deadline').value || null
     };
 
     const taskId = this._el.dataset.taskId;

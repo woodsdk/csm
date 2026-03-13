@@ -67,9 +67,19 @@ const ListView = {
         <table class="list-table">
           ${theadHtml}
           <tbody>
+            <tr class="quick-add-row">
+              <td colspan="6">
+                <div class="quick-add-cell">
+                  <svg class="quick-add-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  <input class="quick-add-input" type="text" placeholder="Skriv titel og tryk Enter..."
+                         onkeydown="if(event.key==='Enter')ListView.quickAdd(this.value)"
+                         id="quick-add-input">
+                </div>
+              </td>
+            </tr>
             ${activeTasks.length > 0
               ? activeTasks.map(t => this._renderRow(t, members, today, false)).join('')
-              : '<tr><td colspan="6" class="text-center text-tertiary" style="padding:var(--space-4)">Ingen aktive opgaver</td></tr>'
+              : ''
             }
           </tbody>
         </table>
@@ -83,9 +93,56 @@ const ListView = {
     App.render();
   },
 
-  async changeStatus(taskId, newStatus) {
-    await TaskAPI.update(taskId, { status: newStatus });
+  async quickAdd(title) {
+    title = title.trim();
+    if (!title) return;
+    await TaskAPI.create({ title, tab: App.state.tab });
+    await App.render();
+    const input = document.getElementById('quick-add-input');
+    if (input) input.focus();
+  },
+
+  async inlineUpdate(taskId, field, value) {
+    await TaskAPI.update(taskId, { [field]: value || null });
     App.render();
+  },
+
+  async openDesc(taskId) {
+    const task = await TaskAPI.get(taskId);
+    if (!task) return;
+    const overlay = document.getElementById('task-modal');
+    overlay.innerHTML = `
+      <div class="modal-panel modal-desc">
+        <div class="modal-header">
+          <h3>${this._esc(task.title)}</h3>
+          <button class="btn-icon" onclick="ListView.closeDesc()" aria-label="Luk">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <textarea class="textarea" id="desc-textarea" rows="8" placeholder="Skriv beskrivelse...">${this._esc(task.description || '')}</textarea>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" onclick="ListView.closeDesc()">Annuller</button>
+          <button class="btn btn-primary" onclick="ListView.saveDesc('${taskId}')">Gem</button>
+        </div>
+      </div>
+    `;
+    overlay.classList.add('open');
+    document.getElementById('desc-textarea').focus();
+  },
+
+  async saveDesc(taskId) {
+    const desc = document.getElementById('desc-textarea').value;
+    await TaskAPI.update(taskId, { description: desc });
+    this.closeDesc();
+    App.render();
+  },
+
+  closeDesc() {
+    const overlay = document.getElementById('task-modal');
+    overlay.classList.remove('open');
+    overlay.innerHTML = '';
   },
 
   _renderRow(task, members, today, isDone = false) {
@@ -95,31 +152,48 @@ const ListView = {
     const priorityLabels = { low: 'Low', medium: 'Medium', high: 'High', critical: 'Critical' };
     const typeLabels = { onboarding: 'Onboarding', support: 'Support', bug: 'Bug', 'feature-request': 'Feature', 'cs-followup': 'CS Follow-up', internal: 'Internal' };
 
+    const hasDesc = task.description && task.description.trim().length > 0;
+
     return `
-      <tr class="task-row ${isDone ? 'task-row-done' : ''}" onclick="TaskModal.open('${task.id}')">
+      <tr class="task-row ${isDone ? 'task-row-done' : ''}">
         <td class="col-title">
           <div class="task-title-cell">
             <span class="priority-dot priority-dot-${task.priority}"></span>
             <span class="truncate">${this._esc(task.title)}</span>
+            <button class="btn-desc ${hasDesc ? 'has-content' : ''}" onclick="event.stopPropagation(); ListView.openDesc('${task.id}')" title="${hasDesc ? 'Læs/rediger beskrivelse' : 'Tilføj beskrivelse'}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </button>
           </div>
         </td>
         <td class="col-status" onclick="event.stopPropagation()">
-          <select class="inline-status-select badge badge-${task.status}" onchange="ListView.changeStatus('${task.id}', this.value)">
+          <select class="inline-select badge badge-${task.status}" onchange="ListView.inlineUpdate('${task.id}', 'status', this.value)">
             ${Object.entries(statusLabels).map(([val, label]) =>
               `<option value="${val}" ${task.status === val ? 'selected' : ''}>${label}</option>`
             ).join('')}
           </select>
         </td>
-        <td class="col-priority">
-          <span class="badge badge-${task.priority}">${priorityLabels[task.priority] || task.priority}</span>
+        <td class="col-priority" onclick="event.stopPropagation()">
+          <select class="inline-select badge badge-${task.priority}" onchange="ListView.inlineUpdate('${task.id}', 'priority', this.value)">
+            ${Object.entries(priorityLabels).map(([val, label]) =>
+              `<option value="${val}" ${task.priority === val ? 'selected' : ''}>${label}</option>`
+            ).join('')}
+          </select>
         </td>
-        <td class="col-assignee">
-          ${member
-            ? `<span class="assignee-cell"><span class="avatar avatar-sm" style="background:${member.avatar_color}">${member.name[0]}</span> <span class="text-sm">${member.name}</span></span>`
-            : '<span class="text-tertiary text-sm">-</span>'
-          }
+        <td class="col-assignee" onclick="event.stopPropagation()">
+          <select class="inline-select" onchange="ListView.inlineUpdate('${task.id}', 'assignee_id', this.value)">
+            <option value="">-</option>
+            ${members.map(m =>
+              `<option value="${m.id}" ${task.assignee_id === m.id ? 'selected' : ''}>${m.name}</option>`
+            ).join('')}
+          </select>
         </td>
-        <td class="col-type"><span class="tag">${typeLabels[task.type] || task.type}</span></td>
+        <td class="col-type" onclick="event.stopPropagation()">
+          <select class="inline-select inline-select-plain" onchange="ListView.inlineUpdate('${task.id}', 'type', this.value)">
+            ${Object.entries(typeLabels).map(([val, label]) =>
+              `<option value="${val}" ${task.type === val ? 'selected' : ''}>${label}</option>`
+            ).join('')}
+          </select>
+        </td>
         <td class="col-deadline ${isOverdue ? 'text-overdue' : ''}">
           ${task.deadline ? this._formatDate(task.deadline) + (isOverdue ? ' !' : '') : '<span class="text-tertiary">-</span>'}
         </td>

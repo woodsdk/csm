@@ -369,8 +369,40 @@
 .col-customer { max-width: 160px; }
 .col-deadline { width: 90px; white-space: nowrap; }
 
-/* ── Inline Status Select ── */
-.inline-status-select {
+/* ── Quick Add Row ── */
+.quick-add-row td {
+  padding: var(--space-1) var(--space-3) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+.quick-add-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.quick-add-icon {
+  color: var(--navy-400);
+  flex-shrink: 0;
+}
+
+.quick-add-input {
+  border: none;
+  outline: none;
+  background: none;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  width: 100%;
+  padding: var(--space-1) 0;
+}
+
+.quick-add-input::placeholder {
+  color: var(--navy-400);
+}
+
+/* ── Inline Editable Select ── */
+.inline-select {
   appearance: none;
   -webkit-appearance: none;
   border: none;
@@ -380,19 +412,53 @@
   font-weight: 600;
   padding: 3px 20px 3px 8px;
   border-radius: var(--radius-full);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 4px center;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   transition: opacity var(--transition-fast);
 }
 
-.inline-status-select:hover {
-  opacity: 0.8;
+.inline-select:hover { opacity: 0.8; }
+.inline-select:focus { outline: 2px solid var(--navy-500); outline-offset: 1px; }
+
+.inline-select-plain {
+  background-color: transparent;
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
-.inline-status-select:focus {
-  outline: 2px solid var(--navy-500);
-  outline-offset: 1px;
+/* ── Description Button ── */
+.btn-desc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--navy-400);
+  padding: 2px;
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  transition: opacity var(--transition-fast), color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.btn-desc.has-content {
+  opacity: 0.5;
+  color: var(--navy-500);
+}
+
+.task-row:hover .btn-desc {
+  opacity: 0.7;
+}
+
+.btn-desc:hover {
+  opacity: 1 !important;
+  color: var(--navy-600);
+}
+
+.modal-desc {
+  max-width: 560px;
 }
 
 /* ── Done Group (collapsed) ── */
