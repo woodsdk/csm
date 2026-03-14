@@ -270,14 +270,15 @@ def create_demo_booking(data: DemoBookingCreate):
     desc_parts.append(f"Meet: {meet_link}")
     task_desc = "\n".join(desc_parts)
 
-    # Auto-create internal task
+    # Auto-create internal task (with assigned demo-giver as assignee)
     task_id = gen_id("t_")
+    assigned_id = assigned["id"] if assigned else None
     execute(
         """INSERT INTO tasks (id, title, description, status, priority, type, tags, deadline,
-           created_at, updated_at, sort_order, is_archived, tab, calendar_event_id)
+           created_at, updated_at, sort_order, is_archived, tab, calendar_event_id, assignee_id)
            VALUES (%s, %s, %s, 'todo', 'high', 'onboarding', '["demo"]', %s, NOW(), NOW(),
-           (SELECT COALESCE(MAX(sort_order), -1) + 1 FROM tasks), false, 'csm', %s)""",
-        (task_id, task_title, task_desc, data.date, calendar_event_id),
+           (SELECT COALESCE(MAX(sort_order), -1) + 1 FROM tasks), false, 'csm', %s, %s)""",
+        (task_id, task_title, task_desc, data.date, calendar_event_id, assigned_id),
     )
 
     # Create demo booking

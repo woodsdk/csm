@@ -250,8 +250,75 @@ export interface TicketMessage {
 }
 
 export interface AppState {
-  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training' | 'helpdesk' | 'helpdesk-detail' | 'calendar';
+  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training' | 'helpdesk' | 'helpdesk-detail' | 'calendar' | 'onboarding';
   tab: string;
   view: 'list' | 'kanban' | 'calendar';
   filters: TaskFilters;
+}
+
+/* ── Onboarding & Retention ── */
+
+export interface OnboardingUser {
+  id: string;
+  name: string;
+  email: string;
+  clinic_name: string;
+  speciale: string;
+  status: string;
+  plan: string;
+  mrr: number;
+  signup_at: string;
+  first_consultation_at: string | null;
+  last_active_at: string | null;
+  churned_at: string | null;
+  churn_reason: string | null;
+  health_score: number;
+  days_since_signup: number;
+  consultation_count: number;
+  avg_rating: number | null;
+  review_count: number;
+  latest_issue: string | null;
+}
+
+export interface OverviewData {
+  kpis: {
+    total_users: number;
+    active_users: number;
+    inactive_users: number;
+    churned_users: number;
+    onboarding_users: number;
+    new_this_period: number;
+    churned_this_period: number;
+    total_clinics: number;
+    avg_time_to_value: number;
+    mrr_at_risk: number;
+    net_retention_rate: number;
+  };
+  funnel: Array<{ stage: string; label: string; count: number }>;
+  daily_signups: Array<{ date: string; count: number }>;
+  daily_consultations: Array<{ date: string; count: number }>;
+}
+
+export interface FeedbackData {
+  avg_rating: number;
+  review_count: number;
+  nps_score: number;
+  nps_breakdown: { promoters: number; passives: number; detractors: number };
+  rating_distribution: Array<{ bucket: string; count: number }>;
+  sentiments: Array<{ sentiment: string; count: number }>;
+  top_themes: Array<{ theme: string; count: number }>;
+  recent_reviews: Array<{
+    id: string; user_name: string; clinic_name: string;
+    rating: number; comment: string; sentiment: string; created_at: string;
+  }>;
+}
+
+export interface ChurnData {
+  churn_rate: number;
+  avg_lifetime_days: number;
+  at_risk_count: number;
+  at_risk_mrr: number;
+  churn_reasons: Array<{ reason: string; label: string; count: number }>;
+  churn_timing: Array<{ week: string; count: number }>;
+  at_risk_users: Array<OnboardingUser & { days_inactive: number }>;
 }

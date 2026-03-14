@@ -8,21 +8,31 @@ from openai import OpenAI
 logger = logging.getLogger(__name__)
 
 _client = None
+_client_checked = False
 
 
 def _get_client() -> OpenAI | None:
     """Lazy-init OpenAI client."""
-    global _client
+    global _client, _client_checked
     if _client is not None:
         return _client
+    if _client_checked:
+        return None
 
     api_key = os.environ.get("OPENAI_API_KEY", "")
+    _client_checked = True
     if not api_key:
         logger.warning("OPENAI_API_KEY not set — AI features disabled")
         return None
 
+    logger.info(f"OpenAI client initialized (key: {api_key[:8]}...)")
     _client = OpenAI(api_key=api_key)
     return _client
+
+
+def is_configured() -> bool:
+    """Check if OpenAI API key is configured."""
+    return bool(os.environ.get("OPENAI_API_KEY", ""))
 
 
 def generate_reply_suggestion(

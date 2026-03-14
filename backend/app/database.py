@@ -411,4 +411,389 @@ def init():
             sort_order = EXCLUDED.sort_order
     """)
 
+    # ── Onboarding & Retention tables ──
+    execute("""
+        CREATE TABLE IF NOT EXISTS platform_users (
+            id                    TEXT PRIMARY KEY,
+            name                  TEXT NOT NULL,
+            email                 TEXT NOT NULL,
+            phone                 TEXT DEFAULT '',
+            clinic_name           TEXT NOT NULL,
+            speciale              TEXT DEFAULT '',
+            plan                  TEXT DEFAULT 'standard',
+            mrr                   NUMERIC(10,2) DEFAULT 0,
+            status                TEXT DEFAULT 'active',
+            signup_at             TIMESTAMPTZ DEFAULT NOW(),
+            first_consultation_at TIMESTAMPTZ,
+            last_active_at        TIMESTAMPTZ,
+            churned_at            TIMESTAMPTZ,
+            churn_reason          TEXT,
+            health_score          INTEGER DEFAULT 50,
+            created_at            TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_pu_status ON platform_users(status);
+        CREATE INDEX IF NOT EXISTS idx_pu_signup ON platform_users(signup_at);
+
+        CREATE TABLE IF NOT EXISTS platform_consultations (
+            id                    TEXT PRIMARY KEY,
+            user_id               TEXT NOT NULL REFERENCES platform_users(id) ON DELETE CASCADE,
+            consultation_date     DATE NOT NULL,
+            duration_minutes      INTEGER DEFAULT 15,
+            rating                NUMERIC(3,1),
+            created_at            TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_pc_user ON platform_consultations(user_id);
+        CREATE INDEX IF NOT EXISTS idx_pc_date ON platform_consultations(consultation_date);
+
+        CREATE TABLE IF NOT EXISTS platform_reviews (
+            id                    TEXT PRIMARY KEY,
+            user_id               TEXT NOT NULL REFERENCES platform_users(id) ON DELETE CASCADE,
+            rating                NUMERIC(3,1) NOT NULL,
+            comment               TEXT DEFAULT '',
+            sentiment             TEXT DEFAULT 'neutral',
+            created_at            TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_pr_user ON platform_reviews(user_id);
+        CREATE INDEX IF NOT EXISTS idx_pr_created ON platform_reviews(created_at);
+
+        CREATE TABLE IF NOT EXISTS platform_events (
+            id                    TEXT PRIMARY KEY,
+            user_id               TEXT NOT NULL REFERENCES platform_users(id) ON DELETE CASCADE,
+            event_type            TEXT NOT NULL,
+            created_at            TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_pe_user ON platform_events(user_id);
+        CREATE INDEX IF NOT EXISTS idx_pe_type ON platform_events(event_type);
+    """)
+
+    _seed_platform_data()
+
     print("Database initialized")
+
+
+def _seed_platform_data():
+    """Seed 50 fictitious platform users with consultations, reviews & events."""
+    import random
+    from datetime import datetime, timedelta
+
+    # Check if already seeded
+    existing = query("SELECT COUNT(*) as cnt FROM platform_users")
+    if existing and existing[0]["cnt"] > 0:
+        return
+
+    random.seed(42)  # Reproducible
+    now = datetime.now()
+
+    clinics = [
+        ("Sundhedshuset Nørrebro", "Almen praksis"),
+        ("Klinik Vanløse", "Almen praksis"),
+        ("Frederiksberg Lægecenter", "Almen praksis"),
+        ("Lægerne i Hellerup", "Almen praksis"),
+        ("Praksis Østerbro", "Almen praksis"),
+        ("SundKlinik Amager", "Fysioterapi"),
+        ("Ballerup Sundhedscenter", "Fysioterapi"),
+        ("Roskilde Lægecenter", "Almen praksis"),
+        ("Greve Lægecenter", "Almen praksis"),
+        ("Ringsted Klinik", "Kiropraktik"),
+        ("Sundhedsklinikken Aarhus", "Almen praksis"),
+        ("Holbæk Sundhedshus", "Hudlæge"),
+        ("Taastrup Praksis", "Almen praksis"),
+        ("Glostrup Lægepraksis", "Ørelæge"),
+        ("Slagelse Praksis", "Fysioterapi"),
+        ("Klinik i Brønshøj", "Almen praksis"),
+        ("Regionsklinikken Hillerød", "Almen praksis"),
+        ("Køge Lægepraksis", "Almen praksis"),
+    ]
+
+    first_names = [
+        "Oliver", "Emma", "Mathilde", "Jonas", "Astrid", "Nanna", "Thomas",
+        "Louise", "Rasmus", "Sara", "Victor", "Freja", "Line", "Nikolaj",
+        "Katrine", "Alexander", "Anne", "Henrik", "Birgitte", "Erik",
+        "Camilla", "Mads", "Sofie", "Christian", "Ida", "Peter", "Laura",
+        "Jens", "Maria", "Mikkel", "Cecilie", "Anders", "Lærke", "Frederik",
+        "Nanna", "Søren", "Hanne", "Kasper", "Julie", "Oscar", "Clara",
+        "Magnus", "Amalie", "Simon", "Thea", "Daniel", "Maja", "Lars",
+        "Anna", "Morten",
+    ]
+
+    last_names = [
+        "Jensen", "Nielsen", "Hansen", "Andersen", "Pedersen", "Christensen",
+        "Larsen", "Sørensen", "Rasmussen", "Poulsen", "Johansen", "Madsen",
+        "Kristensen", "Olsen", "Thomsen", "Jørgensen", "Mortensen", "Gram",
+        "Frost", "Hjort", "Dahl", "Bech", "Friis",
+    ]
+
+    danish_comments_positive = [
+        "Rigtig godt system, nemt at bruge.",
+        "Fungerer perfekt med min USB-mikrofon.",
+        "Imponeret over hastigheden.",
+        "Sparer markant tid i hverdagen.",
+        "Super nemt at komme i gang.",
+        "God præcision på medicinsk terminologi.",
+        "Rigtig godt. Kunne ønske bedre dialekthåndtering.",
+        "Vores personale er begejstrede.",
+        "Fantastisk support fra teamet.",
+    ]
+    danish_comments_neutral = [
+        "God præcision på medicinsk terminologi.",
+        "For komplekst at sætte op.",
+        "Transskription stopper midt i samtalen.",
+        "Transskriptionen misforstod medicinske termer.",
+        "Lydkvalitet/mikrofon ikke optimal.",
+        "Journalen fanger ikke alle detaljer.",
+        "Mangler bedre FMK-integration.",
+        "Savner skabeloner til journaler.",
+    ]
+    danish_comments_negative = [
+        "For komplekst at sætte op.",
+        "Transskription stopper midt i samtalen.",
+        "Lydkvaliteten var dårlig via Bluetooth.",
+        "Mikrofon bliver ikke genkendt korrekt.",
+    ]
+
+    churn_reasons = ["technical", "price", "complexity", "competitor", "no_need"]
+    churn_reason_labels = {
+        "technical": "Tekniske problemer (lyd/mikrofon)",
+        "price": "For dyrt / manglende værdi",
+        "complexity": "For komplekst / manglende tid",
+        "competitor": "Skiftet til konkurrent",
+        "no_need": "Ukendt / ingen feedback",
+    }
+
+    users = []
+    user_ids = []
+
+    # Generate 50 users in segments
+    # Segment 1: 20 active healthy users (signup 30-180 days ago)
+    for i in range(20):
+        uid = f"pu_{i+1:03d}"
+        user_ids.append(uid)
+        days_ago = random.randint(30, 180)
+        signup = now - timedelta(days=days_ago)
+        first_consult = signup + timedelta(days=random.randint(1, 7))
+        last_active = now - timedelta(days=random.randint(0, 5))
+        clinic = random.choice(clinics)
+        name = f"{first_names[i]} {random.choice(last_names)}"
+        email = f"{first_names[i].lower()}.{random.choice(last_names).lower()}@{random.choice(['mail.dk','praksis.dk','sundhed.dk','regionh.dk','klinik.dk','laeger.dk'])}"
+        health = random.randint(65, 100)
+        mrr = random.choice([499, 499, 799, 799, 1299, 1299, 1999])
+        plan = "standard" if mrr < 1000 else "premium" if mrr > 1500 else "professional"
+
+        users.append((uid, name, email, "", clinic[0], clinic[1], plan, mrr, "active",
+                       signup.isoformat(), first_consult.isoformat(), last_active.isoformat(),
+                       None, None, health))
+
+    # Segment 2: 10 new users (signup 1-14 days ago)
+    for i in range(20, 30):
+        uid = f"pu_{i+1:03d}"
+        user_ids.append(uid)
+        days_ago = random.randint(0, 14)
+        signup = now - timedelta(days=days_ago)
+        first_consult = (signup + timedelta(days=random.randint(1, 3))) if days_ago > 3 and random.random() > 0.4 else None
+        last_active = now - timedelta(days=random.randint(0, 2)) if first_consult else signup
+        clinic = random.choice(clinics)
+        name = f"{first_names[i]} {random.choice(last_names)}"
+        email = f"{first_names[i].lower()}.{random.choice(last_names).lower()}@{random.choice(['mail.dk','praksis.dk','sundhed.dk','regionh.dk','klinik.dk','laeger.dk'])}"
+        health = random.randint(40, 70)
+        mrr = random.choice([499, 499, 799])
+
+        users.append((uid, name, email, "", clinic[0], clinic[1], "standard", mrr, "onboarding",
+                       signup.isoformat(),
+                       first_consult.isoformat() if first_consult else None,
+                       last_active.isoformat(),
+                       None, None, health))
+
+    # Segment 3: 10 inactive / at-risk (signup 30-90 days ago, last active 14-45 days ago)
+    for i in range(30, 40):
+        uid = f"pu_{i+1:03d}"
+        user_ids.append(uid)
+        days_ago = random.randint(30, 90)
+        signup = now - timedelta(days=days_ago)
+        first_consult = signup + timedelta(days=random.randint(2, 10))
+        last_active = now - timedelta(days=random.randint(14, 45))
+        clinic = random.choice(clinics)
+        name = f"{first_names[i]} {random.choice(last_names)}"
+        email = f"{first_names[i].lower()}.{random.choice(last_names).lower()}@{random.choice(['mail.dk','praksis.dk','sundhed.dk','regionh.dk','klinik.dk','laeger.dk'])}"
+        health = random.randint(15, 40)
+        mrr = random.choice([499, 499, 799, 799])
+
+        users.append((uid, name, email, "", clinic[0], clinic[1], "standard", mrr, "inactive",
+                       signup.isoformat(), first_consult.isoformat(), last_active.isoformat(),
+                       None, None, health))
+
+    # Segment 4: 7 churned (signup 60-180 days ago)
+    for i in range(40, 47):
+        uid = f"pu_{i+1:03d}"
+        user_ids.append(uid)
+        days_ago = random.randint(60, 180)
+        signup = now - timedelta(days=days_ago)
+        churn_after = random.randint(7, 60)
+        churned_at = signup + timedelta(days=churn_after)
+        first_consult = signup + timedelta(days=random.randint(1, 5)) if random.random() > 0.3 else None
+        last_active = churned_at - timedelta(days=random.randint(1, 7))
+        clinic = random.choice(clinics)
+        name = f"{first_names[i]} {random.choice(last_names)}"
+        email = f"{first_names[i].lower()}.{random.choice(last_names).lower()}@{random.choice(['mail.dk','praksis.dk','sundhed.dk','regionh.dk','klinik.dk','laeger.dk'])}"
+        reason = random.choice(churn_reasons)
+
+        users.append((uid, name, email, "", clinic[0], clinic[1], "standard", 0, "churned",
+                       signup.isoformat(),
+                       first_consult.isoformat() if first_consult else None,
+                       last_active.isoformat(),
+                       churned_at.isoformat(), reason, 0))
+
+    # Segment 5: 3 stuck in onboarding (signup 7-21 days ago, no consultations)
+    for i in range(47, 50):
+        uid = f"pu_{i+1:03d}"
+        user_ids.append(uid)
+        days_ago = random.randint(7, 21)
+        signup = now - timedelta(days=days_ago)
+        clinic = random.choice(clinics)
+        name = f"{first_names[i]} {random.choice(last_names)}"
+        email = f"{first_names[i].lower()}.{random.choice(last_names).lower()}@{random.choice(['mail.dk','praksis.dk','klinik.dk'])}"
+        health = random.randint(10, 30)
+
+        users.append((uid, name, email, "", clinic[0], clinic[1], "standard", 499, "onboarding",
+                       signup.isoformat(), None, signup.isoformat(),
+                       None, None, health))
+
+    # Insert users
+    for u in users:
+        execute(
+            """INSERT INTO platform_users (id, name, email, phone, clinic_name, speciale, plan, mrr, status,
+               signup_at, first_consultation_at, last_active_at, churned_at, churn_reason, health_score)
+               VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+               ON CONFLICT (id) DO NOTHING""",
+            u,
+        )
+
+    # Generate consultations
+    consult_id = 1
+    for u in users:
+        uid, name, email, _, _, _, _, _, status, signup_str = u[:10]
+        first_consult_str = u[10]
+        if not first_consult_str or status == "churned":
+            # Churned users: 0-3 consultations
+            if status == "churned" and first_consult_str:
+                n = random.randint(0, 3)
+                fc = datetime.fromisoformat(first_consult_str)
+                for j in range(n):
+                    cdate = fc + timedelta(days=j * random.randint(2, 7))
+                    rating = round(random.uniform(3.0, 8.0), 1)
+                    execute(
+                        """INSERT INTO platform_consultations (id, user_id, consultation_date, duration_minutes, rating)
+                           VALUES (%s,%s,%s,%s,%s) ON CONFLICT (id) DO NOTHING""",
+                        (f"pc_{consult_id:04d}", uid, cdate.strftime("%Y-%m-%d"), random.randint(10, 30), rating),
+                    )
+                    consult_id += 1
+            continue
+        if status == "onboarding":
+            # New users: 0-2 consultations
+            n = random.randint(0, 2)
+        else:
+            # Active users: 3-15 consultations
+            n = random.randint(3, 15)
+        fc = datetime.fromisoformat(first_consult_str)
+        for j in range(n):
+            cdate = fc + timedelta(days=j * random.randint(3, 14))
+            if cdate > now:
+                break
+            rating = round(random.uniform(5.0, 10.0), 1)
+            execute(
+                """INSERT INTO platform_consultations (id, user_id, consultation_date, duration_minutes, rating)
+                   VALUES (%s,%s,%s,%s,%s) ON CONFLICT (id) DO NOTHING""",
+                (f"pc_{consult_id:04d}", uid, cdate.strftime("%Y-%m-%d"), random.randint(10, 30), rating),
+            )
+            consult_id += 1
+
+    # Generate reviews (from active + onboarding users)
+    review_id = 1
+    for u in users:
+        uid, name, email, _, _, _, _, _, status, signup_str = u[:10]
+        if status in ("churned",):
+            # Some churned users leave bad reviews
+            if random.random() > 0.5:
+                rating = round(random.uniform(2.0, 5.0), 1)
+                comment = random.choice(danish_comments_negative)
+                sentiment = "kritisk"
+                days_offset = random.randint(10, 40)
+                review_date = datetime.fromisoformat(signup_str) + timedelta(days=days_offset)
+                execute(
+                    """INSERT INTO platform_reviews (id, user_id, rating, comment, sentiment, created_at)
+                       VALUES (%s,%s,%s,%s,%s,%s) ON CONFLICT (id) DO NOTHING""",
+                    (f"pr_{review_id:04d}", uid, rating, comment, sentiment, review_date.isoformat()),
+                )
+                review_id += 1
+            continue
+        if status == "inactive":
+            if random.random() > 0.6:
+                rating = round(random.uniform(4.0, 7.0), 1)
+                comment = random.choice(danish_comments_neutral)
+                sentiment = "neutral"
+                days_offset = random.randint(14, 40)
+                review_date = datetime.fromisoformat(signup_str) + timedelta(days=days_offset)
+                execute(
+                    """INSERT INTO platform_reviews (id, user_id, rating, comment, sentiment, created_at)
+                       VALUES (%s,%s,%s,%s,%s,%s) ON CONFLICT (id) DO NOTHING""",
+                    (f"pr_{review_id:04d}", uid, rating, comment, sentiment, review_date.isoformat()),
+                )
+                review_id += 1
+            continue
+        # Active users: 1-3 reviews
+        n_reviews = random.randint(1, 3) if status == "active" else random.randint(0, 1)
+        for j in range(n_reviews):
+            rating = round(random.uniform(6.0, 10.0), 1)
+            if rating >= 8.0:
+                comment = random.choice(danish_comments_positive)
+                sentiment = "positiv"
+            else:
+                comment = random.choice(danish_comments_neutral)
+                sentiment = "neutral"
+            days_offset = random.randint(7, 60)
+            review_date = datetime.fromisoformat(signup_str) + timedelta(days=days_offset)
+            if review_date > now:
+                review_date = now - timedelta(days=random.randint(1, 14))
+            execute(
+                """INSERT INTO platform_reviews (id, user_id, rating, comment, sentiment, created_at)
+                   VALUES (%s,%s,%s,%s,%s,%s) ON CONFLICT (id) DO NOTHING""",
+                (f"pr_{review_id:04d}", uid, rating, comment, sentiment, review_date.isoformat()),
+            )
+            review_id += 1
+
+    # Generate onboarding funnel events
+    event_id = 1
+    funnel_stages = ["signup", "mitid_verified", "email_verified", "speciale_set", "clinic_created", "first_consultation", "second_consultation"]
+    for u in users:
+        uid, name, _, _, _, _, _, _, status, signup_str = u[:10]
+        first_consult_str = u[10]
+        signup = datetime.fromisoformat(signup_str)
+
+        # Everyone has signup
+        execute(
+            """INSERT INTO platform_events (id, user_id, event_type, created_at)
+               VALUES (%s,%s,%s,%s) ON CONFLICT (id) DO NOTHING""",
+            (f"pe_{event_id:05d}", uid, "signup", signup.isoformat()),
+        )
+        event_id += 1
+
+        # Determine how far in funnel
+        if status == "active":
+            stages_reached = len(funnel_stages)  # All stages
+        elif status == "churned":
+            stages_reached = random.randint(2, 5)
+        elif status == "inactive":
+            stages_reached = random.randint(3, 6)
+        elif status == "onboarding" and first_consult_str:
+            stages_reached = random.randint(4, 6)
+        else:
+            stages_reached = random.randint(1, 3)  # Stuck
+
+        ts = signup
+        for si, stage in enumerate(funnel_stages[1:stages_reached], 1):
+            ts = ts + timedelta(hours=random.randint(1, 48))
+            execute(
+                """INSERT INTO platform_events (id, user_id, event_type, created_at)
+                   VALUES (%s,%s,%s,%s) ON CONFLICT (id) DO NOTHING""",
+                (f"pe_{event_id:05d}", uid, stage, ts.isoformat()),
+            )
+            event_id += 1

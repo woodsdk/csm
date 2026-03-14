@@ -19,6 +19,7 @@ import { TrainingList } from './components/training-list';
 import { FaqList } from './components/faq-list';
 import { HelpdeskList } from './components/helpdesk-list';
 import { HelpdeskDetail } from './components/helpdesk-detail';
+import { OnboardingDashboard } from './components/onboarding-dashboard';
 import { GoogleCal } from './google-calendar';
 import type { Task, AppState } from './types';
 
@@ -128,6 +129,8 @@ export const App = {
       await this._renderVagtplanPage(mainEl);
     } else if (this.state.page === 'calendar') {
       await this._renderCalendarPage(mainEl);
+    } else if (this.state.page === 'onboarding') {
+      await this._renderOnboardingPage(mainEl);
     } else if (this.state.view === 'calendar') {
       await this._renderCalendarPage(mainEl);
     } else {
@@ -321,6 +324,23 @@ export const App = {
       </div>
       <div class="main-content">
         ${calendarHTML}
+      </div>
+    `;
+  },
+
+  async _renderOnboardingPage(container: HTMLElement): Promise<void> {
+    const contentHTML = await OnboardingDashboard.render();
+    container.innerHTML = `
+      <div class="main-header">
+        <div class="main-header-left">
+          <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <h2>Onboarding & Retention</h2>
+        </div>
+      </div>
+      <div class="main-content">
+        ${contentHTML}
       </div>
     `;
   },

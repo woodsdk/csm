@@ -2,7 +2,7 @@
    SynergyHub API Facade — Typed fetch wrappers
    ═══════════════════════════════════════════ */
 
-import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot, DemoInfo, DemoJoinCreate, DemoJoinResult, TrainingItem, FaqItem, Ticket, TicketMessage } from './types';
+import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot, DemoInfo, DemoJoinCreate, DemoJoinResult, TrainingItem, FaqItem, Ticket, TicketMessage, OverviewData, OnboardingUser, FeedbackData, ChurnData } from './types';
 
 const API_BASE = '/api';
 
@@ -409,6 +409,36 @@ export const HelpdeskAPI = {
   },
 };
 
+export const OnboardingAPI = {
+  async getOverview(period = 30): Promise<OverviewData> {
+    const res = await fetch(`${API_BASE}/onboarding/overview?period=${period}`);
+    if (!res.ok) throw new Error('Failed to fetch overview');
+    return res.json();
+  },
+
+  async getUsers(filters: { status?: string; search?: string } = {}): Promise<OnboardingUser[]> {
+    const params = new URLSearchParams();
+    if (filters.status) params.set('status', filters.status);
+    if (filters.search) params.set('search', filters.search);
+    const qs = params.toString();
+    const res = await fetch(`${API_BASE}/onboarding/users${qs ? '?' + qs : ''}`);
+    if (!res.ok) throw new Error('Failed to fetch users');
+    return res.json();
+  },
+
+  async getFeedback(period = 30): Promise<FeedbackData> {
+    const res = await fetch(`${API_BASE}/onboarding/feedback?period=${period}`);
+    if (!res.ok) throw new Error('Failed to fetch feedback');
+    return res.json();
+  },
+
+  async getChurn(period = 90): Promise<ChurnData> {
+    const res = await fetch(`${API_BASE}/onboarding/churn?period=${period}`);
+    if (!res.ok) throw new Error('Failed to fetch churn data');
+    return res.json();
+  },
+};
+
 // Expose globally for inline onclick handlers
 (window as any).TaskAPI = TaskAPI;
 (window as any).CustomerAPI = CustomerAPI;
@@ -418,3 +448,4 @@ export const HelpdeskAPI = {
 (window as any).TrainingAPI = TrainingAPI;
 (window as any).FaqAPI = FaqAPI;
 (window as any).HelpdeskAPI = HelpdeskAPI;
+(window as any).OnboardingAPI = OnboardingAPI;

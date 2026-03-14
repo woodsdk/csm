@@ -5,7 +5,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import Optional
 from ..database import query, execute, gen_id
-from ..openai_helper import generate_reply_suggestion
+from ..openai_helper import generate_reply_suggestion, is_configured as openai_configured
 
 router = APIRouter()
 
@@ -230,6 +230,8 @@ def ai_suggest_reply(ticket_id: str):
     )
 
     if suggestion is None:
-        return {"error": "AI er ikke tilgængelig. Tjek at OPENAI_API_KEY er konfigureret."}
+        if not openai_configured():
+            return {"error": "OPENAI_API_KEY er ikke sat i miljøvariablerne."}
+        return {"error": "AI kunne ikke generere et svar. Prøv igen."}
 
     return {"suggestion": suggestion}

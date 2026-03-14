@@ -346,11 +346,8 @@ export const ListView = {
 
     popup.innerHTML = `
       <textarea class="desc-popup-textarea" placeholder="Skriv beskrivelse..." id="desc-popup-ta"></textarea>
-      <div class="desc-popup-divider"></div>
-      <div class="desc-popup-checklist" id="desc-popup-checklist"></div>
-      <div class="desc-popup-add-item">
-        <input type="text" class="desc-popup-add-input" id="check-add-input" placeholder="Tilføj punkt..."
-               onkeydown="if(event.key==='Enter'){ListView._addCheckItem(this.value);this.value=''}">
+      <div class="desc-popup-footer">
+        <button class="btn btn-sm btn-primary desc-popup-save" onclick="ListView.saveDesc()">Tilføj beskrivelse</button>
       </div>
     `;
 
@@ -410,6 +407,13 @@ export const ListView = {
       description: ta.value,
       checklist: this._popupChecklist
     });
+  },
+
+  async saveDesc(): Promise<void> {
+    await this._savePopup();
+    const popup = document.getElementById('desc-popup');
+    if (popup) popup.remove();
+    (window as any).App.render();
   },
 
   _renderChecklist(): void {
