@@ -23,6 +23,7 @@ const App = {
   setTab(tab) {
     this.state.tab = tab;
     this.state.filters = { search: '', status: '', priority: '', type: '', assignee_id: '' };
+    this.closeMobileMenu();
     this.render();
   },
 
@@ -81,6 +82,9 @@ const App = {
     container.innerHTML = `
       <div class="main-header">
         <div class="main-header-left">
+          <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
           <h2>${this.tabs[this.state.tab].label}</h2>
           <span class="text-tertiary text-sm">${tasks.length} opgave${tasks.length !== 1 ? 'r' : ''}</span>
           <div class="status-counts">${this._statusCounts(tasks)}</div>
@@ -116,6 +120,9 @@ const App = {
     container.innerHTML = `
       <div class="main-header">
         <div class="main-header-left">
+          <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
           <h2>Kalender</h2>
           <span class="text-tertiary text-sm">Opgaver & events</span>
         </div>
@@ -145,6 +152,24 @@ const App = {
   setView(view) {
     this.state.view = view;
     this.render();
+  },
+
+  // ── Mobile Menu ──
+
+  toggleMobileMenu() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    if (!sidebar) return;
+    const isOpen = sidebar.classList.contains('open');
+    sidebar.classList.toggle('open', !isOpen);
+    if (overlay) overlay.classList.toggle('open', !isOpen);
+  },
+
+  closeMobileMenu() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    if (sidebar) sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('open');
   },
 
   // ── Keyboard Shortcuts Overlay ──
