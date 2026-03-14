@@ -20,6 +20,7 @@ import { FaqList } from './components/faq-list';
 import { HelpdeskList } from './components/helpdesk-list';
 import { HelpdeskDetail } from './components/helpdesk-detail';
 import { OnboardingDashboard } from './components/onboarding-dashboard';
+import { AskSynergyHub } from './components/ask-synergyhub';
 import { GoogleCal } from './google-calendar';
 import type { Task, AppState } from './types';
 
@@ -131,6 +132,8 @@ export const App = {
       await this._renderCalendarPage(mainEl);
     } else if (this.state.page === 'onboarding') {
       await this._renderOnboardingPage(mainEl);
+    } else if (this.state.page === 'ask-synergyhub') {
+      await this._renderAskPage(mainEl);
     } else if (this.state.view === 'calendar') {
       await this._renderCalendarPage(mainEl);
     } else {
@@ -340,6 +343,28 @@ export const App = {
         </div>
       </div>
       <div class="main-content">
+        ${contentHTML}
+      </div>
+    `;
+  },
+
+  async _renderAskPage(container: HTMLElement): Promise<void> {
+    const contentHTML = await AskSynergyHub.render();
+    container.innerHTML = `
+      <div class="main-header">
+        <div class="main-header-left">
+          <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <h2>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="vertical-align:-3px;margin-right:6px;opacity:0.7">
+              <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+            </svg>
+            Ask SynergyHub
+          </h2>
+        </div>
+      </div>
+      <div class="main-content ask-page-content">
         ${contentHTML}
       </div>
     `;

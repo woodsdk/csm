@@ -259,7 +259,7 @@ export interface TicketMessage {
 }
 
 export interface AppState {
-  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training' | 'helpdesk' | 'helpdesk-detail' | 'calendar' | 'onboarding';
+  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training' | 'helpdesk' | 'helpdesk-detail' | 'calendar' | 'onboarding' | 'ask-synergyhub';
   tab: string;
   view: 'list' | 'kanban' | 'calendar';
   filters: TaskFilters;

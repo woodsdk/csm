@@ -6,6 +6,7 @@ export const Sidebar = {
   async render(): Promise<string> {
     const app = (window as any).App;
     const isHelpdeskPage = app.state.page === 'helpdesk' || app.state.page === 'helpdesk-detail';
+    const isAskPage = app.state.page === 'ask-synergyhub';
     const isTaskPage = app.state.page === 'tasks';
     const isCalendarPage = app.state.page === 'calendar';
     const isOnboardingPage = app.state.page === 'onboarding';
@@ -27,6 +28,13 @@ export const Sidebar = {
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
             </svg>
             Helpdesk
+          </button>
+
+          <button class="sidebar-nav-item sidebar-ask-btn ${isAskPage ? 'active' : ''}" onclick="App.navigateTo('ask-synergyhub')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+            </svg>
+            Ask SynergyHub
           </button>
 
           ${Object.entries(app.tabs).map(([key, tab]: [string, any]) => `

@@ -455,6 +455,17 @@ export const OnboardingAPI = {
   },
 };
 
+export const AskAPI = {
+  async sendMessage(message: string, history: Array<{ role: string; content: string }>): Promise<{ response?: string; error?: string }> {
+    const res = await fetch(`${API_BASE}/ask`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, history }),
+    });
+    return res.json();
+  },
+};
+
 // Expose globally for inline onclick handlers
 (window as any).TaskAPI = TaskAPI;
 (window as any).CustomerAPI = CustomerAPI;
@@ -465,3 +476,4 @@ export const OnboardingAPI = {
 (window as any).FaqAPI = FaqAPI;
 (window as any).HelpdeskAPI = HelpdeskAPI;
 (window as any).OnboardingAPI = OnboardingAPI;
+(window as any).AskAPI = AskAPI;
