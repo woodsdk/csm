@@ -2,7 +2,7 @@
    SynergyHub API Facade — Typed fetch wrappers
    ═══════════════════════════════════════════ */
 
-import type { Task, TaskFilters, Customer, TeamMember } from './types';
+import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate } from './types';
 
 const API_BASE = '/api';
 
@@ -136,7 +136,37 @@ export const TeamAPI = {
   },
 };
 
+export const ShiftAPI = {
+  async getByDateRange(fromDate: string, toDate: string): Promise<Shift[]> {
+    const res = await fetch(`${API_BASE}/shifts?from_date=${encodeURIComponent(fromDate)}&to_date=${encodeURIComponent(toDate)}`);
+    if (!res.ok) throw new Error('Failed to fetch shifts');
+    return res.json();
+  },
+
+  async create(data: ShiftCreate): Promise<Shift> {
+    const res = await fetch(`${API_BASE}/shifts`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ detail: 'Failed to create shift' }));
+      throw new Error(err.detail || 'Failed to create shift');
+    }
+    return res.json();
+  },
+
+  async cancel(shiftId: string): Promise<Shift> {
+    const res = await fetch(`${API_BASE}/shifts/${encodeURIComponent(shiftId)}/cancel`, {
+      method: 'POST',
+    });
+    if (!res.ok) throw new Error('Failed to cancel shift');
+    return res.json();
+  },
+};
+
 // Expose globally for inline onclick handlers
 (window as any).TaskAPI = TaskAPI;
 (window as any).CustomerAPI = CustomerAPI;
 (window as any).TeamAPI = TeamAPI;
+(window as any).ShiftAPI = ShiftAPI;

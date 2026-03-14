@@ -11,11 +11,13 @@ import { CalendarView } from './components/calendar-view';
 import { TaskModal } from './components/task-modal';
 import { EventModal } from './components/event-modal';
 import { CalendarSettings } from './components/calendar-settings';
+import { ShiftSchedule } from './components/shift-schedule';
 import { GoogleCal } from './google-calendar';
 import type { Task, AppState } from './types';
 
 export const App = {
   state: {
+    page: 'tasks',
     tab: 'csm',
     view: 'list',
     filters: {
@@ -38,7 +40,18 @@ export const App = {
     },
   } as Record<string, { label: string; icon: string }>,
 
+  navigateTo(page: string, tab?: string): void {
+    this.state.page = page as AppState['page'];
+    if (tab) {
+      this.state.tab = tab;
+      this.state.filters = { search: '', status: '', priority: '', type: '', assignee_id: '' };
+    }
+    this.closeMobileMenu();
+    this.render();
+  },
+
   setTab(tab: string): void {
+    this.state.page = 'tasks';
     this.state.tab = tab;
     this.state.filters = { search: '', status: '', priority: '', type: '', assignee_id: '' };
     this.closeMobileMenu();
@@ -55,7 +68,7 @@ export const App = {
       const target = e.target as HTMLElement;
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT') return;
 
-      if (e.key === 'Escape') { this.hideShortcuts(); return; }
+      if (e.key === 'Escape') { ShiftSchedule.closeModal(); this.hideShortcuts(); return; }
       if (e.key === '?') { e.preventDefault(); this.toggleShortcuts(); return; }
       if (e.key === 'n' || e.key === 'N') { e.preventDefault(); TaskModal.open(); return; }
       if (e.key === '/') {
@@ -79,7 +92,9 @@ export const App = {
 
     sidebarEl.innerHTML = await Sidebar.render();
 
-    if (this.state.view === 'calendar') {
+    if (this.state.page === 'vagtplan') {
+      await this._renderVagtplanPage(mainEl);
+    } else if (this.state.view === 'calendar') {
       await this._renderCalendarPage(mainEl);
     } else {
       await this._renderTasksPage(mainEl);
@@ -109,6 +124,24 @@ export const App = {
       ${filtersHTML}
       <div class="main-content">
         ${contentHTML}
+      </div>
+    `;
+  },
+
+  async _renderVagtplanPage(container: HTMLElement): Promise<void> {
+    const scheduleHTML = await ShiftSchedule.render();
+
+    container.innerHTML = `
+      <div class="main-header">
+        <div class="main-header-left">
+          <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <h2>Vagtplan</h2>
+        </div>
+      </div>
+      <div class="main-content vagtplan-content">
+        ${scheduleHTML}
       </div>
     `;
   },

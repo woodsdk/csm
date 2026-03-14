@@ -101,7 +101,35 @@ export interface GoogleCalendarEvent {
   color: string | null;
 }
 
+export interface Shift {
+  id: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  staff_name: string;
+  staff_email: string;
+  staff_phone: string;
+  status: 'confirmed' | 'cancelled';
+  created_at: string;
+}
+
+export interface ShiftSlot {
+  start: string;
+  end: string;
+  label: string;
+}
+
+export interface ShiftCreate {
+  date: string;
+  start_time: string;
+  end_time: string;
+  staff_name: string;
+  staff_email: string;
+  staff_phone?: string;
+}
+
 export interface AppState {
+  page: 'tasks' | 'vagtplan';
   tab: string;
   view: 'list' | 'kanban' | 'calendar';
   filters: TaskFilters;
