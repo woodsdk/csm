@@ -89,10 +89,16 @@ export const HelpdeskDetail = {
                 <label class="hd-internal-check">
                   <input type="checkbox" id="hd-reply-internal"> Intern note
                 </label>
-                <button class="btn btn-primary btn-sm" onclick="HelpdeskDetail.sendReply('${t.id}')">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                  Send
-                </button>
+                <div class="hd-reply-buttons">
+                  <button class="btn btn-sm hd-ai-btn" id="hd-ai-btn" onclick="HelpdeskDetail.aiSuggest('${t.id}')">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v1a3 3 0 0 1 3 3v1a2 2 0 0 1-2 2h-1l1 5h-3l-1-5h-2l-1 5H7l1-5H7a2 2 0 0 1-2-2v-1a3 3 0 0 1 3-3V6a4 4 0 0 1 4-4z"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="9" r="1"/></svg>
+                    Generér svar
+                  </button>
+                  <button class="btn btn-primary btn-sm" onclick="HelpdeskDetail.sendReply('${t.id}')">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    Send
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -151,6 +157,33 @@ export const HelpdeskDetail = {
       (window as any).App.toast('Ticket opdateret', 'success');
     } catch {
       (window as any).App.toast('Kunne ikke opdatere', 'error');
+    }
+  },
+
+  /* ── AI suggest ── */
+  async aiSuggest(ticketId: string): Promise<void> {
+    const btn = document.getElementById('hd-ai-btn') as HTMLButtonElement | null;
+    const bodyEl = document.getElementById('hd-reply-body') as HTMLTextAreaElement | null;
+    if (!btn || !bodyEl) return;
+
+    const origText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<svg class="hd-ai-spinner" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Genererer...`;
+
+    try {
+      const result = await HelpdeskAPI.aiSuggest(ticketId);
+      if (result.suggestion) {
+        bodyEl.value = result.suggestion;
+        bodyEl.focus();
+        (window as any).App.toast('AI-forslag genereret', 'success');
+      } else {
+        (window as any).App.toast(result.error || 'Kunne ikke generere forslag', 'error');
+      }
+    } catch {
+      (window as any).App.toast('AI-forslag fejlede — tjek API-nøgle', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = origText;
     }
   },
 

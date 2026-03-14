@@ -399,6 +399,14 @@ export const HelpdeskAPI = {
     if (!res.ok) throw new Error('Failed to fetch stats');
     return res.json();
   },
+
+  async aiSuggest(ticketId: string): Promise<{ suggestion?: string; error?: string }> {
+    const res = await fetch(`${API_BASE}/helpdesk/${encodeURIComponent(ticketId)}/ai-suggest`, {
+      method: 'POST',
+    });
+    if (!res.ok) throw new Error('Failed to generate AI suggestion');
+    return res.json();
+  },
 };
 
 // Expose globally for inline onclick handlers

@@ -4603,6 +4603,50 @@
   cursor: pointer;
 }
 
+.hd-reply-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.hd-ai-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--text-xs);
+  padding: 5px 12px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.hd-ai-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.hd-ai-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.hd-ai-btn svg {
+  stroke: #fff;
+}
+
+@keyframes hd-ai-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.hd-ai-spinner {
+  animation: hd-ai-spin 1s linear infinite;
+}
+
 /* Detail sidebar */
 .hd-detail-sidebar {
   display: flex;

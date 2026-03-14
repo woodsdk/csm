@@ -5,6 +5,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import Optional
 from ..database import query, execute, gen_id
+from ..openai_helper import generate_reply_suggestion
 
 router = APIRouter()
 
@@ -197,3 +198,38 @@ def add_ticket_message(ticket_id: str, data: TicketMessageCreate):
     execute("UPDATE tickets SET updated_at = NOW() WHERE id = %s", (ticket_id,))
 
     return rows[0]
+
+
+# ── AI Suggest ────────────────────────────────────────────────────
+
+@router.post("/{ticket_id}/ai-suggest")
+def ai_suggest_reply(ticket_id: str):
+    """Generate an AI reply suggestion using OpenAI + FAQ context."""
+    # Get ticket
+    ticket = query("SELECT * FROM tickets WHERE id = %s", (ticket_id,))
+    if not ticket:
+        return {"error": "Ticket ikke fundet"}
+
+    t = ticket[0]
+
+    # Get messages
+    messages = query(
+        "SELECT * FROM ticket_messages WHERE ticket_id = %s ORDER BY created_at ASC",
+        (ticket_id,),
+    )
+
+    # Get FAQ items for context
+    faq_items = query("SELECT question, answer, category FROM faq_items ORDER BY sort_order ASC")
+
+    # Generate suggestion
+    suggestion = generate_reply_suggestion(
+        ticket_subject=t["subject"],
+        ticket_description=t.get("description", ""),
+        messages=messages,
+        faq_items=faq_items,
+    )
+
+    if suggestion is None:
+        return {"error": "AI er ikke tilgængelig. Tjek at OPENAI_API_KEY er konfigureret."}
+
+    return {"suggestion": suggestion}
