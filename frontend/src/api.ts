@@ -129,9 +129,44 @@ export const CustomerAPI = {
 };
 
 export const TeamAPI = {
-  async getAll(): Promise<TeamMember[]> {
-    const res = await fetch(`${API_BASE}/team`);
+  async getAll(includeInactive = false): Promise<TeamMember[]> {
+    const qs = includeInactive ? '?include_inactive=true' : '';
+    const res = await fetch(`${API_BASE}/team${qs}`);
     if (!res.ok) throw new Error('Failed to fetch team');
+    return res.json();
+  },
+
+  async get(id: string): Promise<TeamMember | null> {
+    const res = await fetch(`${API_BASE}/team/${encodeURIComponent(id)}`);
+    if (!res.ok) return null;
+    return res.json();
+  },
+
+  async create(data: Partial<TeamMember>): Promise<TeamMember> {
+    const res = await fetch(`${API_BASE}/team`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to create team member');
+    return res.json();
+  },
+
+  async update(id: string, data: Partial<TeamMember>): Promise<TeamMember> {
+    const res = await fetch(`${API_BASE}/team/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to update team member');
+    return res.json();
+  },
+
+  async delete(id: string): Promise<{ ok: boolean }> {
+    const res = await fetch(`${API_BASE}/team/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) throw new Error('Failed to delete team member');
     return res.json();
   },
 };

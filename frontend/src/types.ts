@@ -131,7 +131,7 @@ export interface ShiftCreate {
 }
 
 export interface AppState {
-  page: 'tasks' | 'vagtplan';
+  page: 'tasks' | 'vagtplan' | 'team';
   tab: string;
   view: 'list' | 'kanban' | 'calendar';
   filters: TaskFilters;

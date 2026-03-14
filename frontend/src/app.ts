@@ -12,6 +12,7 @@ import { TaskModal } from './components/task-modal';
 import { EventModal } from './components/event-modal';
 import { CalendarSettings } from './components/calendar-settings';
 import { ShiftSchedule } from './components/shift-schedule';
+import { TeamList } from './components/team-list';
 import { GoogleCal } from './google-calendar';
 import type { Task, AppState } from './types';
 
@@ -33,10 +34,6 @@ export const App = {
     csm: {
       label: 'Customer Success',
       icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-    },
-    marketing: {
-      label: 'Marketing',
-      icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
     },
   } as Record<string, { label: string; icon: string }>,
 
@@ -68,7 +65,7 @@ export const App = {
       const target = e.target as HTMLElement;
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT') return;
 
-      if (e.key === 'Escape') { ShiftSchedule.closeModal(); this.hideShortcuts(); return; }
+      if (e.key === 'Escape') { ShiftSchedule.closeModal(); TeamList.closeModal(); this.hideShortcuts(); return; }
       if (e.key === '?') { e.preventDefault(); this.toggleShortcuts(); return; }
       if (e.key === 'n' || e.key === 'N') { e.preventDefault(); TaskModal.open(); return; }
       if (e.key === '/') {
@@ -92,7 +89,9 @@ export const App = {
 
     sidebarEl.innerHTML = await Sidebar.render();
 
-    if (this.state.page === 'vagtplan') {
+    if (this.state.page === 'team') {
+      await this._renderTeamPage(mainEl);
+    } else if (this.state.page === 'vagtplan') {
       await this._renderVagtplanPage(mainEl);
     } else if (this.state.view === 'calendar') {
       await this._renderCalendarPage(mainEl);
@@ -142,6 +141,24 @@ export const App = {
       </div>
       <div class="main-content vagtplan-content">
         ${scheduleHTML}
+      </div>
+    `;
+  },
+
+  async _renderTeamPage(container: HTMLElement): Promise<void> {
+    const contentHTML = await TeamList.render();
+
+    container.innerHTML = `
+      <div class="main-header">
+        <div class="main-header-left">
+          <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <h2>Medarbejdere</h2>
+        </div>
+      </div>
+      <div class="main-content">
+        ${contentHTML}
       </div>
     `;
   },
