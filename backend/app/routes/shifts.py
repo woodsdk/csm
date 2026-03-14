@@ -24,6 +24,12 @@ class ShiftCreate(BaseModel):
     staff_phone: str = ""
 
 
+class ListenerCreate(BaseModel):
+    listener_name: str
+    listener_email: str
+    listener_phone: str = ""
+
+
 @router.get("")
 def list_shifts(date: Optional[str] = None, from_date: Optional[str] = None, to_date: Optional[str] = None):
     sql = "SELECT * FROM shifts WHERE status != 'cancelled'"
@@ -37,7 +43,28 @@ def list_shifts(date: Optional[str] = None, from_date: Optional[str] = None, to_
         params.extend([from_date, to_date])
 
     sql += " ORDER BY date ASC, start_time ASC"
-    return query(sql, tuple(params))
+    shifts = query(sql, tuple(params))
+
+    # Attach listeners to each shift
+    if shifts:
+        shift_ids = [s["id"] for s in shifts]
+        placeholders = ", ".join(["%s"] * len(shift_ids))
+        listeners = query(
+            f"SELECT * FROM shift_listeners WHERE shift_id IN ({placeholders}) ORDER BY created_at ASC",
+            tuple(shift_ids),
+        )
+
+        listener_map: dict[str, list] = {}
+        for lis in listeners:
+            sid = lis["shift_id"]
+            if sid not in listener_map:
+                listener_map[sid] = []
+            listener_map[sid].append(lis)
+
+        for shift in shifts:
+            shift["listeners"] = listener_map.get(shift["id"], [])
+
+    return shifts
 
 
 @router.get("/available")
@@ -105,7 +132,9 @@ def create_shift(data: ShiftCreate):
         (shift_id, data.date, data.start_time, valid_slot["end_time"],
          data.staff_name, data.staff_email, data.staff_phone),
     )
-    return rows[0]
+    shift = rows[0]
+    shift["listeners"] = []
+    return shift
 
 
 @router.post("/{shift_id}/cancel")
@@ -115,3 +144,29 @@ def cancel_shift(shift_id: str):
         (shift_id,),
     )
     return rows[0] if rows else None
+
+
+@router.post("/{shift_id}/listeners", status_code=201)
+def add_listener(shift_id: str, data: ListenerCreate):
+    # Verify shift exists
+    shift_rows = query("SELECT id FROM shifts WHERE id = %s AND status != 'cancelled'", (shift_id,))
+    if not shift_rows:
+        return {"error": "Vagt ikke fundet"}
+
+    listener_id = gen_id("sl_")
+    rows = query(
+        """INSERT INTO shift_listeners (id, shift_id, listener_name, listener_email, listener_phone)
+           VALUES (%s, %s, %s, %s, %s)
+           RETURNING *""",
+        (listener_id, shift_id, data.listener_name, data.listener_email, data.listener_phone),
+    )
+    return rows[0]
+
+
+@router.delete("/{shift_id}/listeners/{listener_id}")
+def remove_listener(shift_id: str, listener_id: str):
+    execute(
+        "DELETE FROM shift_listeners WHERE id = %s AND shift_id = %s",
+        (listener_id, shift_id),
+    )
+    return {"ok": True}

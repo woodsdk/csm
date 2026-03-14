@@ -2,7 +2,7 @@
    SynergyHub API Facade — Typed fetch wrappers
    ═══════════════════════════════════════════ */
 
-import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate } from './types';
+import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener } from './types';
 
 const API_BASE = '/api';
 
@@ -196,6 +196,24 @@ export const ShiftAPI = {
       method: 'POST',
     });
     if (!res.ok) throw new Error('Failed to cancel shift');
+    return res.json();
+  },
+
+  async addListener(shiftId: string, data: { listener_name: string; listener_email: string; listener_phone?: string }): Promise<ShiftListener> {
+    const res = await fetch(`${API_BASE}/shifts/${encodeURIComponent(shiftId)}/listeners`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to add listener');
+    return res.json();
+  },
+
+  async removeListener(shiftId: string, listenerId: string): Promise<{ ok: boolean }> {
+    const res = await fetch(`${API_BASE}/shifts/${encodeURIComponent(shiftId)}/listeners/${encodeURIComponent(listenerId)}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) throw new Error('Failed to remove listener');
     return res.json();
   },
 };

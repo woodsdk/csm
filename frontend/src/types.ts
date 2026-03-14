@@ -103,6 +103,15 @@ export interface GoogleCalendarEvent {
   color: string | null;
 }
 
+export interface ShiftListener {
+  id: string;
+  shift_id: string;
+  listener_name: string;
+  listener_email: string;
+  listener_phone: string;
+  created_at: string;
+}
+
 export interface Shift {
   id: string;
   date: string;
@@ -113,6 +122,7 @@ export interface Shift {
   staff_phone: string;
   status: 'confirmed' | 'cancelled';
   created_at: string;
+  listeners?: ShiftListener[];
 }
 
 export interface ShiftSlot {

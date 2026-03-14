@@ -168,8 +168,18 @@ def init():
         CREATE INDEX IF NOT EXISTS idx_tasks_assignee ON tasks(assignee_id);
         CREATE INDEX IF NOT EXISTS idx_tasks_deadline ON tasks(deadline);
         CREATE INDEX IF NOT EXISTS idx_activity_task ON activity_log(task_id);
+        CREATE TABLE IF NOT EXISTS shift_listeners (
+            id              TEXT PRIMARY KEY,
+            shift_id        TEXT NOT NULL REFERENCES shifts(id) ON DELETE CASCADE,
+            listener_name   TEXT NOT NULL,
+            listener_email  TEXT NOT NULL,
+            listener_phone  TEXT NOT NULL DEFAULT '',
+            created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+
         CREATE INDEX IF NOT EXISTS idx_shifts_date ON shifts(date);
         CREATE INDEX IF NOT EXISTS idx_bookings_date ON bookings(date);
+        CREATE INDEX IF NOT EXISTS idx_shift_listeners_shift ON shift_listeners(shift_id);
     """)
 
     # Migration: add tab column if missing

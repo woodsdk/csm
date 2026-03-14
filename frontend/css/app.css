@@ -2356,6 +2356,160 @@
   to { transform: rotate(360deg); }
 }
 
+/* ── Vagtplan: Week sections (4-week view) ── */
+.vp-weeks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.vp-week-section {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.vp-week-section.vp-week-current {
+  border-color: var(--navy-400);
+  box-shadow: 0 0 0 1px var(--navy-400);
+}
+
+.vp-week-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: var(--bg-body);
+  border-bottom: 1px solid var(--border);
+  font-size: var(--text-sm);
+}
+
+.vp-week-section-header .vp-week-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+}
+
+.vp-week-section-header .vp-week-badge span.vp-current-tag {
+  font-size: var(--text-xs);
+  color: var(--navy-500);
+  font-weight: var(--font-medium);
+  background: rgba(86, 105, 164, 0.1);
+  padding: 1px 8px;
+  border-radius: var(--radius-full);
+}
+
+.vp-week-section-header .vp-week-dates {
+  color: var(--text-tertiary);
+  font-size: var(--text-xs);
+}
+
+.vp-week-section-header .vp-week-fill {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+
+/* Compact grid inside week sections */
+.vp-week-section .vp-grid {
+  border: none;
+  border-radius: 0;
+}
+
+/* ── Vagtplan: Listener (lytter) styles ── */
+.vp-listeners {
+  display: flex;
+  gap: 2px;
+  margin-top: 2px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.vp-listener-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 8px;
+  font-weight: var(--font-bold);
+  color: white;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: all var(--transition-fast);
+  border: 1.5px solid white;
+  margin-left: -4px;
+}
+
+.vp-listener-chip:first-child {
+  margin-left: 0;
+}
+
+.vp-listener-chip:hover {
+  opacity: 1;
+  transform: scale(1.2);
+  z-index: 1;
+}
+
+.vp-listen-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 3px;
+  padding: 1px 6px;
+  border: 1px dashed var(--navy-300);
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--navy-400);
+  font-size: 9px;
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.vp-listen-btn:hover {
+  border-color: var(--navy-500);
+  color: var(--navy-600);
+  background: rgba(86, 105, 164, 0.06);
+}
+
+/* Mobile listener badge */
+.vp-card-listeners {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-xs);
+  color: var(--navy-500);
+  margin-left: auto;
+}
+
+.vp-card-listen-btn {
+  padding: 2px 8px;
+  border: 1px dashed var(--navy-300);
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--navy-400);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.vp-card-listen-btn:hover {
+  border-color: var(--navy-500);
+  color: var(--navy-600);
+}
+
+/* Mobile: week section headers */
+@media (max-width: 768px) {
+  .vp-week-section .vp-grid {
+    display: none;
+  }
+}
+
 /* ═══════════════════════════════════════════
    Team List (Medarbejderliste) — tl- prefix
    ═══════════════════════════════════════════ */
