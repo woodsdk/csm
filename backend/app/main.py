@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
 from .database import init as db_init
-from .routes import tasks, customers, team, activities, shifts, bookings
+from .routes import tasks, customers, team, activities, shifts, bookings, demos
 
 
 @asynccontextmanager
@@ -37,6 +37,7 @@ app.include_router(team.router, prefix="/api/team", tags=["team"])
 app.include_router(activities.router, prefix="/api/activities", tags=["activities"])
 app.include_router(shifts.router, prefix="/api/shifts", tags=["shifts"])
 app.include_router(bookings.router, prefix="/api/bookings", tags=["bookings"])
+app.include_router(demos.router, prefix="/api/demos", tags=["demos"])
 
 # Serve frontend static files in production
 dist_path = os.path.abspath(settings.frontend_dist)

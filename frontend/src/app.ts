@@ -13,6 +13,7 @@ import { EventModal } from './components/event-modal';
 import { CalendarSettings } from './components/calendar-settings';
 import { ShiftSchedule } from './components/shift-schedule';
 import { TeamList } from './components/team-list';
+import { DemoBooking } from './components/demo-booking';
 import { GoogleCal } from './google-calendar';
 import type { Task, AppState } from './types';
 
@@ -56,6 +57,13 @@ export const App = {
   },
 
   async init(): Promise<void> {
+    // Public booking page — skip all internal init
+    if (window.location.pathname === '/book-demo') {
+      this.state.page = 'book-demo';
+      await this._renderPublicBookingPage();
+      return;
+    }
+
     TaskModal.init();
     EventModal.init();
     CalendarSettings.init();
@@ -86,6 +94,12 @@ export const App = {
     const sidebarEl = document.getElementById('sidebar');
     const mainEl = document.getElementById('main');
     if (!sidebarEl || !mainEl) return;
+
+    // Public page — no sidebar
+    if (this.state.page === 'book-demo') {
+      await this._renderPublicBookingPage();
+      return;
+    }
 
     sidebarEl.innerHTML = await Sidebar.render();
 
@@ -143,6 +157,24 @@ export const App = {
         ${scheduleHTML}
       </div>
     `;
+  },
+
+  async _renderPublicBookingPage(): Promise<void> {
+    const sidebarEl = document.getElementById('sidebar');
+    const mainEl = document.getElementById('main');
+    if (!mainEl) return;
+
+    // Hide sidebar and overlay for public page
+    if (sidebarEl) sidebarEl.style.display = 'none';
+    const overlay = document.querySelector('.sidebar-overlay') as HTMLElement;
+    if (overlay) overlay.style.display = 'none';
+
+    // Give main area full width
+    mainEl.style.marginLeft = '0';
+    mainEl.style.width = '100%';
+
+    const bookingHTML = await DemoBooking.render();
+    mainEl.innerHTML = bookingHTML;
   },
 
   async _renderTeamPage(container: HTMLElement): Promise<void> {

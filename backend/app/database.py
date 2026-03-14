@@ -180,6 +180,25 @@ def init():
         CREATE INDEX IF NOT EXISTS idx_shifts_date ON shifts(date);
         CREATE INDEX IF NOT EXISTS idx_bookings_date ON bookings(date);
         CREATE INDEX IF NOT EXISTS idx_shift_listeners_shift ON shift_listeners(shift_id);
+
+        CREATE TABLE IF NOT EXISTS demo_bookings (
+            id              TEXT PRIMARY KEY,
+            date            DATE NOT NULL,
+            start_time      TEXT NOT NULL,
+            end_time        TEXT NOT NULL,
+            client_name     TEXT NOT NULL,
+            client_email    TEXT NOT NULL,
+            client_phone    TEXT NOT NULL DEFAULT '',
+            client_clinic   TEXT NOT NULL DEFAULT '',
+            staff_id        TEXT REFERENCES team_members(id) ON DELETE SET NULL,
+            meet_link       TEXT NOT NULL DEFAULT '',
+            status          TEXT NOT NULL DEFAULT 'confirmed',
+            task_id         TEXT REFERENCES tasks(id) ON DELETE SET NULL,
+            notes           TEXT NOT NULL DEFAULT '',
+            created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_demo_bookings_date ON demo_bookings(date);
+        CREATE INDEX IF NOT EXISTS idx_demo_bookings_status ON demo_bookings(status);
     """)
 
     # Migration: add tab column if missing
@@ -213,22 +232,31 @@ def init():
         END $$;
     """)
 
+    # Migration: add can_give_demos to team_members
+    execute("""
+        DO $$ BEGIN
+            ALTER TABLE team_members ADD COLUMN can_give_demos BOOLEAN NOT NULL DEFAULT false;
+        EXCEPTION WHEN duplicate_column THEN NULL;
+        END $$;
+    """)
+
     # Seed team members
     execute("""
-        INSERT INTO team_members (id, name, role, avatar_color, is_active, email, phone) VALUES
-            ('morten',  'Morten Skov',              'lead',    '#38456D', true, 'morten@peoplesdoctor.com', ''),
-            ('shubi',   'Shubinthan Kathiramalai',   'support', '#5669A4', true, 'ska@peoplesdoctor.com',    '50732313'),
-            ('simon',   'Simon Ussing',              'cs',      '#22C55E', true, 'sus@peoplesdoctor.com',    '00336 33234997'),
-            ('emma',    'Emma Heerfordt',            'member',  '#F59E0B', true, 'ehe@peoplesdoctor.com',    '24494742'),
-            ('filip',   'Filip Syderbø',             'member',  '#3B82F6', true, 'fsy@peoplesdoctor.com',    '52637516'),
-            ('josef',   'Josef Abuna',               'member',  '#8B5CF6', true, 'jab@peoplesdoctor.com',    '52242880'),
-            ('rasmus',  'Rasmus Kvist Bonde',        'member',  '#EC4899', true, 'rkb@peoplesdoctor.com',    ''),
-            ('lars',    'Lars Kensmark',             'member',  '#14B8A6', true, 'lke@peoplesdoctor.com',    '31170644')
+        INSERT INTO team_members (id, name, role, avatar_color, is_active, email, phone, can_give_demos) VALUES
+            ('morten',  'Morten Skov',              'lead',    '#38456D', true, 'morten@peoplesdoctor.com', '',              true),
+            ('shubi',   'Shubinthan Kathiramalai',   'support', '#5669A4', true, 'ska@peoplesdoctor.com',    '50732313',      true),
+            ('simon',   'Simon Ussing',              'cs',      '#22C55E', true, 'sus@peoplesdoctor.com',    '00336 33234997', true),
+            ('emma',    'Emma Heerfordt',            'member',  '#F59E0B', true, 'ehe@peoplesdoctor.com',    '24494742',      false),
+            ('filip',   'Filip Syderbø',             'member',  '#3B82F6', true, 'fsy@peoplesdoctor.com',    '52637516',      false),
+            ('josef',   'Josef Abuna',               'member',  '#8B5CF6', true, 'jab@peoplesdoctor.com',    '52242880',      false),
+            ('rasmus',  'Rasmus Kvist Bonde',        'member',  '#EC4899', true, 'rkb@peoplesdoctor.com',    '',              false),
+            ('lars',    'Lars Kensmark',             'member',  '#14B8A6', true, 'lke@peoplesdoctor.com',    '31170644',      false)
         ON CONFLICT (id) DO UPDATE SET
             name = EXCLUDED.name,
             email = EXCLUDED.email,
             phone = EXCLUDED.phone,
-            avatar_color = EXCLUDED.avatar_color
+            avatar_color = EXCLUDED.avatar_color,
+            can_give_demos = EXCLUDED.can_give_demos
     """)
 
     print("Database initialized")

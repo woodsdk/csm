@@ -140,8 +140,41 @@ export interface ShiftCreate {
   staff_phone?: string;
 }
 
+export interface DemoBooking {
+  id: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  client_name: string;
+  client_email: string;
+  client_phone: string;
+  client_clinic: string;
+  staff_id: string | null;
+  staff_name?: string;
+  meet_link: string;
+  status: string;
+  task_id: string | null;
+  notes: string;
+  created_at: string;
+}
+
+export interface DemoBookingCreate {
+  date: string;
+  start_time: string;
+  client_name: string;
+  client_email: string;
+  client_phone?: string;
+  client_clinic?: string;
+  notes?: string;
+}
+
+export interface DemoSlot {
+  start_time: string;
+  end_time: string;
+}
+
 export interface AppState {
-  page: 'tasks' | 'vagtplan' | 'team';
+  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo';
   tab: string;
   view: 'list' | 'kanban' | 'calendar';
   filters: TaskFilters;

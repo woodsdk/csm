@@ -2,7 +2,7 @@
    SynergyHub API Facade — Typed fetch wrappers
    ═══════════════════════════════════════════ */
 
-import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener } from './types';
+import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot } from './types';
 
 const API_BASE = '/api';
 
@@ -218,8 +218,36 @@ export const ShiftAPI = {
   },
 };
 
+export const DemoAPI = {
+  async getAvailableDates(): Promise<string[]> {
+    const res = await fetch(`${API_BASE}/demos/available-dates`);
+    if (!res.ok) throw new Error('Failed to fetch available dates');
+    return res.json();
+  },
+
+  async getAvailableSlots(date: string): Promise<DemoSlot[]> {
+    const res = await fetch(`${API_BASE}/demos/available-slots?date=${encodeURIComponent(date)}`);
+    if (!res.ok) throw new Error('Failed to fetch available slots');
+    return res.json();
+  },
+
+  async book(data: DemoBookingCreate): Promise<DemoBooking> {
+    const res = await fetch(`${API_BASE}/demos/book`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ error: 'Booking fejlede' }));
+      throw new Error(err.error || 'Booking fejlede');
+    }
+    return res.json();
+  },
+};
+
 // Expose globally for inline onclick handlers
 (window as any).TaskAPI = TaskAPI;
 (window as any).CustomerAPI = CustomerAPI;
 (window as any).TeamAPI = TeamAPI;
 (window as any).ShiftAPI = ShiftAPI;
+(window as any).DemoAPI = DemoAPI;
