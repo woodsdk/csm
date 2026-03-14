@@ -294,7 +294,7 @@ export const ShiftSchedule = {
     if (!modal) return;
 
     const staffOptions = this._teamMembers
-      .map(m => `<option value="${m.id}" data-name="${escapeHtml(m.name)}" data-email="${escapeHtml(m.email)}" data-phone="${escapeHtml(m.phone)}">${escapeHtml(m.name)}</option>`)
+      .map(m => `<option value="${m.id}" data-name="${escapeHtml(m.name)}" data-email="${escapeHtml(m.email)}">${escapeHtml(m.name)}</option>`)
       .join('');
 
     modal.innerHTML = `
@@ -322,10 +322,6 @@ export const ShiftSchedule = {
           <div class="form-group">
             <label class="form-label">Email</label>
             <input class="input" type="email" id="shift-email" readonly>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Telefon</label>
-            <input class="input" type="tel" id="shift-phone" readonly>
           </div>
         </div>
         <div class="vp-modal-footer">
@@ -357,7 +353,7 @@ export const ShiftSchedule = {
     if (!modal) return;
 
     const staffOptions = this._teamMembers
-      .map(m => `<option value="${m.id}" data-name="${escapeHtml(m.name)}" data-email="${escapeHtml(m.email)}" data-phone="${escapeHtml(m.phone)}">${escapeHtml(m.name)}</option>`)
+      .map(m => `<option value="${m.id}" data-name="${escapeHtml(m.name)}" data-email="${escapeHtml(m.email)}">${escapeHtml(m.name)}</option>`)
       .join('');
 
     modal.innerHTML = `
@@ -386,10 +382,6 @@ export const ShiftSchedule = {
             <label class="form-label">Email</label>
             <input class="input" type="email" id="shift-email" readonly>
           </div>
-          <div class="form-group">
-            <label class="form-label">Telefon</label>
-            <input class="input" type="tel" id="shift-phone" readonly>
-          </div>
         </div>
         <div class="vp-modal-footer">
           <button class="btn" onclick="ShiftSchedule.closeModal()">Annuller</button>
@@ -411,16 +403,13 @@ export const ShiftSchedule = {
   onStaffSelect(): void {
     const select = document.getElementById('shift-staff') as HTMLSelectElement | null;
     const emailEl = document.getElementById('shift-email') as HTMLInputElement | null;
-    const phoneEl = document.getElementById('shift-phone') as HTMLInputElement | null;
     if (!select) return;
 
     const selectedOption = select.options[select.selectedIndex];
     if (selectedOption && selectedOption.value) {
       if (emailEl) emailEl.value = selectedOption.getAttribute('data-email') || '';
-      if (phoneEl) phoneEl.value = selectedOption.getAttribute('data-phone') || '';
     } else {
       if (emailEl) emailEl.value = '';
-      if (phoneEl) phoneEl.value = '';
     }
   },
 
@@ -447,7 +436,6 @@ export const ShiftSchedule = {
     const selectedOption = staffEl.options[staffEl.selectedIndex];
     const name = selectedOption.getAttribute('data-name') || '';
     const email = selectedOption.getAttribute('data-email') || '';
-    const phone = selectedOption.getAttribute('data-phone') || '';
 
     if (btn) { btn.innerHTML = '<span class="vp-spinner"></span> Booker...'; btn.disabled = true; }
 
@@ -458,7 +446,6 @@ export const ShiftSchedule = {
         end_time: this._pendingShift.end_time,
         staff_name: name,
         staff_email: email,
-        staff_phone: phone,
       });
       this.closeModal();
       (window as any).App.render();
@@ -481,7 +468,6 @@ export const ShiftSchedule = {
     const selectedOption = staffEl.options[staffEl.selectedIndex];
     const name = selectedOption.getAttribute('data-name') || '';
     const email = selectedOption.getAttribute('data-email') || '';
-    const phone = selectedOption.getAttribute('data-phone') || '';
 
     if (btn) { btn.innerHTML = '<span class="vp-spinner"></span> Tilmelder...'; btn.disabled = true; }
 
@@ -489,7 +475,6 @@ export const ShiftSchedule = {
       await ShiftAPI.addListener(this._pendingListenerShiftId, {
         listener_name: name,
         listener_email: email,
-        listener_phone: phone,
       });
       this.closeModal();
       (window as any).App.toast(`${name} tilmeldt som lytter`, 'success');
