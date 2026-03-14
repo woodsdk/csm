@@ -4,6 +4,7 @@ import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
 from .database import init as db_init
@@ -39,7 +40,18 @@ app.include_router(shifts.router, prefix="/api/shifts", tags=["shifts"])
 app.include_router(bookings.router, prefix="/api/bookings", tags=["bookings"])
 app.include_router(demos.router, prefix="/api/demos", tags=["demos"])
 
-# Serve frontend static files in production
+# Serve frontend — SPA-aware static file serving
 dist_path = os.path.abspath(settings.frontend_dist)
 if os.path.isdir(dist_path):
-    app.mount("/", StaticFiles(directory=dist_path, html=True), name="frontend")
+    # Mount /assets for hashed JS/CSS bundles and static assets
+    assets_dir = os.path.join(dist_path, "assets")
+    if os.path.isdir(assets_dir):
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+
+    # SPA catch-all: serve actual files if they exist, else index.html
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        file_path = os.path.join(dist_path, full_path)
+        if full_path and os.path.isfile(file_path):
+            return FileResponse(file_path)
+        return FileResponse(os.path.join(dist_path, "index.html"))
