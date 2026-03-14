@@ -312,15 +312,8 @@ const ListView = {
     popup.className = 'desc-popup';
     popup.onclick = (e) => e.stopPropagation();
 
-    // Two sections: textarea + checklist
     popup.innerHTML = `
       <textarea class="desc-popup-textarea" placeholder="Skriv beskrivelse..." id="desc-popup-ta"></textarea>
-      <div class="desc-popup-divider"></div>
-      <div class="desc-popup-checklist" id="desc-popup-checklist"></div>
-      <div class="desc-popup-add-item">
-        <input type="text" class="desc-popup-add-input" placeholder="+ Tilføj punkt..." id="desc-popup-add"
-               onkeydown="if(event.key==='Enter'){ListView._addCheckItem(this.value);this.value=''}">
-      </div>
     `;
 
     const rect = cell.getBoundingClientRect();
