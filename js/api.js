@@ -65,6 +65,34 @@ const TaskAPI = {
     });
     if (!res.ok) throw new Error('Failed to reorder tasks');
     return res.json();
+  },
+
+  async duplicate(id) {
+    const res = await fetch(`${API_BASE}/tasks/${encodeURIComponent(id)}/duplicate`, {
+      method: 'POST'
+    });
+    if (!res.ok) throw new Error('Failed to duplicate task');
+    return res.json();
+  },
+
+  async bulkUpdate(ids, data) {
+    const res = await fetch(`${API_BASE}/tasks/bulk-update`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids, data })
+    });
+    if (!res.ok) throw new Error('Failed to bulk update');
+    return res.json();
+  },
+
+  async bulkDelete(ids) {
+    const res = await fetch(`${API_BASE}/tasks/bulk-delete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids })
+    });
+    if (!res.ok) throw new Error('Failed to bulk delete');
+    return res.json();
   }
 };
 

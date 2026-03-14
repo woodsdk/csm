@@ -93,12 +93,18 @@ async function update(id, data) {
   const params = [];
   let idx = 1;
 
-  const allowed = ['title', 'description', 'status', 'priority', 'type', 'assignee_id', 'deadline', 'customer_id', 'customer_name', 'sort_order', 'is_archived', 'created_by', 'ticket_ref', 'calendar_event_id', 'parent_task_id', 'tab'];
+  const allowed = ['title', 'description', 'status', 'priority', 'type', 'assignee_id', 'deadline', 'customer_id', 'customer_name', 'sort_order', 'is_archived', 'created_by', 'ticket_ref', 'calendar_event_id', 'parent_task_id', 'tab', 'checklist'];
 
   for (const key of allowed) {
     if (data[key] !== undefined) {
-      fields.push(`${key} = $${idx++}`);
-      params.push(data[key]);
+      // JSON-stringify JSONB fields
+      if (key === 'checklist') {
+        fields.push(`${key} = $${idx++}`);
+        params.push(JSON.stringify(data[key]));
+      } else {
+        fields.push(`${key} = $${idx++}`);
+        params.push(data[key]);
+      }
     }
   }
 
@@ -165,4 +171,39 @@ async function reorder(ids) {
   return { ok: true };
 }
 
-module.exports = { list, get, create, update, remove, reorder };
+async function duplicate(id) {
+  const task = await get(id);
+  if (!task) return null;
+  return create({
+    title: task.title + ' (kopi)',
+    description: task.description,
+    status: 'todo',
+    priority: task.priority,
+    type: task.type,
+    tags: task.tags,
+    assignee_id: task.assignee_id,
+    deadline: task.deadline,
+    customer_id: task.customer_id,
+    customer_name: task.customer_name,
+    tab: task.tab,
+    checklist: task.checklist || []
+  });
+}
+
+async function bulkUpdate(ids, data) {
+  const results = [];
+  for (const id of ids) {
+    const updated = await update(id, data);
+    if (updated) results.push(updated);
+  }
+  return results;
+}
+
+async function bulkDelete(ids) {
+  if (!ids.length) return { ok: true, count: 0 };
+  const placeholders = ids.map((_, i) => `$${i + 1}`).join(', ');
+  await pool.query(`DELETE FROM tasks WHERE id IN (${placeholders})`, ids);
+  return { ok: true, count: ids.length };
+}
+
+module.exports = { list, get, create, update, remove, reorder, duplicate, bulkUpdate, bulkDelete };

@@ -76,6 +76,22 @@ async function handleAPI(req, res) {
         const body = await parseBody(req);
         return json(res, await tasks.reorder(body.ids || []));
       }
+      // /api/tasks/bulk-update
+      if (parts[2] === 'bulk-update' && parts.length === 3 && method === 'POST') {
+        const body = await parseBody(req);
+        return json(res, await tasks.bulkUpdate(body.ids || [], body.data || {}));
+      }
+      // /api/tasks/bulk-delete
+      if (parts[2] === 'bulk-delete' && parts.length === 3 && method === 'POST') {
+        const body = await parseBody(req);
+        return json(res, await tasks.bulkDelete(body.ids || []));
+      }
+      // /api/tasks/:id/duplicate
+      if (parts.length === 4 && parts[3] === 'duplicate' && method === 'POST') {
+        const id = decodeURIComponent(parts[2]);
+        const dup = await tasks.duplicate(id);
+        return dup ? json(res, dup, 201) : json(res, { error: 'Not found' }, 404);
+      }
       if (parts.length === 2) {
         if (method === 'GET') return json(res, await tasks.list(query));
         if (method === 'POST') return json(res, await tasks.create(await parseBody(req)), 201);

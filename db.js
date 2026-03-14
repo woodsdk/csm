@@ -133,6 +133,14 @@ async function init() {
   // Tab index (after migration ensures column exists)
   await pool.query(`CREATE INDEX IF NOT EXISTS idx_tasks_tab ON tasks(tab)`);
 
+  // Migration: add checklist JSONB column
+  await pool.query(`
+    DO $$ BEGIN
+      ALTER TABLE tasks ADD COLUMN checklist JSONB NOT NULL DEFAULT '[]';
+    EXCEPTION WHEN duplicate_column THEN NULL;
+    END $$;
+  `);
+
   // Clean up old seed data
   await pool.query(`DELETE FROM tasks WHERE id LIKE 't_seed%'`);
   await pool.query(`DELETE FROM customers WHERE id LIKE 'cust_%'`);
