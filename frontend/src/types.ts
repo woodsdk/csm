@@ -204,8 +204,16 @@ export interface DemoJoinResult {
   meet_link: string;
 }
 
+export interface TrainingItem {
+  id: string;
+  title: string;
+  description: string;
+  sort_order: number;
+  created_at: string;
+}
+
 export interface AppState {
-  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo';
+  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training';
   tab: string;
   view: 'list' | 'kanban' | 'calendar';
   filters: TaskFilters;

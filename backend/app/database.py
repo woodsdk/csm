@@ -262,6 +262,42 @@ def init():
         CREATE INDEX IF NOT EXISTS idx_demo_participants_booking ON demo_participants(booking_id);
     """)
 
+    # Migration: create training_items table
+    execute("""
+        CREATE TABLE IF NOT EXISTS training_items (
+            id          TEXT PRIMARY KEY,
+            title       TEXT NOT NULL,
+            description TEXT NOT NULL DEFAULT '',
+            sort_order  INTEGER NOT NULL DEFAULT 0,
+            created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+    """)
+
+    # Seed training items (onboarding checklist)
+    execute("""
+        INSERT INTO training_items (id, title, description, sort_order) VALUES
+            ('tr_01', 'Vagtplan (tab)',                         'Forst\u00e5else for, hvordan du udfylder og koordinerer vagtplanen (Shubi er team-lead)',                                     1),
+            ('tr_02', 'Kontaktliste (tab)',                     'Udfyld dine kontaktoplysninger og orienter dig om \u00f8vrige kollegaer i teamet',                                            2),
+            ('tr_03', 'FAQ (tab)',                              'Gennemg\u00e5, l\u00e6s, forst\u00e5 og memor\u00e9r svar, s\u00e5 du ved hvad du skal svare p\u00e5 diverse spm.',                                              3),
+            ('tr_04', 'Onboarding struktur (tab)',              'Gennemg\u00e5 og forst\u00e5, hvordan man strukturerer en god onboarding-session',                                             4),
+            ('tr_05', 'Introduktion til compliance',            'Grundl\u00e6ggende sikkerhedsprincipper i supportarbejdet',                                                                   5),
+            ('tr_06', 'WhatsApp-grupper',                       'Invitation til relevante People''s Doctor grupper',                                                                          6),
+            ('tr_07', 'Onboarding pr\u00e6sentation',                'F\u00e5 adgang til onboarding pr\u00e6sentation',                                                                                    7),
+            ('tr_08', 'Adgang til databehandleraftale',         'F\u00e5 adgang til og l\u00e6s og forst\u00e5, hvad den indeholder p\u00e5 et overordnet plan',                                                  8),
+            ('tr_09', 'Instruktion i hvordan DBA skal sendes',  'Nogle af vores kunder skal have tilsendt en DBA til underskrift. Du skal vide hvordan man g\u00f8r dette.',                    9),
+            ('tr_10', 'Eskaleringsveje',                        'Hvem man kontakter om hvad \u2014 tydelig ansvarsfordeling',                                                                  10),
+            ('tr_11', 'Gennemgang af materiale',                'Alle relevante dokumenter, guides og templates der bruges i dagligdagen',                                                    11),
+            ('tr_12', 'Telefonh\u00e5ndtering',                      'Forst\u00e5else for telefonsystem (sp\u00f8rg evt. Simon Ussing)',                                                                     12),
+            ('tr_13', 'Calendly',                               'Forst\u00e5else for integration mellem Calendly til vores support@-kalender (sp\u00f8rg Shubi)',                                        13),
+            ('tr_14', 'Styring af skema',                       'Logge ind p\u00e5 support@ og se hvilke onboardings, du skal tage ansvar p\u00e5.',                                                      14),
+            ('tr_15', 'Koordinering med team',                  'Koordinering med teamet eller Simon Ussing omkring onboardinger ved behov. Ingen m\u00e5 falde mellem to stole.',              15),
+            ('tr_16', 'Introduktion til marketing',             'Overordnet forst\u00e5else af virksomhedens markedsf\u00f8ringsstrategi',                                                              16)
+        ON CONFLICT (id) DO UPDATE SET
+            title = EXCLUDED.title,
+            description = EXCLUDED.description,
+            sort_order = EXCLUDED.sort_order
+    """)
+
     # Seed team members
     execute("""
         INSERT INTO team_members (id, name, role, avatar_color, is_active, email, phone, can_give_demos) VALUES

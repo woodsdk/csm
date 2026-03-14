@@ -2,7 +2,7 @@
    SynergyHub API Facade — Typed fetch wrappers
    ═══════════════════════════════════════════ */
 
-import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot, DemoInfo, DemoJoinCreate, DemoJoinResult } from './types';
+import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot, DemoInfo, DemoJoinCreate, DemoJoinResult, TrainingItem } from './types';
 
 const API_BASE = '/api';
 
@@ -264,9 +264,56 @@ export const DemoAPI = {
   },
 };
 
+export const TrainingAPI = {
+  async getAll(): Promise<TrainingItem[]> {
+    const res = await fetch(`${API_BASE}/training`);
+    if (!res.ok) throw new Error('Failed to fetch training items');
+    return res.json();
+  },
+
+  async create(data: { title: string; description?: string }): Promise<TrainingItem> {
+    const res = await fetch(`${API_BASE}/training`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to create training item');
+    return res.json();
+  },
+
+  async update(id: string, data: { title?: string; description?: string }): Promise<TrainingItem> {
+    const res = await fetch(`${API_BASE}/training/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to update training item');
+    return res.json();
+  },
+
+  async delete(id: string): Promise<{ ok: boolean }> {
+    const res = await fetch(`${API_BASE}/training/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) throw new Error('Failed to delete training item');
+    return res.json();
+  },
+
+  async reorder(ids: string[]): Promise<{ ok: boolean }> {
+    const res = await fetch(`${API_BASE}/training/reorder`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids }),
+    });
+    if (!res.ok) throw new Error('Failed to reorder training items');
+    return res.json();
+  },
+};
+
 // Expose globally for inline onclick handlers
 (window as any).TaskAPI = TaskAPI;
 (window as any).CustomerAPI = CustomerAPI;
 (window as any).TeamAPI = TeamAPI;
 (window as any).ShiftAPI = ShiftAPI;
 (window as any).DemoAPI = DemoAPI;
+(window as any).TrainingAPI = TrainingAPI;

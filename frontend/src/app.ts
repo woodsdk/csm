@@ -15,6 +15,7 @@ import { ShiftSchedule } from './components/shift-schedule';
 import { TeamList } from './components/team-list';
 import { DemoBooking } from './components/demo-booking';
 import { DemoJoin } from './components/demo-join';
+import { TrainingList } from './components/training-list';
 import { GoogleCal } from './google-calendar';
 import type { Task, AppState } from './types';
 
@@ -114,6 +115,8 @@ export const App = {
 
     if (this.state.page === 'team') {
       await this._renderTeamPage(mainEl);
+    } else if (this.state.page === 'training') {
+      await this._renderTrainingPage(mainEl);
     } else if (this.state.page === 'vagtplan') {
       await this._renderVagtplanPage(mainEl);
     } else if (this.state.view === 'calendar') {
@@ -211,6 +214,24 @@ export const App = {
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
           <h2>Medarbejdere</h2>
+        </div>
+      </div>
+      <div class="main-content">
+        ${contentHTML}
+      </div>
+    `;
+  },
+
+  async _renderTrainingPage(container: HTMLElement): Promise<void> {
+    const contentHTML = await TrainingList.render();
+
+    container.innerHTML = `
+      <div class="main-header">
+        <div class="main-header-left">
+          <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <h2>Opl\u00e6ring af nye supportere</h2>
         </div>
       </div>
       <div class="main-content">

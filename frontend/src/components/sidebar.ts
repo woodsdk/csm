@@ -8,6 +8,7 @@ export const Sidebar = {
     const isTaskPage = app.state.page === 'tasks';
     const isVagtplanPage = app.state.page === 'vagtplan';
     const isTeamPage = app.state.page === 'team';
+    const isTrainingPage = app.state.page === 'training';
 
     return `
       <aside class="sidebar">
@@ -52,6 +53,19 @@ export const Sidebar = {
               <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
             </svg>
             Medarbejderliste
+          </button>
+        </nav>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section-title">Opl\u00e6ring</div>
+        <nav class="sidebar-nav">
+          <button class="sidebar-nav-item ${isTrainingPage ? 'active' : ''}" onclick="App.navigateTo('training')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+            Opl\u00e6ringscheckliste
           </button>
         </nav>
 
