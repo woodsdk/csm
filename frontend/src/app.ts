@@ -126,6 +126,8 @@ export const App = {
       await this._renderTrainingPage(mainEl);
     } else if (this.state.page === 'vagtplan') {
       await this._renderVagtplanPage(mainEl);
+    } else if (this.state.page === 'calendar') {
+      await this._renderCalendarPage(mainEl);
     } else if (this.state.view === 'calendar') {
       await this._renderCalendarPage(mainEl);
     } else {
@@ -306,19 +308,17 @@ export const App = {
     const tasks = await TaskAPI.getAll({});
     const calendarHTML = await CalendarView.render(tasks);
 
+    const isStandalone = this.state.page === 'calendar';
+
     container.innerHTML = `
       <div class="main-header">
         <div class="main-header-left">
           <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
-          <h2>${this.tabs[this.state.tab].label}</h2>
-        </div>
-        <div class="main-header-right">
-          ${this._headerStats(tasks)}
+          <h2>${isStandalone ? 'Kalender' : this.tabs[this.state.tab]?.label || 'Kalender'}</h2>
         </div>
       </div>
-      ${await Filters.render()}
       <div class="main-content">
         ${calendarHTML}
       </div>

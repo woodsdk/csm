@@ -141,12 +141,12 @@
 .sidebar-stat-overdue { background: var(--error-bg); }
 
 .sidebar-section-title {
-  padding: var(--space-1) var(--space-4);
-  font-size: var(--text-xs);
+  padding: var(--space-2) var(--space-4) var(--space-1);
+  font-size: 10px;
   font-weight: var(--font-semibold);
-  color: var(--text-tertiary);
+  color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 .sidebar-customer-list {
@@ -492,7 +492,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: 0 var(--space-5);
+  padding: 0;
   margin-bottom: var(--space-4);
   background: transparent;
 }
@@ -659,8 +659,8 @@
 
 /* ── Checkbox Column ── */
 .col-check {
-  width: 28px;
-  padding: 0 4px 0 7px !important;
+  width: 32px;
+  padding: 0 4px 0 14px !important;
   text-align: center;
   vertical-align: middle;
 }

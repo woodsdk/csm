@@ -250,7 +250,7 @@ export interface TicketMessage {
 }
 
 export interface AppState {
-  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training' | 'helpdesk' | 'helpdesk-detail';
+  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training' | 'helpdesk' | 'helpdesk-detail' | 'calendar';
   tab: string;
   view: 'list' | 'kanban' | 'calendar';
   filters: TaskFilters;
