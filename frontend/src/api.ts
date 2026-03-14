@@ -2,7 +2,7 @@
    SynergyHub API Facade — Typed fetch wrappers
    ═══════════════════════════════════════════ */
 
-import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot, DemoInfo, DemoJoinCreate, DemoJoinResult, TrainingItem, FaqItem, Ticket, TicketMessage, OverviewData, OnboardingUser, FeedbackData, ChurnData } from './types';
+import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot, DemoInfo, DemoJoinCreate, DemoJoinResult, TrainingItem, FaqItem, Ticket, TicketMessage, OverviewData, OnboardingUser, FeedbackData, ChurnData, ContactPayload } from './types';
 
 const API_BASE = '/api';
 
@@ -435,6 +435,22 @@ export const OnboardingAPI = {
   async getChurn(period = 90): Promise<ChurnData> {
     const res = await fetch(`${API_BASE}/onboarding/churn?period=${period}`);
     if (!res.ok) throw new Error('Failed to fetch churn data');
+    return res.json();
+  },
+
+  async contactUser(data: ContactPayload): Promise<{ ok: boolean; ticket_id: string }> {
+    const res = await fetch(`${API_BASE}/onboarding/contact`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to send contact');
+    return res.json();
+  },
+
+  async getUserTickets(userId: string): Promise<Ticket[]> {
+    const res = await fetch(`${API_BASE}/onboarding/users/${encodeURIComponent(userId)}/tickets`);
+    if (!res.ok) throw new Error('Failed to fetch user tickets');
     return res.json();
   },
 };

@@ -19,6 +19,7 @@ class TicketCreate(BaseModel):
     requester_name: str = ""
     requester_email: str = ""
     assignee_id: Optional[str] = None
+    platform_user_id: Optional[str] = None
 
 
 class TicketUpdate(BaseModel):
@@ -28,6 +29,7 @@ class TicketUpdate(BaseModel):
     priority: Optional[str] = None
     category: Optional[str] = None
     assignee_id: Optional[str] = None
+    platform_user_id: Optional[str] = None
 
 
 class TicketMessageCreate(BaseModel):
@@ -68,9 +70,11 @@ def list_tickets(
     category: Optional[str] = None,
 ):
     """List tickets with optional filters."""
-    sql = """SELECT t.*, tm.name as assignee_name
+    sql = """SELECT t.*, tm.name as assignee_name,
+                    pu.name as platform_user_name, pu.health_score as platform_user_health
              FROM tickets t
              LEFT JOIN team_members tm ON t.assignee_id = tm.id
+             LEFT JOIN platform_users pu ON t.platform_user_id = pu.id
              WHERE 1=1"""
     params: list = []
 
@@ -95,9 +99,16 @@ def list_tickets(
 def get_ticket(ticket_id: str):
     """Get ticket with all messages."""
     rows = query(
-        """SELECT t.*, tm.name as assignee_name
+        """SELECT t.*, tm.name as assignee_name,
+                  pu.name as platform_user_name, pu.email as platform_user_email,
+                  pu.clinic_name as platform_user_clinic, pu.health_score as platform_user_health,
+                  pu.status as platform_user_status,
+                  (SELECT COUNT(*) FROM platform_consultations pc WHERE pc.user_id = pu.id) as platform_user_consultations,
+                  (SELECT ROUND(AVG(pc.rating)::numeric, 1) FROM platform_consultations pc WHERE pc.user_id = pu.id) as platform_user_avg_rating,
+                  EXTRACT(EPOCH FROM (NOW() - pu.signup_at)) / 86400 as platform_user_days_since_signup
            FROM tickets t
            LEFT JOIN team_members tm ON t.assignee_id = tm.id
+           LEFT JOIN platform_users pu ON t.platform_user_id = pu.id
            WHERE t.id = %s""",
         (ticket_id,),
     )
@@ -118,13 +129,13 @@ def create_ticket(data: TicketCreate):
     ticket_id = gen_id("tk_")
     rows = query(
         """INSERT INTO tickets (id, subject, description, status, priority, category,
-           source, requester_name, requester_email, assignee_id)
-           VALUES (%s, %s, %s, 'open', %s, %s, %s, %s, %s, %s)
+           source, requester_name, requester_email, assignee_id, platform_user_id)
+           VALUES (%s, %s, %s, 'open', %s, %s, %s, %s, %s, %s, %s)
            RETURNING *""",
         (
             ticket_id, data.subject, data.description, data.priority,
             data.category, data.source, data.requester_name,
-            data.requester_email, data.assignee_id,
+            data.requester_email, data.assignee_id, data.platform_user_id,
         ),
     )
     return rows[0]
@@ -141,7 +152,7 @@ def update_ticket(ticket_id: str, data: TicketUpdate):
     params = []
     data_dict = data.model_dump(exclude_unset=True)
 
-    for key in ["subject", "description", "status", "priority", "category", "assignee_id"]:
+    for key in ["subject", "description", "status", "priority", "category", "assignee_id", "platform_user_id"]:
         if key in data_dict:
             fields.append(f"{key} = %s")
             params.append(data_dict[key])

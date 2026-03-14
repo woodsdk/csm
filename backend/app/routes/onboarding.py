@@ -1,10 +1,19 @@
 """Onboarding & Retention Dashboard — Analytics API."""
 
 from fastapi import APIRouter
+from pydantic import BaseModel
 from typing import Optional
-from ..database import query
+from ..database import query, gen_id
 
 router = APIRouter()
+
+
+class ContactRequest(BaseModel):
+    user_id: str
+    channel: str = "email"
+    subject: str
+    body: str
+    assignee_id: Optional[str] = None
 
 
 @router.get("/overview")
@@ -18,12 +27,12 @@ def get_overview(period: int = 30):
     onboarding = query("SELECT COUNT(*) as cnt FROM platform_users WHERE status = 'onboarding'")[0]["cnt"]
 
     new_period = query(
-        "SELECT COUNT(*) as cnt FROM platform_users WHERE signup_at >= NOW() - INTERVAL '%s days'",
+        "SELECT COUNT(*) as cnt FROM platform_users WHERE signup_at >= NOW() - %s * INTERVAL '1 day'",
         (period,),
     )[0]["cnt"]
 
     churned_period = query(
-        "SELECT COUNT(*) as cnt FROM platform_users WHERE churned_at >= NOW() - INTERVAL '%s days'",
+        "SELECT COUNT(*) as cnt FROM platform_users WHERE churned_at >= NOW() - %s * INTERVAL '1 day'",
         (period,),
     )[0]["cnt"]
 
@@ -126,7 +135,9 @@ def get_users(status: Optional[str] = None, search: Optional[str] = None):
             (SELECT ROUND(AVG(pc.rating)::numeric, 1) FROM platform_consultations pc WHERE pc.user_id = pu.id) as avg_rating,
             (SELECT COUNT(*) FROM platform_reviews pr WHERE pr.user_id = pu.id) as review_count,
             (SELECT pr.comment FROM platform_reviews pr WHERE pr.user_id = pu.id
-             AND pr.sentiment = 'kritisk' ORDER BY pr.created_at DESC LIMIT 1) as latest_issue
+             AND pr.sentiment = 'kritisk' ORDER BY pr.created_at DESC LIMIT 1) as latest_issue,
+            (SELECT COUNT(*) FROM tickets tk WHERE tk.platform_user_id = pu.id) as ticket_count,
+            (SELECT COUNT(*) FROM tickets tk WHERE tk.platform_user_id = pu.id AND tk.status IN ('open', 'in_progress')) as open_ticket_count
         FROM platform_users pu
         {where}
         ORDER BY pu.signup_at DESC
@@ -155,14 +166,14 @@ def get_feedback(period: int = 30):
             END as bucket,
             COUNT(*) as count
         FROM platform_reviews
-        WHERE created_at >= NOW() - INTERVAL '%s days'
+        WHERE created_at >= NOW() - %s * INTERVAL '1 day'
         GROUP BY bucket
         ORDER BY bucket DESC
     """, (period,))
 
     # Average rating
     avg = query(
-        "SELECT AVG(rating) as avg, COUNT(*) as cnt FROM platform_reviews WHERE created_at >= NOW() - INTERVAL '%s days'",
+        "SELECT AVG(rating) as avg, COUNT(*) as cnt FROM platform_reviews WHERE created_at >= NOW() - %s * INTERVAL '1 day'",
         (period,),
     )
     avg_rating = round(float(avg[0]["avg"] or 0), 1)
@@ -176,7 +187,7 @@ def get_feedback(period: int = 30):
             COUNT(*) FILTER (WHERE rating < 7) as detractors,
             COUNT(*) as total
         FROM platform_reviews
-        WHERE created_at >= NOW() - INTERVAL '%s days'
+        WHERE created_at >= NOW() - %s * INTERVAL '1 day'
     """, (period,))
     nd = nps_data[0]
     total_nps = nd["total"] or 1
@@ -186,7 +197,7 @@ def get_feedback(period: int = 30):
     sentiments = query("""
         SELECT sentiment, COUNT(*) as count
         FROM platform_reviews
-        WHERE created_at >= NOW() - INTERVAL '%s days'
+        WHERE created_at >= NOW() - %s * INTERVAL '1 day'
         GROUP BY sentiment
         ORDER BY count DESC
     """, (period,))
@@ -195,7 +206,7 @@ def get_feedback(period: int = 30):
     themes = query("""
         SELECT comment, COUNT(*) as count
         FROM platform_reviews
-        WHERE created_at >= NOW() - INTERVAL '%s days' AND comment != ''
+        WHERE created_at >= NOW() - %s * INTERVAL '1 day' AND comment != ''
         GROUP BY comment
         ORDER BY count DESC
         LIMIT 10
@@ -237,7 +248,7 @@ def get_churn(period: int = 90):
         "SELECT COUNT(*) as cnt FROM platform_users WHERE status != 'onboarding'"
     )[0]["cnt"]
     churned_period = query(
-        "SELECT COUNT(*) as cnt FROM platform_users WHERE churned_at >= NOW() - INTERVAL '%s days'",
+        "SELECT COUNT(*) as cnt FROM platform_users WHERE churned_at >= NOW() - %s * INTERVAL '1 day'",
         (period,),
     )[0]["cnt"]
     churn_rate = round((churned_period / total_base * 100) if total_base > 0 else 0, 1)
@@ -318,3 +329,51 @@ def get_churn(period: int = 90):
             "mrr": float(r["mrr"]),
         } for r in at_risk_users],
     }
+
+
+@router.post("/contact")
+def contact_user(data: ContactRequest):
+    """Create an outbound ticket + first message from the dashboard."""
+    # Look up the platform user
+    users = query("SELECT id, name, email FROM platform_users WHERE id = %s", (data.user_id,))
+    if not users:
+        return {"error": "Bruger ikke fundet"}
+    user = users[0]
+
+    source = "outbound_email" if data.channel == "email" else "outbound_message"
+
+    # Create ticket linked to platform user
+    ticket_id = gen_id("tk_")
+    ticket = query(
+        """INSERT INTO tickets (id, subject, description, status, priority, category,
+           source, requester_name, requester_email, assignee_id, platform_user_id)
+           VALUES (%s, %s, %s, 'open', 'medium', 'onboarding', %s, %s, %s, %s, %s)
+           RETURNING *""",
+        (ticket_id, data.subject, data.body, source, user["name"], user["email"],
+         data.assignee_id, data.user_id),
+    )
+
+    # Create first message
+    msg_id = gen_id("msg_")
+    query(
+        """INSERT INTO ticket_messages (id, ticket_id, sender_type, sender_name, sender_email, body, is_internal)
+           VALUES (%s, %s, 'agent', 'CS Team', '', %s, false)
+           RETURNING *""",
+        (msg_id, ticket_id, data.body),
+    )
+
+    return {"ok": True, "ticket_id": ticket_id, "ticket": ticket[0] if ticket else None}
+
+
+@router.get("/users/{user_id}/tickets")
+def get_user_tickets(user_id: str):
+    """Get all tickets for a specific platform user."""
+    tickets = query(
+        """SELECT t.*, tm.name as assignee_name
+           FROM tickets t
+           LEFT JOIN team_members tm ON t.assignee_id = tm.id
+           WHERE t.platform_user_id = %s
+           ORDER BY t.created_at DESC""",
+        (user_id,),
+    )
+    return tickets

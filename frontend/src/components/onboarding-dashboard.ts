@@ -2,9 +2,9 @@
    Onboarding & Retention Dashboard
    ═══════════════════════════════════════════ */
 
-import { OnboardingAPI } from '../api';
+import { OnboardingAPI, TeamAPI } from '../api';
 import { escapeHtml } from '../utils';
-import type { OverviewData, OnboardingUser, FeedbackData, ChurnData } from '../types';
+import type { OverviewData, OnboardingUser, FeedbackData, ChurnData, TeamMember, Ticket } from '../types';
 
 type DashTab = 'overview' | 'users' | 'feedback' | 'churn';
 
@@ -31,6 +31,7 @@ export const OnboardingDashboard = {
   _userFilter: 'all',
   _userSearch: '',
   _period: 30,
+  _teamMembers: [] as TeamMember[],
 
   setTab(tab: string): void {
     this._activeTab = tab as DashTab;
@@ -223,7 +224,8 @@ export const OnboardingDashboard = {
               <th>Kons.</th>
               <th>Rating</th>
               <th>Health</th>
-              <th>Note</th>
+              <th>Tickets</th>
+              <th>Handling</th>
             </tr>
           </thead>
           <tbody>
@@ -240,9 +242,21 @@ export const OnboardingDashboard = {
                 <td style="color:${u.consultation_count === 0 ? 'var(--error)' : 'inherit'};font-weight:${u.consultation_count === 0 ? '600' : '400'}">${u.consultation_count}</td>
                 <td>${u.avg_rating ? u.avg_rating.toFixed(1) : '<span style="color:var(--text-tertiary)">—</span>'}</td>
                 <td>${this._renderHealthBar(u.health_score)}</td>
-                <td>${u.latest_issue ? `<span class="ob-issue-badge">${escapeHtml(u.latest_issue)}</span>` : '<span style="color:var(--text-tertiary)">—</span>'}</td>
+                <td>${(u as any).open_ticket_count > 0
+                  ? `<span class="ob-ticket-badge ob-ticket-open">${(u as any).open_ticket_count} åben</span>`
+                  : ((u as any).ticket_count > 0 ? `<span class="ob-ticket-badge">${(u as any).ticket_count}</span>` : '<span style="color:var(--text-tertiary)">0</span>')}</td>
+                <td>
+                  <div class="ob-action-btns">
+                    <button class="ob-action-btn" onclick="event.stopPropagation(); OnboardingDashboard.openContactModal('${u.id}')" title="Kontakt bruger">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    </button>
+                    <button class="ob-action-btn" onclick="event.stopPropagation(); OnboardingDashboard.openUserTickets('${u.id}')" title="Se ticket-historik">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    </button>
+                  </div>
+                </td>
               </tr>
-            `).join('') : '<tr><td colspan="9" style="text-align:center;padding:var(--space-6);color:var(--text-tertiary)">Ingen brugere fundet</td></tr>'}
+            `).join('') : '<tr><td colspan="11" style="text-align:center;padding:var(--space-6);color:var(--text-tertiary)">Ingen brugere fundet</td></tr>'}
           </tbody>
         </table>
       </div>
@@ -432,6 +446,177 @@ export const OnboardingDashboard = {
         </div>
       </div>
     `;
+  },
+  /* ────────── KONTAKT & TICKET-HISTORIK ────────── */
+
+  async openContactModal(userId: string): Promise<void> {
+    const user = this._users.find(u => u.id === userId);
+    if (!user) return;
+
+    if (this._teamMembers.length === 0) {
+      try { this._teamMembers = await TeamAPI.getAll(); } catch { /* */ }
+    }
+
+    const memberOptions = this._teamMembers
+      .map(m => `<option value="${m.id}">${escapeHtml(m.name)}</option>`)
+      .join('');
+
+    const modal = document.getElementById('team-modal');
+    if (!modal) return;
+
+    modal.innerHTML = `
+      <div class="tl-modal" style="width:500px" onclick="event.stopPropagation()">
+        <div class="tl-modal-header">
+          <div>
+            <h3>Kontakt bruger</h3>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);margin-top:2px">
+              ${escapeHtml(user.name)} &mdash; ${escapeHtml(user.clinic_name)}
+            </div>
+          </div>
+          <button class="btn-icon" onclick="OnboardingDashboard.closeModal()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="tl-modal-body">
+          <div class="form-group">
+            <label class="form-label">Kanal</label>
+            <select class="input" id="ob-contact-channel">
+              <option value="email">Email</option>
+              <option value="message">People's Clinic besked</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Til</label>
+            <input class="input" type="text" value="${escapeHtml(user.name)} <${escapeHtml(user.email)}>" disabled style="background:var(--bg-body)">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Emne <span style="color:var(--error)">*</span></label>
+            <input class="input" type="text" id="ob-contact-subject" placeholder="Emne..." value="Opf\u00f8lgning \u2014 ${escapeHtml(user.clinic_name)}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tildel til</label>
+            <select class="input" id="ob-contact-assignee">
+              <option value="">Ikke tildelt</option>
+              ${memberOptions}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Besked <span style="color:var(--error)">*</span></label>
+            <textarea class="input" id="ob-contact-body" rows="5" placeholder="Skriv din besked..."></textarea>
+          </div>
+        </div>
+        <div class="tl-modal-footer">
+          <button class="btn" onclick="OnboardingDashboard.closeModal()">Annuller</button>
+          <button class="btn btn-primary" id="ob-contact-send-btn" onclick="OnboardingDashboard.sendContact('${user.id}')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Send & opret ticket
+          </button>
+        </div>
+      </div>
+    `;
+
+    modal.classList.add('open');
+    modal.onclick = (e: Event) => { if (e.target === modal) this.closeModal(); };
+    requestAnimationFrame(() => {
+      (document.getElementById('ob-contact-body') as HTMLTextAreaElement)?.focus();
+    });
+  },
+
+  async sendContact(userId: string): Promise<void> {
+    const subjectEl = document.getElementById('ob-contact-subject') as HTMLInputElement;
+    const bodyEl = document.getElementById('ob-contact-body') as HTMLTextAreaElement;
+    const channelEl = document.getElementById('ob-contact-channel') as HTMLSelectElement;
+    const assigneeEl = document.getElementById('ob-contact-assignee') as HTMLSelectElement;
+    const btn = document.getElementById('ob-contact-send-btn') as HTMLButtonElement;
+
+    if (!subjectEl || !bodyEl) return;
+    const subject = subjectEl.value.trim();
+    const body = bodyEl.value.trim();
+    if (!subject) { subjectEl.style.borderColor = 'var(--error)'; subjectEl.focus(); return; }
+    if (!body) { bodyEl.style.borderColor = 'var(--error)'; bodyEl.focus(); return; }
+
+    if (btn) { btn.innerHTML = '<span class="vp-spinner"></span> Sender...'; btn.disabled = true; }
+
+    try {
+      await OnboardingAPI.contactUser({
+        user_id: userId,
+        channel: (channelEl?.value as 'email' | 'message') || 'email',
+        subject,
+        body,
+        assignee_id: assigneeEl?.value || undefined,
+      });
+      (window as any).App.toast('Besked sendt \u2014 ticket oprettet', 'success');
+      this.closeModal();
+      (window as any).App.render();
+    } catch (err: any) {
+      if (btn) { btn.innerHTML = 'Send & opret ticket'; btn.disabled = false; }
+      (window as any).App.toast(err.message || 'Kunne ikke sende', 'error');
+    }
+  },
+
+  async openUserTickets(userId: string): Promise<void> {
+    const user = this._users.find(u => u.id === userId);
+    if (!user) return;
+
+    const modal = document.getElementById('team-modal');
+    if (!modal) return;
+
+    let tickets: Ticket[] = [];
+    try {
+      tickets = await OnboardingAPI.getUserTickets(userId);
+    } catch { /* */ }
+
+    const statusLabels: Record<string, string> = { open: '\u00c5ben', in_progress: 'I gang', resolved: 'L\u00f8st', closed: 'Lukket' };
+    const statusCls: Record<string, string> = { open: 'hd-status-open', in_progress: 'hd-status-progress', resolved: 'hd-status-resolved', closed: 'hd-status-closed' };
+
+    const ticketRows = tickets.length > 0
+      ? tickets.map(t => `
+          <div class="ob-ticket-history-row" onclick="App.navigateTo('helpdesk-detail', '${t.id}')">
+            <div>
+              <div style="font-weight:var(--font-semibold);font-size:var(--text-sm)">${escapeHtml(t.subject)}</div>
+              <div style="font-size:var(--text-xs);color:var(--text-tertiary)">${new Date(t.created_at).toLocaleDateString('da-DK', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+            </div>
+            <span class="hd-badge ${statusCls[t.status] || ''}">${statusLabels[t.status] || t.status}</span>
+          </div>`).join('')
+      : '<p style="text-align:center;color:var(--text-tertiary);padding:var(--space-5)">Ingen tickets for denne bruger.</p>';
+
+    modal.innerHTML = `
+      <div class="tl-modal" style="width:520px" onclick="event.stopPropagation()">
+        <div class="tl-modal-header">
+          <div>
+            <h3>Ticket-historik</h3>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);margin-top:2px">
+              ${escapeHtml(user.name)} &mdash; ${escapeHtml(user.clinic_name)}
+            </div>
+          </div>
+          <button class="btn-icon" onclick="OnboardingDashboard.closeModal()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="tl-modal-body" style="max-height:400px;overflow-y:auto">
+          ${ticketRows}
+        </div>
+        <div class="tl-modal-footer">
+          <button class="btn" onclick="OnboardingDashboard.closeModal()">Luk</button>
+          <button class="btn btn-primary" onclick="OnboardingDashboard.closeModal(); OnboardingDashboard.openContactModal('${userId}')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Ny kontakt
+          </button>
+        </div>
+      </div>
+    `;
+
+    modal.classList.add('open');
+    modal.onclick = (e: Event) => { if (e.target === modal) this.closeModal(); };
+  },
+
+  closeModal(): void {
+    const modal = document.getElementById('team-modal');
+    if (modal) {
+      modal.classList.remove('open');
+      modal.innerHTML = '';
+      modal.onclick = null;
+    }
   },
 };
 

@@ -383,6 +383,15 @@ def init():
         CREATE INDEX IF NOT EXISTS idx_ticket_messages_ticket ON ticket_messages(ticket_id);
     """)
 
+    # Migration: link tickets to platform users
+    execute("""
+        DO $$ BEGIN
+            ALTER TABLE tickets ADD COLUMN platform_user_id TEXT REFERENCES platform_users(id) ON DELETE SET NULL;
+        EXCEPTION WHEN duplicate_column THEN NULL;
+        END $$;
+    """)
+    execute("CREATE INDEX IF NOT EXISTS idx_tickets_platform_user ON tickets(platform_user_id)")
+
     # Seed FAQ items
     execute("""
         INSERT INTO faq_items (id, question, answer, category, sort_order) VALUES

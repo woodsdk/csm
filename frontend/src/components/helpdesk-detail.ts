@@ -138,12 +138,43 @@ export const HelpdeskDetail = {
             ` : ''}
             <div class="hd-sidebar-section">
               <label class="hd-sidebar-label">Kilde</label>
-              <div class="hd-sidebar-value">${t.source === 'manual' ? 'Manuel' : t.source === 'email' ? 'Email' : 'Chat'}</div>
+              <div class="hd-sidebar-value">${t.source === 'manual' ? 'Manuel' : t.source === 'email' ? 'Email' : t.source === 'outbound_email' ? 'Udg\u00e5ende email' : t.source === 'outbound_message' ? 'Udg\u00e5ende besked' : t.source === 'chat' ? 'Chat' : t.source}</div>
             </div>
             <div class="hd-sidebar-section">
               <label class="hd-sidebar-label">Oprettet</label>
               <div class="hd-sidebar-value">${new Date(t.created_at).toLocaleString('da-DK', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
             </div>
+            ${t.platform_user_id ? `
+              <div class="hd-sidebar-section hd-user-context">
+                <label class="hd-sidebar-label">Platform-bruger</label>
+                <div class="hd-user-context-card">
+                  <div class="hd-user-context-name">${escapeHtml(t.platform_user_name || '')}</div>
+                  <div class="hd-user-context-clinic">${escapeHtml((t as any).platform_user_clinic || '')}</div>
+                  <div class="hd-user-context-stats">
+                    <div class="hd-user-context-stat">
+                      <span class="hd-user-context-stat-label">Health</span>
+                      <span class="hd-user-context-stat-value" style="color:${((t as any).platform_user_health || 0) >= 70 ? 'var(--success)' : ((t as any).platform_user_health || 0) >= 40 ? 'var(--warning)' : 'var(--error)'}">${(t as any).platform_user_health || 0}</span>
+                    </div>
+                    <div class="hd-user-context-stat">
+                      <span class="hd-user-context-stat-label">Status</span>
+                      <span class="hd-user-context-stat-value">${(t as any).platform_user_status || '\u2014'}</span>
+                    </div>
+                    <div class="hd-user-context-stat">
+                      <span class="hd-user-context-stat-label">Kons.</span>
+                      <span class="hd-user-context-stat-value">${(t as any).platform_user_consultations ?? '\u2014'}</span>
+                    </div>
+                    <div class="hd-user-context-stat">
+                      <span class="hd-user-context-stat-label">Gns. rating</span>
+                      <span class="hd-user-context-stat-value">${(t as any).platform_user_avg_rating ? Number((t as any).platform_user_avg_rating).toFixed(1) : '\u2014'}</span>
+                    </div>
+                  </div>
+                  <button class="btn btn-sm" style="margin-top:var(--space-2);width:100%" onclick="App.navigateTo('onboarding')">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                    Se i dashboard
+                  </button>
+                </div>
+              </div>
+            ` : ''}
           </div>
         </div>
       </div>

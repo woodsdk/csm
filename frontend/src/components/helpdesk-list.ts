@@ -156,6 +156,7 @@ export const HelpdeskList = {
           <div class="hd-ticket-subject">${escapeHtml(t.subject)}</div>
           <div class="hd-ticket-meta">
             ${t.requester_name ? `<span class="hd-ticket-requester">${escapeHtml(t.requester_name)}</span>` : ''}
+            ${(t as any).platform_user_name ? `<span class="hd-ticket-platform-user" title="Linket til ${escapeHtml((t as any).platform_user_name)}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> ${escapeHtml((t as any).platform_user_name)}</span>` : ''}
             ${t.category ? `<span class="hd-ticket-category">${escapeHtml(t.category)}</span>` : ''}
             <span class="hd-ticket-time">${timeAgo}</span>
           </div>

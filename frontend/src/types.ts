@@ -233,6 +233,15 @@ export interface Ticket {
   requester_email: string;
   assignee_id: string | null;
   assignee_name?: string;
+  platform_user_id: string | null;
+  platform_user_name?: string;
+  platform_user_email?: string;
+  platform_user_clinic?: string;
+  platform_user_health?: number;
+  platform_user_status?: string;
+  platform_user_consultations?: number;
+  platform_user_avg_rating?: number | null;
+  platform_user_days_since_signup?: number;
   created_at: string;
   updated_at: string;
   resolved_at: string | null;
@@ -278,6 +287,16 @@ export interface OnboardingUser {
   avg_rating: number | null;
   review_count: number;
   latest_issue: string | null;
+  ticket_count: number;
+  open_ticket_count: number;
+}
+
+export interface ContactPayload {
+  user_id: string;
+  channel: 'email' | 'message';
+  subject: string;
+  body: string;
+  assignee_id?: string;
 }
 
 export interface OverviewData {
