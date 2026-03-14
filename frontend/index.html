@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SynergyHub — People's Doctor</title>
+  <link rel="stylesheet" href="/css/synergy.css">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <div class="app-shell">
+    <div class="sidebar-overlay" onclick="App.closeMobileMenu()"></div>
+    <div id="sidebar"></div>
+    <div class="main-area" id="main"></div>
+  </div>
+
+  <!-- Modal overlays -->
+  <div class="modal-overlay" id="task-modal"></div>
+  <div class="modal-overlay" id="event-modal"></div>
+  <div class="modal-overlay" id="settings-modal"></div>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Keyboard shortcuts overlay -->
+  <div class="shortcuts-overlay" id="shortcuts-overlay" onclick="App.hideShortcuts()">
+    <div class="shortcuts-panel" onclick="event.stopPropagation()">
+      <h3>Tastaturgenveje</h3>
+      <div class="shortcuts-grid">
+        <div class="shortcut-row"><kbd>N</kbd><span>Ny opgave</span></div>
+        <div class="shortcut-row"><kbd>/</kbd><span>Fokus søgefelt</span></div>
+        <div class="shortcut-row"><kbd>1</kbd><span>Listevisning</span></div>
+        <div class="shortcut-row"><kbd>2</kbd><span>Kanbanvisning</span></div>
+        <div class="shortcut-row"><kbd>3</kbd><span>Kalendervisning</span></div>
+        <div class="shortcut-row"><kbd>?</kbd><span>Vis/skjul genveje</span></div>
+        <div class="shortcut-row"><kbd>Esc</kbd><span>Luk dialog</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Google Identity Services (for Calendar OAuth2) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <!-- Single TypeScript entry point (Vite handles bundling) -->
+  <script type="module" src="/src/app.ts"></script>
+</body>
+</html>

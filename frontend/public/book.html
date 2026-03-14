@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book et møde — People's Doctor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-900: #13102C;
+      --navy-800: #26304F;
+      --navy-700: #323E63;
+      --navy-600: #38456D;
+      --navy-500: #5669A4;
+      --navy-400: #A3B0D9;
+      --navy-300: #BFC9E3;
+      --navy-200: #D8DEEE;
+      --navy-100: #EDF0F7;
+      --bg: #F8F8FD;
+      --surface: #FFFFFF;
+      --text: #13102C;
+      --text-secondary: #5669A4;
+      --gradient: linear-gradient(135deg, #38456D, #5669A4);
+      --radius: 12px;
+      --radius-full: 9999px;
+      --shadow: 0 1px 3px rgba(19,16,44,0.08), 0 1px 2px rgba(19,16,44,0.04);
+      --shadow-lg: 0 10px 40px rgba(19,16,44,0.12);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .book-header {
+      text-align: center;
+      padding: 48px 24px 32px;
+      max-width: 600px;
+    }
+
+    .book-logo {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--navy-500);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .book-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--navy-900);
+      margin-bottom: 8px;
+    }
+
+    .book-header p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .book-container {
+      width: 100%;
+      max-width: 600px;
+      padding: 0 24px 48px;
+    }
+
+    /* Steps */
+    .book-steps {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+      justify-content: center;
+    }
+
+    .step-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--navy-200);
+      transition: all 0.3s;
+    }
+
+    .step-dot.active {
+      background: var(--navy-600);
+      width: 24px;
+      border-radius: 4px;
+    }
+
+    .step-dot.done {
+      background: var(--navy-500);
+    }
+
+    /* Cards */
+    .type-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .type-card {
+      background: var(--surface);
+      border: 2px solid var(--navy-100);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .type-card:hover {
+      border-color: var(--navy-400);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+
+    .type-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .type-info h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .type-meta {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* Date picker */
+    .date-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+
+    .date-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .date-header h3 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .date-nav {
+      display: flex;
+      gap: 8px;
+    }
+
+    .date-nav button {
+      background: var(--surface);
+      border: 1px solid var(--navy-200);
+      border-radius: var(--radius-full);
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--navy-600);
+      transition: all 0.2s;
+    }
+
+    .date-nav button:hover {
+      background: var(--navy-100);
+    }
+
+    .day-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-align: center;
+      padding: 4px 0;
+    }
+
+    .day-cell {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: default;
+      color: var(--navy-300);
+    }
+
+    .day-cell.available {
+      cursor: pointer;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .day-cell.available:hover {
+      background: var(--navy-100);
+    }
+
+    .day-cell.selected {
+      background: var(--gradient);
+      color: white;
+    }
+
+    .day-cell.today {
+      border: 2px solid var(--navy-400);
+    }
+
+    /* Time slots */
+    .time-slots {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .time-slot {
+      background: var(--surface);
+      border: 2px solid var(--navy-100);
+      border-radius: var(--radius-full);
+      padding: 10px 16px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .time-slot:hover {
+      border-color: var(--navy-400);
+      background: var(--navy-100);
+    }
+
+    .time-slot.selected {
+      background: var(--gradient);
+      color: white;
+      border-color: transparent;
+    }
+
+    /* Form */
+    .book-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy-700);
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 2px solid var(--navy-100);
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 14px;
+      transition: border-color 0.2s;
+      background: var(--surface);
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--navy-500);
+    }
+
+    .form-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .form-group .required {
+      color: #EF4444;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 10px 24px;
+      border-radius: var(--radius-full);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--gradient);
+      color: white;
+      box-shadow: 0 2px 8px rgba(56, 69, 109, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--navy-800), var(--navy-600));
+      transform: translateY(-1px);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--navy-600);
+      border: 2px solid var(--navy-200);
+    }
+
+    .btn-ghost:hover {
+      background: var(--navy-100);
+    }
+
+    .btn-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+
+    /* Confirmation */
+    .confirmation {
+      text-align: center;
+      padding: 32px;
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .confirmation .check {
+      width: 64px;
+      height: 64px;
+      background: #F0FDF4;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+    }
+
+    .confirmation h2 {
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+
+    .confirmation p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .confirmation .details {
+      margin: 24px 0;
+      padding: 16px;
+      background: var(--navy-100);
+      border-radius: var(--radius);
+      text-align: left;
+    }
+
+    .confirmation .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 14px;
+    }
+
+    .confirmation .detail-row .label {
+      color: var(--text-secondary);
+    }
+
+    .section-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--navy-700);
+      margin-bottom: 16px;
+    }
+
+    .selected-summary {
+      background: var(--navy-100);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .selected-summary .badge {
+      background: var(--gradient);
+      color: white;
+      padding: 2px 10px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 32px;
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 480px) {
+      .time-slots { grid-template-columns: repeat(2, 1fr); }
+      .book-header h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="book-header">
+    <div class="book-logo">People's Doctor</div>
+    <h1>Book et møde</h1>
+    <p>Vælg en mødetype og find et ledigt tidspunkt der passer dig.</p>
+  </div>
+
+  <div class="book-container">
+    <div class="book-steps" id="steps"></div>
+    <div id="booking-app"></div>
+  </div>
+
+  <script>
+    const API = '/api/bookings';
+
+    const state = {
+      step: 1, // 1: type, 2: date+time, 3: form, 4: confirmation
+      types: [],
+      selectedType: null,
+      availableDates: [],
+      currentMonth: new Date(),
+      selectedDate: null,
+      slots: [],
+      selectedSlot: null,
+      booking: null
+    };
+
+    // ── API calls ──
+
+    async function fetchTypes() {
+      const res = await fetch(`${API}/types`);
+      return res.json();
+    }
+
+    async function fetchAvailableDates(typeId) {
+      const res = await fetch(`${API}/dates?type_id=${typeId}`);
+      return res.json();
+    }
+
+    async function fetchSlots(date, typeId) {
+      const res = await fetch(`${API}/available?date=${date}&type_id=${typeId}`);
+      return res.json();
+    }
+
+    async function submitBooking(data) {
+      const res = await fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Booking fejlede');
+      }
+      return res.json();
+    }
+
+    // ── Render ──
+
+    function render() {
+      renderSteps();
+      const app = document.getElementById('booking-app');
+
+      switch (state.step) {
+        case 1: renderTypeSelection(app); break;
+        case 2: renderDateTimePicker(app); break;
+        case 3: renderForm(app); break;
+        case 4: renderConfirmation(app); break;
+      }
+    }
+
+    function renderSteps() {
+      const el = document.getElementById('steps');
+      el.innerHTML = [1,2,3,4].map(s =>
+        `<div class="step-dot ${s === state.step ? 'active' : ''} ${s < state.step ? 'done' : ''}"></div>`
+      ).join('');
+    }
+
+    // Step 1: Type selection
+    function renderTypeSelection(container) {
+      if (state.types.length === 0) {
+        container.innerHTML = '<div class="loading">Indlæser mødetyper...</div>';
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="type-cards">
+          ${state.types.map(t => `
+            <div class="type-card" onclick="selectType('${t.id}')">
+              <div class="type-dot" style="background: ${t.color}"></div>
+              <div class="type-info">
+                <h3>${esc(t.name)}</h3>
+                <div class="type-meta">${t.duration} min — ${esc(t.description)}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    async function selectType(typeId) {
+      state.selectedType = state.types.find(t => t.id === typeId);
+      state.availableDates = await fetchAvailableDates(typeId);
+      state.step = 2;
+      render();
+    }
+
+    // Step 2: Date + Time
+    function renderDateTimePicker(container) {
+      const type = state.selectedType;
+
+      container.innerHTML = `
+        <div class="selected-summary">
+          <div class="type-dot" style="background: ${type.color}; width: 10px; height: 10px; border-radius: 50%;"></div>
+          <span>${esc(type.name)} (${type.duration} min)</span>
+        </div>
+        <div class="section-card">
+          <div class="section-title">Vælg dato</div>
+          ${renderCalendar()}
+          ${state.selectedDate ? `
+            <div class="section-title" style="margin-top: 24px;">Ledige tider — ${formatDateDa(state.selectedDate)}</div>
+            ${state.slots.length > 0 ? `
+              <div class="time-slots">
+                ${state.slots.map(s => `
+                  <div class="time-slot ${state.selectedSlot === s.start_time ? 'selected' : ''}"
+                       onclick="selectSlot('${s.start_time}', '${s.end_time}')">
+                    ${s.start_time}
+                  </div>
+                `).join('')}
+              </div>
+            ` : '<p style="color: var(--text-secondary); font-size: 14px;">Ingen ledige tider denne dag.</p>'}
+          ` : ''}
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="goBack()">Tilbage</button>
+          ${state.selectedSlot ? '<button class="btn btn-primary" onclick="goToForm()">Fortsæt</button>' : ''}
+        </div>
+      `;
+    }
+
+    function renderCalendar() {
+      const year = state.currentMonth.getFullYear();
+      const month = state.currentMonth.getMonth();
+      const today = new Date().toISOString().split('T')[0];
+
+      const firstDay = new Date(year, month, 1);
+      let startOffset = firstDay.getDay() - 1; // Monday-based
+      if (startOffset < 0) startOffset = 6;
+
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const monthNames = ['Januar', 'Februar', 'Marts', 'April', 'Maj', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'December'];
+
+      let html = `
+        <div class="date-header">
+          <h3>${monthNames[month]} ${year}</h3>
+          <div class="date-nav">
+            <button onclick="prevMonth()">&#8249;</button>
+            <button onclick="nextMonth()">&#8250;</button>
+          </div>
+        </div>
+        <div class="date-grid">
+          ${['Ma','Ti','On','To','Fr','Lø','Sø'].map(d => `<div class="day-label">${d}</div>`).join('')}
+      `;
+
+      // Empty cells before first day
+      for (let i = 0; i < startOffset; i++) {
+        html += '<div class="day-cell"></div>';
+      }
+
+      // Day cells
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const isAvailable = state.availableDates.includes(dateStr);
+        const isSelected = state.selectedDate === dateStr;
+        const isToday = dateStr === today;
+
+        const classes = ['day-cell'];
+        if (isAvailable) classes.push('available');
+        if (isSelected) classes.push('selected');
+        if (isToday) classes.push('today');
+
+        html += `<div class="${classes.join(' ')}" ${isAvailable ? `onclick="selectDate('${dateStr}')"` : ''}>${d}</div>`;
+      }
+
+      html += '</div>';
+      return html;
+    }
+
+    async function selectDate(date) {
+      state.selectedDate = date;
+      state.selectedSlot = null;
+      state.slots = await fetchSlots(date, state.selectedType.id);
+      render();
+    }
+
+    function selectSlot(startTime, endTime) {
+      state.selectedSlot = startTime;
+      state.selectedEndTime = endTime;
+      render();
+    }
+
+    function prevMonth() {
+      state.currentMonth = new Date(state.currentMonth.getFullYear(), state.currentMonth.getMonth() - 1, 1);
+      render();
+    }
+
+    function nextMonth() {
+      state.currentMonth = new Date(state.currentMonth.getFullYear(), state.currentMonth.getMonth() + 1, 1);
+      render();
+    }
+
+    function goToForm() {
+      state.step = 3;
+      render();
+    }
+
+    // Step 3: Contact form
+    function renderForm(container) {
+      const type = state.selectedType;
+
+      container.innerHTML = `
+        <div class="selected-summary">
+          <div class="type-dot" style="background: ${type.color}; width: 10px; height: 10px; border-radius: 50%;"></div>
+          <span>${esc(type.name)}</span>
+          <span class="badge">${formatDateDa(state.selectedDate)} kl. ${state.selectedSlot}</span>
+        </div>
+        <div class="section-card">
+          <div class="section-title">Dine oplysninger</div>
+          <div class="book-form">
+            <div class="form-group">
+              <label>Navn <span class="required">*</span></label>
+              <input type="text" id="guest-name" placeholder="Dit fulde navn" autofocus>
+            </div>
+            <div class="form-group">
+              <label>Email <span class="required">*</span></label>
+              <input type="email" id="guest-email" placeholder="din@email.dk">
+            </div>
+            <div class="form-group">
+              <label>Telefon</label>
+              <input type="tel" id="guest-phone" placeholder="+45 ...">
+            </div>
+            <div class="form-group">
+              <label>Klinik / Virksomhed</label>
+              <input type="text" id="guest-company" placeholder="Klinikens navn">
+            </div>
+            <div class="form-group">
+              <label>Note</label>
+              <textarea id="guest-notes" placeholder="Er der noget vi skal vide på forhånd?"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="goBack()">Tilbage</button>
+          <button class="btn btn-primary" onclick="submitForm()" id="submit-btn">Book møde</button>
+        </div>
+      `;
+
+      requestAnimationFrame(() => document.getElementById('guest-name')?.focus());
+    }
+
+    async function submitForm() {
+      const name = document.getElementById('guest-name').value.trim();
+      const email = document.getElementById('guest-email').value.trim();
+
+      if (!name) { document.getElementById('guest-name').style.borderColor = '#EF4444'; return; }
+      if (!email) { document.getElementById('guest-email').style.borderColor = '#EF4444'; return; }
+
+      const btn = document.getElementById('submit-btn');
+      btn.textContent = 'Booker...';
+      btn.disabled = true;
+
+      try {
+        state.booking = await submitBooking({
+          booking_type_id: state.selectedType.id,
+          date: state.selectedDate,
+          start_time: state.selectedSlot,
+          end_time: state.selectedEndTime,
+          guest_name: name,
+          guest_email: email,
+          guest_phone: document.getElementById('guest-phone').value.trim(),
+          guest_company: document.getElementById('guest-company').value.trim(),
+          notes: document.getElementById('guest-notes').value.trim()
+        });
+        state.step = 4;
+        render();
+      } catch (err) {
+        btn.textContent = 'Book møde';
+        btn.disabled = false;
+        alert(err.message);
+      }
+    }
+
+    // Step 4: Confirmation
+    function renderConfirmation(container) {
+      const b = state.booking;
+      const type = state.selectedType;
+
+      container.innerHTML = `
+        <div class="confirmation">
+          <div class="check">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h2>Booking bekræftet!</h2>
+          <p>Vi glæder os til at møde dig. Du modtager en bekræftelse på email.</p>
+          <div class="details">
+            <div class="detail-row"><span class="label">Mødetype</span><span>${esc(type.name)}</span></div>
+            <div class="detail-row"><span class="label">Dato</span><span>${formatDateDa(b.date)}</span></div>
+            <div class="detail-row"><span class="label">Tid</span><span>${b.start_time} - ${b.end_time}</span></div>
+            <div class="detail-row"><span class="label">Navn</span><span>${esc(b.guest_name)}</span></div>
+            <div class="detail-row"><span class="label">Email</span><span>${esc(b.guest_email)}</span></div>
+            ${b.guest_company ? `<div class="detail-row"><span class="label">Klinik</span><span>${esc(b.guest_company)}</span></div>` : ''}
+          </div>
+          <button class="btn btn-ghost" onclick="resetBooking()">Book endnu et møde</button>
+        </div>
+      `;
+    }
+
+    // ── Helpers ──
+
+    function goBack() {
+      if (state.step === 2) { state.step = 1; state.selectedType = null; state.selectedDate = null; state.selectedSlot = null; }
+      else if (state.step === 3) { state.step = 2; }
+      render();
+    }
+
+    function resetBooking() {
+      state.step = 1;
+      state.selectedType = null;
+      state.selectedDate = null;
+      state.selectedSlot = null;
+      state.booking = null;
+      render();
+    }
+
+    function formatDateDa(dateStr) {
+      const d = new Date(dateStr + 'T12:00:00');
+      const days = ['søndag', 'mandag', 'tirsdag', 'onsdag', 'torsdag', 'fredag', 'lørdag'];
+      const months = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
+      return `${days[d.getDay()]} ${d.getDate()}. ${months[d.getMonth()]}`;
+    }
+
+    function esc(str) {
+      const div = document.createElement('div');
+      div.textContent = str || '';
+      return div.innerHTML;
+    }
+
+    // ── Boot ──
+
+    async function init() {
+      state.types = await fetchTypes();
+      render();
+    }
+
+    init();
+  </script>
+</body>
+</html>
