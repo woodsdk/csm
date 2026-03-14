@@ -20,13 +20,13 @@ const ListView = {
     const allActiveIds = activeTasks.map(t => t.id);
     const allChecked = allActiveIds.length > 0 && allActiveIds.every(id => this._selected.has(id));
 
-    // ── Quick filter chips ──
-    const quickFiltersHtml = `
-      <div class="quick-filters">
-        <button class="quick-filter-chip ${App.state.filters.assignee_id === 'morten' ? 'active' : ''}" onclick="ListView.quickFilter('mine')">Mine opgaver</button>
-        <button class="quick-filter-chip ${App.state._quickFilter === 'overdue' ? 'active' : ''}" onclick="ListView.quickFilter('overdue')">Forfaldne</button>
-        <button class="quick-filter-chip ${App.state._quickFilter === 'week' ? 'active' : ''}" onclick="ListView.quickFilter('week')">Denne uge</button>
-        ${App.state._quickFilter ? '<button class="quick-filter-chip quick-filter-clear" onclick="ListView.quickFilter(\'clear\')">✕ Ryd</button>' : ''}
+    // ── Quick-add bar (above table) ──
+    const quickAddHtml = `
+      <div class="quick-add-bar">
+        <svg class="quick-add-bar-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <input class="quick-add-bar-input" type="text" placeholder="Ny opgave — skriv titel og tryk Enter..."
+               onkeydown="if(event.key==='Enter')ListView.quickAdd(this.value)"
+               id="quick-add-input">
       </div>
     `;
 
@@ -99,72 +99,21 @@ const ListView = {
     ` : '';
 
     return `
-      ${quickFiltersHtml}
+      ${quickAddHtml}
       ${bulkBarHtml}
       <div class="list-table-wrap">
         <table class="list-table">
           ${theadHtml}
           <tbody id="task-tbody">
-            <tr class="quick-add-row">
-              <td colspan="10">
-                <div class="quick-add-cell">
-                  <svg class="quick-add-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                  <input class="quick-add-input" type="text" placeholder="Skriv titel og tryk Enter..."
-                         onkeydown="if(event.key==='Enter')ListView.quickAdd(this.value)"
-                         id="quick-add-input">
-                </div>
-              </td>
-            </tr>
             ${activeTasks.length > 0
               ? activeTasks.map(t => this._renderRow(t, members, today, false)).join('')
-              : isEmpty ? `<tr class="empty-row"><td colspan="10"><div class="empty-state-inline"><p>Ingen opgaver endnu — skriv en titel ovenfor</p></div></td></tr>` : ''
+              : isEmpty ? `<tr class="empty-row"><td colspan="10"><div class="empty-state-inline"><p>Ingen opgaver endnu — brug feltet ovenfor</p></div></td></tr>` : ''
             }
           </tbody>
         </table>
       </div>
       ${doneSection}
     `;
-  },
-
-  // ── Quick Filters ──
-
-  quickFilter(type) {
-    if (type === 'clear') {
-      App.state.filters.assignee_id = '';
-      App.state._quickFilter = null;
-      App.render();
-      return;
-    }
-    if (type === 'mine') {
-      // Toggle
-      if (App.state.filters.assignee_id === 'morten') {
-        App.state.filters.assignee_id = '';
-        App.state._quickFilter = null;
-      } else {
-        App.state.filters.assignee_id = 'morten';
-        App.state._quickFilter = 'mine';
-      }
-      App.render();
-      return;
-    }
-    if (type === 'overdue') {
-      if (App.state._quickFilter === 'overdue') {
-        App.state._quickFilter = null;
-      } else {
-        App.state._quickFilter = 'overdue';
-      }
-      App.render();
-      return;
-    }
-    if (type === 'week') {
-      if (App.state._quickFilter === 'week') {
-        App.state._quickFilter = null;
-      } else {
-        App.state._quickFilter = 'week';
-      }
-      App.render();
-      return;
-    }
   },
 
   // ── Selection / Bulk ──
@@ -477,15 +426,6 @@ const ListView = {
     const checkTotal = checklist.length;
     const checkProgress = checkTotal > 0 ? `<span class="check-progress">${checkDone}/${checkTotal}</span>` : '';
     const isSelected = this._selected.has(task.id);
-
-    // Apply quick filters client-side
-    if (App.state._quickFilter === 'overdue' && !(task.deadline && task.deadline < today && task.status !== 'done')) return '';
-    if (App.state._quickFilter === 'week') {
-      const weekEnd = new Date(today + 'T00:00:00');
-      weekEnd.setDate(weekEnd.getDate() + 7);
-      const weekEndStr = weekEnd.toISOString().split('T')[0];
-      if (!(task.deadline && task.deadline >= today && task.deadline <= weekEndStr)) return '';
-    }
 
     return `
       <tr class="task-row ${isDone ? 'task-row-done' : ''} ${isSelected ? 'task-row-selected' : ''}" data-id="${task.id}"
