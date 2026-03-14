@@ -86,14 +86,13 @@ def _get_on_shift_demo_staff(date: str) -> list[dict]:
 def _get_available_slots(date: str) -> list[dict]:
     """Get available 30-min demo slots for a given date.
 
-    A slot is available when:
-    1. At least one confirmed shift covers the time window
-    2. That shift's staff member can give demos
-    3. At least one such person is not already booked for a demo at that time
+    Two modes:
+    A) If shifts exist for this date → only show slots during shift times
+       (staff must be on shift AND can_give_demos)
+    B) If NO shifts exist → fallback to any demo-capable staff being available
+       (all standard demo slots, limited by existing bookings)
     """
     on_shift = _get_on_shift_demo_staff(date)
-    if not on_shift:
-        return []
 
     # Get existing demo bookings for this date
     existing = query(
@@ -101,6 +100,36 @@ def _get_available_slots(date: str) -> list[dict]:
         (date,),
     )
 
+    # Check if ANY shifts exist for this date (regardless of demo capability)
+    any_shifts = query(
+        "SELECT COUNT(*) as cnt FROM shifts WHERE date = %s AND status = 'confirmed'",
+        (date,),
+    )
+    has_shifts = any_shifts and any_shifts[0]["cnt"] > 0
+
+    if has_shifts and not on_shift:
+        # Shifts exist but none have demo-capable staff → no slots
+        return []
+
+    if not has_shifts:
+        # No shifts registered for this date → fallback: any demo-capable team member
+        demo_staff = query(
+            "SELECT id FROM team_members WHERE can_give_demos = true AND is_active = true"
+        )
+        if not demo_staff:
+            return []
+
+        all_demo_ids = {s["id"] for s in demo_staff}
+        slots = []
+        for start in DEMO_SLOTS:
+            start_min = _time_to_min(start)
+            end_min = start_min + DEMO_DURATION
+            booked_ids = {b["staff_id"] for b in existing if b["start_time"] == start}
+            if all_demo_ids - booked_ids:
+                slots.append({"start_time": start, "end_time": _min_to_time(end_min)})
+        return slots
+
+    # Shifts exist with demo-capable staff → restrict to shift coverage
     slots = []
     for start in DEMO_SLOTS:
         start_min = _time_to_min(start)
@@ -124,22 +153,38 @@ def _get_available_slots(date: str) -> list[dict]:
 
 
 def _assign_staff(date: str, start_time: str) -> dict | None:
-    """Assign a demo-capable staff member who is on shift during this time.
+    """Assign a demo-capable staff member for this time slot.
 
-    Picks the least-busy person among those on shift.
+    If shifts exist → picks from on-shift staff.
+    If no shifts → picks from any demo-capable staff (fallback).
+    Load-balances by fewest demos that week.
     """
     start_min = _time_to_min(start_time)
     end_min = start_min + DEMO_DURATION
 
-    # Find on-shift demo-capable staff covering this window
-    on_shift = _get_on_shift_demo_staff(date)
-    covering = []
-    seen_ids = set()
-    for s in on_shift:
-        if _time_to_min(s["shift_start"]) <= start_min and _time_to_min(s["shift_end"]) >= end_min:
-            if s["staff_id"] not in seen_ids:
-                covering.append({"id": s["staff_id"], "name": s["name"], "email": s["email"]})
-                seen_ids.add(s["staff_id"])
+    # Check if shifts exist for this date
+    any_shifts = query(
+        "SELECT COUNT(*) as cnt FROM shifts WHERE date = %s AND status = 'confirmed'",
+        (date,),
+    )
+    has_shifts = any_shifts and any_shifts[0]["cnt"] > 0
+
+    if has_shifts:
+        # Find on-shift demo-capable staff covering this window
+        on_shift = _get_on_shift_demo_staff(date)
+        covering = []
+        seen_ids = set()
+        for s in on_shift:
+            if _time_to_min(s["shift_start"]) <= start_min and _time_to_min(s["shift_end"]) >= end_min:
+                if s["staff_id"] not in seen_ids:
+                    covering.append({"id": s["staff_id"], "name": s["name"], "email": s["email"]})
+                    seen_ids.add(s["staff_id"])
+    else:
+        # No shifts → fallback to any demo-capable team member
+        demo_staff = query(
+            "SELECT id, name, email FROM team_members WHERE can_give_demos = true AND is_active = true"
+        )
+        covering = [{"id": s["id"], "name": s["name"], "email": s["email"]} for s in demo_staff]
 
     if not covering:
         return None

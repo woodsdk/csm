@@ -54,8 +54,13 @@ export const ShiftSchedule = {
   async render(): Promise<string> {
     // Compute all 4 weeks' dates
     const allWeeks: string[][] = [];
+    const now = new Date();
+    const isWeekend = now.getDay() === 0 || now.getDay() === 6;
+
     for (let w = 0; w < WEEKS_SHOWN; w++) {
-      allWeeks.push(this._getWeekDates(this._weekOffset + w));
+      // If it's weekend and offset=0, start from next week
+      const weekIdx = (isWeekend && this._weekOffset === 0) ? w + 1 : this._weekOffset + w;
+      allWeeks.push(this._getWeekDates(weekIdx));
     }
 
     const firstDate = allWeeks[0][0];

@@ -44,7 +44,7 @@ export const DemoJoin = {
       <div class="db-page">
         <div class="db-container">
           <div class="db-header">
-            <img src="/assets/peoples-clinic.svg" alt="People's Clinic" class="db-logo">
+            <img src="/assets/peoples.svg" alt="People's Clinic" class="db-logo">
             <h1 class="db-title">Deltag i demo</h1>
             <p class="db-subtitle">Tilmeld dig en planlagt demo af People's Clinic platformen.</p>
           </div>
