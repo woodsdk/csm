@@ -10,7 +10,7 @@ export const Sidebar = {
           <img src="/assets/peoples.svg" alt="People's Doctor" class="sidebar-logo-img">
         </div>
 
-        <div class="sidebar-section-title">Platform</div>
+        <div class="sidebar-section-title">Task Management</div>
         <nav class="sidebar-nav">
           ${Object.entries((window as any).App.tabs).map(([key, tab]: [string, any]) => `
             <button class="sidebar-nav-item ${(window as any).App.state.tab === key ? 'active' : ''}" onclick="App.setTab('${key}')">
