@@ -14,6 +14,7 @@ import { CalendarSettings } from './components/calendar-settings';
 import { ShiftSchedule } from './components/shift-schedule';
 import { TeamList } from './components/team-list';
 import { DemoBooking } from './components/demo-booking';
+import { DemoJoin } from './components/demo-join';
 import { GoogleCal } from './google-calendar';
 import type { Task, AppState } from './types';
 
@@ -61,6 +62,14 @@ export const App = {
     if (window.location.pathname === '/book-demo') {
       this.state.page = 'book-demo';
       await this._renderPublicBookingPage();
+      return;
+    }
+
+    // Public join page: /demo/{id}/join
+    const joinMatch = window.location.pathname.match(/^\/demo\/([^/]+)\/join$/);
+    if (joinMatch) {
+      DemoJoin.setBookingId(joinMatch[1]);
+      await this._renderPublicJoinPage();
       return;
     }
 
@@ -175,6 +184,21 @@ export const App = {
 
     const bookingHTML = await DemoBooking.render();
     mainEl.innerHTML = bookingHTML;
+  },
+
+  async _renderPublicJoinPage(): Promise<void> {
+    const sidebarEl = document.getElementById('sidebar');
+    const mainEl = document.getElementById('main');
+    if (!mainEl) return;
+
+    if (sidebarEl) sidebarEl.style.display = 'none';
+    const overlay = document.querySelector('.sidebar-overlay') as HTMLElement;
+    if (overlay) overlay.style.display = 'none';
+
+    mainEl.style.marginLeft = '0';
+    mainEl.style.width = '100%';
+
+    mainEl.innerHTML = await DemoJoin.render();
   },
 
   async _renderTeamPage(container: HTMLElement): Promise<void> {

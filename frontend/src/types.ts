@@ -154,6 +154,7 @@ export interface DemoBooking {
   meet_link: string;
   status: string;
   task_id: string | null;
+  calendar_event_id: string | null;
   notes: string;
   created_at: string;
 }
@@ -171,6 +172,36 @@ export interface DemoBookingCreate {
 export interface DemoSlot {
   start_time: string;
   end_time: string;
+}
+
+export interface DemoInfo {
+  id: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  clinic: string;
+  status: string;
+  has_calendar_event: boolean;
+  participants: DemoParticipant[];
+}
+
+export interface DemoParticipant {
+  name: string;
+  role: string;
+  is_primary: boolean;
+}
+
+export interface DemoJoinCreate {
+  name: string;
+  email: string;
+  role: string;
+}
+
+export interface DemoJoinResult {
+  ok: boolean;
+  participant_id: string;
+  calendar_invite_sent: boolean;
+  meet_link: string;
 }
 
 export interface AppState {

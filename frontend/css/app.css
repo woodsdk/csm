@@ -3563,4 +3563,106 @@
     width: 100%;
     justify-content: center;
   }
+
+  .db-share-link-row {
+    flex-direction: column;
+  }
+}
+
+
+/* ═══════════════════════════════════════════
+   Demo Booking — Share & Join styles
+   ═══════════════════════════════════════════ */
+
+/* ── Share with colleagues section ── */
+.db-share-section {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid #EDF0F7;
+  text-align: left;
+}
+
+.db-share-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #26304F;
+  margin: 0 0 6px;
+}
+
+.db-share-title svg {
+  color: #5669A4;
+}
+
+.db-share-desc {
+  font-size: 13px;
+  color: #5669A4;
+  line-height: 1.6;
+  margin: 0 0 14px;
+}
+
+.db-share-link-row {
+  display: flex;
+  gap: 8px;
+}
+
+.db-share-input {
+  flex: 1;
+  font-size: 13px !important;
+  color: #5669A4 !important;
+  background: #FAFBFE !important;
+}
+
+.db-share-copy-btn {
+  white-space: nowrap;
+  min-width: 80px;
+}
+
+/* ── Join page — info card & participants ── */
+.dj-info-card {
+  background: #FAFBFE;
+  border: 1px solid #EDF0F7;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dj-info-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #26304F;
+}
+
+.dj-info-row svg {
+  color: #A3B0D9;
+  flex-shrink: 0;
+}
+
+.dj-participants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.dj-participants-label {
+  font-size: 12px;
+  color: #5669A4;
+  margin-right: 4px;
+}
+
+.dj-participant-tag {
+  background: #EDF0F7;
+  color: #38456D;
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-weight: 500;
 }

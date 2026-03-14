@@ -10,6 +10,11 @@ class Settings(BaseSettings):
     frontend_dist: str = os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist")
     environment: str = "development"
 
+    # Google Calendar (service account with domain-wide delegation)
+    google_service_account_json: str = ""  # Path to JSON key file OR raw JSON string
+    google_impersonate_email: str = "support@peoplesdoctor.com"
+    google_calendar_enabled: bool = False
+
     class Config:
         env_file = os.path.join(os.path.dirname(__file__), "..", "..", ".env")
 

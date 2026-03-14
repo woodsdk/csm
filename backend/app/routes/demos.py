@@ -5,6 +5,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import Optional
 from ..database import query, execute, gen_id
+from ..google_calendar import create_event as gcal_create_event, add_attendee as gcal_add_attendee, delete_event as gcal_delete_event
 
 router = APIRouter()
 
@@ -24,6 +25,12 @@ class DemoBookingCreate(BaseModel):
     client_phone: str = ""
     client_clinic: str = ""
     notes: str = ""
+
+
+class ParticipantJoin(BaseModel):
+    name: str
+    email: str
+    role: str = ""
 
 
 def _min_to_time(minutes: int) -> str:
@@ -108,6 +115,8 @@ def _assign_staff(date: str, start_time: str) -> dict | None:
     return available[0]
 
 
+# ── Public endpoints ──────────────────────────────────────────────
+
 @router.get("/available-dates")
 def get_available_dates():
     """Return weekdays with available demo slots (next 21 weekdays)."""
@@ -136,7 +145,7 @@ def get_available_slots(date: str):
 
 @router.post("/book", status_code=201)
 def create_demo_booking(data: DemoBookingCreate):
-    """Book a demo — assigns staff, generates meet link, creates internal task."""
+    """Book a demo — assigns staff, creates calendar event with Meet link, creates internal task."""
     booking_id = gen_id("dm_")
 
     # Validate date is a weekday
@@ -156,11 +165,7 @@ def create_demo_booking(data: DemoBookingCreate):
     # Assign staff member (round-robin)
     assigned = _assign_staff(data.date, data.start_time)
 
-    # Generate Jitsi Meet link
-    meet_link = f"https://meet.jit.si/peoples-demo-{booking_id}"
-
-    # Auto-create internal task
-    task_id = gen_id("t_")
+    # Build task description
     clinic_suffix = f" ({data.client_clinic})" if data.client_clinic else ""
     task_title = f"Demo: {data.client_name}{clinic_suffix}"
 
@@ -176,39 +181,156 @@ def create_demo_booking(data: DemoBookingCreate):
         desc_parts.append(f"Klinik: {data.client_clinic}")
     if assigned:
         desc_parts.append(f"Demo-giver: {assigned['name']}")
-    desc_parts.append(f"Meet: {meet_link}")
     if data.notes:
         desc_parts.append(f"Note: {data.notes}")
+
+    # Try Google Calendar + Meet
+    calendar_event_id = None
+    meet_link = None
+
+    attendee_emails = [data.client_email]
+    if assigned:
+        attendee_emails.append(assigned["email"])
+
+    gcal_result = gcal_create_event(
+        date=data.date,
+        start_time=data.start_time,
+        end_time=slot["end_time"],
+        summary=f"People's Clinic Demo \u2014 {data.client_name}{clinic_suffix}",
+        description="\n".join(desc_parts),
+        attendee_emails=attendee_emails,
+    )
+
+    if gcal_result:
+        meet_link = gcal_result["meet_link"]
+        calendar_event_id = gcal_result["event_id"]
+    else:
+        # Fallback to Jitsi
+        meet_link = f"https://meet.jit.si/peoples-demo-{booking_id}"
+
+    # Add meet link to task description
+    desc_parts.append(f"Meet: {meet_link}")
     task_desc = "\n".join(desc_parts)
 
+    # Auto-create internal task
+    task_id = gen_id("t_")
     execute(
         """INSERT INTO tasks (id, title, description, status, priority, type, tags, deadline,
-           created_at, updated_at, sort_order, is_archived, tab)
+           created_at, updated_at, sort_order, is_archived, tab, calendar_event_id)
            VALUES (%s, %s, %s, 'todo', 'high', 'onboarding', '["demo"]', %s, NOW(), NOW(),
-           (SELECT COALESCE(MAX(sort_order), -1) + 1 FROM tasks), false, 'csm')""",
-        (task_id, task_title, task_desc, data.date),
+           (SELECT COALESCE(MAX(sort_order), -1) + 1 FROM tasks), false, 'csm', %s)""",
+        (task_id, task_title, task_desc, data.date, calendar_event_id),
     )
 
     # Create demo booking
     rows = query(
         """INSERT INTO demo_bookings (id, date, start_time, end_time, client_name, client_email,
-           client_phone, client_clinic, staff_id, meet_link, status, task_id, notes)
-           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'confirmed', %s, %s)
+           client_phone, client_clinic, staff_id, meet_link, status, task_id, notes, calendar_event_id)
+           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'confirmed', %s, %s, %s)
            RETURNING *""",
         (
             booking_id, data.date, data.start_time, slot["end_time"],
             data.client_name, data.client_email, data.client_phone,
             data.client_clinic, assigned["id"] if assigned else None,
-            meet_link, task_id, data.notes,
+            meet_link, task_id, data.notes, calendar_event_id,
         ),
     )
 
+    # Create primary participant record
+    participant_id = gen_id("dp_")
+    execute(
+        """INSERT INTO demo_participants (id, booking_id, name, email, role, is_primary)
+           VALUES (%s, %s, %s, %s, '', true)""",
+        (participant_id, booking_id, data.client_name, data.client_email),
+    )
+
     result = rows[0]
-    # Attach staff name for the confirmation page
     if assigned:
         result["staff_name"] = assigned["name"]
     return result
 
+
+@router.get("/{booking_id}/info")
+def get_demo_info(booking_id: str):
+    """Public info for the participant join page — no sensitive data exposed."""
+    rows = query(
+        """SELECT id, date, start_time, end_time, client_clinic, status, calendar_event_id
+           FROM demo_bookings WHERE id = %s""",
+        (booking_id,),
+    )
+    if not rows:
+        return {"error": "Booking ikke fundet"}
+
+    booking = rows[0]
+    if booking["status"] == "cancelled":
+        return {"error": "Denne demo er aflyst"}
+
+    # Get existing participants (names + roles only, no emails)
+    participants = query(
+        "SELECT name, role, is_primary FROM demo_participants WHERE booking_id = %s ORDER BY created_at",
+        (booking_id,),
+    )
+
+    return {
+        "id": booking["id"],
+        "date": str(booking["date"]),
+        "start_time": booking["start_time"],
+        "end_time": booking["end_time"],
+        "clinic": booking["client_clinic"],
+        "status": booking["status"],
+        "has_calendar_event": bool(booking["calendar_event_id"]),
+        "participants": participants,
+    }
+
+
+@router.post("/{booking_id}/join", status_code=201)
+def join_demo(booking_id: str, data: ParticipantJoin):
+    """A colleague joins an existing demo booking. Adds them to the Calendar event."""
+    # Fetch booking
+    rows = query(
+        "SELECT * FROM demo_bookings WHERE id = %s AND status != 'cancelled'",
+        (booking_id,),
+    )
+    if not rows:
+        return {"error": "Booking ikke fundet eller er aflyst"}
+
+    booking = rows[0]
+
+    # Check for duplicate email
+    existing = query(
+        "SELECT id FROM demo_participants WHERE booking_id = %s AND LOWER(email) = LOWER(%s)",
+        (booking_id, data.email),
+    )
+    if existing:
+        return {"error": "Denne email er allerede tilmeldt"}
+
+    # Save participant
+    participant_id = gen_id("dp_")
+    execute(
+        """INSERT INTO demo_participants (id, booking_id, name, email, role, is_primary)
+           VALUES (%s, %s, %s, %s, %s, false)""",
+        (participant_id, booking_id, data.name, data.email, data.role),
+    )
+
+    # Add to Google Calendar event (if one exists)
+    calendar_added = False
+    if booking.get("calendar_event_id"):
+        calendar_added = gcal_add_attendee(
+            event_id=booking["calendar_event_id"],
+            email=data.email,
+            name=data.name,
+        )
+
+    return {
+        "ok": True,
+        "participant_id": participant_id,
+        "calendar_invite_sent": calendar_added,
+        # Only expose meet link directly if Calendar didn't send an invite
+        "meet_link": booking["meet_link"] if not calendar_added else "",
+    }
+
+
+# ── Internal endpoints ────────────────────────────────────────────
 
 @router.get("")
 def list_demo_bookings(status: Optional[str] = None, date: Optional[str] = None):
@@ -229,9 +351,18 @@ def list_demo_bookings(status: Optional[str] = None, date: Optional[str] = None)
 
 @router.post("/{booking_id}/cancel")
 def cancel_demo_booking(booking_id: str):
-    """Cancel a demo booking."""
+    """Cancel a demo booking and remove calendar event."""
     rows = query(
         "UPDATE demo_bookings SET status = 'cancelled' WHERE id = %s RETURNING *",
         (booking_id,),
     )
-    return rows[0] if rows else {"error": "Booking ikke fundet"}
+    if not rows:
+        return {"error": "Booking ikke fundet"}
+
+    booking = rows[0]
+
+    # Delete calendar event if it exists (sends cancellation to attendees)
+    if booking.get("calendar_event_id"):
+        gcal_delete_event(booking["calendar_event_id"])
+
+    return booking

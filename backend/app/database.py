@@ -240,6 +240,28 @@ def init():
         END $$;
     """)
 
+    # Migration: add calendar_event_id to demo_bookings
+    execute("""
+        DO $$ BEGIN
+            ALTER TABLE demo_bookings ADD COLUMN calendar_event_id TEXT;
+        EXCEPTION WHEN duplicate_column THEN NULL;
+        END $$;
+    """)
+
+    # Migration: create demo_participants table
+    execute("""
+        CREATE TABLE IF NOT EXISTS demo_participants (
+            id              TEXT PRIMARY KEY,
+            booking_id      TEXT NOT NULL REFERENCES demo_bookings(id) ON DELETE CASCADE,
+            name            TEXT NOT NULL,
+            email           TEXT NOT NULL,
+            role            TEXT NOT NULL DEFAULT '',
+            is_primary      BOOLEAN NOT NULL DEFAULT false,
+            created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_demo_participants_booking ON demo_participants(booking_id);
+    """)
+
     # Seed team members
     execute("""
         INSERT INTO team_members (id, name, role, avatar_color, is_active, email, phone, can_give_demos) VALUES

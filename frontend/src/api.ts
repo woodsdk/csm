@@ -2,7 +2,7 @@
    SynergyHub API Facade — Typed fetch wrappers
    ═══════════════════════════════════════════ */
 
-import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot } from './types';
+import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot, DemoInfo, DemoJoinCreate, DemoJoinResult } from './types';
 
 const API_BASE = '/api';
 
@@ -240,6 +240,25 @@ export const DemoAPI = {
     if (!res.ok) {
       const err = await res.json().catch(() => ({ error: 'Booking fejlede' }));
       throw new Error(err.error || 'Booking fejlede');
+    }
+    return res.json();
+  },
+
+  async getInfo(bookingId: string): Promise<DemoInfo> {
+    const res = await fetch(`${API_BASE}/demos/${encodeURIComponent(bookingId)}/info`);
+    if (!res.ok) throw new Error('Kunne ikke hente booking-info');
+    return res.json();
+  },
+
+  async join(bookingId: string, data: DemoJoinCreate): Promise<DemoJoinResult> {
+    const res = await fetch(`${API_BASE}/demos/${encodeURIComponent(bookingId)}/join`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ error: 'Tilmelding fejlede' }));
+      throw new Error(err.error || 'Tilmelding fejlede');
     }
     return res.json();
   },

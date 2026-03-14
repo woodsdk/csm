@@ -50,7 +50,7 @@ export const DemoBooking = {
   _renderHeader(): string {
     return `
       <div class="db-header">
-        <img src="/assets/peoples.svg" alt="People's Clinic" class="db-logo">
+        <img src="/assets/peoples-clinic.svg" alt="People's Clinic" class="db-logo">
         <h1 class="db-title">Book en personlig demo</h1>
         <p class="db-subtitle">Vi gennemg\u00e5r platformen med dig p\u00e5 video. Det tager ca. 30 minutter og er helt gratis.</p>
       </div>
@@ -261,6 +261,8 @@ export const DemoBooking = {
 
     const d = new Date(b.date + 'T00:00:00');
     const dateLabel = `${DAY_NAMES[d.getDay()]} d. ${d.getDate()}. ${MONTH_NAMES[d.getMonth()]}`;
+    const joinLink = `${window.location.origin}/demo/${b.id}/join`;
+    const hasCalendar = !!b.calendar_event_id;
 
     return `
       <div class="db-section db-confirm-section">
@@ -272,7 +274,7 @@ export const DemoBooking = {
         </div>
 
         <h2 class="db-confirm-title">Din demo er booket!</h2>
-        <p class="db-confirm-subtitle">Du modtager en bekr\u00e6ftelse p\u00e5 email.</p>
+        <p class="db-confirm-subtitle">${hasCalendar ? 'Du modtager en kalenderinvitation med video-link p\u00e5 email.' : 'Du modtager en bekr\u00e6ftelse p\u00e5 email.'}</p>
 
         <div class="db-confirm-details">
           <div class="db-confirm-row">
@@ -317,7 +319,21 @@ export const DemoBooking = {
           <a href="https://peoplesclinic.dk" class="db-btn db-btn-secondary">Tilbage til People's Clinic</a>
         </div>
 
-        <p class="db-confirm-note">Brug video-linket ovenfor for at deltage i demoen p\u00e5 det aftalte tidspunkt. Linket \u00e5bner direkte i din browser \u2014 ingen installation n\u00f8dvendig.</p>
+        <div class="db-share-section">
+          <h3 class="db-share-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            Del med kollegaer
+          </h3>
+          <p class="db-share-desc">Har du kollegaer der ogs\u00e5 skal deltage i demoen? Del dette link \u2014 de kan tilmelde sig og modtager ${hasCalendar ? 'en kalenderinvitation' : 'video-linket'} automatisk.</p>
+          <div class="db-share-link-row">
+            <input class="db-input db-share-input" type="text" readonly value="${this._esc(joinLink)}" onclick="this.select()">
+            <button class="db-btn db-btn-primary db-share-copy-btn" onclick="DemoBooking.copyJoinLink()">Kopi\u00e9r</button>
+          </div>
+        </div>
+
+        <p class="db-confirm-note">${hasCalendar ? 'Tjek din email for kalenderinvitationen med video-linket.' : 'Brug video-linket ovenfor for at deltage i demoen p\u00e5 det aftalte tidspunkt. Linket \u00e5bner direkte i din browser \u2014 ingen installation n\u00f8dvendig.'}</p>
       </div>
     `;
   },
@@ -416,6 +432,21 @@ export const DemoBooking = {
       }
     } catch {
       // Fallback — select text
+    }
+  },
+
+  async copyJoinLink(): Promise<void> {
+    if (!this._state.booking) return;
+    const link = `${window.location.origin}/demo/${this._state.booking.id}/join`;
+    try {
+      await navigator.clipboard.writeText(link);
+      const btn = document.querySelector('.db-share-copy-btn');
+      if (btn) {
+        btn.textContent = 'Kopieret!';
+        setTimeout(() => { btn.textContent = 'Kopi\u00e9r'; }, 2000);
+      }
+    } catch {
+      // Fallback
     }
   },
 
