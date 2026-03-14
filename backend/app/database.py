@@ -189,13 +189,36 @@ def init():
         END $$;
     """)
 
+    # Migration: add email and phone to team_members
+    execute("""
+        DO $$ BEGIN
+            ALTER TABLE team_members ADD COLUMN email TEXT NOT NULL DEFAULT '';
+        EXCEPTION WHEN duplicate_column THEN NULL;
+        END $$;
+    """)
+    execute("""
+        DO $$ BEGIN
+            ALTER TABLE team_members ADD COLUMN phone TEXT NOT NULL DEFAULT '';
+        EXCEPTION WHEN duplicate_column THEN NULL;
+        END $$;
+    """)
+
     # Seed team members
     execute("""
-        INSERT INTO team_members (id, name, role, avatar_color, is_active) VALUES
-            ('morten', 'Morten', 'lead', '#38456D', true),
-            ('shubi', 'Shubi', 'support', '#5669A4', true),
-            ('simon', 'Simon', 'cs', '#22C55E', true)
-        ON CONFLICT (id) DO NOTHING
+        INSERT INTO team_members (id, name, role, avatar_color, is_active, email, phone) VALUES
+            ('morten',  'Morten Skov',              'lead',    '#38456D', true, 'morten@peoplesdoctor.com', ''),
+            ('shubi',   'Shubinthan Kathiramalai',   'support', '#5669A4', true, 'ska@peoplesdoctor.com',    '50732313'),
+            ('simon',   'Simon Ussing',              'cs',      '#22C55E', true, 'sus@peoplesdoctor.com',    '00336 33234997'),
+            ('emma',    'Emma Heerfordt',            'member',  '#F59E0B', true, 'ehe@peoplesdoctor.com',    '24494742'),
+            ('filip',   'Filip Syderbø',             'member',  '#3B82F6', true, 'fsy@peoplesdoctor.com',    '52637516'),
+            ('josef',   'Josef Abuna',               'member',  '#8B5CF6', true, 'jab@peoplesdoctor.com',    '52242880'),
+            ('rasmus',  'Rasmus Kvist Bonde',        'member',  '#EC4899', true, 'rkb@peoplesdoctor.com',    ''),
+            ('lars',    'Lars Kensmark',             'member',  '#14B8A6', true, 'lke@peoplesdoctor.com',    '31170644')
+        ON CONFLICT (id) DO UPDATE SET
+            name = EXCLUDED.name,
+            email = EXCLUDED.email,
+            phone = EXCLUDED.phone,
+            avatar_color = EXCLUDED.avatar_color
     """)
 
     print("Database initialized")

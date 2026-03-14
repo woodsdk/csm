@@ -73,6 +73,8 @@ export interface TeamMember {
   role: string;
   avatar_color: string;
   is_active: boolean;
+  email: string;
+  phone: string;
 }
 
 export interface ActivityLogEntry {
