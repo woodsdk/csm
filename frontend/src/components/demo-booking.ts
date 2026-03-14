@@ -50,7 +50,7 @@ export const DemoBooking = {
   _renderHeader(): string {
     return `
       <div class="db-header">
-        <img src="/assets/peoples.svg" alt="People's Clinic" class="db-logo">
+        <img src="/assets/peoples-clinic.svg" alt="People's Clinic" class="db-logo">
         <h1 class="db-title">Book en personlig demo</h1>
         <p class="db-subtitle">Vi gennemg\u00e5r platformen med dig p\u00e5 video. Det tager ca. 30 minutter og er helt gratis.</p>
       </div>

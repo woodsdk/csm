@@ -14,7 +14,7 @@ export const Sidebar = {
     return `
       <aside class="sidebar">
         <div class="sidebar-brand">
-          <img src="/assets/peoples.svg" alt="People's Doctor" class="sidebar-logo-img">
+          <img src="/assets/peoples-clinic.svg" alt="People's Clinic" class="sidebar-logo-img">
         </div>
 
         <nav class="sidebar-nav">
