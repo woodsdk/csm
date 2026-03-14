@@ -16,7 +16,7 @@ const App = {
   },
 
   tabs: {
-    csm: { label: 'CSM', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' },
+    csm: { label: 'Customer Success', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' },
     marketing: { label: 'Marketing', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>' }
   },
 
@@ -86,24 +86,9 @@ const App = {
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
           <h2>${this.tabs[this.state.tab].label}</h2>
-          <span class="text-tertiary text-sm">${tasks.length} opgave${tasks.length !== 1 ? 'r' : ''}</span>
-          <div class="status-counts">${this._statusCounts(tasks)}</div>
         </div>
         <div class="main-header-right">
-          <div class="view-toggle">
-            <button class="btn btn-sm ${this.state.view === 'list' ? 'btn-active' : 'btn-ghost'}" onclick="App.setView('list')">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-              Liste
-            </button>
-            <button class="btn btn-sm ${this.state.view === 'kanban' ? 'btn-active' : 'btn-ghost'}" onclick="App.setView('kanban')">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="10" rx="1"/></svg>
-              Kanban
-            </button>
-            <button class="btn btn-sm ${this.state.view === 'calendar' ? 'btn-active' : 'btn-ghost'}" onclick="App.setView('calendar')">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              Kalender
-            </button>
-          </div>
+          ${this._headerStats(tasks)}
         </div>
       </div>
       ${filtersHTML}
@@ -123,26 +108,13 @@ const App = {
           <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
-          <h2>Kalender</h2>
-          <span class="text-tertiary text-sm">Opgaver & events</span>
+          <h2>${this.tabs[this.state.tab].label}</h2>
         </div>
         <div class="main-header-right">
-          <div class="view-toggle">
-            <button class="btn btn-sm btn-ghost" onclick="App.setView('list')">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-              Liste
-            </button>
-            <button class="btn btn-sm btn-ghost" onclick="App.setView('kanban')">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="10" rx="1"/></svg>
-              Kanban
-            </button>
-            <button class="btn btn-sm btn-active" onclick="App.setView('calendar')">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              Kalender
-            </button>
-          </div>
+          ${this._headerStats(tasks)}
         </div>
       </div>
+      ${await Filters.render()}
       <div class="main-content">
         ${calendarHTML}
       </div>
@@ -190,16 +162,32 @@ const App = {
     if (el) el.classList.remove('open');
   },
 
-  // ── Status Counts ──
+  // ── Header Stats (compact, top-right) ──
 
-  _statusCounts(tasks) {
-    const counts = { todo: 0, 'in-progress': 0, review: 0 };
-    const labels = { todo: 'To Do', 'in-progress': 'In Progress', review: 'Review' };
-    tasks.forEach(t => { if (counts[t.status] !== undefined) counts[t.status]++; });
-    return Object.entries(counts)
-      .filter(([, c]) => c > 0)
-      .map(([s, c]) => `<span class="status-count-item"><span class="status-dot status-dot-${s}"></span>${c} ${labels[s]}</span>`)
-      .join(' ');
+  _headerStats(tasks) {
+    const today = new Date().toISOString().split('T')[0];
+    const open = tasks.filter(t => t.status !== 'done').length;
+    const critical = tasks.filter(t => t.priority === 'critical' && t.status !== 'done').length;
+    const overdue = tasks.filter(t => t.deadline && t.deadline < today && t.status !== 'done').length;
+    const dueThisWeek = (() => {
+      const now = new Date();
+      const weekEnd = new Date(now);
+      weekEnd.setDate(now.getDate() + (7 - now.getDay()));
+      return tasks.filter(t => {
+        if (!t.deadline || t.status === 'done') return false;
+        const d = new Date(t.deadline + 'T00:00:00');
+        return d <= weekEnd;
+      }).length;
+    })();
+
+    return `
+      <div class="header-stats">
+        <span class="header-stat"><strong>${open}</strong> Åbne</span>
+        ${critical > 0 ? `<span class="header-stat header-stat-critical"><strong>${critical}</strong> Kritiske</span>` : ''}
+        ${overdue > 0 ? `<span class="header-stat header-stat-overdue"><strong>${overdue}</strong> Forfaldne</span>` : ''}
+        ${dueThisWeek > 0 ? `<span class="header-stat"><strong>${dueThisWeek}</strong> Denne uge</span>` : ''}
+      </div>
+    `;
   },
 
   // ── Toast ──

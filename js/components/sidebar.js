@@ -38,35 +38,6 @@ const Sidebar = {
 
         <div class="sidebar-divider"></div>
 
-        <div class="sidebar-stats">
-          <div class="sidebar-stat">
-            <span class="sidebar-stat-value">${open}</span>
-            <span class="sidebar-stat-label">Åbne</span>
-          </div>
-          ${critical > 0 ? `
-          <div class="sidebar-stat sidebar-stat-critical">
-            <span class="sidebar-stat-value">${critical}</span>
-            <span class="sidebar-stat-label">Kritiske</span>
-          </div>` : `
-          <div class="sidebar-stat">
-            <span class="sidebar-stat-value">0</span>
-            <span class="sidebar-stat-label">Kritiske</span>
-          </div>`}
-          ${overdue > 0 ? `
-          <div class="sidebar-stat sidebar-stat-overdue">
-            <span class="sidebar-stat-value">${overdue}</span>
-            <span class="sidebar-stat-label">Forfaldne</span>
-          </div>` : `
-          <div class="sidebar-stat">
-            <span class="sidebar-stat-value">0</span>
-            <span class="sidebar-stat-label">Forfaldne</span>
-          </div>`}
-          <div class="sidebar-stat">
-            <span class="sidebar-stat-value">${dueThisWeek}</span>
-            <span class="sidebar-stat-label">Denne uge</span>
-          </div>
-        </div>
-
         <div class="sidebar-footer">
           <span class="text-xs text-tertiary">SynergyHub v0.1</span>
         </div>
