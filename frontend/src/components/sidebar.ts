@@ -5,6 +5,7 @@
 export const Sidebar = {
   async render(): Promise<string> {
     const app = (window as any).App;
+    const isHelpdeskPage = app.state.page === 'helpdesk' || app.state.page === 'helpdesk-detail';
     const isTaskPage = app.state.page === 'tasks';
     const isVagtplanPage = app.state.page === 'vagtplan';
     const isTeamPage = app.state.page === 'team';
@@ -17,6 +18,13 @@ export const Sidebar = {
         </div>
 
         <nav class="sidebar-nav">
+          <button class="sidebar-nav-item ${isHelpdeskPage ? 'active' : ''}" onclick="App.navigateTo('helpdesk')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+            </svg>
+            Helpdesk
+          </button>
+
           ${Object.entries(app.tabs).map(([key, tab]: [string, any]) => `
             <button class="sidebar-nav-item ${isTaskPage && app.state.tab === key ? 'active' : ''}" onclick="App.navigateTo('tasks', '${key}')">
               ${tab.icon}
@@ -66,7 +74,7 @@ export const Sidebar = {
               <line x1="10" y1="14" x2="21" y2="3"/>
             </svg>
           </a>
-          <span class="text-xs text-tertiary">v0.2</span>
+          <span class="text-xs text-tertiary">v0.3</span>
         </div>
       </aside>
     `;

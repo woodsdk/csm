@@ -212,8 +212,45 @@ export interface TrainingItem {
   created_at: string;
 }
 
+export interface FaqItem {
+  id: string;
+  question: string;
+  answer: string;
+  category: string;
+  sort_order: number;
+  created_at: string;
+}
+
+export interface Ticket {
+  id: string;
+  subject: string;
+  description: string;
+  status: string;
+  priority: string;
+  category: string;
+  source: string;
+  requester_name: string;
+  requester_email: string;
+  assignee_id: string | null;
+  assignee_name?: string;
+  created_at: string;
+  updated_at: string;
+  resolved_at: string | null;
+}
+
+export interface TicketMessage {
+  id: string;
+  ticket_id: string;
+  sender_type: string;
+  sender_name: string;
+  sender_email: string;
+  body: string;
+  is_internal: boolean;
+  created_at: string;
+}
+
 export interface AppState {
-  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training';
+  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training' | 'helpdesk' | 'helpdesk-detail';
   tab: string;
   view: 'list' | 'kanban' | 'calendar';
   filters: TaskFilters;

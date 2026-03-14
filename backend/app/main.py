@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
 from .database import init as db_init
-from .routes import tasks, customers, team, activities, shifts, bookings, demos, training
+from .routes import tasks, customers, team, activities, shifts, bookings, demos, training, faq, helpdesk
 
 
 @asynccontextmanager
@@ -40,6 +40,8 @@ app.include_router(shifts.router, prefix="/api/shifts", tags=["shifts"])
 app.include_router(bookings.router, prefix="/api/bookings", tags=["bookings"])
 app.include_router(demos.router, prefix="/api/demos", tags=["demos"])
 app.include_router(training.router, prefix="/api/training", tags=["training"])
+app.include_router(faq.router, prefix="/api/faq", tags=["faq"])
+app.include_router(helpdesk.router, prefix="/api/helpdesk", tags=["helpdesk"])
 
 # Serve frontend — SPA-aware static file serving
 dist_path = os.path.abspath(settings.frontend_dist)

@@ -2,7 +2,7 @@
    SynergyHub API Facade — Typed fetch wrappers
    ═══════════════════════════════════════════ */
 
-import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot, DemoInfo, DemoJoinCreate, DemoJoinResult, TrainingItem } from './types';
+import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot, DemoInfo, DemoJoinCreate, DemoJoinResult, TrainingItem, FaqItem, Ticket, TicketMessage } from './types';
 
 const API_BASE = '/api';
 
@@ -310,6 +310,97 @@ export const TrainingAPI = {
   },
 };
 
+export const FaqAPI = {
+  async getAll(): Promise<FaqItem[]> {
+    const res = await fetch(`${API_BASE}/faq`);
+    if (!res.ok) throw new Error('Failed to fetch FAQ items');
+    return res.json();
+  },
+
+  async create(data: { question: string; answer: string; category?: string }): Promise<FaqItem> {
+    const res = await fetch(`${API_BASE}/faq`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to create FAQ item');
+    return res.json();
+  },
+
+  async update(id: string, data: { question?: string; answer?: string; category?: string }): Promise<FaqItem> {
+    const res = await fetch(`${API_BASE}/faq/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to update FAQ item');
+    return res.json();
+  },
+
+  async delete(id: string): Promise<{ ok: boolean }> {
+    const res = await fetch(`${API_BASE}/faq/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) throw new Error('Failed to delete FAQ item');
+    return res.json();
+  },
+};
+
+export const HelpdeskAPI = {
+  async getAll(filters: { status?: string; priority?: string; assignee_id?: string } = {}): Promise<Ticket[]> {
+    const params = new URLSearchParams();
+    if (filters.status) params.set('status', filters.status);
+    if (filters.priority) params.set('priority', filters.priority);
+    if (filters.assignee_id) params.set('assignee_id', filters.assignee_id);
+    const qs = params.toString();
+    const res = await fetch(`${API_BASE}/helpdesk${qs ? '?' + qs : ''}`);
+    if (!res.ok) throw new Error('Failed to fetch tickets');
+    return res.json();
+  },
+
+  async get(id: string): Promise<Ticket & { messages: TicketMessage[] }> {
+    const res = await fetch(`${API_BASE}/helpdesk/${encodeURIComponent(id)}`);
+    if (!res.ok) throw new Error('Failed to fetch ticket');
+    return res.json();
+  },
+
+  async create(data: Partial<Ticket>): Promise<Ticket> {
+    const res = await fetch(`${API_BASE}/helpdesk`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to create ticket');
+    return res.json();
+  },
+
+  async update(id: string, data: Partial<Ticket>): Promise<Ticket> {
+    const res = await fetch(`${API_BASE}/helpdesk/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to update ticket');
+    return res.json();
+  },
+
+  async addMessage(ticketId: string, data: Partial<TicketMessage>): Promise<TicketMessage> {
+    const res = await fetch(`${API_BASE}/helpdesk/${encodeURIComponent(ticketId)}/messages`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to add message');
+    return res.json();
+  },
+
+  async getStats(): Promise<{ open_count: number; in_progress_count: number; resolved_count: number; closed_count: number; total: number }> {
+    const res = await fetch(`${API_BASE}/helpdesk/stats`);
+    if (!res.ok) throw new Error('Failed to fetch stats');
+    return res.json();
+  },
+};
+
 // Expose globally for inline onclick handlers
 (window as any).TaskAPI = TaskAPI;
 (window as any).CustomerAPI = CustomerAPI;
@@ -317,3 +408,5 @@ export const TrainingAPI = {
 (window as any).ShiftAPI = ShiftAPI;
 (window as any).DemoAPI = DemoAPI;
 (window as any).TrainingAPI = TrainingAPI;
+(window as any).FaqAPI = FaqAPI;
+(window as any).HelpdeskAPI = HelpdeskAPI;

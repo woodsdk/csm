@@ -16,6 +16,9 @@ import { TeamList } from './components/team-list';
 import { DemoBooking } from './components/demo-booking';
 import { DemoJoin } from './components/demo-join';
 import { TrainingList } from './components/training-list';
+import { FaqList } from './components/faq-list';
+import { HelpdeskList } from './components/helpdesk-list';
+import { HelpdeskDetail } from './components/helpdesk-detail';
 import { GoogleCal } from './google-calendar';
 import type { Task, AppState } from './types';
 
@@ -35,8 +38,8 @@ export const App = {
 
   tabs: {
     csm: {
-      label: 'Customer Success',
-      icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+      label: 'Task Management',
+      icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>',
     },
   } as Record<string, { label: string; icon: string }>,
 
@@ -113,7 +116,11 @@ export const App = {
 
     sidebarEl.innerHTML = await Sidebar.render();
 
-    if (this.state.page === 'team') {
+    if (this.state.page === 'helpdesk') {
+      await this._renderHelpdeskPage(mainEl);
+    } else if (this.state.page === 'helpdesk-detail') {
+      await this._renderHelpdeskDetailPage(mainEl);
+    } else if (this.state.page === 'team') {
       await this._renderTeamPage(mainEl);
     } else if (this.state.page === 'training') {
       await this._renderTrainingPage(mainEl);
@@ -222,8 +229,16 @@ export const App = {
     `;
   },
 
+  _trainingTab: 'checklist' as 'checklist' | 'faq',
+
+  setTrainingTab(tab: 'checklist' | 'faq'): void {
+    this._trainingTab = tab;
+    this.render();
+  },
+
   async _renderTrainingPage(container: HTMLElement): Promise<void> {
-    const contentHTML = await TrainingList.render();
+    const isChecklist = this._trainingTab === 'checklist';
+    const contentHTML = isChecklist ? await TrainingList.render() : await FaqList.render();
 
     container.innerHTML = `
       <div class="main-header">
@@ -231,7 +246,54 @@ export const App = {
           <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
-          <h2>Opl\u00e6ring af nye supportere</h2>
+          <h2>Opl\u00e6ring</h2>
+        </div>
+      </div>
+      <div class="main-content">
+        <div class="training-tabs">
+          <button class="training-tab ${isChecklist ? 'training-tab-active' : ''}" onclick="App.setTrainingTab('checklist')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            Checkliste
+          </button>
+          <button class="training-tab ${!isChecklist ? 'training-tab-active' : ''}" onclick="App.setTrainingTab('faq')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            FAQ
+          </button>
+        </div>
+        ${contentHTML}
+      </div>
+    `;
+  },
+
+  async _renderHelpdeskPage(container: HTMLElement): Promise<void> {
+    const contentHTML = await HelpdeskList.render();
+
+    container.innerHTML = `
+      <div class="main-header">
+        <div class="main-header-left">
+          <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <h2>Helpdesk</h2>
+        </div>
+      </div>
+      <div class="main-content">
+        ${contentHTML}
+      </div>
+    `;
+  },
+
+  async _renderHelpdeskDetailPage(container: HTMLElement): Promise<void> {
+    const ticketId = this.state.tab;
+    const contentHTML = await HelpdeskDetail.render(ticketId);
+
+    container.innerHTML = `
+      <div class="main-header">
+        <div class="main-header-left">
+          <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <h2>Helpdesk</h2>
         </div>
       </div>
       <div class="main-content">

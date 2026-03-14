@@ -335,4 +335,80 @@ def init():
             can_give_demos = EXCLUDED.can_give_demos
     """)
 
+    # Migration: create faq_items table
+    execute("""
+        CREATE TABLE IF NOT EXISTS faq_items (
+            id          TEXT PRIMARY KEY,
+            question    TEXT NOT NULL,
+            answer      TEXT NOT NULL DEFAULT '',
+            category    TEXT NOT NULL DEFAULT '',
+            sort_order  INTEGER NOT NULL DEFAULT 0,
+            created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+    """)
+
+    # Migration: create tickets table
+    execute("""
+        CREATE TABLE IF NOT EXISTS tickets (
+            id               TEXT PRIMARY KEY,
+            subject          TEXT NOT NULL,
+            description      TEXT NOT NULL DEFAULT '',
+            status           TEXT NOT NULL DEFAULT 'open',
+            priority         TEXT NOT NULL DEFAULT 'medium',
+            category         TEXT NOT NULL DEFAULT '',
+            source           TEXT NOT NULL DEFAULT 'manual',
+            requester_name   TEXT NOT NULL DEFAULT '',
+            requester_email  TEXT NOT NULL DEFAULT '',
+            assignee_id      TEXT REFERENCES team_members(id) ON DELETE SET NULL,
+            created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            resolved_at      TIMESTAMPTZ
+        );
+        CREATE INDEX IF NOT EXISTS idx_tickets_status ON tickets(status);
+        CREATE INDEX IF NOT EXISTS idx_tickets_assignee ON tickets(assignee_id);
+    """)
+
+    # Migration: create ticket_messages table
+    execute("""
+        CREATE TABLE IF NOT EXISTS ticket_messages (
+            id           TEXT PRIMARY KEY,
+            ticket_id    TEXT NOT NULL REFERENCES tickets(id) ON DELETE CASCADE,
+            sender_type  TEXT NOT NULL DEFAULT 'agent',
+            sender_name  TEXT NOT NULL DEFAULT '',
+            sender_email TEXT NOT NULL DEFAULT '',
+            body         TEXT NOT NULL,
+            is_internal  BOOLEAN NOT NULL DEFAULT false,
+            created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_ticket_messages_ticket ON ticket_messages(ticket_id);
+    """)
+
+    # Seed FAQ items
+    execute("""
+        INSERT INTO faq_items (id, question, answer, category, sort_order) VALUES
+            ('faq_01', 'Er I ISO 27001-certificerede?', 'Nej, men vi f\u00f8lger ISO 27001 som rammevaerk og overholder alle relevante krav i praksis. Vi har valgt ikke at certificere os endnu, da det er en stor investering for en virksomhed i vores stadie, men vi arbejder efter de samme principper. Vi er desuden ISAE 3000-revisionserklaeret, hvilket bekraefter vores sikkerhedspraksis uafhaengigt.', 'Sikkerhed & Compliance', 1),
+            ('faq_02', 'Har I en databehandleraftale (DPA)?', 'Ja, vi har en fuld databehandleraftale klar til underskrift. Den opfylder GDPR-kravene og daekker alle aspekter af databehandlingen. Vi sender den til alle kunder som en del af onboarding-processen.', 'Sikkerhed & Compliance', 2),
+            ('faq_03', 'Hvor hostes data?', 'Al data hostes i EU (specifikt i Tyskland og Irland via AWS). Vi bruger ingen servere uden for EU, og der sker ingen tredjelandsoverf\u00f8rsel af persondata.', 'Sikkerhed & Compliance', 3),
+            ('faq_04', 'Hvem har adgang til patientdata?', 'Ingen hos People''s Doctor har direkte adgang til patientdata. Data er krypteret, og vi fungerer udelukkende som databehandler. Kun klinikkens egne brugere med de rette roller har adgang via systemet.', 'Sikkerhed & Compliance', 4),
+            ('faq_05', 'Hvad g\u00f8r I ved sikkerhedsbrud?', 'Vi har en fuld incident response-plan. Ved et eventuelt brud notificerer vi den dataansvarlige (klinikken) inden for 24 timer, dokumenterer haendelsen og ivaerksaetter afhjaelpning. Det er dog aldrig sket.', 'Sikkerhed & Compliance', 5),
+            ('faq_06', 'Hvad kan systemet?', 'People''s Doctor er en alt-i-en platform til klinikker. Det inkluderer online booking, patientjournal, kommunikation (SMS/email), fakturering, lagerstyring og rapportering \u2014 alt samlet et sted.', 'Produkt & Funktioner', 10),
+            ('faq_07', 'Kan det integreres med andre systemer?', 'Ja. Vi har aabne API''er og integrerer med e-conomic, Dinero, og flere bookingplatforme. Vi bygger l\u00f8bende nye integrationer baseret paa kundebehov.', 'Produkt & Funktioner', 11),
+            ('faq_08', 'Underst\u00f8tter I flersprogede klinikker?', 'Systemet er i dag paa dansk, men vi arbejder paa flersproget underst\u00f8ttelse. Patienter kan allerede nu modtage SMS og emails paa det sprog, klinikken vaelger.', 'Produkt & Funktioner', 12),
+            ('faq_09', 'Hvordan haandterer I opdateringer?', 'Vi k\u00f8rer l\u00f8bende opdateringer (typisk ugentligt) uden nedetid. Alle kunder faar automatisk de nyeste funktioner. Vi varsler st\u00f8rre aendringer i forvejen via email.', 'Produkt & Funktioner', 13),
+            ('faq_10', 'Er der en app?', 'Systemet er webbaseret og fungerer paa alle enheder (mobil, tablet, desktop) via browseren. Vi har ikke en dedikeret app endnu, men PWA-underst\u00f8ttelse er paa roadmap.', 'Produkt & Funktioner', 14),
+            ('faq_11', 'Hvad koster det?', 'Vi har fleksible prismodeller baseret paa klinikkens st\u00f8rrelse og behov. Kontakt os for et specifikt tilbud \u2014 vi tilpasser altid til den enkelte klinik. Vores priser starter typisk fra 499 kr/md.', 'Pris & Praktisk', 20),
+            ('faq_12', 'Er der en bindingsperiode?', 'Vi har ingen lang bindingsperiode. Standardaftalen er maaned-til-maaned med 3 maaneders opsigelse efter en eventuel minimumsperiode.', 'Pris & Praktisk', 21),
+            ('faq_13', 'Hvor lang tid tager onboarding?', 'En typisk onboarding tager 2-4 uger afhaengig af klinikkens st\u00f8rrelse og kompleksitet. Vi har en dedikeret onboarding-specialist, der hjaelper hele vejen.', 'Pris & Praktisk', 22),
+            ('faq_14', 'Kan vi migrere data fra vores nuvaerende system?', 'Ja, vi hjaelper med datamigrering fra de fleste eksisterende systemer. Vi haandterer hele processen, saa klinikken ikke mister vigtig historik.', 'Pris & Praktisk', 23),
+            ('faq_15', 'Hvad hvis vi ikke er tilfredse?', 'Vi tilbyder en pr\u00f8veperiode, hvor I kan teste systemet. Hvis det ikke passer jer, kan I opsige uden omkostninger inden for pr\u00f8veperioden.', 'Typiske Bekymringer', 30),
+            ('faq_16', 'Er det svaert at skifte system?', 'Vi g\u00f8r skiftet saa nemt som muligt. Vores onboarding-team haandterer datamigrering, opsaetning og traening. De fleste klinikker er fuldt operative inden for 2-3 uger.', 'Typiske Bekymringer', 31),
+            ('faq_17', 'Hvad hvis systemet gaar ned?', 'Vi har 99.9%% uptime SLA. Vores infrastruktur er redundant og overvaaget 24/7. I tilfaelde af nedetid har vi automatisk failover og notificerer alle ber\u00f8rte kunder \u00f8jeblikkeligt.', 'Typiske Bekymringer', 32),
+            ('faq_18', 'Kan vi faa support paa dansk?', 'Absolut. Al vores support er paa dansk, og vi har supporttider paa hverdage. Vi tilbyder support via email, telefon og chat.', 'Typiske Bekymringer', 33)
+        ON CONFLICT (id) DO UPDATE SET
+            question = EXCLUDED.question,
+            answer = EXCLUDED.answer,
+            category = EXCLUDED.category,
+            sort_order = EXCLUDED.sort_order
+    """)
+
     print("Database initialized")

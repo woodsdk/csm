@@ -137,15 +137,6 @@ export const ShiftSchedule = {
             </div>
             <span class="vp-stat-text">${filledSlots}/${totalSlots} vagter besat</span>
           </div>
-          <div class="vp-nav">
-            <button class="vp-nav-btn" onclick="ShiftSchedule.prevBlock()" title="Forrige 4 uger">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-            </button>
-            <button class="vp-nav-today" onclick="ShiftSchedule.thisBlock()">I dag</button>
-            <button class="vp-nav-btn" onclick="ShiftSchedule.nextBlock()" title="N\u00e6ste 4 uger">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
-          </div>
         </div>
       </div>
       ${weeksHTML}
@@ -319,14 +310,10 @@ export const ShiftSchedule = {
         <div class="vp-modal-body">
           <div class="form-group">
             <label class="form-label">Medarbejder <span class="vp-req">*</span></label>
-            <select class="input" id="shift-staff" onchange="ShiftSchedule.onStaffSelect()">
+            <select class="input" id="shift-staff">
               <option value="">V\u00e6lg medarbejder...</option>
               ${staffOptions}
             </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Email</label>
-            <input class="input" type="email" id="shift-email" readonly>
           </div>
         </div>
         <div class="vp-modal-footer">
@@ -378,14 +365,10 @@ export const ShiftSchedule = {
         <div class="vp-modal-body">
           <div class="form-group">
             <label class="form-label">Lytter <span class="vp-req">*</span></label>
-            <select class="input" id="shift-staff" onchange="ShiftSchedule.onStaffSelect()">
+            <select class="input" id="shift-staff">
               <option value="">V\u00e6lg medarbejder...</option>
               ${staffOptions}
             </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Email</label>
-            <input class="input" type="email" id="shift-email" readonly>
           </div>
         </div>
         <div class="vp-modal-footer">
@@ -406,16 +389,7 @@ export const ShiftSchedule = {
   },
 
   onStaffSelect(): void {
-    const select = document.getElementById('shift-staff') as HTMLSelectElement | null;
-    const emailEl = document.getElementById('shift-email') as HTMLInputElement | null;
-    if (!select) return;
-
-    const selectedOption = select.options[select.selectedIndex];
-    if (selectedOption && selectedOption.value) {
-      if (emailEl) emailEl.value = selectedOption.getAttribute('data-email') || '';
-    } else {
-      if (emailEl) emailEl.value = '';
-    }
+    // Kept for backward compatibility — no-op since email field removed
   },
 
   closeModal(): void {
