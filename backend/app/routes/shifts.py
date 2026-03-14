@@ -125,12 +125,22 @@ def create_shift(data: ShiftCreate):
     if existing:
         return {"error": "Denne vagt er allerede taget"}
 
+    # Resolve staff_id from email
+    resolved_staff_id = None
+    if data.staff_email:
+        match = query(
+            "SELECT id FROM team_members WHERE LOWER(email) = LOWER(%s) AND is_active = true",
+            (data.staff_email,),
+        )
+        if match:
+            resolved_staff_id = match[0]["id"]
+
     rows = query(
-        """INSERT INTO shifts (id, date, start_time, end_time, staff_name, staff_email, staff_phone, status)
-           VALUES (%s, %s, %s, %s, %s, %s, %s, 'confirmed')
+        """INSERT INTO shifts (id, date, start_time, end_time, staff_name, staff_email, staff_phone, staff_id, status)
+           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'confirmed')
            RETURNING *""",
         (shift_id, data.date, data.start_time, valid_slot["end_time"],
-         data.staff_name, data.staff_email, data.staff_phone),
+         data.staff_name, data.staff_email, data.staff_phone, resolved_staff_id),
     )
     shift = rows[0]
     shift["listeners"] = []

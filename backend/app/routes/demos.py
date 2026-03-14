@@ -42,62 +42,120 @@ def _time_to_min(t: str) -> int:
     return int(h) * 60 + int(m)
 
 
-def _get_available_slots(date: str) -> list[dict]:
-    """Get available 30-min demo slots for a given date."""
-    # Count demo-capable staff
-    staff = query(
-        "SELECT id FROM team_members WHERE can_give_demos = true AND is_active = true"
-    )
-    max_parallel = len(staff) if staff else 0
-    if max_parallel == 0:
-        return []
+def _get_on_shift_demo_staff(date: str) -> list[dict]:
+    """Get confirmed shifts for this date where staff can give demos.
 
-    # Get existing bookings for this date
-    existing = query(
-        "SELECT start_time FROM demo_bookings WHERE date = %s AND status != 'cancelled'",
+    Returns list of {staff_id, staff_email, shift_start, shift_end}.
+    Handles both staff_id FK and email-fallback for legacy shifts.
+    """
+    # Shifts with staff_id linked to demo-capable team members
+    linked = query(
+        """SELECT s.start_time as shift_start, s.end_time as shift_end,
+                  tm.id as staff_id, tm.name, tm.email
+           FROM shifts s
+           JOIN team_members tm ON s.staff_id = tm.id
+           WHERE s.date = %s AND s.status = 'confirmed'
+             AND tm.can_give_demos = true AND tm.is_active = true""",
         (date,),
     )
 
-    # Count bookings per slot
-    slot_counts: dict[str, int] = {}
-    for b in existing:
-        st = b["start_time"]
-        slot_counts[st] = slot_counts.get(st, 0) + 1
+    # Fallback: shifts without staff_id — match by email
+    unlinked = query(
+        """SELECT s.start_time as shift_start, s.end_time as shift_end, s.staff_email
+           FROM shifts s
+           WHERE s.date = %s AND s.status = 'confirmed' AND s.staff_id IS NULL""",
+        (date,),
+    )
+    for row in unlinked:
+        match = query(
+            "SELECT id, name, email FROM team_members WHERE LOWER(email) = LOWER(%s) AND can_give_demos = true AND is_active = true",
+            (row["staff_email"],),
+        )
+        if match:
+            linked.append({
+                "shift_start": row["shift_start"],
+                "shift_end": row["shift_end"],
+                "staff_id": match[0]["id"],
+                "name": match[0]["name"],
+                "email": match[0]["email"],
+            })
 
-    # Return slots that still have capacity
+    return linked
+
+
+def _get_available_slots(date: str) -> list[dict]:
+    """Get available 30-min demo slots for a given date.
+
+    A slot is available when:
+    1. At least one confirmed shift covers the time window
+    2. That shift's staff member can give demos
+    3. At least one such person is not already booked for a demo at that time
+    """
+    on_shift = _get_on_shift_demo_staff(date)
+    if not on_shift:
+        return []
+
+    # Get existing demo bookings for this date
+    existing = query(
+        "SELECT start_time, staff_id FROM demo_bookings WHERE date = %s AND status != 'cancelled'",
+        (date,),
+    )
+
     slots = []
     for start in DEMO_SLOTS:
-        count = slot_counts.get(start, 0)
-        if count < max_parallel:
-            end_min = _time_to_min(start) + DEMO_DURATION
+        start_min = _time_to_min(start)
+        end_min = start_min + DEMO_DURATION
+
+        # Find demo-capable staff on shift during this 30-min window
+        covering_ids = set()
+        for s in on_shift:
+            if _time_to_min(s["shift_start"]) <= start_min and _time_to_min(s["shift_end"]) >= end_min:
+                covering_ids.add(s["staff_id"])
+
+        if not covering_ids:
+            continue
+
+        # Subtract staff already booked at this time
+        booked_ids = {b["staff_id"] for b in existing if b["start_time"] == start}
+        if covering_ids - booked_ids:
             slots.append({"start_time": start, "end_time": _min_to_time(end_min)})
 
     return slots
 
 
 def _assign_staff(date: str, start_time: str) -> dict | None:
-    """Assign the least-busy demo-capable staff member for this slot."""
-    # Get demo-capable staff
-    staff = query(
-        "SELECT id, name, email FROM team_members WHERE can_give_demos = true AND is_active = true"
-    )
-    if not staff:
+    """Assign a demo-capable staff member who is on shift during this time.
+
+    Picks the least-busy person among those on shift.
+    """
+    start_min = _time_to_min(start_time)
+    end_min = start_min + DEMO_DURATION
+
+    # Find on-shift demo-capable staff covering this window
+    on_shift = _get_on_shift_demo_staff(date)
+    covering = []
+    seen_ids = set()
+    for s in on_shift:
+        if _time_to_min(s["shift_start"]) <= start_min and _time_to_min(s["shift_end"]) >= end_min:
+            if s["staff_id"] not in seen_ids:
+                covering.append({"id": s["staff_id"], "name": s["name"], "email": s["email"]})
+                seen_ids.add(s["staff_id"])
+
+    if not covering:
         return None
 
-    # Find who already has a demo at this exact date+time
+    # Exclude staff already booked for a demo at this exact time
     busy = query(
         "SELECT staff_id FROM demo_bookings WHERE date = %s AND start_time = %s AND status != 'cancelled'",
         (date, start_time),
     )
     busy_ids = {b["staff_id"] for b in busy}
+    available = [s for s in covering if s["id"] not in busy_ids]
 
-    # Filter to available staff
-    available = [s for s in staff if s["id"] not in busy_ids]
     if not available:
         return None
 
-    # Among available, pick the one with fewest demos this week
-    # Calculate week boundaries (Mon-Sun)
+    # Load-balance: pick the one with fewest demos this week
     d = datetime.strptime(date, "%Y-%m-%d")
     week_start = d - timedelta(days=d.weekday())
     week_end = week_start + timedelta(days=6)
@@ -110,7 +168,6 @@ def _assign_staff(date: str, start_time: str) -> dict | None:
     )
     count_map = {r["staff_id"]: r["cnt"] for r in week_counts}
 
-    # Sort by count ascending, pick first
     available.sort(key=lambda s: count_map.get(s["id"], 0))
     return available[0]
 

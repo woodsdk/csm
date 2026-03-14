@@ -298,6 +298,24 @@ def init():
             sort_order = EXCLUDED.sort_order
     """)
 
+    # Migration: add staff_id FK to shifts for linking to team_members
+    execute("""
+        DO $$ BEGIN
+            ALTER TABLE shifts ADD COLUMN staff_id TEXT REFERENCES team_members(id) ON DELETE SET NULL;
+        EXCEPTION WHEN duplicate_column THEN NULL;
+        END $$;
+    """)
+    execute("CREATE INDEX IF NOT EXISTS idx_shifts_staff_id ON shifts(staff_id)")
+
+    # Backfill: match existing shifts to team_members by email
+    execute("""
+        UPDATE shifts s
+        SET staff_id = tm.id
+        FROM team_members tm
+        WHERE s.staff_id IS NULL
+          AND LOWER(s.staff_email) = LOWER(tm.email)
+    """)
+
     # Seed team members
     execute("""
         INSERT INTO team_members (id, name, role, avatar_color, is_active, email, phone, can_give_demos) VALUES
