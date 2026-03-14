@@ -1,5 +1,6 @@
 /* ═══════════════════════════════════════════
    Training List — Oplæringscheckliste
+   Drag-and-drop sortable checklist
    ═══════════════════════════════════════════ */
 
 import { TrainingAPI } from '../api';
@@ -9,6 +10,7 @@ import type { TrainingItem } from '../types';
 export const TrainingList = {
   _items: [] as TrainingItem[],
   _editingId: null as string | null,
+  _dragId: null as string | null,
 
   /* ── Main render ── */
   async render(): Promise<string> {
@@ -24,7 +26,7 @@ export const TrainingList = {
     if (count === 0) {
       listHTML = `
         <div class="tr-empty">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
             <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
           </svg>
@@ -32,82 +34,128 @@ export const TrainingList = {
         </div>`;
     } else {
       const rows = this._items.map((item, index) => this._renderItem(item, index)).join('');
-      listHTML = `<div class="tr-list">${rows}</div>`;
+      listHTML = `<div class="tr-list" id="tr-list">${rows}</div>`;
     }
 
     return `
-      <div class="tr-header">
-        <div class="tr-header-left">
-          <span class="tr-stat"><strong>${count}</strong> emne${count !== 1 ? 'r' : ''} i opl\u00e6ringslisten</span>
+      <div class="tr-container">
+        <div class="tr-header">
+          <span class="tr-stat"><strong>${count}</strong> emne${count !== 1 ? 'r' : ''}</span>
+          <button class="btn btn-primary btn-sm" onclick="TrainingList.openModal()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Tilf\u00f8j
+          </button>
         </div>
-        <button class="btn btn-primary" onclick="TrainingList.openModal()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Tilf\u00f8j emne
-        </button>
+        ${listHTML}
       </div>
-
-      ${listHTML}
     `;
   },
 
   /* ── Single item ── */
   _renderItem(item: TrainingItem, index: number): string {
-    const isFirst = index === 0;
-    const isLast = index === this._items.length - 1;
-
     return `
-      <div class="tr-item" data-id="${item.id}">
-        <div class="tr-item-number">${index + 1}</div>
-        <div class="tr-item-content">
-          <div class="tr-item-title">${escapeHtml(item.title)}</div>
-          ${item.description ? `<div class="tr-item-desc">${escapeHtml(item.description)}</div>` : ''}
+      <div class="tr-item" data-id="${item.id}" draggable="true"
+           ondragstart="TrainingList.onDragStart(event, '${item.id}')"
+           ondragover="TrainingList.onDragOver(event)"
+           ondrop="TrainingList.onDrop(event, '${item.id}')"
+           ondragend="TrainingList.onDragEnd(event)">
+        <div class="tr-grip" title="Tr\u00e6k for at sortere">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
         </div>
-        <div class="tr-item-actions">
-          <button class="tr-action-btn" onclick="TrainingList.moveUp('${item.id}')" title="Flyt op" ${isFirst ? 'disabled' : ''}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+        <div class="tr-num">${index + 1}</div>
+        <div class="tr-body">
+          <span class="tr-title">${escapeHtml(item.title)}</span>
+          ${item.description ? `<span class="tr-desc">${escapeHtml(item.description)}</span>` : ''}
+        </div>
+        <div class="tr-actions">
+          <button class="tr-btn" onclick="event.stopPropagation(); TrainingList.openModal('${item.id}')" title="Rediger">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           </button>
-          <button class="tr-action-btn" onclick="TrainingList.moveDown('${item.id}')" title="Flyt ned" ${isLast ? 'disabled' : ''}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <button class="tr-action-btn" onclick="TrainingList.openModal('${item.id}')" title="Rediger">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          </button>
-          <button class="tr-action-btn tr-action-danger" onclick="TrainingList.deleteItem('${item.id}')" title="Slet">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          <button class="tr-btn tr-btn-danger" onclick="event.stopPropagation(); TrainingList.deleteItem('${item.id}')" title="Slet">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
           </button>
         </div>
       </div>`;
   },
 
-  /* ── Move up/down ── */
-  async moveUp(id: string): Promise<void> {
-    const idx = this._items.findIndex(i => i.id === id);
-    if (idx <= 0) return;
-
-    const ids = this._items.map(i => i.id);
-    [ids[idx - 1], ids[idx]] = [ids[idx], ids[idx - 1]];
-
-    try {
-      await TrainingAPI.reorder(ids);
-      (window as any).App.render();
-    } catch {
-      (window as any).App.toast('Kunne ikke \u00e6ndre r\u00e6kkef\u00f8lge', 'error');
+  /* ── Drag and drop ── */
+  onDragStart(e: DragEvent, id: string): void {
+    this._dragId = id;
+    if (e.dataTransfer) {
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', id);
+    }
+    const el = (e.target as HTMLElement).closest('.tr-item') as HTMLElement;
+    if (el) {
+      requestAnimationFrame(() => el.classList.add('tr-dragging'));
     }
   },
 
-  async moveDown(id: string): Promise<void> {
-    const idx = this._items.findIndex(i => i.id === id);
-    if (idx < 0 || idx >= this._items.length - 1) return;
+  onDragOver(e: DragEvent): void {
+    e.preventDefault();
+    if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+
+    const target = (e.target as HTMLElement).closest('.tr-item') as HTMLElement;
+    if (!target) return;
+
+    // Remove all drag-over classes
+    document.querySelectorAll('.tr-drag-above, .tr-drag-below').forEach(el => {
+      el.classList.remove('tr-drag-above', 'tr-drag-below');
+    });
+
+    // Determine if above or below midpoint
+    const rect = target.getBoundingClientRect();
+    const midY = rect.top + rect.height / 2;
+    if (e.clientY < midY) {
+      target.classList.add('tr-drag-above');
+    } else {
+      target.classList.add('tr-drag-below');
+    }
+  },
+
+  onDrop(e: DragEvent, targetId: string): void {
+    e.preventDefault();
+    document.querySelectorAll('.tr-drag-above, .tr-drag-below').forEach(el => {
+      el.classList.remove('tr-drag-above', 'tr-drag-below');
+    });
+
+    if (!this._dragId || this._dragId === targetId) return;
 
     const ids = this._items.map(i => i.id);
-    [ids[idx], ids[idx + 1]] = [ids[idx + 1], ids[idx]];
+    const fromIdx = ids.indexOf(this._dragId);
+    const toIdx = ids.indexOf(targetId);
+    if (fromIdx < 0 || toIdx < 0) return;
 
-    try {
-      await TrainingAPI.reorder(ids);
-      (window as any).App.render();
-    } catch {
-      (window as any).App.toast('Kunne ikke \u00e6ndre r\u00e6kkef\u00f8lge', 'error');
+    // Determine drop position based on mouse
+    const target = (e.target as HTMLElement).closest('.tr-item') as HTMLElement;
+    let insertIdx = toIdx;
+    if (target) {
+      const rect = target.getBoundingClientRect();
+      if (e.clientY >= rect.top + rect.height / 2) {
+        insertIdx = toIdx + (fromIdx < toIdx ? 0 : 1);
+      } else {
+        insertIdx = toIdx - (fromIdx < toIdx ? 1 : 0);
+      }
     }
+
+    // Remove from old position, insert at new
+    ids.splice(fromIdx, 1);
+    ids.splice(insertIdx, 0, this._dragId);
+
+    this._dragId = null;
+
+    TrainingAPI.reorder(ids).then(() => {
+      (window as any).App.render();
+    }).catch(() => {
+      (window as any).App.toast('Kunne ikke \u00e6ndre r\u00e6kkef\u00f8lge', 'error');
+    });
+  },
+
+  onDragEnd(e: DragEvent): void {
+    this._dragId = null;
+    document.querySelectorAll('.tr-dragging, .tr-drag-above, .tr-drag-below').forEach(el => {
+      el.classList.remove('tr-dragging', 'tr-drag-above', 'tr-drag-below');
+    });
   },
 
   /* ── Modal: Create / Edit ── */
