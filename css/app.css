@@ -546,7 +546,7 @@
 /* ── Checkbox Column ── */
 .col-check {
   width: 28px;
-  padding: 0 4px !important;
+  padding: 0 4px 0 7px !important;
   text-align: center;
   vertical-align: middle;
 }
