@@ -100,8 +100,26 @@ export const HelpdeskList = {
       listHTML = `<div class="hd-ticket-list">${rows}</div>`;
     }
 
+    // Gmail integration banner
+    const gmailBanner = `
+      <div class="hd-gmail-banner">
+        <svg class="hd-gmail-banner-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+        </svg>
+        <div class="hd-gmail-banner-text">
+          <div class="hd-gmail-banner-title">Gmail-integration mangler</div>
+          <div class="hd-gmail-banner-desc">Forbind support@peoplesdoctor.com for automatisk at modtage og besvare tickets via email.</div>
+        </div>
+        <button class="hd-gmail-banner-btn" onclick="App.toast('Gmail-integration er ikke konfigureret endnu. Kontakt administrator.', 'info')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          Forbind
+        </button>
+      </div>
+    `;
+
     return `
       <div class="hd-container">
+        ${gmailBanner}
         ${statsHTML}
         <div class="hd-toolbar">
           <div class="hd-toolbar-left">
