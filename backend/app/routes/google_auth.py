@@ -132,6 +132,86 @@ def callback(request: Request, code: str = "", state: str = "", error: str = "")
         return RedirectResponse(url=f"/?page=settings&google=error&reason={reason}")
 
 
+@router.get("/test-calendar")
+def test_calendar():
+    """Test Google Calendar access — returns detailed diagnostics."""
+    from ..google_oauth import is_connected, get_stored_credentials, get_connected_email
+    import traceback
+
+    result = {
+        "oauth_connected": is_connected(),
+        "email": get_connected_email(),
+        "calendar_service": False,
+        "can_list_events": False,
+        "can_create_event": False,
+        "errors": [],
+    }
+
+    if not result["oauth_connected"]:
+        result["errors"].append("OAuth not connected")
+        return result
+
+    # Test building calendar service
+    try:
+        from ..google_oauth import get_calendar_service
+        service = get_calendar_service()
+        if service:
+            result["calendar_service"] = True
+        else:
+            result["errors"].append("get_calendar_service() returned None")
+            return result
+    except Exception as e:
+        result["errors"].append(f"Build service failed: {e}\n{traceback.format_exc()}")
+        return result
+
+    # Test listing events
+    try:
+        events = service.events().list(
+            calendarId="primary", maxResults=1, singleEvents=True,
+        ).execute()
+        result["can_list_events"] = True
+        result["events_found"] = len(events.get("items", []))
+    except Exception as e:
+        result["errors"].append(f"List events failed: {e}")
+
+    # Test creating a test event (dry run — we'll delete it immediately)
+    try:
+        import os
+        test_event = {
+            "summary": "SynergyHub Calendar Test — auto-delete",
+            "start": {"dateTime": "2026-03-20T10:00:00", "timeZone": "Europe/Copenhagen"},
+            "end": {"dateTime": "2026-03-20T10:30:00", "timeZone": "Europe/Copenhagen"},
+            "conferenceData": {
+                "createRequest": {
+                    "requestId": f"test-{os.urandom(4).hex()}",
+                    "conferenceSolutionKey": {"type": "hangoutsMeet"},
+                }
+            },
+        }
+        created = service.events().insert(
+            calendarId="primary", body=test_event, conferenceDataVersion=1,
+        ).execute()
+
+        meet_link = ""
+        for ep in created.get("conferenceData", {}).get("entryPoints", []):
+            if ep.get("entryPointType") == "video":
+                meet_link = ep["uri"]
+                break
+
+        result["can_create_event"] = True
+        result["test_event_id"] = created["id"]
+        result["test_meet_link"] = meet_link
+
+        # Clean up — delete the test event
+        service.events().delete(calendarId="primary", eventId=created["id"]).execute()
+        result["test_cleaned_up"] = True
+
+    except Exception as e:
+        result["errors"].append(f"Create event failed: {e}\n{traceback.format_exc()}")
+
+    return result
+
+
 @router.post("/disconnect")
 def disconnect():
     """Disconnect Google account — revoke and delete tokens."""
