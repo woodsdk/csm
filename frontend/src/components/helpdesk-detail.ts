@@ -103,7 +103,7 @@ export const HelpdeskDetail = {
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg>
                   Generér svar
                 </button>
-                <button class="btn btn-primary btn-sm" onclick="HelpdeskDetail.sendReply('${t.id}')">
+                <button class="btn btn-primary btn-sm" onclick="HelpdeskDetail.confirmSend('${t.id}')">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                   ${this._gmailConnected && t.requester_email ? 'Send email' : 'Send'}
                 </button>
@@ -233,13 +233,61 @@ export const HelpdeskDetail = {
     }
   },
 
-  /* ── Send reply ── */
-  async sendReply(ticketId: string): Promise<void> {
+  /* ── Confirm before sending ── */
+  confirmSend(ticketId: string): void {
     const bodyEl = document.getElementById('hd-reply-body') as HTMLTextAreaElement | null;
-
     if (!bodyEl) return;
     const body = bodyEl.value.trim();
     if (!body) { bodyEl.style.borderColor = 'var(--error)'; bodyEl.focus(); return; }
+
+    const t = this._ticket;
+    if (!t) return;
+
+    const isEmail = this._gmailConnected && !!t.requester_email;
+    const truncBody = body.length > 200 ? body.slice(0, 200) + '…' : body;
+
+    const modal = document.getElementById('team-modal');
+    if (!modal) return;
+
+    modal.innerHTML = `
+      <div class="tl-modal cf-modal" onclick="event.stopPropagation()">
+        <div class="cf-modal-icon">
+          ${isEmail
+            ? '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>'
+            : '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>'
+          }
+        </div>
+        <h3 class="cf-modal-title">${isEmail ? 'Send email?' : 'Send besked?'}</h3>
+        ${isEmail ? `<div class="cf-modal-recipient"><span class="cf-modal-recipient-label">Til:</span> ${escapeHtml(t.requester_email!)}</div>` : ''}
+        <div class="cf-modal-preview">${escapeHtml(truncBody)}</div>
+        <div class="cf-modal-actions">
+          <button class="btn" onclick="HelpdeskDetail.closeConfirm()">Annuller</button>
+          <button class="btn btn-primary" id="cf-send-btn" onclick="HelpdeskDetail.sendReply('${ticketId}')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            ${isEmail ? 'Send email' : 'Send'}
+          </button>
+        </div>
+      </div>
+    `;
+    modal.classList.add('open');
+    modal.onclick = (e: Event) => { if (e.target === modal) this.closeConfirm(); };
+  },
+
+  closeConfirm(): void {
+    const modal = document.getElementById('team-modal');
+    if (modal) { modal.classList.remove('open'); modal.innerHTML = ''; modal.onclick = null; }
+  },
+
+  /* ── Send reply ── */
+  async sendReply(ticketId: string): Promise<void> {
+    const bodyEl = document.getElementById('hd-reply-body') as HTMLTextAreaElement | null;
+    const sendBtn = document.getElementById('cf-send-btn') as HTMLButtonElement | null;
+
+    if (!bodyEl) return;
+    const body = bodyEl.value.trim();
+    if (!body) return;
+
+    if (sendBtn) { sendBtn.innerHTML = '<span class="vp-spinner"></span> Sender...'; sendBtn.disabled = true; }
 
     try {
       await HelpdeskAPI.addMessage(ticketId, {
@@ -248,8 +296,11 @@ export const HelpdeskDetail = {
         sender_name: 'Support',
         is_internal: false,
       });
+      this.closeConfirm();
+      (window as any).App.toast('Besked sendt', 'success');
       (window as any).App.render();
     } catch {
+      this.closeConfirm();
       (window as any).App.toast('Kunne ikke sende besked', 'error');
     }
   },
