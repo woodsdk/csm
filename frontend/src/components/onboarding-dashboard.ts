@@ -32,6 +32,7 @@ export const OnboardingDashboard = {
   _userSearch: '',
   _period: 30,
   _teamMembers: [] as TeamMember[],
+  _pendingFeedbackId: null as string | null,
 
   setTab(tab: string): void {
     this._activeTab = tab as DashTab;
@@ -331,6 +332,7 @@ export const OnboardingDashboard = {
                 <th>Rating</th>
                 <th>Sentiment</th>
                 <th>Uddrag</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -345,6 +347,12 @@ export const OnboardingDashboard = {
                     <td style="font-weight:600;color:${r.rating >= 8 ? 'var(--success)' : r.rating >= 6 ? 'inherit' : 'var(--error)'}">${r.rating.toFixed(1)}</td>
                     <td><span style="color:${sentColor};font-weight:500;font-size:var(--text-xs)">${r.sentiment.charAt(0).toUpperCase() + r.sentiment.slice(1)}</span></td>
                     <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(r.comment)}</td>
+                    <td>
+                      <button class="ob-action-btn ob-ai-followup-btn" onclick="event.stopPropagation(); OnboardingDashboard.followUpOnFeedback('${r.id}', '${r.user_id}')" title="Følg op på feedback">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        Følg op
+                      </button>
+                    </td>
                   </tr>
                 `;
               }).join('')}
@@ -449,9 +457,18 @@ export const OnboardingDashboard = {
   },
   /* ────────── KONTAKT & TICKET-HISTORIK ────────── */
 
-  async openContactModal(userId: string): Promise<void> {
-    const user = this._users.find(u => u.id === userId);
-    if (!user) return;
+  async openContactModal(userId: string, feedbackId?: string, feedbackComment?: string): Promise<void> {
+    let user = this._users.find(u => u.id === userId);
+    if (!user) {
+      // Fetch users if not loaded (e.g. coming from feedback tab)
+      try {
+        this._users = await OnboardingAPI.getUsers({});
+        user = this._users.find(u => u.id === userId);
+      } catch { /* */ }
+      if (!user) return;
+    }
+
+    this._pendingFeedbackId = feedbackId || null;
 
     if (this._teamMembers.length === 0) {
       try { this._teamMembers = await TeamAPI.getAll(); } catch { /* */ }
@@ -461,11 +478,13 @@ export const OnboardingDashboard = {
       .map(m => `<option value="${m.id}">${escapeHtml(m.name)}</option>`)
       .join('');
 
+    const smartChipsHTML = this._buildSmartChips(user, feedbackComment);
+
     const modal = document.getElementById('team-modal');
     if (!modal) return;
 
     modal.innerHTML = `
-      <div class="tl-modal" style="width:500px" onclick="event.stopPropagation()">
+      <div class="tl-modal" style="width:540px" onclick="event.stopPropagation()">
         <div class="tl-modal-header">
           <div>
             <h3>Kontakt bruger</h3>
@@ -503,6 +522,29 @@ export const OnboardingDashboard = {
           <div class="form-group">
             <label class="form-label">Besked <span style="color:var(--error)">*</span></label>
             <textarea class="input" id="ob-contact-body" rows="5" placeholder="Skriv din besked..."></textarea>
+          </div>
+          <div class="ob-ai-section">
+            <div class="ob-ai-header">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+              </svg>
+              <span>AI Udkast</span>
+            </div>
+            <div class="ob-ai-chips" id="ob-ai-chips">
+              ${smartChipsHTML}
+            </div>
+            <div class="ob-ai-custom-row">
+              <input class="input ob-ai-custom-input" id="ob-ai-custom-prompt"
+                     type="text" placeholder="Eller skriv instruktion..."
+                     onkeydown="if(event.key==='Enter'){event.preventDefault();OnboardingDashboard.generateDraft('${user.id}')}">
+              <button class="btn btn-primary btn-sm ob-ai-generate-btn" id="ob-ai-generate-btn"
+                      onclick="OnboardingDashboard.generateDraft('${user.id}')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+                </svg>
+                Generér
+              </button>
+            </div>
           </div>
         </div>
         <div class="tl-modal-footer">
@@ -552,6 +594,139 @@ export const OnboardingDashboard = {
       if (btn) { btn.innerHTML = 'Send & opret ticket'; btn.disabled = false; }
       (window as any).App.toast(err.message || 'Kunne ikke sende', 'error');
     }
+  },
+
+  /* ────────── AI UDKAST ────────── */
+
+  _buildSmartChips(user: OnboardingUser, feedbackComment?: string): string {
+    const chips: Array<{ label: string; prompt: string }> = [];
+
+    // Low health score
+    if (user.health_score < 50) {
+      chips.push({
+        label: `Lav health (${user.health_score})`,
+        prompt: `Brugeren har en lav health score på ${user.health_score}/100. Skriv en venlig opfølgning der undersøger om der er noget vi kan hjælpe med.`,
+      });
+    }
+
+    // Recent negative feedback from user data
+    if (user.latest_issue) {
+      const truncated = user.latest_issue.length > 35
+        ? user.latest_issue.substring(0, 35) + '…'
+        : user.latest_issue;
+      chips.push({
+        label: `Feedback: "${truncated}"`,
+        prompt: `Følg op på brugerens kritiske feedback: "${user.latest_issue}". Vis at vi tager det alvorligt og vil forbedre oplevelsen.`,
+      });
+    }
+
+    // Specific feedback passed from Feedback tab
+    if (feedbackComment && !user.latest_issue) {
+      const truncated = feedbackComment.length > 35
+        ? feedbackComment.substring(0, 35) + '…'
+        : feedbackComment;
+      chips.push({
+        label: `Feedback: "${truncated}"`,
+        prompt: `Følg op på denne specifikke feedback: "${feedbackComment}". Anerkend feedback og forklar hvad vi gør.`,
+      });
+    }
+
+    // Onboarding status
+    if (user.status === 'onboarding') {
+      chips.push({
+        label: 'Onboarding check-in',
+        prompt: 'Brugeren er i onboarding. Skriv en venlig check-in der tilbyder hjælp til at komme i gang og minder om næste skridt.',
+      });
+    }
+
+    // Zero consultations (activation)
+    if (user.consultation_count === 0) {
+      chips.push({
+        label: 'Aktivering',
+        prompt: 'Brugeren har endnu ikke gennemført en konsultation. Skriv en motiverende besked der hjælper dem i gang med deres første konsultation.',
+      });
+    }
+
+    // Inactive user
+    if (user.status === 'inactive') {
+      chips.push({
+        label: 'Re-aktivering',
+        prompt: 'Brugeren er inaktiv. Skriv en varm besked der viser vi savner dem og tilbyder personlig hjælp til at komme tilbage.',
+      });
+    }
+
+    // Always: general check-in
+    chips.push({
+      label: 'Generel check-in',
+      prompt: 'Skriv en generel venlig check-in besked der spørger ind til hvordan det går med platformen.',
+    });
+
+    return chips.map(c => {
+      const safePrompt = c.prompt.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+      return `<button class="ob-ai-chip" onclick="OnboardingDashboard.selectChip(this, '${safePrompt}')">${escapeHtml(c.label)}</button>`;
+    }).join('');
+  },
+
+  selectChip(chipEl: HTMLElement, prompt: string): void {
+    // Remove active from all chips
+    document.querySelectorAll('.ob-ai-chip').forEach(c => c.classList.remove('ob-ai-chip-active'));
+    // Activate clicked chip
+    chipEl.classList.add('ob-ai-chip-active');
+    // Set the prompt input
+    const input = document.getElementById('ob-ai-custom-prompt') as HTMLInputElement;
+    if (input) input.value = prompt;
+  },
+
+  async generateDraft(userId: string): Promise<void> {
+    const promptEl = document.getElementById('ob-ai-custom-prompt') as HTMLInputElement;
+    const subjectEl = document.getElementById('ob-contact-subject') as HTMLInputElement;
+    const bodyEl = document.getElementById('ob-contact-body') as HTMLTextAreaElement;
+    const btn = document.getElementById('ob-ai-generate-btn') as HTMLButtonElement;
+
+    if (!promptEl || !subjectEl || !bodyEl || !btn) return;
+
+    const prompt = promptEl.value.trim();
+    if (!prompt) {
+      promptEl.style.borderColor = 'var(--error)';
+      promptEl.focus();
+      return;
+    }
+
+    const origText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="vp-spinner" style="width:12px;height:12px"></span> Genererer...';
+
+    try {
+      const result = await OnboardingAPI.generateDraft({
+        user_id: userId,
+        feedback_id: this._pendingFeedbackId || undefined,
+        prompt,
+      });
+
+      if (result.subject && result.body) {
+        subjectEl.value = result.subject;
+        bodyEl.value = result.body;
+        bodyEl.focus();
+        (window as any).App.toast('AI-udkast genereret', 'success');
+      } else {
+        (window as any).App.toast(result.error || 'Kunne ikke generere udkast', 'error');
+      }
+    } catch {
+      (window as any).App.toast('AI-udkast fejlede — tjek API-nøgle', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = origText;
+    }
+  },
+
+  async followUpOnFeedback(feedbackId: string, userId: string): Promise<void> {
+    // Find the feedback in loaded data
+    const review = this._feedback?.recent_reviews.find((r: any) => r.id === feedbackId);
+    const comment = review?.comment || '';
+
+    // Open contact modal with feedback context
+    this._pendingFeedbackId = feedbackId;
+    await this.openContactModal(userId, feedbackId, comment);
   },
 
   async openUserTickets(userId: string): Promise<void> {

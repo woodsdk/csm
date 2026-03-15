@@ -16,6 +16,12 @@ class ContactRequest(BaseModel):
     assignee_id: Optional[str] = None
 
 
+class GenerateDraftRequest(BaseModel):
+    user_id: str
+    feedback_id: Optional[str] = None
+    prompt: str = ""
+
+
 @router.get("/overview")
 def get_overview(period: int = 30):
     """Dashboard overview: KPIs, funnel, daily charts."""
@@ -377,3 +383,101 @@ def get_user_tickets(user_id: str):
         (user_id,),
     )
     return tickets
+
+
+@router.post("/generate-draft")
+def generate_draft(data: GenerateDraftRequest):
+    """Generate an AI contact draft using full user context, feedback, and tickets."""
+    from ..openai_helper import generate_contact_draft, is_configured
+
+    if not is_configured():
+        return {"error": "OpenAI API-nøgle ikke konfigureret"}
+
+    # Fetch user
+    users = query("""
+        SELECT pu.*,
+            EXTRACT(EPOCH FROM (NOW() - pu.signup_at)) / 86400 as days_since_signup,
+            (SELECT COUNT(*) FROM platform_consultations pc WHERE pc.user_id = pu.id) as consultation_count,
+            (SELECT ROUND(AVG(pc.rating)::numeric, 1) FROM platform_consultations pc WHERE pc.user_id = pu.id) as avg_rating,
+            (SELECT COUNT(*) FROM platform_reviews pr WHERE pr.user_id = pu.id) as review_count
+        FROM platform_users pu
+        WHERE pu.id = %s
+    """, (data.user_id,))
+
+    if not users:
+        return {"error": "Bruger ikke fundet"}
+    user = users[0]
+
+    user_context = {
+        "name": user["name"],
+        "email": user["email"],
+        "clinic_name": user["clinic_name"],
+        "speciale": user.get("speciale", ""),
+        "status": user["status"],
+        "plan": user.get("plan", ""),
+        "health_score": user.get("health_score", 0),
+        "consultation_count": user["consultation_count"],
+        "avg_rating": float(user["avg_rating"]) if user["avg_rating"] else None,
+        "days_since_signup": round(float(user["days_since_signup"] or 0)),
+        "last_active_at": str(user.get("last_active_at", "")) if user.get("last_active_at") else None,
+    }
+
+    # Fetch recent feedback
+    feedback = query("""
+        SELECT id, rating, comment, sentiment, created_at
+        FROM platform_reviews
+        WHERE user_id = %s
+        ORDER BY created_at DESC
+        LIMIT 10
+    """, (data.user_id,))
+    feedback_list = [{
+        "id": f["id"],
+        "rating": float(f["rating"]),
+        "comment": f["comment"],
+        "sentiment": f["sentiment"],
+        "created_at": str(f["created_at"]),
+    } for f in feedback]
+
+    # Fetch recent tickets
+    tickets = query("""
+        SELECT id, subject, status, created_at
+        FROM tickets
+        WHERE platform_user_id = %s
+        ORDER BY created_at DESC
+        LIMIT 5
+    """, (data.user_id,))
+    tickets_list = [{
+        "id": t["id"],
+        "subject": t["subject"],
+        "status": t["status"],
+        "created_at": str(t["created_at"]),
+    } for t in tickets]
+
+    # Fetch specific feedback if feedback_id provided
+    target_feedback = None
+    if data.feedback_id:
+        target = query(
+            "SELECT id, rating, comment, sentiment, created_at FROM platform_reviews WHERE id = %s",
+            (data.feedback_id,),
+        )
+        if target:
+            t = target[0]
+            target_feedback = {
+                "id": t["id"],
+                "rating": float(t["rating"]),
+                "comment": t["comment"],
+                "sentiment": t["sentiment"],
+                "created_at": str(t["created_at"]),
+            }
+
+    result = generate_contact_draft(
+        user_context=user_context,
+        feedback=feedback_list,
+        tickets=tickets_list,
+        prompt=data.prompt,
+        target_feedback=target_feedback,
+    )
+
+    if result:
+        return result
+    return {"error": "Kunne ikke generere udkast — prøv igen"}

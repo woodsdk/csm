@@ -11,7 +11,7 @@ const SLOTS: ShiftSlot[] = [
   { start: '08:00', end: '10:00', label: '08\u201310' },
   { start: '10:00', end: '12:00', label: '10\u201312' },
   { start: '12:00', end: '14:00', label: '12\u201314' },
-  { start: '14:00', end: '16:00', label: '14\u201316' },
+  { start: '14:00', end: '17:00', label: '14\u201317' },
 ];
 
 const WEEKS_SHOWN = 4;

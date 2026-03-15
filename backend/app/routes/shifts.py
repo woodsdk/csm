@@ -12,7 +12,7 @@ SHIFT_SLOTS = [
     {"start_time": "08:00", "end_time": "10:00"},
     {"start_time": "10:00", "end_time": "12:00"},
     {"start_time": "12:00", "end_time": "14:00"},
-    {"start_time": "14:00", "end_time": "16:00"},
+    {"start_time": "14:00", "end_time": "17:00"},
 ]
 
 

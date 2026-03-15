@@ -400,9 +400,11 @@ export const HelpdeskAPI = {
     return res.json();
   },
 
-  async aiSuggest(ticketId: string): Promise<{ suggestion?: string; error?: string }> {
+  async aiSuggest(ticketId: string, prompt: string = ''): Promise<{ suggestion?: string; error?: string }> {
     const res = await fetch(`${API_BASE}/helpdesk/${encodeURIComponent(ticketId)}/ai-suggest`, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt }),
     });
     if (!res.ok) throw new Error('Failed to generate AI suggestion');
     return res.json();
@@ -451,6 +453,16 @@ export const OnboardingAPI = {
   async getUserTickets(userId: string): Promise<Ticket[]> {
     const res = await fetch(`${API_BASE}/onboarding/users/${encodeURIComponent(userId)}/tickets`);
     if (!res.ok) throw new Error('Failed to fetch user tickets');
+    return res.json();
+  },
+
+  async generateDraft(data: { user_id: string; feedback_id?: string; prompt?: string }): Promise<{ subject?: string; body?: string; error?: string }> {
+    const res = await fetch(`${API_BASE}/onboarding/generate-draft`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to generate draft');
     return res.json();
   },
 };

@@ -213,9 +213,16 @@ def add_ticket_message(ticket_id: str, data: TicketMessageCreate):
 
 # ── AI Suggest ────────────────────────────────────────────────────
 
+class AiSuggestRequest(BaseModel):
+    prompt: str = ""
+
+
 @router.post("/{ticket_id}/ai-suggest")
-def ai_suggest_reply(ticket_id: str):
+def ai_suggest_reply(ticket_id: str, data: AiSuggestRequest = None):
     """Generate an AI reply suggestion using OpenAI + FAQ context."""
+    if data is None:
+        data = AiSuggestRequest()
+
     # Get ticket
     ticket = query("SELECT * FROM tickets WHERE id = %s", (ticket_id,))
     if not ticket:
@@ -238,6 +245,7 @@ def ai_suggest_reply(ticket_id: str):
         ticket_description=t.get("description", ""),
         messages=messages,
         faq_items=faq_items,
+        user_instruction=data.prompt,
     )
 
     if suggestion is None:

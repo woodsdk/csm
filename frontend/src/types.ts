@@ -327,7 +327,7 @@ export interface FeedbackData {
   sentiments: Array<{ sentiment: string; count: number }>;
   top_themes: Array<{ theme: string; count: number }>;
   recent_reviews: Array<{
-    id: string; user_name: string; clinic_name: string;
+    id: string; user_id: string; user_name: string; clinic_name: string;
     rating: number; comment: string; sentiment: string; created_at: string;
   }>;
 }

@@ -1,4 +1,4 @@
-"""OpenAI Integration — AI-powered reply suggestions for helpdesk."""
+"""OpenAI Integration — AI-powered reply suggestions and draft generation."""
 
 import os
 import json
@@ -40,6 +40,7 @@ def generate_reply_suggestion(
     ticket_description: str,
     messages: list[dict],
     faq_items: list[dict],
+    user_instruction: str = "",
 ) -> str | None:
     """Generate an AI reply suggestion for a helpdesk ticket.
 
@@ -77,6 +78,10 @@ Regler:
 - Afslut med en venlig hilsen som "Med venlig hilsen" eller "Bedste hilsner"
 - Underskiv IKKE med et navn — det tilføjer agenten selv"""
 
+    instruction_block = ""
+    if user_instruction and user_instruction.strip():
+        instruction_block = f"\n\nAGENTENS INSTRUKTION (følg denne retning i dit svar):\n{user_instruction.strip()}\n"
+
     user_prompt = f"""Generer et svarforslag til denne helpdesk-ticket:
 
 EMNE: {ticket_subject}
@@ -87,7 +92,7 @@ SAMTALEHISTORIK:
 
 FAQ-DATABASE (brug dette som vidensbase):
 {faq_context if faq_context else "(Ingen FAQ tilgængelig)"}
-
+{instruction_block}
 Skriv et professionelt svarforslag på dansk:"""
 
     try:
@@ -295,4 +300,139 @@ FAQ-DATABASE:
         return response.choices[0].message.content.strip()
     except Exception as e:
         logger.error(f"OpenAI API error (ask): {e}")
+        return None
+
+
+# ── Contact Draft Generation ─────────────────────────────────────────
+
+def generate_contact_draft(
+    user_context: dict,
+    feedback: list[dict],
+    tickets: list[dict],
+    prompt: str = "",
+    target_feedback: dict | None = None,
+) -> dict | None:
+    """Generate a contact draft (subject + body) for outbound CS communication.
+
+    Uses user context, feedback history, and ticket history to produce
+    a personalized, contextual email/message draft.
+    Returns {"subject": "...", "body": "..."} or None if AI unavailable.
+    """
+    client = _get_client()
+    if not client:
+        return None
+
+    system_prompt = """Du er en erfaren Customer Success Manager for People's Clinic, en dansk sundhedstech-virksomhed.
+
+Du skriver professionelle, varme og proaktive beskeder til klinikker og læger der bruger platformen.
+
+REGLER:
+- Skriv ALTID på dansk
+- Vær venlig, empatisk og løsningsorienteret — aldrig sælgende
+- Personalisér baseret på brugerens data og situation
+- Hold beskeden kort og præcis (3-6 sætninger i body)
+- Afslut med "Med venlig hilsen" (uden navn — agenten tilføjer selv)
+- Hvis der er feedback at følge op på, anerkend den konkret
+- Hvis health score er lav, vær proaktiv og tilbyd hjælp uden at lyde alarmerende
+- SVAR KUN med et JSON-objekt: {"subject": "...", "body": "..."}
+- Subject skal være kort og relevant (maks 60 tegn)
+- Body skal starte med "Hej [fornavn]," og slutte med "Med venlig hilsen"
+- Brug IKKE markdown i body — kun ren tekst med linjeskift"""
+
+    # Build user context block
+    uc = user_context
+    user_block = f"""BRUGER KONTEKST:
+- Navn: {uc.get('name', 'Ukendt')}
+- Klinik: {uc.get('clinic_name', 'Ukendt')}
+- Speciale: {uc.get('speciale', 'Ukendt')}
+- Status: {uc.get('status', 'Ukendt')}
+- Plan: {uc.get('plan', 'Ukendt')}
+- Health score: {uc.get('health_score', 'N/A')}/100
+- Konsultationer: {uc.get('consultation_count', 0)}
+- Gns. rating: {uc.get('avg_rating', 'N/A')}
+- Dage siden signup: {uc.get('days_since_signup', 'N/A')}
+- Sidst aktiv: {uc.get('last_active_at', 'N/A')}"""
+
+    # Build feedback block
+    feedback_block = ""
+    if feedback:
+        lines = []
+        for fb in feedback[:10]:
+            rating = fb.get("rating", "?")
+            comment = fb.get("comment", "")
+            sentiment = fb.get("sentiment", "")
+            date = fb.get("created_at", "")[:10]
+            lines.append(f"  - [{date}] Rating: {rating}, Sentiment: {sentiment}, Kommentar: \"{comment}\"")
+        feedback_block = f"\nSENESTE FEEDBACK ({len(feedback)} reviews):\n" + "\n".join(lines)
+
+    # Build tickets block
+    tickets_block = ""
+    if tickets:
+        lines = []
+        for tk in tickets[:5]:
+            subj = tk.get("subject", "")
+            status = tk.get("status", "")
+            date = tk.get("created_at", "")[:10]
+            lines.append(f"  - [{date}] \"{subj}\" (status: {status})")
+        tickets_block = f"\nSENESTE TICKETS ({len(tickets)} tickets):\n" + "\n".join(lines)
+
+    # Build target feedback block
+    target_block = ""
+    if target_feedback:
+        target_block = f"""\nSPECIFIK FEEDBACK AT FØLGE OP PÅ:
+  Rating: {target_feedback.get('rating', '?')}, Sentiment: {target_feedback.get('sentiment', '')}
+  Kommentar: \"{target_feedback.get('comment', '')}\"
+  Dato: {target_feedback.get('created_at', '')[:10]}"""
+
+    user_prompt = f"""{user_block}
+{feedback_block}
+{tickets_block}
+{target_block}
+
+CS-AGENTENS INSTRUKTION:
+{prompt if prompt else 'Generel opfølgning'}
+
+Generér et JSON-objekt med "subject" og "body" for en professionel outbound-besked:"""
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+            max_tokens=600,
+            temperature=0.7,
+        )
+        content = response.choices[0].message.content.strip()
+
+        # Try to parse JSON from the response
+        try:
+            result = json.loads(content)
+            if "subject" in result and "body" in result:
+                return result
+        except json.JSONDecodeError:
+            pass
+
+        # Fallback: try to extract JSON from markdown code block
+        if "```" in content:
+            json_match = content.split("```")[1]
+            if json_match.startswith("json"):
+                json_match = json_match[4:]
+            try:
+                result = json.loads(json_match.strip())
+                if "subject" in result and "body" in result:
+                    return result
+            except json.JSONDecodeError:
+                pass
+
+        # Last resort: return raw content as body
+        first_name = uc.get("name", "").split()[0] if uc.get("name") else ""
+        return {
+            "subject": f"Opfølgning — {uc.get('clinic_name', '')}",
+            "body": content,
+        }
+
+    except Exception as e:
+        logger.error(f"OpenAI API error (contact draft): {e}")
         return None
