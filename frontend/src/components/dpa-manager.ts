@@ -225,25 +225,27 @@ export const DPAManager = {
         <div class="dpa-doc-upload">
           <h3 class="dpa-section-title">Upload ny DPA-version</h3>
           <div class="dpa-upload-form">
-            <div class="form-row" style="gap: 12px; align-items: end;">
+            <div class="form-row">
               <div class="form-group" style="flex:0 0 80px">
                 <label class="form-label">Version</label>
                 <input class="input" type="number" id="dpa-upload-version" value="${currentVersion + 1}" min="1">
               </div>
-              <div class="form-group" style="flex:0 0 100px">
+              <div class="form-group" style="flex:0 0 110px">
                 <label class="form-label">Sprog</label>
                 <select class="input" id="dpa-upload-lang">
                   <option value="da">Dansk</option>
                   <option value="en">English</option>
                 </select>
               </div>
-              <div class="form-group" style="flex:1">
+              <div class="form-group" style="flex:1;min-width:180px">
                 <label class="form-label">PDF-fil</label>
-                <input class="input" type="file" id="dpa-upload-file" accept=".pdf">
+                <input type="file" id="dpa-upload-file" accept=".pdf">
               </div>
-              <button class="btn btn-primary btn-sm" id="dpa-upload-btn" onclick="DPAManager.uploadDocument()">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                Upload
+            </div>
+            <div style="margin-top: var(--space-3); display: flex; justify-content: flex-end;">
+              <button class="btn btn-primary" id="dpa-upload-btn" onclick="DPAManager.uploadDocument()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Upload DPA
               </button>
             </div>
           </div>

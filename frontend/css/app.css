@@ -8187,6 +8187,7 @@
 /* ── Campaign ── */
 .mk-campaign-section {
   max-width: 640px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
@@ -8905,7 +8906,41 @@
 .dpa-alert-info { background: #dbeafe; border: 1px solid #93c5fd; color: #1e40af; }
 
 /* Documents tab */
-.dpa-upload-form { margin-bottom: var(--space-4); }
+.dpa-upload-form {
+  margin-bottom: var(--space-4);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+.dpa-upload-form .form-row {
+  display: flex;
+  align-items: end;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+.dpa-upload-form input[type="file"] {
+  font-size: var(--text-sm);
+  padding: 6px 10px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  cursor: pointer;
+  width: 100%;
+}
+.dpa-upload-form input[type="file"]:hover { border-color: var(--brand); }
+.dpa-upload-form input[type="file"]::file-selector-button {
+  background: var(--brand);
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: var(--space-2);
+}
+.dpa-upload-form input[type="file"]::file-selector-button:hover { background: var(--brand-hover); }
 
 .dpa-doc-list { display: flex; flex-direction: column; gap: 2px; }
 
