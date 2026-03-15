@@ -16,8 +16,8 @@ from ..google_oauth import (
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
-# In-memory state store for CSRF protection (fine for single-instance)
-_pending_states: dict[str, bool] = {}
+# In-memory store: state → code_verifier (for PKCE support)
+_pending_states: dict[str, str] = {}
 
 
 def _create_flow() -> Flow:
@@ -70,7 +70,8 @@ def connect():
         include_granted_scopes="true",
     )
 
-    _pending_states[state] = True
+    # Store the PKCE code_verifier so we can pass it to the callback flow
+    _pending_states[state] = getattr(flow, "code_verifier", "") or ""
     return {"auth_url": auth_url}
 
 
@@ -85,13 +86,19 @@ def callback(request: Request, code: str = "", state: str = "", error: str = "")
         logger.error("Google OAuth callback: no code received")
         return RedirectResponse(url="/?page=settings&google=error&reason=no_code")
 
-    # Verify state
-    if state not in _pending_states:
-        logger.warning("OAuth callback with invalid state — proceeding anyway")
-    _pending_states.pop(state, None)
+    # Retrieve the PKCE code_verifier that was stored during /connect
+    code_verifier = _pending_states.pop(state, None)
+    if code_verifier is None:
+        logger.warning("OAuth callback with unknown state — proceeding without PKCE verifier")
+        code_verifier = ""
 
     try:
         flow = _create_flow()
+
+        # Restore the PKCE code_verifier so fetch_token can complete the exchange
+        if code_verifier:
+            flow.code_verifier = code_verifier
+
         flow.fetch_token(code=code)
         creds = flow.credentials
 
@@ -121,7 +128,6 @@ def callback(request: Request, code: str = "", state: str = "", error: str = "")
     except Exception as e:
         import traceback
         logger.error(f"Google OAuth callback failed: {e}\n{traceback.format_exc()}")
-        # URL-encode a short reason for frontend debugging
         reason = str(e)[:100].replace(" ", "_").replace("&", "").replace("=", "")
         return RedirectResponse(url=f"/?page=settings&google=error&reason={reason}")
 
