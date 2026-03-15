@@ -2,7 +2,7 @@
    Helpdesk List — Ticket overview
    ═══════════════════════════════════════════ */
 
-import { HelpdeskAPI, TeamAPI } from '../api';
+import { HelpdeskAPI, TeamAPI, GoogleAuthAPI } from '../api';
 import { escapeHtml } from '../utils';
 import type { Ticket, TeamMember } from '../types';
 
@@ -40,6 +40,8 @@ export const HelpdeskList = {
   _filterStatus: '' as string,
   _filterPriority: '' as string,
   _teamMembers: [] as TeamMember[],
+  _gmailConnected: false,
+  _gmailEmail: '' as string,
 
   /* ── Main render ── */
   async render(): Promise<string> {
@@ -59,7 +61,15 @@ export const HelpdeskList = {
       try { this._teamMembers = await TeamAPI.getAll(); } catch { /* */ }
     }
 
+    // Check Gmail connection status
+    try {
+      const gStatus = await GoogleAuthAPI.getStatus();
+      this._gmailConnected = gStatus.connected;
+      this._gmailEmail = gStatus.email || '';
+    } catch { this._gmailConnected = false; }
+
     const stats = this._stats;
+    const activeCount = stats.open_count + stats.in_progress_count;
 
     // Stats cards
     const statsHTML = `
@@ -75,6 +85,10 @@ export const HelpdeskList = {
         <button class="hd-stat-card ${this._filterStatus === 'resolved' ? 'hd-stat-active' : ''}" onclick="HelpdeskList.filterStatus('resolved')">
           <span class="hd-stat-num">${stats.resolved_count}</span>
           <span class="hd-stat-label">L\u00f8st</span>
+        </button>
+        <button class="hd-stat-card ${this._filterStatus === 'closed' ? 'hd-stat-active' : ''}" onclick="HelpdeskList.filterStatus('closed')">
+          <span class="hd-stat-num">${stats.closed_count}</span>
+          <span class="hd-stat-label">Lukket</span>
         </button>
         <button class="hd-stat-card ${this._filterStatus === '' ? 'hd-stat-active' : ''}" onclick="HelpdeskList.filterStatus('')">
           <span class="hd-stat-num">${stats.total}</span>
@@ -100,17 +114,31 @@ export const HelpdeskList = {
       listHTML = `<div class="hd-ticket-list">${rows}</div>`;
     }
 
-    // Gmail integration banner
-    const gmailBanner = `
+    // Gmail integration banner — dynamic based on connection status
+    const gmailBanner = this._gmailConnected ? `
+      <div class="hd-gmail-banner hd-gmail-connected">
+        <svg class="hd-gmail-banner-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+        </svg>
+        <div class="hd-gmail-banner-text">
+          <div class="hd-gmail-banner-title">Gmail forbundet</div>
+          <div class="hd-gmail-banner-desc">${escapeHtml(this._gmailEmail)} — svar sendes automatisk via email.</div>
+        </div>
+        <button class="hd-gmail-banner-btn hd-gmail-banner-btn-settings" onclick="App.navigateTo('settings')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Indstillinger
+        </button>
+      </div>
+    ` : `
       <div class="hd-gmail-banner">
         <svg class="hd-gmail-banner-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
         </svg>
         <div class="hd-gmail-banner-text">
           <div class="hd-gmail-banner-title">Gmail-integration mangler</div>
-          <div class="hd-gmail-banner-desc">Forbind support@peoplesdoctor.com for automatisk at modtage og besvare tickets via email.</div>
+          <div class="hd-gmail-banner-desc">Forbind din Google-konto for automatisk at modtage og besvare tickets via email.</div>
         </div>
-        <button class="hd-gmail-banner-btn" onclick="App.toast('Gmail-integration er ikke konfigureret endnu. Kontakt administrator.', 'info')">
+        <button class="hd-gmail-banner-btn" onclick="App.navigateTo('settings')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
           Forbind
         </button>

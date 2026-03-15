@@ -198,6 +198,10 @@ export const HelpdeskDetail = {
   async updateField(ticketId: string, field: string, value: string): Promise<void> {
     try {
       await HelpdeskAPI.update(ticketId, { [field]: value || null });
+      // Update local ticket state so UI stays in sync
+      if (this._ticket) {
+        (this._ticket as any)[field] = value || null;
+      }
       (window as any).App.toast('Ticket opdateret', 'success');
     } catch {
       (window as any).App.toast('Kunne ikke opdatere', 'error');

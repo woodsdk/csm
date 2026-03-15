@@ -4227,7 +4227,7 @@
 /* Stats cards */
 .hd-stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: var(--space-3);
   margin-bottom: var(--space-5);
 }
@@ -4457,6 +4457,18 @@
   background: var(--bg-surface-hover);
   border-color: var(--navy-400);
   color: var(--text-primary);
+}
+
+.hd-gmail-connected {
+  opacity: 1;
+  border-color: var(--success);
+  background: color-mix(in srgb, var(--success) 4%, var(--bg-surface));
+}
+.hd-gmail-connected .hd-gmail-banner-icon { color: var(--success); }
+.hd-gmail-connected .hd-gmail-banner-title { color: var(--success); }
+
+.hd-gmail-banner-btn-settings {
+  border-color: var(--navy-200);
 }
 
 /* Empty state */
