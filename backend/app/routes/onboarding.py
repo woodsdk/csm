@@ -647,7 +647,31 @@ def get_signals():
     type_order = {"negative_feedback": 0, "critical_health": 1, "declining_activity": 2, "stuck_onboarding": 3}
     signals.sort(key=lambda s: (0 if s["severity"] == "high" else 1, type_order.get(s["type"], 9)))
 
+    # Filter out dismissed signals
+    dismissed = query("SELECT signal_type, user_id FROM dismissed_signals")
+    dismissed_set = {(d["signal_type"], d["user_id"]) for d in dismissed}
+    signals = [s for s in signals if (s["type"], s["user_id"]) not in dismissed_set]
+
     return signals
+
+
+@router.post("/signals/{signal_type}/{user_id}/dismiss")
+def dismiss_signal(signal_type: str, user_id: str):
+    """Dismiss a signal so it no longer appears."""
+    existing = query("SELECT id FROM dismissed_signals WHERE signal_type = %s AND user_id = %s", (signal_type, user_id))
+    if not existing:
+        execute(
+            "INSERT INTO dismissed_signals (id, signal_type, user_id) VALUES (%s, %s, %s)",
+            (gen_id("ds_"), signal_type, user_id)
+        )
+    return {"ok": True}
+
+
+@router.post("/signals/{signal_type}/{user_id}/restore")
+def restore_signal(signal_type: str, user_id: str):
+    """Restore a previously dismissed signal."""
+    execute("DELETE FROM dismissed_signals WHERE signal_type = %s AND user_id = %s", (signal_type, user_id))
+    return {"ok": True}
 
 
 @router.get("/users/{user_id}/detail")

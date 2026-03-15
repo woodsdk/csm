@@ -221,15 +221,20 @@ export const OnboardingDashboard = {
               onclick = `App.navigateTo('user-detail', '${s.user_id}')`;
             }
             return `
-              <div class="ob-signal-card ${severityClass}" onclick="${onclick}">
-                <div class="ob-signal-icon">${icon}</div>
-                <div class="ob-signal-body">
-                  <div class="ob-signal-user">${escapeHtml(s.user_name)} — ${escapeHtml(s.clinic_name)}</div>
-                  <div class="ob-signal-message">${escapeHtml(s.message)}</div>
+              <div class="ob-signal-card ${severityClass}">
+                <div class="ob-signal-main" onclick="${onclick}">
+                  <div class="ob-signal-icon">${icon}</div>
+                  <div class="ob-signal-body">
+                    <div class="ob-signal-user">${escapeHtml(s.user_name)} — ${escapeHtml(s.clinic_name)}</div>
+                    <div class="ob-signal-message">${escapeHtml(s.message)}</div>
+                  </div>
+                  <div class="ob-signal-action">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                  </div>
                 </div>
-                <div class="ob-signal-action">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-                </div>
+                <button class="ob-signal-dismiss" onclick="OnboardingDashboard.dismissSignal('${s.type}', '${s.user_id}')" title="Luk signal">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
               </div>
             `;
           }).join('')}
@@ -859,6 +864,24 @@ export const OnboardingDashboard = {
       modal.classList.remove('open');
       modal.innerHTML = '';
       modal.onclick = null;
+    }
+  },
+
+  async dismissSignal(signalType: string, userId: string): Promise<void> {
+    try {
+      await OnboardingAPI.dismissSignal(signalType, userId);
+      // Remove from local state and re-render
+      this._signals = (this._signals || []).filter(s => !(s.type === signalType && s.user_id === userId));
+      const signalsContainer = document.querySelector('.ob-signals-section');
+      if (signalsContainer) {
+        if (this._signals.length === 0) {
+          signalsContainer.remove();
+        } else {
+          signalsContainer.outerHTML = this._renderSignals(this._signals);
+        }
+      }
+    } catch {
+      alert('Kunne ikke lukke signal — prøv igen.');
     }
   },
 };

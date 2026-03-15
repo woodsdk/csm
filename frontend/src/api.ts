@@ -477,6 +477,16 @@ export const OnboardingAPI = {
     if (!res.ok) throw new Error('Failed to fetch signals');
     return res.json();
   },
+
+  async dismissSignal(signalType: string, userId: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/onboarding/signals/${signalType}/${userId}/dismiss`, { method: 'POST' });
+    return res.json();
+  },
+
+  async restoreSignal(signalType: string, userId: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/onboarding/signals/${signalType}/${userId}/restore`, { method: 'POST' });
+    return res.json();
+  },
 };
 
 export const AskAPI = {

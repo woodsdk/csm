@@ -7011,19 +7011,46 @@
 .ob-signal-card {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
   background: #fff;
   border-radius: var(--radius-md);
   border: 1px solid var(--navy-100);
-  cursor: pointer;
   transition: all 0.15s ease;
+  position: relative;
 }
 
 .ob-signal-card:hover {
   border-color: var(--navy-300);
   box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
+
+.ob-signal-main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.ob-signal-dismiss {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  margin-right: var(--space-2);
+  opacity: 0;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+.ob-signal-card:hover .ob-signal-dismiss { opacity: 1; }
+.ob-signal-dismiss:hover { background: var(--navy-100); color: var(--error); }
 
 .ob-signal-high { border-left: 3px solid var(--error); }
 .ob-signal-medium { border-left: 3px solid var(--warning); }

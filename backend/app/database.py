@@ -656,6 +656,16 @@ def init():
         CREATE INDEX IF NOT EXISTS idx_dpa_signings_token ON dpa_signings(token);
         CREATE INDEX IF NOT EXISTS idx_dpa_signings_customer ON dpa_signings(customer_id);
         CREATE INDEX IF NOT EXISTS idx_dpa_signings_status ON dpa_signings(status);
+
+        -- Dismissed signals: track which CS signals have been dismissed
+        CREATE TABLE IF NOT EXISTS dismissed_signals (
+            id              TEXT PRIMARY KEY,
+            signal_type     TEXT NOT NULL,
+            user_id         TEXT NOT NULL,
+            dismissed_by    TEXT,
+            dismissed_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            UNIQUE(signal_type, user_id)
+        );
     """)
 
     # Seed default marketing AI system prompt
