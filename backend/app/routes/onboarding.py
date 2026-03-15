@@ -22,6 +22,59 @@ class GenerateDraftRequest(BaseModel):
     prompt: str = ""
 
 
+def _health_sql() -> str:
+    """Computed health score SQL snippet (replaces static pu.health_score).
+    Weighted formula: recency 35%, frequency 30%, satisfaction 20%, support 15%.
+    Returns integer 0-100."""
+    return """
+    GREATEST(0, LEAST(100, (
+        35 * GREATEST(0, LEAST(100,
+            CASE WHEN pu.last_active_at IS NULL THEN 0
+                 ELSE 100.0 - EXTRACT(EPOCH FROM (NOW() - pu.last_active_at)) / 86400 * 100.0 / 30
+            END
+        )) / 100.0 +
+        30 * LEAST(100,
+            (SELECT COUNT(*) FROM platform_consultations pc2
+             WHERE pc2.user_id = pu.id
+             AND pc2.consultation_date >= CURRENT_DATE - INTERVAL '30 days') * 100.0 / 9
+        ) / 100.0 +
+        20 * COALESCE(
+            (SELECT LEAST(100, AVG(pr2.rating) * 10)
+             FROM platform_reviews pr2 WHERE pr2.user_id = pu.id), 50
+        ) / 100.0 +
+        15 * GREATEST(0,
+            100.0 - (SELECT COUNT(*) FROM tickets tk2
+                   WHERE tk2.platform_user_id = pu.id
+                   AND tk2.status IN ('open', 'in_progress')) * 33.0
+        ) / 100.0
+    )))::integer"""
+
+
+def _health_breakdown_sql() -> dict[str, str]:
+    """Individual health factor SQL snippets for detail view."""
+    return {
+        "recency": """GREATEST(0, LEAST(100,
+            CASE WHEN pu.last_active_at IS NULL THEN 0
+                 ELSE 100.0 - EXTRACT(EPOCH FROM (NOW() - pu.last_active_at)) / 86400 * 100.0 / 30
+            END
+        ))::integer""",
+        "frequency": """LEAST(100,
+            (SELECT COUNT(*) FROM platform_consultations pc2
+             WHERE pc2.user_id = pu.id
+             AND pc2.consultation_date >= CURRENT_DATE - INTERVAL '30 days') * 100.0 / 9
+        )::integer""",
+        "satisfaction": """COALESCE(
+            (SELECT LEAST(100, AVG(pr2.rating) * 10)
+             FROM platform_reviews pr2 WHERE pr2.user_id = pu.id), 50
+        )::integer""",
+        "support": """GREATEST(0,
+            100.0 - (SELECT COUNT(*) FROM tickets tk2
+                   WHERE tk2.platform_user_id = pu.id
+                   AND tk2.status IN ('open', 'in_progress')) * 33.0
+        )::integer""",
+    }
+
+
 @router.get("/overview")
 def get_overview(period: int = 30):
     """Dashboard overview: KPIs, funnel, daily charts."""
@@ -134,8 +187,10 @@ def get_users(status: Optional[str] = None, search: Optional[str] = None):
 
     where = "WHERE " + " AND ".join(conditions) if conditions else ""
 
+    health = _health_sql()
     rows = query(f"""
         SELECT pu.*,
+            ({health}) as health_score,
             EXTRACT(EPOCH FROM (NOW() - pu.signup_at)) / 86400 as days_since_signup,
             (SELECT COUNT(*) FROM platform_consultations pc WHERE pc.user_id = pu.id) as consultation_count,
             (SELECT ROUND(AVG(pc.rating)::numeric, 1) FROM platform_consultations pc WHERE pc.user_id = pu.id) as avg_rating,
@@ -305,15 +360,17 @@ def get_churn(period: int = 90):
         ORDER BY week
     """)
 
-    # Top at-risk users
-    at_risk_users = query("""
+    # Top at-risk users (sorted by computed health)
+    health = _health_sql()
+    at_risk_users = query(f"""
         SELECT pu.*,
+            ({health}) as health_score,
             EXTRACT(EPOCH FROM (NOW() - pu.last_active_at)) / 86400 as days_inactive,
             (SELECT COUNT(*) FROM platform_consultations pc WHERE pc.user_id = pu.id) as consultation_count,
             (SELECT ROUND(AVG(pc.rating)::numeric, 1) FROM platform_consultations pc WHERE pc.user_id = pu.id) as avg_rating
         FROM platform_users pu
         WHERE pu.status = 'inactive'
-        ORDER BY pu.health_score ASC
+        ORDER BY ({health}) ASC
         LIMIT 10
     """)
 
@@ -393,9 +450,11 @@ def generate_draft(data: GenerateDraftRequest):
     if not is_configured():
         return {"error": "OpenAI API-nøgle ikke konfigureret"}
 
-    # Fetch user
-    users = query("""
+    # Fetch user with computed health
+    health = _health_sql()
+    users = query(f"""
         SELECT pu.*,
+            ({health}) as health_score,
             EXTRACT(EPOCH FROM (NOW() - pu.signup_at)) / 86400 as days_since_signup,
             (SELECT COUNT(*) FROM platform_consultations pc WHERE pc.user_id = pu.id) as consultation_count,
             (SELECT ROUND(AVG(pc.rating)::numeric, 1) FROM platform_consultations pc WHERE pc.user_id = pu.id) as avg_rating,
@@ -481,3 +540,243 @@ def generate_draft(data: GenerateDraftRequest):
     if result:
         return result
     return {"error": "Kunne ikke generere udkast — prøv igen"}
+
+
+@router.get("/signals")
+def get_signals():
+    """Actionable signals for CS team — things that need attention now."""
+    signals = []
+
+    # 1. Declining activity: active users not seen in 10+ days
+    declining = query("""
+        SELECT id, name, clinic_name, last_active_at,
+            EXTRACT(EPOCH FROM (NOW() - last_active_at)) / 86400 as days_inactive
+        FROM platform_users
+        WHERE status = 'active'
+          AND last_active_at < NOW() - INTERVAL '10 days'
+        ORDER BY last_active_at ASC
+        LIMIT 5
+    """)
+    for u in declining:
+        days = round(float(u["days_inactive"] or 0))
+        signals.append({
+            "type": "declining_activity",
+            "severity": "high" if days > 20 else "medium",
+            "user_id": u["id"],
+            "user_name": u["name"],
+            "clinic_name": u["clinic_name"],
+            "message": f"Aktivitet faldende: {days} dage siden sidst aktiv",
+            "created_at": str(u["last_active_at"] or ""),
+        })
+
+    # 2. Stuck onboarding: signup 7+ days ago, no consultation
+    stuck = query("""
+        SELECT id, name, clinic_name, signup_at,
+            EXTRACT(EPOCH FROM (NOW() - signup_at)) / 86400 as days_since_signup
+        FROM platform_users
+        WHERE status = 'onboarding'
+          AND first_consultation_at IS NULL
+          AND signup_at < NOW() - INTERVAL '7 days'
+        ORDER BY signup_at ASC
+        LIMIT 5
+    """)
+    for u in stuck:
+        days = round(float(u["days_since_signup"] or 0))
+        signals.append({
+            "type": "stuck_onboarding",
+            "severity": "high" if days > 14 else "medium",
+            "user_id": u["id"],
+            "user_name": u["name"],
+            "clinic_name": u["clinic_name"],
+            "message": f"Stuck i onboarding: {days} dage uden konsultation",
+            "created_at": str(u["signup_at"] or ""),
+        })
+
+    # 3. Negative feedback: kritisk reviews in last 14 days without follow-up ticket
+    neg_feedback = query("""
+        SELECT pr.id as review_id, pr.comment, pr.rating, pr.created_at,
+            pu.id as user_id, pu.name as user_name, pu.clinic_name
+        FROM platform_reviews pr
+        JOIN platform_users pu ON pr.user_id = pu.id
+        WHERE pr.sentiment = 'kritisk'
+          AND pr.created_at >= NOW() - INTERVAL '14 days'
+          AND NOT EXISTS (
+              SELECT 1 FROM tickets tk
+              WHERE tk.platform_user_id = pu.id
+              AND tk.created_at >= pr.created_at
+          )
+        ORDER BY pr.created_at DESC
+        LIMIT 5
+    """)
+    for r in neg_feedback:
+        snippet = r["comment"][:50] + "..." if len(r["comment"] or "") > 50 else r["comment"]
+        signals.append({
+            "type": "negative_feedback",
+            "severity": "high",
+            "user_id": r["user_id"],
+            "user_name": r["user_name"],
+            "clinic_name": r["clinic_name"],
+            "message": f"Kritisk feedback: \"{snippet}\"",
+            "created_at": str(r["created_at"]),
+            "feedback_id": r["review_id"],
+        })
+
+    # 4. Critical health: users with very low computed health
+    health = _health_sql()
+    critical = query(f"""
+        SELECT pu.id, pu.name, pu.clinic_name,
+            ({health}) as health_score
+        FROM platform_users pu
+        WHERE pu.status IN ('active', 'onboarding', 'inactive')
+          AND ({health}) < 30
+        ORDER BY ({health}) ASC
+        LIMIT 5
+    """)
+    for u in critical:
+        signals.append({
+            "type": "critical_health",
+            "severity": "high",
+            "user_id": u["id"],
+            "user_name": u["name"],
+            "clinic_name": u["clinic_name"],
+            "message": f"Kritisk health score: {u['health_score']}/100",
+            "created_at": "",
+        })
+
+    # Sort: high severity first, then by type priority
+    type_order = {"negative_feedback": 0, "critical_health": 1, "declining_activity": 2, "stuck_onboarding": 3}
+    signals.sort(key=lambda s: (0 if s["severity"] == "high" else 1, type_order.get(s["type"], 9)))
+
+    return signals
+
+
+@router.get("/users/{user_id}/detail")
+def get_user_detail(user_id: str):
+    """Full user profile with health breakdown, activity, feedback, tickets, and comms log."""
+    health = _health_sql()
+    bd = _health_breakdown_sql()
+
+    users = query(f"""
+        SELECT pu.*,
+            ({health}) as health_score,
+            ({bd['recency']}) as health_recency,
+            ({bd['frequency']}) as health_frequency,
+            ({bd['satisfaction']}) as health_satisfaction,
+            ({bd['support']}) as health_support,
+            EXTRACT(EPOCH FROM (NOW() - pu.signup_at)) / 86400 as days_since_signup,
+            (SELECT COUNT(*) FROM platform_consultations pc WHERE pc.user_id = pu.id) as consultation_count,
+            (SELECT ROUND(AVG(pc.rating)::numeric, 1) FROM platform_consultations pc WHERE pc.user_id = pu.id) as avg_rating,
+            (SELECT COUNT(*) FROM platform_reviews pr WHERE pr.user_id = pu.id) as review_count,
+            (SELECT pr.comment FROM platform_reviews pr WHERE pr.user_id = pu.id
+             AND pr.sentiment = 'kritisk' ORDER BY pr.created_at DESC LIMIT 1) as latest_issue,
+            (SELECT COUNT(*) FROM tickets tk WHERE tk.platform_user_id = pu.id) as ticket_count,
+            (SELECT COUNT(*) FROM tickets tk WHERE tk.platform_user_id = pu.id AND tk.status IN ('open', 'in_progress')) as open_ticket_count
+        FROM platform_users pu
+        WHERE pu.id = %s
+    """, (user_id,))
+
+    if not users:
+        return {"error": "Bruger ikke fundet"}
+
+    user = users[0]
+
+    # Profile with health breakdown
+    profile = {
+        **user,
+        "days_since_signup": round(float(user["days_since_signup"] or 0)),
+        "avg_rating": float(user["avg_rating"]) if user["avg_rating"] else None,
+        "mrr": float(user["mrr"]),
+        "health_breakdown": {
+            "total": user["health_score"],
+            "recency": user["health_recency"],
+            "frequency": user["health_frequency"],
+            "satisfaction": user["health_satisfaction"],
+            "support": user["health_support"],
+        },
+    }
+
+    # Last 20 consultations
+    consultations = query("""
+        SELECT consultation_date as date, duration_minutes, rating
+        FROM platform_consultations
+        WHERE user_id = %s
+        ORDER BY consultation_date DESC
+        LIMIT 20
+    """, (user_id,))
+    consultations = [{
+        "date": str(c["date"]),
+        "duration_minutes": c["duration_minutes"],
+        "rating": float(c["rating"]) if c["rating"] else None,
+    } for c in consultations]
+
+    # Weekly consultation counts (last 8 weeks)
+    weekly = query("""
+        SELECT DATE_TRUNC('week', consultation_date)::date as week, COUNT(*) as count
+        FROM platform_consultations
+        WHERE user_id = %s
+          AND consultation_date >= CURRENT_DATE - INTERVAL '8 weeks'
+        GROUP BY DATE_TRUNC('week', consultation_date)
+        ORDER BY week
+    """, (user_id,))
+    weekly_consultations = [{"week": str(w["week"]), "count": w["count"]} for w in weekly]
+
+    # All reviews
+    reviews = query("""
+        SELECT id, rating, comment, sentiment, created_at
+        FROM platform_reviews
+        WHERE user_id = %s
+        ORDER BY created_at DESC
+    """, (user_id,))
+    reviews = [{
+        "id": r["id"],
+        "rating": float(r["rating"]),
+        "comment": r["comment"],
+        "sentiment": r["sentiment"],
+        "created_at": str(r["created_at"]),
+    } for r in reviews]
+
+    # All tickets
+    tickets = query("""
+        SELECT t.*, tm.name as assignee_name
+        FROM tickets t
+        LEFT JOIN team_members tm ON t.assignee_id = tm.id
+        WHERE t.platform_user_id = %s
+        ORDER BY t.created_at DESC
+    """, (user_id,))
+
+    # Onboarding events
+    events = query("""
+        SELECT event_type, created_at
+        FROM platform_events
+        WHERE user_id = %s
+        ORDER BY created_at ASC
+    """, (user_id,))
+    events = [{"event_type": e["event_type"], "created_at": str(e["created_at"])} for e in events]
+
+    # Communication log (ticket messages sent by agents to this user)
+    comms = query("""
+        SELECT tm.id, t.subject as ticket_subject, tm.body, tm.sender_name, tm.created_at
+        FROM ticket_messages tm
+        JOIN tickets t ON tm.ticket_id = t.id
+        WHERE t.platform_user_id = %s
+          AND tm.sender_type = 'agent'
+        ORDER BY tm.created_at DESC
+        LIMIT 20
+    """, (user_id,))
+    communication_log = [{
+        "id": c["id"],
+        "ticket_subject": c["ticket_subject"],
+        "body": c["body"],
+        "sender_name": c["sender_name"],
+        "created_at": str(c["created_at"]),
+    } for c in comms]
+
+    return {
+        "profile": profile,
+        "consultations": consultations,
+        "weekly_consultations": weekly_consultations,
+        "reviews": reviews,
+        "tickets": tickets,
+        "events": events,
+        "communication_log": communication_log,
+    }

@@ -2,7 +2,7 @@
    SynergyHub API Facade — Typed fetch wrappers
    ═══════════════════════════════════════════ */
 
-import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot, DemoInfo, DemoJoinCreate, DemoJoinResult, TrainingItem, FaqItem, Ticket, TicketMessage, OverviewData, OnboardingUser, FeedbackData, ChurnData, ContactPayload } from './types';
+import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot, DemoInfo, DemoJoinCreate, DemoJoinResult, TrainingItem, FaqItem, Ticket, TicketMessage, OverviewData, OnboardingUser, FeedbackData, ChurnData, ContactPayload, UserDetailData, Signal } from './types';
 
 const API_BASE = '/api';
 
@@ -463,6 +463,18 @@ export const OnboardingAPI = {
       body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error('Failed to generate draft');
+    return res.json();
+  },
+
+  async getUserDetail(userId: string): Promise<UserDetailData> {
+    const res = await fetch(`${API_BASE}/onboarding/users/${encodeURIComponent(userId)}/detail`);
+    if (!res.ok) throw new Error('Failed to fetch user detail');
+    return res.json();
+  },
+
+  async getSignals(): Promise<Signal[]> {
+    const res = await fetch(`${API_BASE}/onboarding/signals`);
+    if (!res.ok) throw new Error('Failed to fetch signals');
     return res.json();
   },
 };

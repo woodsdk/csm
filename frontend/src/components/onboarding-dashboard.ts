@@ -4,7 +4,7 @@
 
 import { OnboardingAPI, TeamAPI } from '../api';
 import { escapeHtml } from '../utils';
-import type { OverviewData, OnboardingUser, FeedbackData, ChurnData, TeamMember, Ticket } from '../types';
+import type { OverviewData, OnboardingUser, FeedbackData, ChurnData, TeamMember, Ticket, Signal } from '../types';
 
 type DashTab = 'overview' | 'users' | 'feedback' | 'churn';
 
@@ -33,6 +33,7 @@ export const OnboardingDashboard = {
   _period: 30,
   _teamMembers: [] as TeamMember[],
   _pendingFeedbackId: null as string | null,
+  _signals: null as Signal[] | null,
 
   setTab(tab: string): void {
     this._activeTab = tab as DashTab;
@@ -96,6 +97,9 @@ export const OnboardingDashboard = {
   /* ────────── OVERBLIK ────────── */
   async _renderOverview(): Promise<string> {
     if (!this._overview) this._overview = await OnboardingAPI.getOverview(this._period);
+    if (!this._signals) {
+      try { this._signals = await OnboardingAPI.getSignals(); } catch { this._signals = []; }
+    }
     const d = this._overview;
     const k = d.kpis;
 
@@ -107,7 +111,10 @@ export const OnboardingDashboard = {
     const signupMax = Math.max(...d.daily_signups.map(r => r.count), 1);
     const consultMax = Math.max(...d.daily_consultations.map(r => r.count), 1);
 
+    const signalsHTML = this._signals && this._signals.length > 0 ? this._renderSignals(this._signals) : '';
+
     return `
+      ${signalsHTML}
       <div class="ob-kpis">
         <div class="ob-kpi-card">
           <div class="ob-kpi-label">Nye brugere</div>
@@ -188,6 +195,49 @@ export const OnboardingDashboard = {
     `;
   },
 
+  _renderSignals(signals: Signal[]): string {
+    const typeIcons: Record<string, string> = {
+      declining_activity: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
+      stuck_onboarding: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+      negative_feedback: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+      critical_health: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
+    };
+
+    return `
+      <div class="ob-signals-section">
+        <div class="ob-signals-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span>Signaler</span>
+          <span class="ob-signals-badge">${signals.length}</span>
+        </div>
+        <div class="ob-signals-list">
+          ${signals.slice(0, 6).map(s => {
+            const icon = typeIcons[s.type] || '';
+            const severityClass = s.severity === 'high' ? 'ob-signal-high' : 'ob-signal-medium';
+            let onclick = '';
+            if (s.type === 'negative_feedback' && (s as any).feedback_id) {
+              onclick = `OnboardingDashboard.followUpOnFeedback('${(s as any).feedback_id}', '${s.user_id}')`;
+            } else {
+              onclick = `App.navigateTo('user-detail', '${s.user_id}')`;
+            }
+            return `
+              <div class="ob-signal-card ${severityClass}" onclick="${onclick}">
+                <div class="ob-signal-icon">${icon}</div>
+                <div class="ob-signal-body">
+                  <div class="ob-signal-user">${escapeHtml(s.user_name)} — ${escapeHtml(s.clinic_name)}</div>
+                  <div class="ob-signal-message">${escapeHtml(s.message)}</div>
+                </div>
+                <div class="ob-signal-action">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  },
+
   /* ────────── BRUGERE ────────── */
   async _renderUsers(): Promise<string> {
     this._users = await OnboardingAPI.getUsers({
@@ -220,8 +270,7 @@ export const OnboardingDashboard = {
               <th>Bruger</th>
               <th>Klinik</th>
               <th>Status</th>
-              <th>Oprettet</th>
-              <th>Dage</th>
+              <th>Sidst aktiv</th>
               <th>Kons.</th>
               <th>Rating</th>
               <th>Health</th>
@@ -230,19 +279,20 @@ export const OnboardingDashboard = {
             </tr>
           </thead>
           <tbody>
-            ${this._users.length > 0 ? this._users.map(u => `
-              <tr>
+            ${this._users.length > 0 ? this._users.map(u => {
+              const lastActiveStr = this._relativeDate(u.last_active_at);
+              return `
+              <tr class="ob-table-clickable" onclick="App.navigateTo('user-detail', '${u.id}')">
                 <td>
                   <div class="ob-user-name">${escapeHtml(u.name)}</div>
                   <div class="ob-user-email">${escapeHtml(u.email)}</div>
                 </td>
                 <td>${escapeHtml(u.clinic_name)}</td>
                 <td><span class="ob-status-badge" style="background:${STATUS_COLORS[u.status] || 'var(--navy-200)'}20;color:${STATUS_COLORS[u.status] || 'var(--text-secondary)'}">${STATUS_LABELS[u.status] || u.status}</span></td>
-                <td class="ob-td-nowrap">${new Date(u.signup_at).toLocaleDateString('da-DK', { day: 'numeric', month: 'short' })}</td>
-                <td>${u.days_since_signup} dage</td>
+                <td class="ob-td-nowrap">${lastActiveStr}</td>
                 <td style="color:${u.consultation_count === 0 ? 'var(--error)' : 'inherit'};font-weight:${u.consultation_count === 0 ? '600' : '400'}">${u.consultation_count}</td>
                 <td>${u.avg_rating ? u.avg_rating.toFixed(1) : '<span style="color:var(--text-tertiary)">—</span>'}</td>
-                <td>${this._renderHealthBar(u.health_score)}</td>
+                <td>${this._renderHealthDot(u.health_score)}</td>
                 <td>${(u as any).open_ticket_count > 0
                   ? `<span class="ob-ticket-badge ob-ticket-open">${(u as any).open_ticket_count} åben</span>`
                   : ((u as any).ticket_count > 0 ? `<span class="ob-ticket-badge">${(u as any).ticket_count}</span>` : '<span style="color:var(--text-tertiary)">0</span>')}</td>
@@ -257,7 +307,7 @@ export const OnboardingDashboard = {
                   </div>
                 </td>
               </tr>
-            `).join('') : '<tr><td colspan="11" style="text-align:center;padding:var(--space-6);color:var(--text-tertiary)">Ingen brugere fundet</td></tr>'}
+            `;}).join('') : '<tr><td colspan="9" style="text-align:center;padding:var(--space-6);color:var(--text-tertiary)">Ingen brugere fundet</td></tr>'}
           </tbody>
         </table>
       </div>
@@ -267,6 +317,24 @@ export const OnboardingDashboard = {
   _renderHealthBar(score: number): string {
     const color = score >= 70 ? 'var(--success)' : score >= 40 ? 'var(--warning)' : 'var(--error)';
     return `<div class="ob-health"><div class="ob-health-bar"><div class="ob-health-fill" style="width:${score}%;background:${color}"></div></div><span class="ob-health-num">${score}</span></div>`;
+  },
+
+  _renderHealthDot(score: number): string {
+    const color = score >= 70 ? 'var(--success)' : score >= 40 ? 'var(--warning)' : 'var(--error)';
+    return `<span class="ob-health-dot" style="--dot-color:${color}"><span class="ob-health-dot-circle"></span>${score}</span>`;
+  },
+
+  _relativeDate(dateStr: string | null): string {
+    if (!dateStr) return '<span style="color:var(--text-tertiary)">—</span>';
+    const now = new Date();
+    const d = new Date(dateStr);
+    const diffMs = now.getTime() - d.getTime();
+    const diffDays = Math.floor(diffMs / 86400000);
+    if (diffDays === 0) return 'I dag';
+    if (diffDays === 1) return 'I går';
+    if (diffDays < 7) return `${diffDays}d siden`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)}u siden`;
+    return d.toLocaleDateString('da-DK', { day: 'numeric', month: 'short' });
   },
 
   /* ────────── FEEDBACK ────────── */

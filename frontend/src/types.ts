@@ -259,7 +259,7 @@ export interface TicketMessage {
 }
 
 export interface AppState {
-  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training' | 'helpdesk' | 'helpdesk-detail' | 'calendar' | 'onboarding' | 'ask-synergyhub';
+  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training' | 'helpdesk' | 'helpdesk-detail' | 'calendar' | 'onboarding' | 'user-detail' | 'ask-synergyhub';
   tab: string;
   view: 'list' | 'kanban' | 'calendar';
   filters: TaskFilters;
@@ -340,4 +340,35 @@ export interface ChurnData {
   churn_reasons: Array<{ reason: string; label: string; count: number }>;
   churn_timing: Array<{ week: string; count: number }>;
   at_risk_users: Array<OnboardingUser & { days_inactive: number }>;
+}
+
+/* ── User Detail & Signals ── */
+
+export interface HealthBreakdown {
+  total: number;
+  recency: number;
+  frequency: number;
+  satisfaction: number;
+  support: number;
+}
+
+export interface UserDetailData {
+  profile: OnboardingUser & { health_breakdown: HealthBreakdown };
+  consultations: Array<{ date: string; duration_minutes: number; rating: number | null }>;
+  weekly_consultations: Array<{ week: string; count: number }>;
+  reviews: Array<{ id: string; rating: number; comment: string; sentiment: string; created_at: string }>;
+  tickets: Ticket[];
+  events: Array<{ event_type: string; created_at: string }>;
+  communication_log: Array<{ id: string; ticket_subject: string; body: string; sender_name: string; created_at: string }>;
+}
+
+export interface Signal {
+  type: 'declining_activity' | 'stuck_onboarding' | 'negative_feedback' | 'critical_health';
+  severity: 'high' | 'medium';
+  user_id: string;
+  user_name: string;
+  clinic_name: string;
+  message: string;
+  created_at: string;
+  feedback_id?: string;
 }
