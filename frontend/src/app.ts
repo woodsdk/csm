@@ -28,7 +28,7 @@ import type { Task, AppState } from './types';
 
 export const App = {
   state: {
-    page: 'tasks',
+    page: 'helpdesk',
     tab: 'csm',
     view: 'list',
     filters: {
@@ -84,8 +84,8 @@ export const App = {
     // Handle URL params (e.g., ?page=settings after OAuth callback)
     const urlParams = new URLSearchParams(window.location.search);
     const pageParam = urlParams.get('page');
-    if (pageParam === 'settings') {
-      this.state.page = 'settings';
+    if (pageParam) {
+      this.state.page = pageParam as AppState['page'];
     }
 
     TaskModal.init();
