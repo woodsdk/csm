@@ -216,62 +216,62 @@ def init():
     """)
 
     # Migration: add tab column if missing
-    execute("""
+    _safe_exec("""
         DO $$ BEGIN
             ALTER TABLE tasks ADD COLUMN tab TEXT NOT NULL DEFAULT 'csm';
         EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
-    """)
-    execute("CREATE INDEX IF NOT EXISTS idx_tasks_tab ON tasks(tab)")
+    """, label="tasks.tab")
+    _safe_exec("CREATE INDEX IF NOT EXISTS idx_tasks_tab ON tasks(tab)", label="idx_tasks_tab")
 
     # Migration: add checklist JSONB column
-    execute("""
+    _safe_exec("""
         DO $$ BEGIN
             ALTER TABLE tasks ADD COLUMN checklist JSONB NOT NULL DEFAULT '[]';
         EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
-    """)
+    """, label="tasks.checklist")
 
     # Migration: add email and phone to team_members
-    execute("""
+    _safe_exec("""
         DO $$ BEGIN
             ALTER TABLE team_members ADD COLUMN email TEXT NOT NULL DEFAULT '';
         EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
-    """)
-    execute("""
+    """, label="team_members.email")
+    _safe_exec("""
         DO $$ BEGIN
             ALTER TABLE team_members ADD COLUMN phone TEXT NOT NULL DEFAULT '';
         EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
-    """)
+    """, label="team_members.phone")
 
     # Migration: add can_give_demos to team_members
-    execute("""
+    _safe_exec("""
         DO $$ BEGIN
             ALTER TABLE team_members ADD COLUMN can_give_demos BOOLEAN NOT NULL DEFAULT false;
         EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
-    """)
+    """, label="team_members.can_give_demos")
 
     # Migration: add title (stillingsbetegnelse) to team_members
-    execute("""
+    _safe_exec("""
         DO $$ BEGIN
             ALTER TABLE team_members ADD COLUMN title TEXT NOT NULL DEFAULT '';
         EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
-    """)
+    """, label="team_members.title")
 
     # Migration: add calendar_event_id to demo_bookings
-    execute("""
+    _safe_exec("""
         DO $$ BEGIN
             ALTER TABLE demo_bookings ADD COLUMN calendar_event_id TEXT;
         EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
-    """)
+    """, label="demo_bookings.calendar_event_id")
 
     # Migration: create demo_participants table
-    execute("""
+    _safe_exec("""
         CREATE TABLE IF NOT EXISTS demo_participants (
             id              TEXT PRIMARY KEY,
             booking_id      TEXT NOT NULL REFERENCES demo_bookings(id) ON DELETE CASCADE,
@@ -282,10 +282,10 @@ def init():
             created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
         );
         CREATE INDEX IF NOT EXISTS idx_demo_participants_booking ON demo_participants(booking_id);
-    """)
+    """, label="demo_participants")
 
     # Migration: create training_items table
-    execute("""
+    _safe_exec("""
         CREATE TABLE IF NOT EXISTS training_items (
             id          TEXT PRIMARY KEY,
             title       TEXT NOT NULL,
@@ -293,10 +293,10 @@ def init():
             sort_order  INTEGER NOT NULL DEFAULT 0,
             created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
         );
-    """)
+    """, label="training_items")
 
     # Seed training items (onboarding checklist)
-    execute("""
+    _safe_exec("""
         INSERT INTO training_items (id, title, description, sort_order) VALUES
             ('tr_01', 'Vagtplan (tab)',                         'Forst\u00e5else for, hvordan du udfylder og koordinerer vagtplanen (Shubi er team-lead)',                                     1),
             ('tr_02', 'Kontaktliste (tab)',                     'Udfyld dine kontaktoplysninger og orienter dig om \u00f8vrige kollegaer i teamet',                                            2),
@@ -318,28 +318,28 @@ def init():
             title = EXCLUDED.title,
             description = EXCLUDED.description,
             sort_order = EXCLUDED.sort_order
-    """)
+    """, label="seed_training_items")
 
     # Migration: add staff_id FK to shifts for linking to team_members
-    execute("""
+    _safe_exec("""
         DO $$ BEGIN
             ALTER TABLE shifts ADD COLUMN staff_id TEXT REFERENCES team_members(id) ON DELETE SET NULL;
         EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
-    """)
-    execute("CREATE INDEX IF NOT EXISTS idx_shifts_staff_id ON shifts(staff_id)")
+    """, label="shifts.staff_id")
+    _safe_exec("CREATE INDEX IF NOT EXISTS idx_shifts_staff_id ON shifts(staff_id)", label="idx_shifts_staff_id")
 
     # Backfill: match existing shifts to team_members by email
-    execute("""
+    _safe_exec("""
         UPDATE shifts s
         SET staff_id = tm.id
         FROM team_members tm
         WHERE s.staff_id IS NULL
           AND LOWER(s.staff_email) = LOWER(tm.email)
-    """)
+    """, label="backfill_shifts_staff_id")
 
     # Seed team members
-    execute("""
+    _safe_exec("""
         INSERT INTO team_members (id, name, role, title, avatar_color, is_active, email, phone, can_give_demos) VALUES
             ('morten',  'Morten Skov',              'lead',    'CEO & Co-Founder',           '#38456D', true, 'morten@peoplesdoctor.com', '',              true),
             ('shubi',   'Shubinthan Kathiramalai',   'support', 'Support Lead',               '#5669A4', true, 'ska@peoplesdoctor.com',    '50732313',      true),
@@ -356,10 +356,10 @@ def init():
             avatar_color = EXCLUDED.avatar_color,
             can_give_demos = EXCLUDED.can_give_demos,
             title = EXCLUDED.title
-    """)
+    """, label="seed_team_members")
 
     # Migration: create faq_items table
-    execute("""
+    _safe_exec("""
         CREATE TABLE IF NOT EXISTS faq_items (
             id          TEXT PRIMARY KEY,
             question    TEXT NOT NULL,
@@ -368,10 +368,10 @@ def init():
             sort_order  INTEGER NOT NULL DEFAULT 0,
             created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
         );
-    """)
+    """, label="faq_items")
 
     # Migration: create tickets table
-    execute("""
+    _safe_exec("""
         CREATE TABLE IF NOT EXISTS tickets (
             id               TEXT PRIMARY KEY,
             subject          TEXT NOT NULL,
@@ -392,10 +392,10 @@ def init():
         );
         CREATE INDEX IF NOT EXISTS idx_tickets_status ON tickets(status);
         CREATE INDEX IF NOT EXISTS idx_tickets_assignee ON tickets(assignee_id);
-    """)
+    """, label="tickets")
 
     # Migration: create ticket_messages table
-    execute("""
+    _safe_exec("""
         CREATE TABLE IF NOT EXISTS ticket_messages (
             id               TEXT PRIMARY KEY,
             ticket_id        TEXT NOT NULL REFERENCES tickets(id) ON DELETE CASCADE,
@@ -408,7 +408,7 @@ def init():
             created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
         );
         CREATE INDEX IF NOT EXISTS idx_ticket_messages_ticket ON ticket_messages(ticket_id);
-    """)
+    """, label="ticket_messages")
 
     # Migration: link tickets to platform users
     _safe_exec("""
@@ -498,7 +498,7 @@ def init():
     """, label="seed_faq")
 
     # ── Onboarding & Retention tables ──
-    execute("""
+    _safe_exec("""
         CREATE TABLE IF NOT EXISTS platform_users (
             id                    TEXT PRIMARY KEY,
             name                  TEXT NOT NULL,
@@ -550,10 +550,10 @@ def init():
         );
         CREATE INDEX IF NOT EXISTS idx_pe_user ON platform_events(user_id);
         CREATE INDEX IF NOT EXISTS idx_pe_type ON platform_events(event_type);
-    """)
+    """, label="platform_tables")
 
     # ── Marketing Automation tables ──
-    execute("""
+    _safe_exec("""
         CREATE TABLE IF NOT EXISTS marketing_segments (
             id              TEXT PRIMARY KEY,
             name            TEXT NOT NULL,
@@ -626,7 +626,7 @@ def init():
         CREATE INDEX IF NOT EXISTS idx_mes_user ON marketing_emails_sent(user_id);
         CREATE INDEX IF NOT EXISTS idx_mes_flow ON marketing_emails_sent(flow_id);
         CREATE INDEX IF NOT EXISTS idx_mes_sent ON marketing_emails_sent(sent_at);
-    """)
+    """, label="marketing_tables")
 
     # App settings (key-value store for system-wide config)
     _safe_exec("""
