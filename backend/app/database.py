@@ -83,11 +83,15 @@ def init():
     """Initialize database schema and seed data."""
     execute("""
         CREATE TABLE IF NOT EXISTS team_members (
-            id           TEXT PRIMARY KEY,
-            name         TEXT NOT NULL,
-            role         TEXT NOT NULL DEFAULT 'member',
-            avatar_color TEXT NOT NULL DEFAULT '#38456D',
-            is_active    BOOLEAN NOT NULL DEFAULT true
+            id             TEXT PRIMARY KEY,
+            name           TEXT NOT NULL,
+            role           TEXT NOT NULL DEFAULT 'member',
+            title          TEXT NOT NULL DEFAULT '',
+            avatar_color   TEXT NOT NULL DEFAULT '#38456D',
+            is_active      BOOLEAN NOT NULL DEFAULT true,
+            email          TEXT NOT NULL DEFAULT '',
+            phone          TEXT NOT NULL DEFAULT '',
+            can_give_demos BOOLEAN NOT NULL DEFAULT false
         );
 
         CREATE TABLE IF NOT EXISTS customers (
@@ -366,11 +370,14 @@ def init():
             description      TEXT NOT NULL DEFAULT '',
             status           TEXT NOT NULL DEFAULT 'open',
             priority         TEXT NOT NULL DEFAULT 'medium',
+            priority_source  TEXT NOT NULL DEFAULT 'manual',
             category         TEXT NOT NULL DEFAULT '',
             source           TEXT NOT NULL DEFAULT 'manual',
             requester_name   TEXT NOT NULL DEFAULT '',
             requester_email  TEXT NOT NULL DEFAULT '',
             assignee_id      TEXT REFERENCES team_members(id) ON DELETE SET NULL,
+            platform_user_id TEXT,
+            gmail_thread_id  TEXT,
             created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             resolved_at      TIMESTAMPTZ
@@ -382,14 +389,15 @@ def init():
     # Migration: create ticket_messages table
     execute("""
         CREATE TABLE IF NOT EXISTS ticket_messages (
-            id           TEXT PRIMARY KEY,
-            ticket_id    TEXT NOT NULL REFERENCES tickets(id) ON DELETE CASCADE,
-            sender_type  TEXT NOT NULL DEFAULT 'agent',
-            sender_name  TEXT NOT NULL DEFAULT '',
-            sender_email TEXT NOT NULL DEFAULT '',
-            body         TEXT NOT NULL,
-            is_internal  BOOLEAN NOT NULL DEFAULT false,
-            created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+            id               TEXT PRIMARY KEY,
+            ticket_id        TEXT NOT NULL REFERENCES tickets(id) ON DELETE CASCADE,
+            sender_type      TEXT NOT NULL DEFAULT 'agent',
+            sender_name      TEXT NOT NULL DEFAULT '',
+            sender_email     TEXT NOT NULL DEFAULT '',
+            body             TEXT NOT NULL,
+            is_internal      BOOLEAN NOT NULL DEFAULT false,
+            gmail_message_id TEXT,
+            created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
         );
         CREATE INDEX IF NOT EXISTS idx_ticket_messages_ticket ON ticket_messages(ticket_id);
     """)
@@ -611,6 +619,8 @@ def init():
             gmail_message_id TEXT,
             gmail_thread_id  TEXT,
             status          TEXT NOT NULL DEFAULT 'sent',
+            campaign_batch  TEXT,
+            send_error      TEXT,
             sent_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
         );
         CREATE INDEX IF NOT EXISTS idx_mes_user ON marketing_emails_sent(user_id);
