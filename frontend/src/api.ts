@@ -490,6 +490,13 @@ export const AskAPI = {
   },
 };
 
+export const GmailAPI = {
+  async syncInbox(): Promise<{ synced: number; created: number; updated: number; errors: string[] }> {
+    const res = await fetch(`${API_BASE}/gmail/sync`, { method: 'POST' });
+    return res.json();
+  },
+};
+
 export const GoogleAuthAPI = {
   async getStatus(): Promise<GoogleOAuthStatus> {
     const res = await fetch(`${API_BASE}/google/status`);

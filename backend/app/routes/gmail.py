@@ -4,7 +4,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import Optional
 
-from ..gmail import list_inbox, get_message, send_email, mark_as_read
+from ..gmail import list_inbox, get_message, send_email, mark_as_read, sync_inbox
 from ..google_oauth import is_connected
 
 router = APIRouter()
@@ -85,3 +85,11 @@ def mark_read(message_id: str):
         return {"error": "Gmail not connected"}
     success = mark_as_read(message_id)
     return {"ok": success}
+
+
+@router.post("/sync")
+def sync():
+    """Sync Gmail inbox — create tickets from new emails, add replies to existing threads."""
+    if not is_connected():
+        return {"error": "Gmail not connected", "synced": 0}
+    return sync_inbox()

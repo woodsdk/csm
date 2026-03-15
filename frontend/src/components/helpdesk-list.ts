@@ -2,7 +2,7 @@
    Helpdesk List — Ticket overview
    ═══════════════════════════════════════════ */
 
-import { HelpdeskAPI, TeamAPI, GoogleAuthAPI } from '../api';
+import { HelpdeskAPI, TeamAPI, GoogleAuthAPI, GmailAPI } from '../api';
 import { escapeHtml } from '../utils';
 import type { Ticket, TeamMember } from '../types';
 
@@ -42,9 +42,23 @@ export const HelpdeskList = {
   _teamMembers: [] as TeamMember[],
   _gmailConnected: false,
   _gmailEmail: '' as string,
+  _syncing: false,
+  _lastSyncResult: null as { synced: number; created: number; updated: number } | null,
 
   /* ── Main render ── */
   async render(): Promise<string> {
+    // Check Gmail connection status first (needed for sync + banner)
+    try {
+      const gStatus = await GoogleAuthAPI.getStatus();
+      this._gmailConnected = gStatus.connected;
+      this._gmailEmail = gStatus.email || '';
+    } catch { this._gmailConnected = false; }
+
+    // Auto-sync inbox if Gmail is connected (non-blocking)
+    if (this._gmailConnected && !this._syncing) {
+      this._syncInbox();
+    }
+
     try {
       const filters: any = {};
       if (this._filterStatus) filters.status = this._filterStatus;
@@ -60,13 +74,6 @@ export const HelpdeskList = {
     if (this._teamMembers.length === 0) {
       try { this._teamMembers = await TeamAPI.getAll(); } catch { /* */ }
     }
-
-    // Check Gmail connection status
-    try {
-      const gStatus = await GoogleAuthAPI.getStatus();
-      this._gmailConnected = gStatus.connected;
-      this._gmailEmail = gStatus.email || '';
-    } catch { this._gmailConnected = false; }
 
     const stats = this._stats;
     const activeCount = stats.open_count + stats.in_progress_count;
@@ -124,6 +131,10 @@ export const HelpdeskList = {
           <div class="hd-gmail-banner-title">Gmail forbundet</div>
           <div class="hd-gmail-banner-desc">${escapeHtml(this._gmailEmail)} — svar sendes automatisk via email.</div>
         </div>
+        <button class="hd-gmail-banner-btn" id="hd-sync-btn" onclick="HelpdeskList.manualSync()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          Sync inbox
+        </button>
         <button class="hd-gmail-banner-btn hd-gmail-banner-btn-settings" onclick="App.navigateTo('settings')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           Indstillinger
@@ -213,6 +224,49 @@ export const HelpdeskList = {
   },
 
   /* ── Filters ── */
+  /* ── Gmail sync ── */
+  async _syncInbox(): Promise<void> {
+    if (this._syncing) return;
+    this._syncing = true;
+    try {
+      const result = await GmailAPI.syncInbox();
+      this._lastSyncResult = result;
+      if (result.synced > 0) {
+        (window as any).App.toast(`${result.created} ny(e) ticket(s), ${result.updated} opdateret fra inbox`, 'success');
+        (window as any).App.render();
+      }
+    } catch {
+      /* silent fail on auto-sync */
+    } finally {
+      this._syncing = false;
+    }
+  },
+
+  async manualSync(): Promise<void> {
+    const btn = document.getElementById('hd-sync-btn') as HTMLButtonElement | null;
+    if (btn) { btn.innerHTML = '<span class="vp-spinner"></span> Syncer...'; btn.disabled = true; }
+
+    this._syncing = true;
+    try {
+      const result = await GmailAPI.syncInbox();
+      this._lastSyncResult = result;
+      if (result.synced > 0) {
+        (window as any).App.toast(`${result.created} ny(e) ticket(s), ${result.updated} opdateret`, 'success');
+        (window as any).App.render();
+      } else {
+        (window as any).App.toast('Ingen nye emails i indbakken', 'info');
+      }
+    } catch {
+      (window as any).App.toast('Kunne ikke synce indbakke', 'error');
+    } finally {
+      this._syncing = false;
+      if (btn) {
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Sync inbox';
+        btn.disabled = false;
+      }
+    }
+  },
+
   filterStatus(status: string): void {
     this._filterStatus = this._filterStatus === status ? '' : status;
     (window as any).App.render();
