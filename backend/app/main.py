@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
-from .database import init as db_init
+from .database import init as db_init, query
 from .routes import tasks, customers, team, activities, shifts, bookings, demos, training, faq, helpdesk, onboarding, ask, google_auth, gmail, marketing, dpa, comms, platform_api
 
 
@@ -56,6 +56,26 @@ app.include_router(marketing.router, prefix="/api/marketing", tags=["marketing"]
 app.include_router(dpa.router, prefix="/api/dpa", tags=["dpa"])
 app.include_router(comms.router, prefix="/api/comms", tags=["comms"])
 app.include_router(platform_api.router, prefix="/api/platform", tags=["platform"])
+
+# ── Diagnostics ──
+
+@app.get("/api/db-tables")
+def list_db_tables():
+    """List all database tables (diagnostic)."""
+    tables = query("SELECT tablename FROM pg_tables WHERE schemaname = 'public' ORDER BY tablename")
+    return {"tables": [t["tablename"] for t in tables]}
+
+
+@app.post("/api/db-migrate")
+def run_migration():
+    """Re-run database init to create missing tables."""
+    try:
+        db_init()
+        tables = query("SELECT tablename FROM pg_tables WHERE schemaname = 'public' ORDER BY tablename")
+        return {"ok": True, "tables": [t["tablename"] for t in tables]}
+    except Exception as e:
+        return {"error": str(e)}
+
 
 # Serve frontend — SPA-aware static file serving
 dist_path = os.path.abspath(settings.frontend_dist)
