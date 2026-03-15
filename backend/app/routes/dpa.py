@@ -69,28 +69,27 @@ async def upload_document(
         WHERE language = %s AND is_current = true
     """, (language,))
 
-    # Insert new document
-    from psycopg import sql as psql
-    conn = __import__('backend.app.database', fromlist=['get_conn']).get_conn() if False else None
-    # Use raw connection for BYTEA
-    from ..database import get_conn
-    conn = get_conn()
-    with conn.cursor() as cur:
-        cur.execute(
-            """INSERT INTO dpa_documents (id, version, language, filename, pdf_data, uploaded_by, is_current)
-               VALUES (%s, %s, %s, %s, %s, %s, true)
-               ON CONFLICT (version, language) DO UPDATE SET
-                   pdf_data = EXCLUDED.pdf_data,
-                   filename = EXCLUDED.filename,
-                   uploaded_by = EXCLUDED.uploaded_by,
-                   is_current = true,
-                   created_at = NOW()
-               RETURNING id, version, language, filename, uploaded_by, is_current, created_at""",
-            (doc_id, version, language, file.filename, pdf_bytes, uploaded_by),
-        )
-        row = cur.fetchone()
-
-    return dict(row) if row else {"ok": True, "id": doc_id}
+    # Insert new document with BYTEA PDF data
+    try:
+        from ..database import get_conn
+        conn = get_conn()
+        with conn.cursor() as cur:
+            cur.execute(
+                """INSERT INTO dpa_documents (id, version, language, filename, pdf_data, uploaded_by, is_current)
+                   VALUES (%s, %s, %s, %s, %s, %s, true)
+                   ON CONFLICT (version, language) DO UPDATE SET
+                       pdf_data = EXCLUDED.pdf_data,
+                       filename = EXCLUDED.filename,
+                       uploaded_by = EXCLUDED.uploaded_by,
+                       is_current = true,
+                       created_at = NOW()
+                   RETURNING id, version, language, filename, uploaded_by, is_current, created_at""",
+                (doc_id, version, language, file.filename, pdf_bytes, uploaded_by),
+            )
+            row = cur.fetchone()
+        return dict(row) if row else {"ok": True, "id": doc_id}
+    except Exception as e:
+        return {"error": f"Database-fejl ved upload: {str(e)}"}
 
 
 @router.get("/documents/{doc_id}/download")
