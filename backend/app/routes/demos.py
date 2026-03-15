@@ -1,5 +1,6 @@
 """Demo Booking Routes — Public booking system for video demos."""
 
+import logging
 from datetime import datetime, timedelta
 from fastapi import APIRouter
 from pydantic import BaseModel
@@ -7,7 +8,111 @@ from typing import Optional
 from ..database import query, execute, gen_id
 from ..google_calendar import create_event as gcal_create_event, add_attendee as gcal_add_attendee, delete_event as gcal_delete_event
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter()
+
+
+def _send_booking_confirmation(
+    client_email: str,
+    client_name: str,
+    date_str: str,
+    start_time: str,
+    end_time: str,
+    staff_name: str,
+    meet_link: str,
+    booking_id: str,
+    has_calendar_event: bool,
+) -> None:
+    """Send a confirmation email via Gmail API after a demo is booked."""
+    try:
+        from ..google_oauth import is_connected as gmail_connected
+        from ..gmail import send_email
+
+        if not gmail_connected():
+            logger.debug("Gmail not connected — skipping confirmation email")
+            return
+
+        # Format date nicely in Danish
+        d = datetime.strptime(date_str, "%Y-%m-%d")
+        weekdays = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"]
+        months = ["januar", "februar", "marts", "april", "maj", "juni",
+                  "juli", "august", "september", "oktober", "november", "december"]
+        formatted_date = f"{weekdays[d.weekday()]} d. {d.day}. {months[d.month - 1]} {d.year}"
+
+        # Build HTML email
+        body_html = f"""
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 560px; margin: 0 auto; color: #1e293b;">
+            <div style="text-align: center; padding: 24px 0 16px;">
+                <strong style="font-size: 18px; color: #1e3a5f;">PEOPLE'S</strong><br>
+                <span style="font-size: 12px; color: #3b82f6; font-weight: 600; letter-spacing: 2px;">CLINIC</span>
+            </div>
+
+            <div style="background: #f8fafc; border-radius: 12px; padding: 32px; text-align: center; margin-bottom: 24px;">
+                <div style="font-size: 36px; margin-bottom: 8px;">✅</div>
+                <h2 style="margin: 0 0 8px; font-size: 22px; color: #1e293b;">Din demo er bekræftet!</h2>
+                <p style="margin: 0; color: #64748b; font-size: 14px;">Hej {client_name} — vi glæder os til at vise dig platformen.</p>
+            </div>
+
+            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                    <tr>
+                        <td style="padding: 8px 0; color: #64748b; width: 40px; vertical-align: top;">📅</td>
+                        <td style="padding: 8px 0; color: #1e293b; font-weight: 500;">{formatted_date}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; color: #64748b; vertical-align: top;">🕐</td>
+                        <td style="padding: 8px 0; color: #1e293b; font-weight: 500;">Kl. {start_time} – {end_time} (30 min)</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; color: #64748b; vertical-align: top;">👤</td>
+                        <td style="padding: 8px 0; color: #1e293b; font-weight: 500;">Demo-giver: {staff_name}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; color: #64748b; vertical-align: top;">💻</td>
+                        <td style="padding: 8px 0;">
+                            <a href="{meet_link}" style="color: #3b82f6; font-weight: 500; text-decoration: none;">{meet_link}</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 24px;">
+                <a href="{meet_link}" style="display: inline-block; background: #3b82f6; color: #fff; text-decoration: none; padding: 12px 32px; border-radius: 8px; font-weight: 600; font-size: 14px;">
+                    Åbn video-link
+                </a>
+            </div>
+
+            {"<p style='text-align: center; font-size: 13px; color: #64748b; margin-bottom: 24px;'>📬 Du har også modtaget en kalenderinvitation — acceptér den for at tilføje demoen til din kalender.</p>" if has_calendar_event else ""}
+
+            <div style="border-top: 1px solid #e2e8f0; padding-top: 20px; margin-top: 16px;">
+                <p style="font-size: 13px; color: #64748b; margin: 0 0 8px;">
+                    <strong>Har du kollegaer der også skal deltage?</strong><br>
+                    Del dette link — de kan tilmelde sig og modtager automatisk video-linket:
+                </p>
+                <p style="font-size: 13px; margin: 0;">
+                    <a href="https://csm-production.up.railway.app/demo/{booking_id}/join" style="color: #3b82f6; word-break: break-all;">
+                        https://csm-production.up.railway.app/demo/{booking_id}/join
+                    </a>
+                </p>
+            </div>
+
+            <div style="text-align: center; padding: 24px 0 8px;">
+                <p style="font-size: 12px; color: #94a3b8; margin: 0;">
+                    People's Clinic — Digital sundhedsplatform
+                </p>
+            </div>
+        </div>
+        """
+
+        send_email(
+            to=client_email,
+            subject=f"Din demo er bekræftet — {formatted_date} kl. {start_time}",
+            body_html=body_html,
+        )
+        logger.info(f"Booking confirmation email sent to {client_email}")
+    except Exception as e:
+        logger.warning(f"Failed to send booking confirmation email: {e}")
 
 DEMO_SLOTS = [
     "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
@@ -301,6 +406,19 @@ def create_demo_booking(data: DemoBookingCreate):
         """INSERT INTO demo_participants (id, booking_id, name, email, role, is_primary)
            VALUES (%s, %s, %s, %s, '', true)""",
         (participant_id, booking_id, data.client_name, data.client_email),
+    )
+
+    # Send confirmation email via Gmail
+    _send_booking_confirmation(
+        client_email=data.client_email,
+        client_name=data.client_name,
+        date_str=data.date,
+        start_time=data.start_time,
+        end_time=slot["end_time"],
+        staff_name=assigned["name"] if assigned else "People's Clinic",
+        meet_link=meet_link,
+        booking_id=booking_id,
+        has_calendar_event=calendar_event_id is not None,
     )
 
     result = rows[0]

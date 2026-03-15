@@ -81,6 +81,12 @@ def save_credentials(creds: Credentials, email: str) -> None:
                updated_at = NOW()""",
         (email, creds.token, creds.refresh_token, expiry, scopes),
     )
+    # Invalidate cached calendar service so it picks up OAuth
+    try:
+        from . import google_calendar
+        google_calendar._service = None
+    except Exception:
+        pass
     logger.info(f"Google OAuth credentials saved for {email}")
 
 

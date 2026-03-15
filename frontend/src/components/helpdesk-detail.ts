@@ -93,25 +93,20 @@ export const HelpdeskDetail = {
               ${this._gmailConnected && t.requester_email ? `<div class="hd-email-notice"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Svaret sendes til ${escapeHtml(t.requester_email)}</div>` : ''}
               <textarea class="input" id="hd-reply-body" rows="3" placeholder="Skriv et svar..."></textarea>
               <div class="hd-reply-actions">
-                <label class="hd-internal-check">
-                  <input type="checkbox" id="hd-reply-internal"> Intern note
-                </label>
-                <div class="hd-reply-buttons">
-                  <div class="hd-ai-inline">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="hd-ai-inline-icon">
-                      <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
-                    </svg>
-                    <input class="hd-ai-inline-input" id="hd-ai-prompt" type="text" placeholder="Instruér AI'en..." onkeydown="if(event.key==='Enter'){event.preventDefault();HelpdeskDetail.aiGenerate('${t.id}')}">
-                  </div>
-                  <button class="btn btn-sm hd-ai-btn" id="hd-ai-generate-btn" onclick="HelpdeskDetail.aiGenerate('${t.id}')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg>
-                    Generér svar
-                  </button>
-                  <button class="btn btn-primary btn-sm" onclick="HelpdeskDetail.sendReply('${t.id}')">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                    ${this._gmailConnected && t.requester_email ? 'Send email' : 'Send'}
-                  </button>
+                <div class="hd-ai-inline">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="hd-ai-inline-icon">
+                    <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+                  </svg>
+                  <input class="hd-ai-inline-input" id="hd-ai-prompt" type="text" placeholder="Instruér AI'en..." onkeydown="if(event.key==='Enter'){event.preventDefault();HelpdeskDetail.aiGenerate('${t.id}')}">
                 </div>
+                <button class="btn btn-sm hd-ai-btn" id="hd-ai-generate-btn" onclick="HelpdeskDetail.aiGenerate('${t.id}')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg>
+                  Generér svar
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="HelpdeskDetail.sendReply('${t.id}')">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                  ${this._gmailConnected && t.requester_email ? 'Send email' : 'Send'}
+                </button>
               </div>
             </div>
           </div>
@@ -241,20 +236,17 @@ export const HelpdeskDetail = {
   /* ── Send reply ── */
   async sendReply(ticketId: string): Promise<void> {
     const bodyEl = document.getElementById('hd-reply-body') as HTMLTextAreaElement | null;
-    const internalEl = document.getElementById('hd-reply-internal') as HTMLInputElement | null;
 
     if (!bodyEl) return;
     const body = bodyEl.value.trim();
     if (!body) { bodyEl.style.borderColor = 'var(--error)'; bodyEl.focus(); return; }
-
-    const isInternal = internalEl?.checked || false;
 
     try {
       await HelpdeskAPI.addMessage(ticketId, {
         body,
         sender_type: 'agent',
         sender_name: 'Support',
-        is_internal: isInternal,
+        is_internal: false,
       });
       (window as any).App.render();
     } catch {

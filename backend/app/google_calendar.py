@@ -29,23 +29,24 @@ def _get_calendar_id() -> str:
 
 
 def _get_service():
-    """Build and cache the Calendar API service. Prefers OAuth, falls back to service account."""
+    """Build the Calendar API service. Prefers OAuth (fresh each time), falls back to cached service account."""
     global _service
-    if _service is not None:
-        return _service
 
-    # Strategy 1: Try OAuth tokens (preferred)
+    # Strategy 1: Always try OAuth first (fresh credentials each call)
     try:
-        from .google_oauth import get_calendar_service
-        oauth_service = get_calendar_service()
-        if oauth_service:
-            _service = oauth_service
-            logger.info("Google Calendar service initialized via OAuth")
-            return _service
+        from .google_oauth import get_calendar_service, is_connected
+        if is_connected():
+            oauth_service = get_calendar_service()
+            if oauth_service:
+                logger.debug("Using Google Calendar via OAuth")
+                return oauth_service
     except Exception as e:
         logger.debug(f"OAuth calendar not available: {e}")
 
-    # Strategy 2: Fall back to service account (legacy)
+    # Strategy 2: Fall back to cached service account (legacy)
+    if _service is not None:
+        return _service
+
     if not settings.google_calendar_enabled or not settings.google_service_account_json:
         return None
 
@@ -69,7 +70,7 @@ def _get_service():
         # Impersonate the org user via domain-wide delegation
         delegated = credentials.with_subject(settings.google_impersonate_email)
         _service = build("calendar", "v3", credentials=delegated)
-        logger.info("Google Calendar service initialized")
+        logger.info("Google Calendar service initialized via service account")
         return _service
     except Exception as e:
         logger.error(f"Failed to initialize Google Calendar service: {e}")

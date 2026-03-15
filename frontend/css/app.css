@@ -4618,27 +4618,8 @@
 .hd-reply-actions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: var(--space-2);
   margin-top: var(--space-2);
-}
-
-.hd-internal-check {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: var(--text-xs);
-  color: var(--text-tertiary);
-  cursor: pointer;
-}
-
-.hd-internal-check input {
-  cursor: pointer;
-}
-
-.hd-reply-buttons {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
 }
 
 .hd-ai-btn {
@@ -4774,14 +4755,48 @@
   gap: var(--space-3);
 }
 
-/* Mobile */
+/* Mobile — Helpdesk + Settings */
 @media (max-width: 768px) {
   .hd-stats {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2);
+  }
+
+  .hd-stat-card {
+    padding: var(--space-3) var(--space-2);
+  }
+
+  .hd-stat-num {
+    font-size: var(--text-xl);
+  }
+
+  .hd-stat-label {
+    font-size: var(--text-xs);
   }
 
   .hd-detail-layout {
     grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .hd-detail-sidebar {
+    order: -1;
+    padding: var(--space-3);
+    gap: var(--space-3);
+  }
+
+  /* Sidebar as compact horizontal grid */
+  .hd-detail-sidebar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hd-detail-sidebar .hd-user-context {
+    grid-column: 1 / -1;
+  }
+
+  .hd-detail-subject {
+    font-size: var(--text-lg);
   }
 
   .hd-ticket-badges {
@@ -4789,6 +4804,83 @@
     align-items: flex-end;
   }
 
+  /* Gmail banner — stack on mobile */
+  .hd-gmail-banner {
+    flex-wrap: wrap;
+    padding: 12px 14px;
+    gap: var(--space-2);
+  }
+
+  .hd-gmail-banner-text {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .hd-gmail-banner-btn {
+    padding: 6px 12px;
+    font-size: var(--text-xs);
+  }
+
+  /* Reply actions — stack AI input above buttons */
+  .hd-reply-actions {
+    flex-wrap: wrap;
+  }
+
+  .hd-ai-inline {
+    flex: 1 1 100%;
+  }
+
+  .hd-ai-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+
+  /* Messages */
+  .hd-msg {
+    padding: var(--space-3);
+  }
+
+  .hd-msg-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .hd-msg-time {
+    margin-left: 0;
+  }
+
+  .hd-msg-body {
+    font-size: var(--text-sm);
+  }
+
+  /* Reply box */
+  .hd-reply-box {
+    padding: var(--space-3);
+  }
+
+  /* Settings page */
+  .set-container {
+    max-width: none;
+    padding: 0;
+  }
+
+  .set-card {
+    padding: var(--space-4);
+  }
+
+  .set-title {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-4);
+  }
+
+  /* Email notice */
+  .hd-email-notice {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+
+  /* Generic form helpers */
   .training-tabs {
     padding: 0 var(--space-2);
   }
@@ -5967,16 +6059,7 @@
     max-width: none;
   }
 
-  .hd-detail-sidebar {
-    order: -1;
-  }
-
-  /* Helpdesk messages */
-  .hd-msg-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
-  }
+  /* Helpdesk detail sidebar already handled in hd-specific @media block */
 
   /* Ask SynergyHub — mobile optimized */
   .ask-page-content {
@@ -6143,13 +6226,55 @@
     min-width: 220px;
   }
 
-  /* Helpdesk stats — single column */
+  /* Helpdesk stats — compact 2+3 grid */
   .hd-stats {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .hd-stat-card {
     padding: var(--space-2) var(--space-3);
+  }
+
+  .hd-stat-num {
+    font-size: var(--text-lg);
+  }
+
+  /* Gmail banner — fully stacked */
+  .hd-gmail-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .hd-gmail-banner-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Detail sidebar — single column on small phones */
+  .hd-detail-sidebar {
+    grid-template-columns: 1fr;
+  }
+
+  /* Reply actions — all stack */
+  .hd-reply-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hd-ai-btn,
+  .hd-reply-actions .btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Settings */
+  .set-card {
+    padding: var(--space-3);
+  }
+
+  .set-card-header {
+    flex-wrap: wrap;
   }
 
   /* Onboarding KPIs */
