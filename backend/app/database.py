@@ -69,6 +69,16 @@ def gen_id(prefix: str = "") -> str:
     return f"{prefix}{ts_b36}{rand}"
 
 
+def _safe_exec(sql: str, params: tuple = (), label: str = "") -> bool:
+    """Execute SQL, catching and logging errors without crashing init."""
+    try:
+        execute(sql, params)
+        return True
+    except Exception as e:
+        print(f"DB init warning ({label}): {e}")
+        return False
+
+
 def init():
     """Initialize database schema and seed data."""
     execute("""
@@ -205,7 +215,7 @@ def init():
     execute("""
         DO $$ BEGIN
             ALTER TABLE tasks ADD COLUMN tab TEXT NOT NULL DEFAULT 'csm';
-        EXCEPTION WHEN duplicate_column THEN NULL;
+        EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
     """)
     execute("CREATE INDEX IF NOT EXISTS idx_tasks_tab ON tasks(tab)")
@@ -214,7 +224,7 @@ def init():
     execute("""
         DO $$ BEGIN
             ALTER TABLE tasks ADD COLUMN checklist JSONB NOT NULL DEFAULT '[]';
-        EXCEPTION WHEN duplicate_column THEN NULL;
+        EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
     """)
 
@@ -222,13 +232,13 @@ def init():
     execute("""
         DO $$ BEGIN
             ALTER TABLE team_members ADD COLUMN email TEXT NOT NULL DEFAULT '';
-        EXCEPTION WHEN duplicate_column THEN NULL;
+        EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
     """)
     execute("""
         DO $$ BEGIN
             ALTER TABLE team_members ADD COLUMN phone TEXT NOT NULL DEFAULT '';
-        EXCEPTION WHEN duplicate_column THEN NULL;
+        EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
     """)
 
@@ -236,7 +246,7 @@ def init():
     execute("""
         DO $$ BEGIN
             ALTER TABLE team_members ADD COLUMN can_give_demos BOOLEAN NOT NULL DEFAULT false;
-        EXCEPTION WHEN duplicate_column THEN NULL;
+        EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
     """)
 
@@ -244,7 +254,7 @@ def init():
     execute("""
         DO $$ BEGIN
             ALTER TABLE demo_bookings ADD COLUMN calendar_event_id TEXT;
-        EXCEPTION WHEN duplicate_column THEN NULL;
+        EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
     """)
 
@@ -302,7 +312,7 @@ def init():
     execute("""
         DO $$ BEGIN
             ALTER TABLE shifts ADD COLUMN staff_id TEXT REFERENCES team_members(id) ON DELETE SET NULL;
-        EXCEPTION WHEN duplicate_column THEN NULL;
+        EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
     """)
     execute("CREATE INDEX IF NOT EXISTS idx_shifts_staff_id ON shifts(staff_id)")
@@ -385,16 +395,16 @@ def init():
     """)
 
     # Migration: link tickets to platform users
-    execute("""
+    _safe_exec("""
         DO $$ BEGIN
             ALTER TABLE tickets ADD COLUMN platform_user_id TEXT REFERENCES platform_users(id) ON DELETE SET NULL;
-        EXCEPTION WHEN duplicate_column THEN NULL;
+        EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
-    """)
-    execute("CREATE INDEX IF NOT EXISTS idx_tickets_platform_user ON tickets(platform_user_id)")
+    """, label="tickets.platform_user_id")
+    _safe_exec("CREATE INDEX IF NOT EXISTS idx_tickets_platform_user ON tickets(platform_user_id)", label="idx_tickets_platform_user")
 
     # Google OAuth tokens (single-row table for shared account)
-    execute("""
+    _safe_exec("""
         CREATE TABLE IF NOT EXISTS google_oauth_tokens (
             id            TEXT PRIMARY KEY DEFAULT 'shared',
             account_email TEXT NOT NULL,
@@ -405,54 +415,54 @@ def init():
             connected_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
         );
-    """)
+    """, label="google_oauth_tokens")
 
     # Migration: Gmail thread/message IDs on tickets
-    execute("""
+    _safe_exec("""
         DO $$ BEGIN
             ALTER TABLE tickets ADD COLUMN gmail_thread_id TEXT;
-        EXCEPTION WHEN duplicate_column THEN NULL;
+        EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
-    """)
-    execute("""
+    """, label="tickets.gmail_thread_id")
+    _safe_exec("""
         DO $$ BEGIN
             ALTER TABLE ticket_messages ADD COLUMN gmail_message_id TEXT;
-        EXCEPTION WHEN duplicate_column THEN NULL;
+        EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
-    """)
+    """, label="ticket_messages.gmail_message_id")
 
     # Migration: AI priority classification tracking
-    execute("""
+    _safe_exec("""
         DO $$ BEGIN
             ALTER TABLE tickets ADD COLUMN priority_source TEXT NOT NULL DEFAULT 'manual';
-        EXCEPTION WHEN duplicate_column THEN NULL;
+        EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
-    """)
+    """, label="tickets.priority_source")
 
     # Migration: add campaign_batch and send_error to marketing_emails_sent
-    execute("""
+    _safe_exec("""
         DO $$ BEGIN
             ALTER TABLE marketing_emails_sent ADD COLUMN campaign_batch TEXT;
-        EXCEPTION WHEN duplicate_column THEN NULL;
+        EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
-    """)
-    execute("""
+    """, label="marketing_emails_sent.campaign_batch")
+    _safe_exec("""
         DO $$ BEGIN
             ALTER TABLE marketing_emails_sent ADD COLUMN send_error TEXT;
-        EXCEPTION WHEN duplicate_column THEN NULL;
+        EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
-    """)
+    """, label="marketing_emails_sent.send_error")
 
     # Migration: add title (stillingsbetegnelse) to team_members
-    execute("""
+    _safe_exec("""
         DO $$ BEGIN
             ALTER TABLE team_members ADD COLUMN title TEXT NOT NULL DEFAULT '';
-        EXCEPTION WHEN duplicate_column THEN NULL;
+        EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
-    """)
+    """, label="team_members.title")
 
     # Seed FAQ items
-    execute("""
+    _safe_exec("""
         INSERT INTO faq_items (id, question, answer, category, sort_order) VALUES
             ('faq_01', 'Er I ISO 27001-certificerede?', 'Nej, men vi f\u00f8lger ISO 27001 som rammevaerk og overholder alle relevante krav i praksis. Vi har valgt ikke at certificere os endnu, da det er en stor investering for en virksomhed i vores stadie, men vi arbejder efter de samme principper. Vi er desuden ISAE 3000-revisionserklaeret, hvilket bekraefter vores sikkerhedspraksis uafhaengigt.', 'Sikkerhed & Compliance', 1),
             ('faq_02', 'Har I en databehandleraftale (DPA)?', 'Ja, vi har en fuld databehandleraftale klar til underskrift. Den opfylder GDPR-kravene og daekker alle aspekter af databehandlingen. Vi sender den til alle kunder som en del af onboarding-processen.', 'Sikkerhed & Compliance', 2),
@@ -477,7 +487,7 @@ def init():
             answer = EXCLUDED.answer,
             category = EXCLUDED.category,
             sort_order = EXCLUDED.sort_order
-    """)
+    """, label="seed_faq")
 
     # ── Onboarding & Retention tables ──
     execute("""
@@ -609,15 +619,15 @@ def init():
     """)
 
     # App settings (key-value store for system-wide config)
-    execute("""
+    _safe_exec("""
         CREATE TABLE IF NOT EXISTS app_settings (
             key   TEXT PRIMARY KEY,
             value TEXT NOT NULL DEFAULT ''
         );
-    """)
+    """, label="app_settings")
 
     # DPA Documents — versionered DPA PDFs
-    execute("""
+    _safe_exec("""
         CREATE TABLE IF NOT EXISTS dpa_documents (
             id          TEXT PRIMARY KEY,
             version     INTEGER NOT NULL DEFAULT 1,
@@ -629,10 +639,10 @@ def init():
             created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             UNIQUE(version, language)
         );
-    """)
+    """, label="dpa_documents")
 
     # DPA Signings — audit trail for DPA signatures
-    execute("""
+    _safe_exec("""
         CREATE TABLE IF NOT EXISTS dpa_signings (
             id              TEXT PRIMARY KEY,
             customer_id     TEXT NOT NULL,
@@ -653,11 +663,13 @@ def init():
             last_reminder_at TIMESTAMPTZ,
             cs_notified     BOOLEAN NOT NULL DEFAULT false
         );
-        CREATE INDEX IF NOT EXISTS idx_dpa_signings_token ON dpa_signings(token);
-        CREATE INDEX IF NOT EXISTS idx_dpa_signings_customer ON dpa_signings(customer_id);
-        CREATE INDEX IF NOT EXISTS idx_dpa_signings_status ON dpa_signings(status);
+    """, label="dpa_signings")
+    _safe_exec("CREATE INDEX IF NOT EXISTS idx_dpa_signings_token ON dpa_signings(token)", label="idx_dpa_signings_token")
+    _safe_exec("CREATE INDEX IF NOT EXISTS idx_dpa_signings_customer ON dpa_signings(customer_id)", label="idx_dpa_signings_customer")
+    _safe_exec("CREATE INDEX IF NOT EXISTS idx_dpa_signings_status ON dpa_signings(status)", label="idx_dpa_signings_status")
 
-        -- Dismissed signals: track which CS signals have been dismissed
+    # Dismissed signals: track which CS signals have been dismissed
+    _safe_exec("""
         CREATE TABLE IF NOT EXISTS dismissed_signals (
             id              TEXT PRIMARY KEY,
             signal_type     TEXT NOT NULL,
@@ -666,8 +678,10 @@ def init():
             dismissed_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             UNIQUE(signal_type, user_id)
         );
+    """, label="dismissed_signals")
 
-        -- Platform announcements
+    # Platform announcements
+    _safe_exec("""
         CREATE TABLE IF NOT EXISTS announcements (
             id              TEXT PRIMARY KEY,
             title           TEXT NOT NULL,
@@ -683,8 +697,10 @@ def init():
             updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             published_at    TIMESTAMPTZ
         );
-        CREATE INDEX IF NOT EXISTS idx_announcements_status ON announcements(status);
+    """, label="announcements")
+    _safe_exec("CREATE INDEX IF NOT EXISTS idx_announcements_status ON announcements(status)", label="idx_announcements_status")
 
+    _safe_exec("""
         CREATE TABLE IF NOT EXISTS announcement_deliveries (
             id                TEXT PRIMARY KEY,
             announcement_id   TEXT NOT NULL REFERENCES announcements(id) ON DELETE CASCADE,
@@ -693,12 +709,12 @@ def init():
             read_at           TIMESTAMPTZ,
             UNIQUE(announcement_id, user_id)
         );
-        CREATE INDEX IF NOT EXISTS idx_ad_announcement ON announcement_deliveries(announcement_id);
-        CREATE INDEX IF NOT EXISTS idx_ad_user ON announcement_deliveries(user_id);
-    """)
+    """, label="announcement_deliveries")
+    _safe_exec("CREATE INDEX IF NOT EXISTS idx_ad_announcement ON announcement_deliveries(announcement_id)", label="idx_ad_announcement")
+    _safe_exec("CREATE INDEX IF NOT EXISTS idx_ad_user ON announcement_deliveries(user_id)", label="idx_ad_user")
 
     # Seed default marketing AI system prompt
-    execute("""
+    _safe_exec("""
         INSERT INTO app_settings (key, value) VALUES (
             'marketing_ai_prompt',
             'Du er en professionel email-forfatter for People''s Clinic, en dansk digital sundhedsplatform der bruger AI til at opsummere læge-patient samtaler.
@@ -717,10 +733,16 @@ REGLER:
 - body_html: brug simple HTML tags (<p>, <br>, <strong>) — INGEN inline styles
 - Subject: max 60 tegn, relevant og engagerende'
         ) ON CONFLICT (key) DO NOTHING
-    """)
+    """, label="seed_marketing_prompt")
 
-    _seed_platform_data()
-    _seed_marketing_templates()
+    try:
+        _seed_platform_data()
+    except Exception as e:
+        print(f"DB init warning (seed_platform_data): {e}")
+    try:
+        _seed_marketing_templates()
+    except Exception as e:
+        print(f"DB init warning (seed_marketing_templates): {e}")
 
     print("Database initialized")
 
