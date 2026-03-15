@@ -76,6 +76,7 @@ export interface TeamMember {
   is_active: boolean;
   email: string;
   phone: string;
+  photo_data?: string | null;
 }
 
 export interface ActivityLogEntry {

@@ -179,6 +179,25 @@ export const TeamAPI = {
     if (!res.ok) throw new Error('Failed to delete team member');
     return res.json();
   },
+
+  async uploadPhoto(id: string, file: File): Promise<TeamMember> {
+    const fd = new FormData();
+    fd.append('file', file);
+    const res = await fetch(`${API_BASE}/team/${encodeURIComponent(id)}/photo`, {
+      method: 'POST',
+      body: fd,
+    });
+    if (!res.ok) throw new Error('Failed to upload photo');
+    return res.json();
+  },
+
+  async deletePhoto(id: string): Promise<{ ok: boolean }> {
+    const res = await fetch(`${API_BASE}/team/${encodeURIComponent(id)}/photo`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) throw new Error('Failed to delete photo');
+    return res.json();
+  },
 };
 
 export const ShiftAPI = {

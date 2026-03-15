@@ -1,6 +1,7 @@
-"""Team Routes — CRUD for team members."""
+"""Team Routes — CRUD for team members + photo upload."""
 
-from fastapi import APIRouter
+import base64
+from fastapi import APIRouter, UploadFile, File
 from pydantic import BaseModel
 from typing import Optional
 from ..database import query, execute, gen_id
@@ -82,6 +83,41 @@ def update_member(member_id: str, data: TeamMemberUpdate):
     sql = f"UPDATE team_members SET {', '.join(fields)} WHERE id = %s RETURNING *"
     rows = query(sql, tuple(params))
     return rows[0]
+
+
+@router.post("/{member_id}/photo")
+async def upload_photo(member_id: str, file: UploadFile = File(...)):
+    """Upload a portrait photo for a team member. Stored as base64 data URL."""
+    rows = query("SELECT id FROM team_members WHERE id = %s", (member_id,))
+    if not rows:
+        return {"error": "Not found"}
+
+    content_type = file.content_type or "image/jpeg"
+    if not content_type.startswith("image/"):
+        return {"error": "Kun billedfiler er tilladt"}
+
+    img_bytes = await file.read()
+    if len(img_bytes) > 5 * 1024 * 1024:
+        return {"error": "Billedet er for stort (max 5 MB)"}
+
+    b64 = base64.b64encode(img_bytes).decode("utf-8")
+    data_url = f"data:{content_type};base64,{b64}"
+
+    result = query(
+        "UPDATE team_members SET photo_data = %s WHERE id = %s RETURNING *",
+        (data_url, member_id),
+    )
+    return result[0] if result else {"ok": True}
+
+
+@router.delete("/{member_id}/photo")
+def delete_photo(member_id: str):
+    """Remove a team member's portrait photo."""
+    query(
+        "UPDATE team_members SET photo_data = NULL WHERE id = %s RETURNING id",
+        (member_id,),
+    )
+    return {"ok": True}
 
 
 @router.delete("/{member_id}")

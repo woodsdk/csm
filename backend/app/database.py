@@ -271,6 +271,14 @@ def init():
         END $$;
     """, label="team_members.title")
 
+    # Migration: add photo_data (base64) to team_members
+    _safe_exec("""
+        DO $$ BEGIN
+            ALTER TABLE team_members ADD COLUMN photo_data TEXT;
+        EXCEPTION WHEN OTHERS THEN NULL;
+        END $$;
+    """, label="team_members.photo_data")
+
     # Migration: add calendar_event_id to demo_bookings
     _safe_exec("""
         DO $$ BEGIN
