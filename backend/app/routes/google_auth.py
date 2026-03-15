@@ -42,6 +42,18 @@ def get_status():
     return get_connection_status()
 
 
+@router.get("/debug")
+def debug_config():
+    """Debug endpoint — shows config (no secrets)."""
+    return {
+        "client_id_set": bool(settings.google_oauth_client_id),
+        "client_id_prefix": settings.google_oauth_client_id[:20] + "..." if settings.google_oauth_client_id else "",
+        "client_secret_set": bool(settings.google_oauth_client_secret),
+        "redirect_uri": settings.google_oauth_redirect_uri,
+        "scopes": SCOPES,
+    }
+
+
 @router.get("/connect")
 def connect():
     """Generate Google OAuth authorization URL."""
@@ -66,16 +78,16 @@ def connect():
 def callback(request: Request, code: str = "", state: str = "", error: str = ""):
     """Handle Google OAuth redirect after user consent."""
     if error:
-        logger.error(f"Google OAuth error: {error}")
-        return RedirectResponse(url="/?page=settings&google=error")
+        logger.error(f"Google OAuth error from Google: {error}")
+        return RedirectResponse(url=f"/?page=settings&google=error&reason={error}")
 
     if not code:
-        return RedirectResponse(url="/?page=settings&google=error")
+        logger.error("Google OAuth callback: no code received")
+        return RedirectResponse(url="/?page=settings&google=error&reason=no_code")
 
     # Verify state
     if state not in _pending_states:
-        logger.warning("OAuth callback with invalid state")
-        # Still proceed — state verification is best-effort for internal tool
+        logger.warning("OAuth callback with invalid state — proceeding anyway")
     _pending_states.pop(state, None)
 
     try:
@@ -85,7 +97,7 @@ def callback(request: Request, code: str = "", state: str = "", error: str = "")
 
         if not creds or not creds.refresh_token:
             logger.error("No refresh token received — user may need to re-consent")
-            return RedirectResponse(url="/?page=settings&google=error")
+            return RedirectResponse(url="/?page=settings&google=error&reason=no_refresh_token")
 
         # Get the authenticated user's email
         from googleapiclient.discovery import build
@@ -107,8 +119,11 @@ def callback(request: Request, code: str = "", state: str = "", error: str = "")
         return RedirectResponse(url="/?page=settings&google=connected")
 
     except Exception as e:
-        logger.error(f"Google OAuth callback failed: {e}")
-        return RedirectResponse(url="/?page=settings&google=error")
+        import traceback
+        logger.error(f"Google OAuth callback failed: {e}\n{traceback.format_exc()}")
+        # URL-encode a short reason for frontend debugging
+        reason = str(e)[:100].replace(" ", "_").replace("&", "").replace("=", "")
+        return RedirectResponse(url=f"/?page=settings&google=error&reason={reason}")
 
 
 @router.post("/disconnect")

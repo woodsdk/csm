@@ -26,7 +26,8 @@ export const SettingsPage = {
       // Clean URL
       window.history.replaceState({}, '', '/?page=settings');
     } else if (googleResult === 'error') {
-      toastHTML = '<div class="set-toast set-toast-error">Kunne ikke forbinde Google-konto. Prøv igen.</div>';
+      const reason = urlParams.get('reason') || '';
+      toastHTML = `<div class="set-toast set-toast-error">Kunne ikke forbinde Google-konto. ${reason ? `Årsag: ${reason.replace(/_/g, ' ')}` : 'Prøv igen.'}</div>`;
       window.history.replaceState({}, '', '/?page=settings');
     }
 
