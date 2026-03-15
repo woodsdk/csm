@@ -26,6 +26,8 @@ import { AskSynergyHub } from './components/ask-synergyhub';
 import { SettingsPage } from './components/settings-page';
 import { MarketingPage } from './components/marketing-page';
 import { MarketingFlowEditor } from './components/marketing-flow-editor';
+import { DPAManager } from './components/dpa-manager';
+import { DPASign } from './components/dpa-sign';
 import { GoogleCal } from './google-calendar';
 import type { Task, AppState } from './types';
 
@@ -81,6 +83,14 @@ export const App = {
     if (joinMatch) {
       DemoJoin.setBookingId(joinMatch[1]);
       await this._renderPublicJoinPage();
+      return;
+    }
+
+    // Public DPA signing page: /dpa/{token}
+    const dpaMatch = window.location.pathname.match(/^\/dpa\/([^/]+)$/);
+    if (dpaMatch) {
+      DPASign.setToken(dpaMatch[1]);
+      await this._renderPublicDPAPage();
       return;
     }
 
@@ -150,6 +160,8 @@ export const App = {
       await this._renderAskPage(mainEl);
     } else if (this.state.page === 'marketing') {
       await this._renderMarketingPage(mainEl);
+    } else if (this.state.page === 'dpa') {
+      await this._renderDPAPage(mainEl);
     } else if (this.state.page === 'settings') {
       await this._renderSettingsPage(mainEl);
     } else if (this.state.view === 'calendar') {
@@ -235,6 +247,39 @@ export const App = {
     mainEl.style.width = '100%';
 
     mainEl.innerHTML = await DemoJoin.render();
+  },
+
+  async _renderPublicDPAPage(): Promise<void> {
+    const sidebarEl = document.getElementById('sidebar');
+    const mainEl = document.getElementById('main');
+    if (!mainEl) return;
+
+    if (sidebarEl) sidebarEl.style.display = 'none';
+    const overlay = document.querySelector('.sidebar-overlay') as HTMLElement;
+    if (overlay) overlay.style.display = 'none';
+
+    mainEl.style.marginLeft = '0';
+    mainEl.style.width = '100%';
+
+    mainEl.innerHTML = await DPASign.render();
+  },
+
+  async _renderDPAPage(container: HTMLElement): Promise<void> {
+    const contentHTML = await DPAManager.render();
+
+    container.innerHTML = `
+      <div class="main-header">
+        <div class="main-header-left">
+          <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <h2>DPA</h2>
+        </div>
+      </div>
+      <div class="main-content">
+        ${contentHTML}
+      </div>
+    `;
   },
 
   async _renderTeamPage(container: HTMLElement): Promise<void> {

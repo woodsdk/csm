@@ -616,6 +616,48 @@ def init():
         );
     """)
 
+    # DPA Documents — versionered DPA PDFs
+    execute("""
+        CREATE TABLE IF NOT EXISTS dpa_documents (
+            id          TEXT PRIMARY KEY,
+            version     INTEGER NOT NULL DEFAULT 1,
+            language    TEXT NOT NULL DEFAULT 'da',
+            filename    TEXT NOT NULL DEFAULT '',
+            pdf_data    BYTEA,
+            uploaded_by TEXT NOT NULL DEFAULT '',
+            is_current  BOOLEAN NOT NULL DEFAULT true,
+            created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            UNIQUE(version, language)
+        );
+    """)
+
+    # DPA Signings — audit trail for DPA signatures
+    execute("""
+        CREATE TABLE IF NOT EXISTS dpa_signings (
+            id              TEXT PRIMARY KEY,
+            customer_id     TEXT NOT NULL,
+            document_id     TEXT REFERENCES dpa_documents(id),
+            token           TEXT NOT NULL UNIQUE,
+            language        TEXT NOT NULL DEFAULT 'da',
+            status          TEXT NOT NULL DEFAULT 'pending',
+            signer_name     TEXT NOT NULL DEFAULT '',
+            signer_email    TEXT NOT NULL DEFAULT '',
+            signer_title    TEXT NOT NULL DEFAULT '',
+            ip_address      TEXT NOT NULL DEFAULT '',
+            user_agent      TEXT NOT NULL DEFAULT '',
+            sent_at         TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            signed_at       TIMESTAMPTZ,
+            expires_at      TIMESTAMPTZ NOT NULL DEFAULT (NOW() + INTERVAL '30 days'),
+            sent_by         TEXT NOT NULL DEFAULT '',
+            reminder_count  INTEGER NOT NULL DEFAULT 0,
+            last_reminder_at TIMESTAMPTZ,
+            cs_notified     BOOLEAN NOT NULL DEFAULT false
+        );
+        CREATE INDEX IF NOT EXISTS idx_dpa_signings_token ON dpa_signings(token);
+        CREATE INDEX IF NOT EXISTS idx_dpa_signings_customer ON dpa_signings(customer_id);
+        CREATE INDEX IF NOT EXISTS idx_dpa_signings_status ON dpa_signings(status);
+    """)
+
     # Seed default marketing AI system prompt
     execute("""
         INSERT INTO app_settings (key, value) VALUES (

@@ -4755,7 +4755,7 @@
 /* Stats cards */
 .hd-stats {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: var(--space-3);
   margin-bottom: var(--space-5);
 }
@@ -8712,4 +8712,383 @@
   .mk-enroll-panel {
     width: 95vw;
   }
+}
+
+/* ════════════════════════════════════════════
+   DPA — Databehandleraftaler
+   ════════════════════════════════════════════ */
+
+.dpa-container { max-width: 960px; }
+
+.dpa-header { margin-bottom: var(--space-4); }
+.dpa-title { font-size: var(--text-xl); font-weight: var(--font-bold); color: var(--navy-800); margin: 0; }
+
+.dpa-warning {
+  margin-top: var(--space-2);
+  padding: 10px 14px;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  border-radius: var(--radius);
+  color: #92400e;
+  font-size: var(--text-sm);
+}
+
+/* Stats */
+.dpa-stats {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.dpa-stat-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  text-align: center;
+  min-width: 120px;
+}
+
+.dpa-stat-num { display: block; font-size: 28px; font-weight: var(--font-bold); color: var(--navy-800); }
+.dpa-stat-label { font-size: var(--text-xs); color: var(--text-tertiary); font-weight: 500; }
+.dpa-stat-success .dpa-stat-num { color: #16a34a; }
+.dpa-stat-warning .dpa-stat-num { color: #d97706; }
+
+/* Tabs */
+.dpa-tabs {
+  display: flex;
+  gap: var(--space-1);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-4);
+}
+
+.dpa-tab {
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.dpa-tab:hover { color: var(--brand); }
+.dpa-tab-active { color: var(--brand); border-bottom-color: var(--brand); }
+
+/* Sections */
+.dpa-section { margin-bottom: var(--space-5); }
+.dpa-section-title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--navy-600);
+  margin-bottom: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Customer list */
+.dpa-customer-list { display: flex; flex-direction: column; gap: 2px; }
+
+.dpa-customer-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 10px 14px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.dpa-checkbox { flex-shrink: 0; }
+.dpa-checkbox input { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
+
+.dpa-customer-info { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.dpa-customer-name { font-size: var(--text-sm); font-weight: 500; color: var(--navy-800); }
+.dpa-customer-email { font-size: var(--text-xs); color: var(--text-tertiary); }
+
+.dpa-customer-actions { display: flex; align-items: center; gap: var(--space-2); }
+
+.dpa-lang-select {
+  padding: 4px 8px;
+  font-size: var(--text-xs);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-primary);
+  cursor: pointer;
+}
+
+/* Bulk bar */
+.dpa-bulk-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  padding: 10px 14px;
+  background: var(--accent-subtle);
+  border-radius: var(--radius);
+}
+
+/* Signing list */
+.dpa-signing-list { display: flex; flex-direction: column; gap: 2px; }
+
+.dpa-signing-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  gap: var(--space-3);
+}
+
+.dpa-signing-info { flex: 1; }
+.dpa-signing-name { font-size: var(--text-sm); font-weight: 500; color: var(--navy-800); display: block; }
+.dpa-signing-meta { font-size: var(--text-xs); color: var(--text-tertiary); }
+
+.dpa-signing-actions { display: flex; align-items: center; gap: var(--space-2); }
+
+/* Badges */
+.dpa-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.dpa-badge-signed { background: #dcfce7; color: #166534; }
+.dpa-badge-pending { background: #fef9c3; color: #854d0e; }
+.dpa-badge-warning { background: #fee2e2; color: #991b1b; }
+
+/* Alerts */
+.dpa-alert {
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-4);
+}
+
+.dpa-alert-warning { background: #fef3c7; border: 1px solid #fcd34d; color: #92400e; }
+.dpa-alert-info { background: #dbeafe; border: 1px solid #93c5fd; color: #1e40af; }
+
+/* Documents tab */
+.dpa-upload-form { margin-bottom: var(--space-4); }
+
+.dpa-doc-list { display: flex; flex-direction: column; gap: 2px; }
+
+.dpa-doc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.dpa-doc-info { display: flex; align-items: center; gap: var(--space-2); }
+.dpa-doc-lang {
+  background: var(--accent-subtle);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+}
+.dpa-doc-name { font-size: var(--text-sm); font-weight: 500; }
+.dpa-doc-size { font-size: var(--text-xs); color: var(--text-tertiary); }
+.dpa-doc-meta { font-size: var(--text-xs); color: var(--text-tertiary); margin-bottom: var(--space-2); }
+.dpa-doc-actions { display: flex; gap: var(--space-2); }
+
+/* Audit log */
+.dpa-audit-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); }
+.dpa-audit-list { display: flex; flex-direction: column; gap: var(--space-3); }
+
+.dpa-audit-entry {
+  padding: 12px 14px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.dpa-audit-date { font-size: var(--text-xs); color: var(--text-tertiary); font-weight: 500; }
+.dpa-audit-action { font-size: var(--text-sm); color: var(--navy-800); margin: 4px 0; }
+.dpa-audit-detail { font-size: var(--text-xs); color: var(--text-secondary); }
+.dpa-audit-detail a { color: var(--accent); }
+
+/* Empty state */
+.dpa-empty {
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+  color: var(--text-tertiary);
+}
+
+.dpa-empty svg { margin-bottom: var(--space-3); opacity: 0.5; }
+.dpa-empty p { margin: 0; font-size: var(--text-sm); }
+
+/* ═══════ DPA Public Signing Page ═══════ */
+
+.dpa-public {
+  min-height: 100vh;
+  background: #f8f9fc;
+  display: flex;
+  flex-direction: column;
+}
+
+.dpa-public-header {
+  padding: 24px 32px;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dpa-public-logo { height: 28px; }
+
+.dpa-public-content {
+  flex: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  width: 100%;
+}
+
+.dpa-public-footer {
+  padding: 16px 32px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.dpa-public-center {
+  text-align: center;
+  padding: 60px 24px;
+}
+
+.dpa-public-center h2 { color: #26304f; margin: 16px 0 8px; }
+.dpa-public-center p { color: #6b7280; max-width: 400px; margin: 0 auto; }
+
+/* View step */
+.dpa-public-view h1 { color: #26304f; font-size: 24px; margin-bottom: 8px; }
+.dpa-public-subtitle { color: #6b7280; font-size: 14px; margin-bottom: 16px; }
+.dpa-public-intro { color: #4b5563; margin-bottom: 24px; line-height: 1.6; }
+
+.dpa-pdf-container {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.dpa-pdf-viewer {
+  width: 100%;
+  height: 600px;
+  border: none;
+}
+
+.dpa-public-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Sign step */
+.dpa-public-sign { max-width: 500px; margin: 0 auto; }
+.dpa-public-sign h2 { color: #26304f; margin-bottom: 8px; }
+
+.dpa-sign-form { margin-top: 24px; }
+.dpa-sign-form .form-group { margin-bottom: 16px; }
+.dpa-sign-form .form-label { font-size: 14px; font-weight: 600; color: #374151; margin-bottom: 6px; display: block; }
+.dpa-sign-form .input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.dpa-sign-form .input:focus {
+  outline: none;
+  border-color: #4f5fa3;
+  box-shadow: 0 0 0 2px rgba(79, 95, 163, 0.15);
+}
+
+.dpa-consent {
+  padding: 16px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.dpa-consent-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.dpa-consent-label input {
+  margin-top: 4px;
+  accent-color: #4f5fa3;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.dpa-sign-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Done step */
+.dpa-done-details {
+  max-width: 350px;
+  margin: 24px auto;
+  text-align: left;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.dpa-done-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 14px;
+}
+
+.dpa-done-row:last-child { border-bottom: none; }
+.dpa-done-row span { color: #6b7280; }
+.dpa-done-row strong { color: #26304f; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dpa-stats { flex-direction: row; overflow-x: auto; }
+  .dpa-stat-card { min-width: 100px; padding: var(--space-2); }
+  .dpa-stat-num { font-size: 22px; }
+
+  .dpa-customer-row { flex-wrap: wrap; }
+  .dpa-customer-actions { width: 100%; justify-content: flex-end; }
+
+  .dpa-signing-row { flex-direction: column; align-items: flex-start; }
+  .dpa-signing-actions { width: 100%; justify-content: flex-end; margin-top: var(--space-2); }
+
+  .dpa-public-content { padding: 24px 16px; }
+  .dpa-pdf-viewer { height: 400px; }
+  .dpa-public-actions { flex-direction: column; }
+  .dpa-sign-actions { flex-direction: column-reverse; }
 }

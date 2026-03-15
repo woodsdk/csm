@@ -261,7 +261,7 @@ export interface TicketMessage {
 }
 
 export interface AppState {
-  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training' | 'helpdesk' | 'helpdesk-detail' | 'calendar' | 'onboarding' | 'user-detail' | 'ask-synergyhub' | 'settings' | 'marketing';
+  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training' | 'helpdesk' | 'helpdesk-detail' | 'calendar' | 'onboarding' | 'user-detail' | 'ask-synergyhub' | 'settings' | 'marketing' | 'dpa';
   tab: string;
   view: 'list' | 'kanban' | 'calendar';
   filters: TaskFilters;
@@ -466,4 +466,65 @@ export interface MarketingPreview {
   subject: string;
   body_html: string;
   preview_user: { name: string; clinic_name: string };
+}
+
+/* ── DPA (Databehandleraftale) ── */
+
+export interface DPADocument {
+  id: string;
+  version: number;
+  language: string;
+  filename: string;
+  uploaded_by: string;
+  is_current: boolean;
+  created_at: string;
+  file_size?: number;
+}
+
+export interface DPASigning {
+  id: string;
+  customer_id: string;
+  document_id: string;
+  token: string;
+  language: string;
+  status: 'pending' | 'signed' | 'expired';
+  signer_name: string;
+  signer_email: string;
+  signer_title: string;
+  ip_address: string;
+  user_agent: string;
+  sent_at: string;
+  signed_at: string | null;
+  expires_at: string;
+  sent_by: string;
+  reminder_count: number;
+  last_reminder_at: string | null;
+  cs_notified: boolean;
+  customer_name?: string;
+  customer_email?: string;
+  document_version?: number;
+  document_filename?: string;
+}
+
+export interface DPAStats {
+  unsigned_count: number;
+  pending_count: number;
+  signed_count: number;
+  expired_count: number;
+  needs_attention_count: number;
+}
+
+export interface DPAPendingCustomer {
+  id: string;
+  name: string;
+  contact_name: string;
+  contact_email: string;
+  lifecycle: string;
+  plan: string;
+  dpa_signed: boolean;
+  dpa_signed_at: string | null;
+  latest_signing_id: string | null;
+  latest_signing_status: string | null;
+  latest_sent_at: string | null;
+  latest_language: string | null;
 }

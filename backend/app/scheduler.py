@@ -1,4 +1,4 @@
-"""Background Scheduler — Runs the marketing engine periodically."""
+"""Background Scheduler — Runs the marketing engine and DPA reminders periodically."""
 
 import asyncio
 import logging
@@ -23,6 +23,13 @@ async def marketing_loop():
             process_pending_steps()
         except Exception as e:
             logger.error(f"Marketing engine error: {e}")
+
+        # DPA automatic reminders
+        try:
+            from .routes.dpa import process_dpa_reminders
+            process_dpa_reminders()
+        except Exception as e:
+            logger.error(f"DPA reminder error: {e}")
 
         await asyncio.sleep(120)  # Run every 2 minutes
 
