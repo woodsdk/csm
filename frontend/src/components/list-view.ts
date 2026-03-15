@@ -346,6 +346,7 @@ export const ListView = {
     popup.onclick = (e) => e.stopPropagation();
 
     popup.innerHTML = `
+      <div class="desc-popup-links" id="desc-popup-links"></div>
       <textarea class="desc-popup-textarea" placeholder="Skriv beskrivelse..." id="desc-popup-ta"></textarea>
       <div class="desc-popup-footer">
         <button class="btn btn-sm btn-primary desc-popup-save" onclick="ListView.saveDesc()">Tilføj beskrivelse</button>
@@ -374,6 +375,22 @@ export const ListView = {
       if (ta) ta.value = task.description || '';
       this._popupChecklist = Array.isArray(task.checklist) ? [...task.checklist] : [];
       this._renderChecklist();
+
+      // Render clickable links from description
+      const linksEl = document.getElementById('desc-popup-links');
+      if (linksEl && task.description) {
+        const urls = task.description.match(/https?:\/\/[^\s]+/g);
+        if (urls && urls.length > 0) {
+          linksEl.innerHTML = urls.map(url => {
+            const isMeet = url.includes('meet.google.com') || url.includes('meet.jit.si');
+            const icon = isMeet
+              ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>'
+              : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';
+            const label = isMeet ? 'Åbn video-link' : url.replace(/^https?:\/\//, '').substring(0, 35);
+            return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="desc-link-btn ${isMeet ? 'desc-link-meet' : ''}" onclick="event.stopPropagation()">${icon} ${escapeHtml(label)}</a>`;
+          }).join('');
+        }
+      }
     });
 
     const ta = document.getElementById('desc-popup-ta') as HTMLTextAreaElement | null;
@@ -465,6 +482,10 @@ export const ListView = {
     const checkProgress = checkTotal > 0 ? `<span class="check-progress">${checkDone}/${checkTotal}</span>` : '';
     const isSelected = this._selected.has(task.id);
 
+    // Detect meet link in description for quick-access icon
+    const meetMatch = hasDesc ? task.description.match(/https?:\/\/(?:meet\.google\.com|meet\.jit\.si)\/[^\s]+/) : null;
+    const meetLink = meetMatch ? meetMatch[0] : '';
+
     return `
       <tr class="task-row ${isDone ? 'task-row-done' : ''} ${isSelected ? 'task-row-selected' : ''}" data-id="${task.id}"
           draggable="${!isDone}" ondragstart="ListView.dragStart(event, '${task.id}')"
@@ -484,6 +505,7 @@ export const ListView = {
         </td>
         <td class="col-desc" onclick="event.stopPropagation()">
           <div class="desc-cell ${hasDesc || checkTotal > 0 ? 'has-note' : ''}" onclick="ListView.openDescPopup(this, '${task.id}')">
+            ${meetLink ? `<a href="${escapeHtml(meetLink)}" target="_blank" rel="noopener" class="desc-meet-icon" title="Åbn video-link" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></a>` : ''}
             ${hasDesc
               ? `<span class="desc-preview-text">${escapeHtml(descPreview)}${task.description.trim().length > 30 ? '...' : ''}</span>`
               : checkTotal > 0 ? '' : `<span class="desc-add-hint"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Beskrivelse</span>`

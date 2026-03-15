@@ -8,16 +8,22 @@ from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
 from .database import init as db_init
-from .routes import tasks, customers, team, activities, shifts, bookings, demos, training, faq, helpdesk, onboarding, ask, google_auth, gmail
+from .routes import tasks, customers, team, activities, shifts, bookings, demos, training, faq, helpdesk, onboarding, ask, google_auth, gmail, marketing
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Initialize database on startup."""
+    """Initialize database and start background tasks on startup."""
     try:
         db_init()
     except Exception as e:
         print(f"Database init warning: {e}")
+    # Start marketing automation engine
+    try:
+        from .scheduler import start as start_marketing_engine
+        start_marketing_engine()
+    except Exception as e:
+        print(f"Marketing engine start warning: {e}")
     yield
 
 
@@ -46,6 +52,7 @@ app.include_router(onboarding.router, prefix="/api/onboarding", tags=["onboardin
 app.include_router(ask.router, prefix="/api/ask", tags=["ask"])
 app.include_router(google_auth.router, prefix="/api/google", tags=["google"])
 app.include_router(gmail.router, prefix="/api/gmail", tags=["gmail"])
+app.include_router(marketing.router, prefix="/api/marketing", tags=["marketing"])
 
 # Serve frontend — SPA-aware static file serving
 dist_path = os.path.abspath(settings.frontend_dist)

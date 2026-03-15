@@ -65,6 +65,15 @@ export const Sidebar = {
             Kalender
           </button>
 
+          <div class="sidebar-section-title" style="margin-top: var(--space-4)">Nurturing</div>
+
+          <button class="sidebar-nav-item ${app.state.page === 'marketing' ? 'active' : ''}" onclick="App.navigateTo('marketing')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+            Marketing
+          </button>
+
           <div class="sidebar-section-title" style="margin-top: var(--space-4)">Internt</div>
 
           <button class="sidebar-nav-item ${isVagtplanPage ? 'active' : ''}" onclick="App.navigateTo('vagtplan')">

@@ -2,7 +2,7 @@
    SynergyHub API Facade — Typed fetch wrappers
    ═══════════════════════════════════════════ */
 
-import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot, DemoInfo, DemoJoinCreate, DemoJoinResult, TrainingItem, FaqItem, Ticket, TicketMessage, OverviewData, OnboardingUser, FeedbackData, ChurnData, ContactPayload, UserDetailData, Signal, GoogleOAuthStatus } from './types';
+import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot, DemoInfo, DemoJoinCreate, DemoJoinResult, TrainingItem, FaqItem, Ticket, TicketMessage, OverviewData, OnboardingUser, FeedbackData, ChurnData, ContactPayload, UserDetailData, Signal, GoogleOAuthStatus, MarketingFlow, MarketingFlowStep, MarketingSegment, MarketingSentEmail, MarketingStats, MarketingPreview, MarketingEnrollment } from './types';
 
 const API_BASE = '/api';
 
@@ -512,6 +512,192 @@ export const GoogleAuthAPI = {
   },
 };
 
+export const MarketingAPI = {
+  // ── Flows ──
+  async getFlows(): Promise<MarketingFlow[]> {
+    const res = await fetch(`${API_BASE}/marketing/flows`);
+    if (!res.ok) throw new Error('Failed to fetch flows');
+    return res.json();
+  },
+
+  async getFlow(id: string): Promise<MarketingFlow> {
+    const res = await fetch(`${API_BASE}/marketing/flows/${encodeURIComponent(id)}`);
+    if (!res.ok) throw new Error('Failed to fetch flow');
+    return res.json();
+  },
+
+  async createFlow(data: { name: string; description?: string; trigger_type?: string; trigger_config?: Record<string, any>; segment_id?: string }): Promise<{ id: string }> {
+    const res = await fetch(`${API_BASE}/marketing/flows`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to create flow');
+    return res.json();
+  },
+
+  async updateFlow(id: string, data: Partial<MarketingFlow>): Promise<{ ok: boolean }> {
+    const res = await fetch(`${API_BASE}/marketing/flows/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to update flow');
+    return res.json();
+  },
+
+  async deleteFlow(id: string): Promise<{ ok: boolean }> {
+    const res = await fetch(`${API_BASE}/marketing/flows/${encodeURIComponent(id)}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Failed to delete flow');
+    return res.json();
+  },
+
+  async activateFlow(id: string): Promise<{ ok: boolean; error?: string }> {
+    const res = await fetch(`${API_BASE}/marketing/flows/${encodeURIComponent(id)}/activate`, { method: 'POST' });
+    return res.json();
+  },
+
+  async pauseFlow(id: string): Promise<{ ok: boolean }> {
+    const res = await fetch(`${API_BASE}/marketing/flows/${encodeURIComponent(id)}/pause`, { method: 'POST' });
+    return res.json();
+  },
+
+  async cloneTemplate(templateId: string): Promise<{ id: string }> {
+    const res = await fetch(`${API_BASE}/marketing/flows/clone/${encodeURIComponent(templateId)}`, { method: 'POST' });
+    if (!res.ok) throw new Error('Failed to clone template');
+    return res.json();
+  },
+
+  async getTemplates(): Promise<MarketingFlow[]> {
+    const res = await fetch(`${API_BASE}/marketing/templates`);
+    if (!res.ok) throw new Error('Failed to fetch templates');
+    return res.json();
+  },
+
+  // ── Steps ──
+  async addStep(flowId: string, data: { step_type: string; config: Record<string, any> }): Promise<{ id: string; step_order: number }> {
+    const res = await fetch(`${API_BASE}/marketing/flows/${encodeURIComponent(flowId)}/steps`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to add step');
+    return res.json();
+  },
+
+  async updateStep(flowId: string, stepId: string, data: { step_type?: string; config?: Record<string, any> }): Promise<{ ok: boolean }> {
+    const res = await fetch(`${API_BASE}/marketing/flows/${encodeURIComponent(flowId)}/steps/${encodeURIComponent(stepId)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to update step');
+    return res.json();
+  },
+
+  async deleteStep(flowId: string, stepId: string): Promise<{ ok: boolean }> {
+    const res = await fetch(`${API_BASE}/marketing/flows/${encodeURIComponent(flowId)}/steps/${encodeURIComponent(stepId)}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Failed to delete step');
+    return res.json();
+  },
+
+  async previewStep(flowId: string, stepId: string): Promise<MarketingPreview & { error?: string }> {
+    const res = await fetch(`${API_BASE}/marketing/flows/${encodeURIComponent(flowId)}/preview-step/${encodeURIComponent(stepId)}`, { method: 'POST' });
+    return res.json();
+  },
+
+  // ── Enrollments ──
+  async enrollUsers(flowId: string, userIds: string[]): Promise<{ ok: boolean; enrolled: number }> {
+    const res = await fetch(`${API_BASE}/marketing/flows/${encodeURIComponent(flowId)}/enroll`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_ids: userIds }),
+    });
+    if (!res.ok) throw new Error('Failed to enroll users');
+    return res.json();
+  },
+
+  async cancelEnrollment(enrollmentId: string): Promise<{ ok: boolean }> {
+    const res = await fetch(`${API_BASE}/marketing/enrollments/${encodeURIComponent(enrollmentId)}/cancel`, { method: 'POST' });
+    if (!res.ok) throw new Error('Failed to cancel enrollment');
+    return res.json();
+  },
+
+  // ── Segments ──
+  async getSegments(): Promise<MarketingSegment[]> {
+    const res = await fetch(`${API_BASE}/marketing/segments`);
+    if (!res.ok) throw new Error('Failed to fetch segments');
+    return res.json();
+  },
+
+  async getSegment(id: string): Promise<MarketingSegment> {
+    const res = await fetch(`${API_BASE}/marketing/segments/${encodeURIComponent(id)}`);
+    if (!res.ok) throw new Error('Failed to fetch segment');
+    return res.json();
+  },
+
+  async createSegment(data: { name: string; description?: string; filter_rules?: Record<string, any> }): Promise<{ id: string }> {
+    const res = await fetch(`${API_BASE}/marketing/segments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to create segment');
+    return res.json();
+  },
+
+  async updateSegment(id: string, data: Partial<MarketingSegment>): Promise<{ ok: boolean }> {
+    const res = await fetch(`${API_BASE}/marketing/segments/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to update segment');
+    return res.json();
+  },
+
+  async deleteSegment(id: string): Promise<{ ok: boolean }> {
+    const res = await fetch(`${API_BASE}/marketing/segments/${encodeURIComponent(id)}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Failed to delete segment');
+    return res.json();
+  },
+
+  // ── History & Stats ──
+  async getHistory(flowId = '', limit = 50, offset = 0): Promise<MarketingSentEmail[]> {
+    const params = new URLSearchParams();
+    if (flowId) params.set('flow_id', flowId);
+    params.set('limit', String(limit));
+    params.set('offset', String(offset));
+    const res = await fetch(`${API_BASE}/marketing/history?${params}`);
+    if (!res.ok) throw new Error('Failed to fetch history');
+    return res.json();
+  },
+
+  async getStats(): Promise<MarketingStats> {
+    const res = await fetch(`${API_BASE}/marketing/stats`);
+    if (!res.ok) throw new Error('Failed to fetch stats');
+    return res.json();
+  },
+
+  // ── Campaign ──
+  async sendCampaign(data: { segment_id: string; brief: string; subject_hint?: string }): Promise<{ sent: number; errors: number }> {
+    const res = await fetch(`${API_BASE}/marketing/send-campaign`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to send campaign');
+    return res.json();
+  },
+
+  // ── Engine Status ──
+  async getEngineStatus(): Promise<{ running: boolean; pending_enrollments: number }> {
+    const res = await fetch(`${API_BASE}/marketing/engine-status`);
+    if (!res.ok) throw new Error('Failed to fetch engine status');
+    return res.json();
+  },
+};
+
 // Expose globally for inline onclick handlers
 (window as any).TaskAPI = TaskAPI;
 (window as any).CustomerAPI = CustomerAPI;
@@ -524,3 +710,4 @@ export const GoogleAuthAPI = {
 (window as any).OnboardingAPI = OnboardingAPI;
 (window as any).AskAPI = AskAPI;
 (window as any).GoogleAuthAPI = GoogleAuthAPI;
+(window as any).MarketingAPI = MarketingAPI;

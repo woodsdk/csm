@@ -503,7 +503,82 @@ def init():
         CREATE INDEX IF NOT EXISTS idx_pe_type ON platform_events(event_type);
     """)
 
+    # ── Marketing Automation tables ──
+    execute("""
+        CREATE TABLE IF NOT EXISTS marketing_segments (
+            id              TEXT PRIMARY KEY,
+            name            TEXT NOT NULL,
+            description     TEXT NOT NULL DEFAULT '',
+            filter_rules    JSONB NOT NULL DEFAULT '{}',
+            user_count      INTEGER NOT NULL DEFAULT 0,
+            is_preset       BOOLEAN NOT NULL DEFAULT false,
+            created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+
+        CREATE TABLE IF NOT EXISTS marketing_flows (
+            id              TEXT PRIMARY KEY,
+            name            TEXT NOT NULL,
+            description     TEXT NOT NULL DEFAULT '',
+            trigger_type    TEXT NOT NULL DEFAULT 'manual',
+            trigger_config  JSONB NOT NULL DEFAULT '{}',
+            segment_id      TEXT REFERENCES marketing_segments(id) ON DELETE SET NULL,
+            status          TEXT NOT NULL DEFAULT 'draft',
+            is_template     BOOLEAN NOT NULL DEFAULT false,
+            created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_mf_status ON marketing_flows(status);
+        CREATE INDEX IF NOT EXISTS idx_mf_trigger ON marketing_flows(trigger_type);
+
+        CREATE TABLE IF NOT EXISTS marketing_flow_steps (
+            id              TEXT PRIMARY KEY,
+            flow_id         TEXT NOT NULL REFERENCES marketing_flows(id) ON DELETE CASCADE,
+            step_order      INTEGER NOT NULL DEFAULT 0,
+            step_type       TEXT NOT NULL DEFAULT 'email',
+            config          JSONB NOT NULL DEFAULT '{}',
+            created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_mfs_flow ON marketing_flow_steps(flow_id);
+
+        CREATE TABLE IF NOT EXISTS marketing_enrollments (
+            id              TEXT PRIMARY KEY,
+            flow_id         TEXT NOT NULL REFERENCES marketing_flows(id) ON DELETE CASCADE,
+            user_id         TEXT NOT NULL REFERENCES platform_users(id) ON DELETE CASCADE,
+            current_step    INTEGER NOT NULL DEFAULT 0,
+            status          TEXT NOT NULL DEFAULT 'active',
+            enrolled_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            next_action_at  TIMESTAMPTZ,
+            completed_at    TIMESTAMPTZ,
+            UNIQUE(flow_id, user_id)
+        );
+        CREATE INDEX IF NOT EXISTS idx_me_flow ON marketing_enrollments(flow_id);
+        CREATE INDEX IF NOT EXISTS idx_me_user ON marketing_enrollments(user_id);
+        CREATE INDEX IF NOT EXISTS idx_me_next ON marketing_enrollments(next_action_at);
+        CREATE INDEX IF NOT EXISTS idx_me_status ON marketing_enrollments(status);
+
+        CREATE TABLE IF NOT EXISTS marketing_emails_sent (
+            id              TEXT PRIMARY KEY,
+            enrollment_id   TEXT REFERENCES marketing_enrollments(id) ON DELETE SET NULL,
+            flow_id         TEXT REFERENCES marketing_flows(id) ON DELETE SET NULL,
+            step_id         TEXT REFERENCES marketing_flow_steps(id) ON DELETE SET NULL,
+            user_id         TEXT NOT NULL REFERENCES platform_users(id) ON DELETE CASCADE,
+            to_email        TEXT NOT NULL,
+            subject         TEXT NOT NULL,
+            body_html       TEXT NOT NULL,
+            brief           TEXT NOT NULL DEFAULT '',
+            gmail_message_id TEXT,
+            gmail_thread_id  TEXT,
+            status          TEXT NOT NULL DEFAULT 'sent',
+            sent_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_mes_user ON marketing_emails_sent(user_id);
+        CREATE INDEX IF NOT EXISTS idx_mes_flow ON marketing_emails_sent(flow_id);
+        CREATE INDEX IF NOT EXISTS idx_mes_sent ON marketing_emails_sent(sent_at);
+    """)
+
     _seed_platform_data()
+    _seed_marketing_templates()
 
     print("Database initialized")
 
@@ -834,3 +909,103 @@ def _seed_platform_data():
                 (f"pe_{event_id:05d}", uid, stage, ts.isoformat()),
             )
             event_id += 1
+
+
+def _seed_marketing_templates():
+    """Seed pre-built marketing flow templates and segments."""
+    import json
+
+    existing = query("SELECT COUNT(*) as cnt FROM marketing_flows WHERE is_template = true")
+    if existing and existing[0]["cnt"] > 0:
+        return
+
+    # ── Pre-built segments ──
+    segments = [
+        ("ms_new_users", "Nye brugere (0-14 dage)", "Brugere der har tilmeldt sig inden for de sidste 14 dage",
+         json.dumps({"status": ["onboarding", "active"], "signup_days_ago_max": 14}), True),
+        ("ms_inactive_14", "Inaktive (14+ dage)", "Aktive brugere der ikke har vaeret aktive i 14+ dage",
+         json.dumps({"status": ["active"], "days_inactive_min": 14}), True),
+        ("ms_at_risk", "Risiko-brugere", "Brugere med health score under 30",
+         json.dumps({"status": ["active", "inactive"], "health_score_max": 30}), True),
+        ("ms_stuck", "Stuck onboarding", "Brugere der ikke har haft foerste konsultation efter 7+ dage",
+         json.dumps({"status": ["onboarding"], "has_consultation": False, "signup_days_ago_min": 7}), True),
+        ("ms_happy", "Tilfredse brugere", "Aktive brugere med health score over 70",
+         json.dumps({"status": ["active"], "health_score_min": 70}), True),
+    ]
+    for sid, name, desc, rules, preset in segments:
+        execute(
+            """INSERT INTO marketing_segments (id, name, description, filter_rules, is_preset)
+               VALUES (%s, %s, %s, %s::jsonb, %s) ON CONFLICT (id) DO NOTHING""",
+            (sid, name, desc, rules, preset),
+        )
+
+    # ── Pre-built flow templates ──
+    templates = [
+        ("mf_tpl_welcome", "Velkomstflow", "Automatisk velkomst-sekvens for nye brugere", "signup"),
+        ("mf_tpl_inactive", "Inaktive brugere", "Genaktiverings-flow for brugere der er faldet fra", "inactive_14d"),
+        ("mf_tpl_feedback", "Negativ feedback opfoelgning", "Automatisk opfoelgning paa negativ feedback", "negative_feedback"),
+        ("mf_tpl_stuck", "Stuck onboarding", "Nudge til brugere der ikke har booket foerste konsultation", "stuck_onboarding"),
+        ("mf_tpl_health", "Health score drop", "Proaktiv outreach naar health score falder", "health_drop"),
+    ]
+    for fid, name, desc, trigger in templates:
+        config = json.dumps({"threshold": 30}) if trigger == "health_drop" else "{}"
+        execute(
+            """INSERT INTO marketing_flows (id, name, description, trigger_type, trigger_config, status, is_template)
+               VALUES (%s, %s, %s, %s, %s::jsonb, 'draft', true) ON CONFLICT (id) DO NOTHING""",
+            (fid, name, desc, trigger, config),
+        )
+
+    # ── Template steps ──
+    steps = [
+        # Welcome flow
+        ("mfs_w1", "mf_tpl_welcome", 0, "email", json.dumps({
+            "brief": "Byd brugeren velkommen til People's Clinic. Forklar kort hvordan de kommer i gang med at booke deres foerste konsultation. Naevn at supporten er klar til at hjaelpe.",
+            "subject_hint": "Velkommen til People's Clinic"
+        })),
+        ("mfs_w2", "mf_tpl_welcome", 1, "wait", json.dumps({"days": 3})),
+        ("mfs_w3", "mf_tpl_welcome", 2, "email", json.dumps({
+            "brief": "Venlig paamindelse om at booke den foerste konsultation. Tilbyd hjaelp med opsaetning af mikrofon og system. Vaer opmuntrende.",
+            "subject_hint": "Klar til din foerste konsultation?"
+        })),
+        ("mfs_w4", "mf_tpl_welcome", 3, "wait", json.dumps({"days": 5})),
+        ("mfs_w5", "mf_tpl_welcome", 4, "email", json.dumps({
+            "brief": "Opfoelgning efter den foerste uge. Spoerg om alt fungerer og tilbyd en personlig 1-til-1 onboarding session.",
+            "subject_hint": "Hvordan gaar det?"
+        })),
+        # Inactive flow
+        ("mfs_i1", "mf_tpl_inactive", 0, "email", json.dumps({
+            "brief": "Bemaerk at vi har set brugeren ikke har vaeret aktiv i en periode. Spoerg om alt er ok og om der er noget vi kan hjaelpe med. Vaer empatisk, ikke pushy.",
+            "subject_hint": "Vi savner dig"
+        })),
+        ("mfs_i2", "mf_tpl_inactive", 1, "wait", json.dumps({"days": 7})),
+        ("mfs_i3", "mf_tpl_inactive", 2, "email", json.dumps({
+            "brief": "Fortael om nye features og forbedringer paa platformen. Inviter brugeren til at proeve systemet igen.",
+            "subject_hint": "Nyt paa People's Clinic"
+        })),
+        # Negative feedback flow
+        ("mfs_f1", "mf_tpl_feedback", 0, "email", json.dumps({
+            "brief": "Tak brugeren for deres aerlige feedback. Anerkend den specifikke bekymring fra deres seneste review. Fortael hvad vi goer for at forbedre og tilbyd en personlig opfoelgning.",
+            "subject_hint": "Tak for din feedback"
+        })),
+        # Stuck onboarding flow
+        ("mfs_s1", "mf_tpl_stuck", 0, "email", json.dumps({
+            "brief": "Bemaerk at brugeren har oprettet en konto men endnu ikke har haft deres foerste konsultation. Tilbyd hjaelp med opsaetning og forklar kort de naeste skridt.",
+            "subject_hint": "Brug for hjaelp med at komme i gang?"
+        })),
+        ("mfs_s2", "mf_tpl_stuck", 1, "wait", json.dumps({"days": 4})),
+        ("mfs_s3", "mf_tpl_stuck", 2, "email", json.dumps({
+            "brief": "Sidste venlige paamindelse. Tilbyd en personlig onboarding-session via video. Forklar at det tager 15 minutter.",
+            "subject_hint": "Personlig onboarding — vi hjaelper dig i gang"
+        })),
+        # Health drop flow
+        ("mfs_h1", "mf_tpl_health", 0, "email", json.dumps({
+            "brief": "Proaktiv henvendelse. Spoerg om brugeren oplever problemer med platformen. Tilbyd teknisk support og en check-in samtale med teamet.",
+            "subject_hint": "Alt ok? Vi er her for dig"
+        })),
+    ]
+    for sid, fid, order, stype, config in steps:
+        execute(
+            """INSERT INTO marketing_flow_steps (id, flow_id, step_order, step_type, config)
+               VALUES (%s, %s, %s, %s, %s::jsonb) ON CONFLICT (id) DO NOTHING""",
+            (sid, fid, order, stype, config),
+        )

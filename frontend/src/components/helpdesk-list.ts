@@ -37,7 +37,7 @@ const PRIORITY_CLASSES: Record<string, string> = {
 export const HelpdeskList = {
   _tickets: [] as Ticket[],
   _stats: { open_count: 0, in_progress_count: 0, resolved_count: 0, closed_count: 0, total: 0 },
-  _filterStatus: '' as string,
+  _filterStatus: 'active' as string,
   _filterPriority: '' as string,
   _teamMembers: [] as TeamMember[],
   _gmailConnected: false,
@@ -61,7 +61,11 @@ export const HelpdeskList = {
 
     try {
       const filters: any = {};
-      if (this._filterStatus) filters.status = this._filterStatus;
+      if (this._filterStatus === 'active') {
+        filters.status = 'open,in_progress';
+      } else if (this._filterStatus) {
+        filters.status = this._filterStatus;
+      }
       if (this._filterPriority) filters.priority = this._filterPriority;
       [this._tickets, this._stats] = await Promise.all([
         HelpdeskAPI.getAll(filters),
@@ -81,6 +85,10 @@ export const HelpdeskList = {
     // Stats cards
     const statsHTML = `
       <div class="hd-stats">
+        <button class="hd-stat-card ${this._filterStatus === 'active' ? 'hd-stat-active' : ''}" onclick="HelpdeskList.filterStatus('active')">
+          <span class="hd-stat-num">${activeCount}</span>
+          <span class="hd-stat-label">Aktive</span>
+        </button>
         <button class="hd-stat-card ${this._filterStatus === 'open' ? 'hd-stat-active' : ''}" onclick="HelpdeskList.filterStatus('open')">
           <span class="hd-stat-num">${stats.open_count}</span>
           <span class="hd-stat-label">\u00c5bne</span>
@@ -99,7 +107,7 @@ export const HelpdeskList = {
         </button>
         <button class="hd-stat-card ${this._filterStatus === '' ? 'hd-stat-active' : ''}" onclick="HelpdeskList.filterStatus('')">
           <span class="hd-stat-num">${stats.total}</span>
-          <span class="hd-stat-label">Total</span>
+          <span class="hd-stat-label">Alle</span>
         </button>
       </div>
     `;
@@ -112,7 +120,7 @@ export const HelpdeskList = {
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
           </svg>
-          <p>Ingen tickets endnu${this._filterStatus ? ' med dette filter' : ''}.</p>
+          <p>Ingen tickets${this._filterStatus && this._filterStatus !== 'active' ? ' med dette filter' : ''}.</p>
           <button class="btn btn-primary btn-sm" onclick="HelpdeskList.openCreateModal()">Opret f\u00f8rste ticket</button>
         </div>
       `;
@@ -268,7 +276,12 @@ export const HelpdeskList = {
   },
 
   filterStatus(status: string): void {
-    this._filterStatus = this._filterStatus === status ? '' : status;
+    // Clicking the already-active filter resets to default "active" view
+    if (this._filterStatus === status) {
+      this._filterStatus = 'active';
+    } else {
+      this._filterStatus = status;
+    }
     (window as any).App.render();
   },
 

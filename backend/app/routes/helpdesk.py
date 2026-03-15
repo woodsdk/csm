@@ -79,8 +79,15 @@ def list_tickets(
     params: list = []
 
     if status:
-        sql += " AND t.status = %s"
-        params.append(status)
+        # Support comma-separated statuses (e.g. "open,in_progress")
+        statuses = [s.strip() for s in status.split(',')]
+        if len(statuses) == 1:
+            sql += " AND t.status = %s"
+            params.append(statuses[0])
+        else:
+            placeholders = ','.join(['%s'] * len(statuses))
+            sql += f" AND t.status IN ({placeholders})"
+            params.extend(statuses)
     if priority:
         sql += " AND t.priority = %s"
         params.append(priority)
@@ -91,7 +98,10 @@ def list_tickets(
         sql += " AND t.category = %s"
         params.append(category)
 
-    sql += " ORDER BY t.created_at DESC"
+    # Smart sort: priority first (urgent → low), then newest first
+    sql += """ ORDER BY
+        CASE t.priority WHEN 'urgent' THEN 0 WHEN 'high' THEN 1 WHEN 'medium' THEN 2 WHEN 'low' THEN 3 ELSE 4 END,
+        t.created_at DESC"""
     return query(sql, tuple(params))
 
 

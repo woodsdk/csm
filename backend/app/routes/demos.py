@@ -44,8 +44,7 @@ def _send_booking_confirmation(
         body_html = f"""
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 560px; margin: 0 auto; color: #1e293b;">
             <div style="text-align: center; padding: 24px 0 16px;">
-                <strong style="font-size: 18px; color: #1e3a5f;">PEOPLE'S</strong><br>
-                <span style="font-size: 12px; color: #3b82f6; font-weight: 600; letter-spacing: 2px;">CLINIC</span>
+                <img src="https://csm-production.up.railway.app/assets/peoplesclinic.png" alt="People's Clinic" width="180" style="display: inline-block; max-width: 180px; height: auto;">
             </div>
 
             <div style="background: #f8fafc; border-radius: 12px; padding: 32px; text-align: center; margin-bottom: 24px;">

@@ -43,6 +43,20 @@ export const TaskModal = {
 
           <div class="form-group">
             <label class="form-label" for="task-desc">Beskrivelse</label>
+            ${isEdit && task!.description ? (() => {
+              const urls = task!.description.match(/https?:\/\/[^\s]+/g);
+              if (urls && urls.length > 0) {
+                return `<div class="desc-popup-links" style="margin-bottom:8px">${urls.map(url => {
+                  const isMeet = url.includes('meet.google.com') || url.includes('meet.jit.si');
+                  const icon = isMeet
+                    ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>'
+                    : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';
+                  const label = isMeet ? 'Åbn video-link' : url.replace(/^https?:\/\//, '').substring(0, 40);
+                  return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="desc-link-btn ${isMeet ? 'desc-link-meet' : ''}">${icon} ${escapeHtml(label)}</a>`;
+                }).join('')}</div>`;
+              }
+              return '';
+            })() : ''}
             <textarea class="textarea" id="task-desc" placeholder="Detaljer...">${isEdit ? escapeHtml(task!.description) : ''}</textarea>
           </div>
 

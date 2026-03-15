@@ -436,3 +436,102 @@ Generér et JSON-objekt med "subject" og "body" for en professionel outbound-bes
     except Exception as e:
         logger.error(f"OpenAI API error (contact draft): {e}")
         return None
+
+
+# ── Marketing Email Generation ─────────────────────────────────────────
+
+def generate_marketing_email(
+    user_context: dict,
+    brief: str,
+    subject_hint: str = "",
+) -> dict | None:
+    """Generate a personalized marketing email from a CS team brief.
+
+    Returns {"subject": "...", "body_html": "..."} or None.
+    """
+    client = _get_client()
+    if not client:
+        return None
+
+    system_prompt = """Du er en professionel email-forfatter for People's Clinic, en dansk digital sundhedsplatform der bruger AI til at opsummere læge-patient samtaler.
+
+REGLER:
+- Skriv ALTID på dansk
+- Vær varm, professionel og empatisk — aldrig sælgende eller pushy
+- Personaliser baseret på brugerens data (navn, klinik, speciale, aktivitet)
+- Hold emailen kort (3-5 afsnit, max 150 ord)
+- Giv ALDRIG medicinsk rådgivning eller diagnosticering
+- Nævn aldrig patientdata eller specifik patientinformation
+- Henvis til platformen for konkret sundhedsrådgivning
+- Start med "Hej [fornavn],"
+- Afslut med "Med venlig hilsen,\\nPeople's Clinic Teamet"
+- SVAR KUN med et JSON-objekt: {"subject": "...", "body_html": "..."}
+- body_html: brug simple HTML tags (<p>, <br>, <strong>) — INGEN inline styles
+- Subject: max 60 tegn, relevant og engagerende"""
+
+    uc = user_context
+    user_block = f"""BRUGER KONTEKST:
+- Navn: {uc.get('name', 'Ukendt')}
+- Klinik: {uc.get('clinic_name', 'Ukendt')}
+- Speciale: {uc.get('speciale', 'Ukendt')}
+- Status: {uc.get('status', 'Ukendt')}
+- Plan: {uc.get('plan', 'Ukendt')}
+- Health score: {uc.get('health_score', 'N/A')}/100
+- Konsultationer total: {uc.get('consultation_count', 0)}
+- Gns. rating: {uc.get('avg_rating', 'N/A')}
+- Dage siden signup: {uc.get('days_since_signup', 'N/A')}
+- Sidst aktiv: {uc.get('last_active_at', 'Ukendt')}
+- Seneste feedback: {uc.get('latest_feedback', 'Ingen')}
+- Onboarding-trin nået: {uc.get('onboarding_stages', 'Ukendt')}"""
+
+    user_prompt = f"""{user_block}
+
+BRIEF (hvad emailen skal kommunikere):
+{brief}
+
+{f'EMNE-HINT: {subject_hint}' if subject_hint else ''}
+
+Generér et JSON-objekt med "subject" og "body_html":"""
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+            max_tokens=800,
+            temperature=0.7,
+        )
+        content = response.choices[0].message.content.strip()
+
+        # Parse JSON
+        try:
+            result = json.loads(content)
+            if "subject" in result and "body_html" in result:
+                return result
+        except json.JSONDecodeError:
+            pass
+
+        # Fallback: try markdown code block
+        if "```" in content:
+            json_match = content.split("```")[1]
+            if json_match.startswith("json"):
+                json_match = json_match[4:]
+            try:
+                result = json.loads(json_match.strip())
+                if "subject" in result and "body_html" in result:
+                    return result
+            except json.JSONDecodeError:
+                pass
+
+        # Last resort
+        first_name = uc.get("name", "").split()[0] if uc.get("name") else ""
+        return {
+            "subject": subject_hint or f"Besked fra People's Clinic",
+            "body_html": f"<p>Hej {first_name},</p><p>{content}</p><p>Med venlig hilsen,<br>People's Clinic Teamet</p>",
+        }
+
+    except Exception as e:
+        logger.error(f"OpenAI API error (marketing email): {e}")
+        return None

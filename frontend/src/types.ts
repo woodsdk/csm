@@ -259,7 +259,7 @@ export interface TicketMessage {
 }
 
 export interface AppState {
-  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training' | 'helpdesk' | 'helpdesk-detail' | 'calendar' | 'onboarding' | 'user-detail' | 'ask-synergyhub' | 'settings';
+  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training' | 'helpdesk' | 'helpdesk-detail' | 'calendar' | 'onboarding' | 'user-detail' | 'ask-synergyhub' | 'settings' | 'marketing';
   tab: string;
   view: 'list' | 'kanban' | 'calendar';
   filters: TaskFilters;
@@ -380,4 +380,88 @@ export interface GoogleOAuthStatus {
   email?: string;
   scopes?: string[];
   connected_at?: string;
+}
+
+/* ── Marketing & Automation ── */
+
+export interface MarketingFlow {
+  id: string;
+  name: string;
+  description: string;
+  trigger_type: string;
+  trigger_config: Record<string, any>;
+  segment_id: string | null;
+  status: 'draft' | 'active' | 'paused' | 'archived';
+  is_template: boolean;
+  created_at: string;
+  updated_at: string;
+  step_count?: number;
+  enrollment_count?: number;
+  sent_count?: number;
+  steps?: MarketingFlowStep[];
+  enrollments?: MarketingEnrollment[];
+}
+
+export interface MarketingFlowStep {
+  id: string;
+  flow_id: string;
+  step_order: number;
+  step_type: 'email' | 'wait' | 'condition';
+  config: Record<string, any>;
+}
+
+export interface MarketingEnrollment {
+  id: string;
+  flow_id: string;
+  user_id: string;
+  current_step: number;
+  status: 'active' | 'completed' | 'cancelled';
+  enrolled_at: string;
+  next_action_at: string | null;
+  user_name?: string;
+  clinic_name?: string;
+  user_email?: string;
+}
+
+export interface MarketingSegment {
+  id: string;
+  name: string;
+  description: string;
+  filter_rules: Record<string, any>;
+  user_count: number;
+  is_preset: boolean;
+  created_at: string;
+  updated_at: string;
+  users?: Array<{ id: string; name: string; email: string; clinic_name: string; status: string; health_score: number }>;
+}
+
+export interface MarketingSentEmail {
+  id: string;
+  enrollment_id: string | null;
+  flow_id: string | null;
+  step_id: string | null;
+  user_id: string;
+  to_email: string;
+  subject: string;
+  body_html: string;
+  brief: string;
+  gmail_message_id: string | null;
+  sent_at: string;
+  user_name?: string;
+  clinic_name?: string;
+  flow_name?: string;
+}
+
+export interface MarketingStats {
+  total_sent: number;
+  sent_this_week: number;
+  active_flows: number;
+  active_enrollments: number;
+  per_flow: Array<{ flow_id: string; flow_name: string; sent_count: number }>;
+}
+
+export interface MarketingPreview {
+  subject: string;
+  body_html: string;
+  preview_user: { name: string; clinic_name: string };
 }
