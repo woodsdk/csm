@@ -259,7 +259,7 @@ export interface TicketMessage {
 }
 
 export interface AppState {
-  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training' | 'helpdesk' | 'helpdesk-detail' | 'calendar' | 'onboarding' | 'user-detail' | 'ask-synergyhub';
+  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training' | 'helpdesk' | 'helpdesk-detail' | 'calendar' | 'onboarding' | 'user-detail' | 'ask-synergyhub' | 'settings';
   tab: string;
   view: 'list' | 'kanban' | 'calendar';
   filters: TaskFilters;
@@ -371,4 +371,13 @@ export interface Signal {
   message: string;
   created_at: string;
   feedback_id?: string;
+}
+
+/* ── Google OAuth ── */
+
+export interface GoogleOAuthStatus {
+  connected: boolean;
+  email?: string;
+  scopes?: string[];
+  connected_at?: string;
 }

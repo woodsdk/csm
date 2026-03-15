@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
 from .database import init as db_init
-from .routes import tasks, customers, team, activities, shifts, bookings, demos, training, faq, helpdesk, onboarding, ask
+from .routes import tasks, customers, team, activities, shifts, bookings, demos, training, faq, helpdesk, onboarding, ask, google_auth, gmail
 
 
 @asynccontextmanager
@@ -44,6 +44,8 @@ app.include_router(faq.router, prefix="/api/faq", tags=["faq"])
 app.include_router(helpdesk.router, prefix="/api/helpdesk", tags=["helpdesk"])
 app.include_router(onboarding.router, prefix="/api/onboarding", tags=["onboarding"])
 app.include_router(ask.router, prefix="/api/ask", tags=["ask"])
+app.include_router(google_auth.router, prefix="/api/google", tags=["google"])
+app.include_router(gmail.router, prefix="/api/gmail", tags=["gmail"])
 
 # Serve frontend — SPA-aware static file serving
 dist_path = os.path.abspath(settings.frontend_dist)

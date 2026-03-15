@@ -208,6 +208,37 @@ def add_ticket_message(ticket_id: str, data: TicketMessageCreate):
     # Update ticket's updated_at
     execute("UPDATE tickets SET updated_at = NOW() WHERE id = %s", (ticket_id,))
 
+    # Auto-send email via Gmail if agent reply (not internal) and requester has email
+    if data.sender_type == "agent" and not data.is_internal:
+        try:
+            from ..google_oauth import is_connected as gmail_connected
+            from ..gmail import send_email
+
+            if gmail_connected():
+                ticket_data = query("SELECT * FROM tickets WHERE id = %s", (ticket_id,))
+                if ticket_data and ticket_data[0].get("requester_email"):
+                    t = ticket_data[0]
+                    result = send_email(
+                        to=t["requester_email"],
+                        subject=f"Re: {t['subject']}",
+                        body_html=data.body,
+                        thread_id=t.get("gmail_thread_id"),
+                    )
+                    if result:
+                        # Store gmail references
+                        execute(
+                            "UPDATE ticket_messages SET gmail_message_id = %s WHERE id = %s",
+                            (result["message_id"], msg_id),
+                        )
+                        if result.get("thread_id") and not t.get("gmail_thread_id"):
+                            execute(
+                                "UPDATE tickets SET gmail_thread_id = %s WHERE id = %s",
+                                (result["thread_id"], ticket_id),
+                            )
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).warning(f"Gmail auto-send failed: {e}")
+
     return rows[0]
 
 

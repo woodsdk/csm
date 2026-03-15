@@ -2,7 +2,7 @@
    Helpdesk Detail — Ticket conversation view
    ═══════════════════════════════════════════ */
 
-import { HelpdeskAPI, TeamAPI } from '../api';
+import { HelpdeskAPI, TeamAPI, GoogleAuthAPI } from '../api';
 import { escapeHtml } from '../utils';
 import type { Ticket, TicketMessage, TeamMember } from '../types';
 
@@ -23,6 +23,7 @@ const PRIORITY_LABELS: Record<string, string> = {
 export const HelpdeskDetail = {
   _ticket: null as (Ticket & { messages?: TicketMessage[] }) | null,
   _teamMembers: [] as TeamMember[],
+  _gmailConnected: false,
 
   /* ── Main render ── */
   async render(ticketId: string): Promise<string> {
@@ -39,6 +40,11 @@ export const HelpdeskDetail = {
     if (this._teamMembers.length === 0) {
       try { this._teamMembers = await TeamAPI.getAll(); } catch { /* */ }
     }
+
+    try {
+      const gStatus = await GoogleAuthAPI.getStatus();
+      this._gmailConnected = gStatus.connected;
+    } catch { this._gmailConnected = false; }
 
     const t = this._ticket;
     const messages = t.messages || [];
@@ -84,6 +90,7 @@ export const HelpdeskDetail = {
             </div>
 
             <div class="hd-reply-box">
+              ${this._gmailConnected && t.requester_email ? `<div class="hd-email-notice"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Svaret sendes til ${escapeHtml(t.requester_email)}</div>` : ''}
               <textarea class="input" id="hd-reply-body" rows="3" placeholder="Skriv et svar..."></textarea>
               <div class="hd-reply-actions">
                 <label class="hd-internal-check">
@@ -102,7 +109,7 @@ export const HelpdeskDetail = {
                   </button>
                   <button class="btn btn-primary btn-sm" onclick="HelpdeskDetail.sendReply('${t.id}')">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                    Send
+                    ${this._gmailConnected && t.requester_email ? 'Send email' : 'Send'}
                   </button>
                 </div>
               </div>

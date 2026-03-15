@@ -392,6 +392,34 @@ def init():
     """)
     execute("CREATE INDEX IF NOT EXISTS idx_tickets_platform_user ON tickets(platform_user_id)")
 
+    # Google OAuth tokens (single-row table for shared account)
+    execute("""
+        CREATE TABLE IF NOT EXISTS google_oauth_tokens (
+            id            TEXT PRIMARY KEY DEFAULT 'shared',
+            account_email TEXT NOT NULL,
+            access_token  TEXT NOT NULL,
+            refresh_token TEXT NOT NULL,
+            token_expiry  TIMESTAMPTZ NOT NULL,
+            scopes        TEXT NOT NULL DEFAULT '',
+            connected_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+    """)
+
+    # Migration: Gmail thread/message IDs on tickets
+    execute("""
+        DO $$ BEGIN
+            ALTER TABLE tickets ADD COLUMN gmail_thread_id TEXT;
+        EXCEPTION WHEN duplicate_column THEN NULL;
+        END $$;
+    """)
+    execute("""
+        DO $$ BEGIN
+            ALTER TABLE ticket_messages ADD COLUMN gmail_message_id TEXT;
+        EXCEPTION WHEN duplicate_column THEN NULL;
+        END $$;
+    """)
+
     # Seed FAQ items
     execute("""
         INSERT INTO faq_items (id, question, answer, category, sort_order) VALUES

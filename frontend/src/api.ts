@@ -2,7 +2,7 @@
    SynergyHub API Facade — Typed fetch wrappers
    ═══════════════════════════════════════════ */
 
-import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot, DemoInfo, DemoJoinCreate, DemoJoinResult, TrainingItem, FaqItem, Ticket, TicketMessage, OverviewData, OnboardingUser, FeedbackData, ChurnData, ContactPayload, UserDetailData, Signal } from './types';
+import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot, DemoInfo, DemoJoinCreate, DemoJoinResult, TrainingItem, FaqItem, Ticket, TicketMessage, OverviewData, OnboardingUser, FeedbackData, ChurnData, ContactPayload, UserDetailData, Signal, GoogleOAuthStatus } from './types';
 
 const API_BASE = '/api';
 
@@ -490,6 +490,21 @@ export const AskAPI = {
   },
 };
 
+export const GoogleAuthAPI = {
+  async getStatus(): Promise<GoogleOAuthStatus> {
+    const res = await fetch(`${API_BASE}/google/status`);
+    return res.json();
+  },
+  async getConnectUrl(): Promise<{ auth_url: string }> {
+    const res = await fetch(`${API_BASE}/google/connect`);
+    return res.json();
+  },
+  async disconnect(): Promise<{ ok: boolean }> {
+    const res = await fetch(`${API_BASE}/google/disconnect`, { method: 'POST' });
+    return res.json();
+  },
+};
+
 // Expose globally for inline onclick handlers
 (window as any).TaskAPI = TaskAPI;
 (window as any).CustomerAPI = CustomerAPI;
@@ -501,3 +516,4 @@ export const AskAPI = {
 (window as any).HelpdeskAPI = HelpdeskAPI;
 (window as any).OnboardingAPI = OnboardingAPI;
 (window as any).AskAPI = AskAPI;
+(window as any).GoogleAuthAPI = GoogleAuthAPI;

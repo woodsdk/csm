@@ -15,6 +15,11 @@ class Settings(BaseSettings):
     google_impersonate_email: str = "support@peoplesdoctor.com"
     google_calendar_enabled: bool = False
 
+    # Google OAuth 2.0 (server-side flow for Gmail + Calendar)
+    google_oauth_client_id: str = ""
+    google_oauth_client_secret: str = ""
+    google_oauth_redirect_uri: str = "http://localhost:8000/api/google/callback"
+
     class Config:
         env_file = os.path.join(os.path.dirname(__file__), "..", "..", ".env")
 

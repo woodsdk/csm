@@ -6713,3 +6713,153 @@
   color: var(--text-secondary);
   line-height: 1.5;
 }
+
+/* ── Settings Page (set-*) ── */
+
+.set-container {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.set-title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  margin: 0 0 var(--space-6) 0;
+  color: var(--text-primary);
+}
+
+.set-section {
+  margin-bottom: var(--space-6);
+}
+
+.set-section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-3) 0;
+}
+
+.set-section-title svg {
+  flex-shrink: 0;
+}
+
+.set-card {
+  background: #fff;
+  border: 1px solid var(--navy-100);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.set-card-connected {
+  border-color: var(--success);
+  border-left: 3px solid var(--success);
+}
+
+.set-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.set-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.set-status-connected {
+  background: var(--success);
+  box-shadow: 0 0 0 3px var(--success)20;
+}
+
+.set-status-disconnected {
+  background: var(--navy-300);
+}
+
+.set-status-label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+}
+
+.set-card-email {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.set-card-scopes {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  margin-bottom: 2px;
+}
+
+.set-card-date {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-4);
+}
+
+.set-card-desc {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-4) 0;
+  line-height: 1.5;
+}
+
+.set-disconnect-btn {
+  color: var(--error) !important;
+  border-color: var(--error) !important;
+}
+
+.set-disconnect-btn:hover {
+  background: var(--error) !important;
+  color: #fff !important;
+}
+
+.set-toast {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  margin-bottom: var(--space-4);
+}
+
+.set-toast-success {
+  background: var(--success)15;
+  color: var(--success);
+  border: 1px solid var(--success)30;
+}
+
+.set-toast-error {
+  background: var(--error)15;
+  color: var(--error);
+  border: 1px solid var(--error)30;
+}
+
+/* ── Helpdesk email notice ── */
+
+.hd-email-notice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--success)10;
+  border: 1px solid var(--success)25;
+  border-radius: var(--radius-md);
+  font-size: var(--text-xs);
+  color: var(--success);
+  font-weight: 500;
+  margin-bottom: var(--space-2);
+}
+
+.hd-email-notice svg {
+  flex-shrink: 0;
+  stroke: var(--success);
+}

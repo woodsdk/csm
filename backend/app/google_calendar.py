@@ -17,12 +17,35 @@ SCOPES = ["https://www.googleapis.com/auth/calendar"]
 _service = None
 
 
+def _get_calendar_id() -> str:
+    """Return 'primary' for OAuth, or the impersonate email for service account."""
+    try:
+        from .google_oauth import is_connected
+        if is_connected():
+            return "primary"
+    except Exception:
+        pass
+    return settings.google_impersonate_email
+
+
 def _get_service():
-    """Build and cache the Calendar API service (impersonating via service account)."""
+    """Build and cache the Calendar API service. Prefers OAuth, falls back to service account."""
     global _service
     if _service is not None:
         return _service
 
+    # Strategy 1: Try OAuth tokens (preferred)
+    try:
+        from .google_oauth import get_calendar_service
+        oauth_service = get_calendar_service()
+        if oauth_service:
+            _service = oauth_service
+            logger.info("Google Calendar service initialized via OAuth")
+            return _service
+    except Exception as e:
+        logger.debug(f"OAuth calendar not available: {e}")
+
+    # Strategy 2: Fall back to service account (legacy)
     if not settings.google_calendar_enabled or not settings.google_service_account_json:
         return None
 
@@ -102,7 +125,7 @@ def create_event(
         event = (
             service.events()
             .insert(
-                calendarId=settings.google_impersonate_email,
+                calendarId=_get_calendar_id(),
                 body=event_body,
                 conferenceDataVersion=1,
                 sendUpdates="all",
@@ -144,7 +167,7 @@ def add_attendee(event_id: str, email: str, name: str = "") -> bool:
         event = (
             service.events()
             .get(
-                calendarId=settings.google_impersonate_email,
+                calendarId=_get_calendar_id(),
                 eventId=event_id,
             )
             .execute()
@@ -163,7 +186,7 @@ def add_attendee(event_id: str, email: str, name: str = "") -> bool:
         attendees.append(new_attendee)
 
         service.events().patch(
-            calendarId=settings.google_impersonate_email,
+            calendarId=_get_calendar_id(),
             eventId=event_id,
             body={"attendees": attendees},
             sendUpdates="all",
@@ -184,7 +207,7 @@ def delete_event(event_id: str) -> bool:
 
     try:
         service.events().delete(
-            calendarId=settings.google_impersonate_email,
+            calendarId=_get_calendar_id(),
             eventId=event_id,
             sendUpdates="all",
         ).execute()

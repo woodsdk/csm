@@ -22,6 +22,7 @@ import { HelpdeskDetail } from './components/helpdesk-detail';
 import { OnboardingDashboard } from './components/onboarding-dashboard';
 import { UserDetail } from './components/user-detail';
 import { AskSynergyHub } from './components/ask-synergyhub';
+import { SettingsPage } from './components/settings-page';
 import { GoogleCal } from './google-calendar';
 import type { Task, AppState } from './types';
 
@@ -78,6 +79,13 @@ export const App = {
       DemoJoin.setBookingId(joinMatch[1]);
       await this._renderPublicJoinPage();
       return;
+    }
+
+    // Handle URL params (e.g., ?page=settings after OAuth callback)
+    const urlParams = new URLSearchParams(window.location.search);
+    const pageParam = urlParams.get('page');
+    if (pageParam === 'settings') {
+      this.state.page = 'settings';
     }
 
     TaskModal.init();
@@ -137,6 +145,8 @@ export const App = {
       await this._renderUserDetailPage(mainEl);
     } else if (this.state.page === 'ask-synergyhub') {
       await this._renderAskPage(mainEl);
+    } else if (this.state.page === 'settings') {
+      await this._renderSettingsPage(mainEl);
     } else if (this.state.view === 'calendar') {
       await this._renderCalendarPage(mainEl);
     } else {
@@ -386,6 +396,23 @@ export const App = {
         </div>
       </div>
       <div class="main-content ask-page-content">
+        ${contentHTML}
+      </div>
+    `;
+  },
+
+  async _renderSettingsPage(container: HTMLElement): Promise<void> {
+    const contentHTML = await SettingsPage.render();
+    container.innerHTML = `
+      <div class="main-header">
+        <div class="main-header-left">
+          <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <h2>Indstillinger</h2>
+        </div>
+      </div>
+      <div class="main-content">
         ${contentHTML}
       </div>
     `;
