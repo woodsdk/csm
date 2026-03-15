@@ -85,27 +85,18 @@ export const HelpdeskDetail = {
 
             <div class="hd-reply-box">
               <textarea class="input" id="hd-reply-body" rows="3" placeholder="Skriv et svar..."></textarea>
-              <div class="hd-ai-prompt-row" id="hd-ai-prompt-row" style="display:none">
-                <div class="hd-ai-prompt-wrap">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="hd-ai-prompt-icon">
-                    <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
-                  </svg>
-                  <input class="input hd-ai-prompt-input" id="hd-ai-prompt" type="text" placeholder="Instruer AI'en, f.eks. &quot;Forklar at vi arbejder p\u00e5 det&quot;..." onkeydown="if(event.key==='Enter'){event.preventDefault();HelpdeskDetail.aiGenerate('${t.id}')}">
-                  <button class="btn btn-primary btn-sm hd-ai-generate-btn" id="hd-ai-generate-btn" onclick="HelpdeskDetail.aiGenerate('${t.id}')">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
-                    Generer
-                  </button>
-                  <button class="btn-icon hd-ai-close-btn" onclick="HelpdeskDetail.closeAiPrompt()" title="Luk">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                  </button>
-                </div>
-              </div>
               <div class="hd-reply-actions">
                 <label class="hd-internal-check">
                   <input type="checkbox" id="hd-reply-internal"> Intern note
                 </label>
                 <div class="hd-reply-buttons">
-                  <button class="btn btn-sm hd-ai-btn" id="hd-ai-btn" onclick="HelpdeskDetail.toggleAiPrompt()">
+                  <div class="hd-ai-inline">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="hd-ai-inline-icon">
+                      <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+                    </svg>
+                    <input class="hd-ai-inline-input" id="hd-ai-prompt" type="text" placeholder="Instruér AI'en..." onkeydown="if(event.key==='Enter'){event.preventDefault();HelpdeskDetail.aiGenerate('${t.id}')}">
+                  </div>
+                  <button class="btn btn-sm hd-ai-btn" id="hd-ai-generate-btn" onclick="HelpdeskDetail.aiGenerate('${t.id}')">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg>
                     Generér svar
                   </button>
@@ -206,23 +197,6 @@ export const HelpdeskDetail = {
     }
   },
 
-  /* ── AI prompt toggle ── */
-  toggleAiPrompt(): void {
-    const row = document.getElementById('hd-ai-prompt-row');
-    if (!row) return;
-    const isHidden = row.style.display === 'none';
-    row.style.display = isHidden ? 'flex' : 'none';
-    if (isHidden) {
-      const input = document.getElementById('hd-ai-prompt') as HTMLInputElement | null;
-      if (input) input.focus();
-    }
-  },
-
-  closeAiPrompt(): void {
-    const row = document.getElementById('hd-ai-prompt-row');
-    if (row) row.style.display = 'none';
-  },
-
   /* ── AI generate with prompt ── */
   async aiGenerate(ticketId: string): Promise<void> {
     const btn = document.getElementById('hd-ai-generate-btn') as HTMLButtonElement | null;
@@ -240,7 +214,6 @@ export const HelpdeskDetail = {
       if (result.suggestion) {
         bodyEl.value = result.suggestion;
         bodyEl.focus();
-        this.closeAiPrompt();
         if (promptEl) promptEl.value = '';
         (window as any).App.toast('AI-forslag genereret', 'success');
       } else {
