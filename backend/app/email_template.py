@@ -6,7 +6,7 @@ Used by helpdesk replies, marketing emails, and campaign sends.
 """
 
 
-def wrap_email(body_html: str, preheader: str = "") -> str:
+def wrap_email(body_html: str, preheader: str = "", ticket_id: str = "") -> str:
     """Wrap email body content in the standard People's Clinic email template.
 
     Args:
@@ -64,13 +64,26 @@ def wrap_email(body_html: str, preheader: str = "") -> str:
     /* Header */
     .email-header {{
       padding: 28px 40px 20px;
-      text-align: left;
+      text-align: center;
       border-bottom: 1px solid #e8ecf4;
     }}
 
     .email-logo {{
       height: 28px;
       width: auto;
+    }}
+
+    /* Ticket banner */
+    .email-ticket-banner {{
+      padding: 12px 40px;
+      background-color: #f0f3fa;
+      font-size: 12px;
+      color: #6b7394;
+      line-height: 1.5;
+    }}
+
+    .email-ticket-banner strong {{
+      color: #26304f;
     }}
 
     /* Body */
@@ -119,7 +132,13 @@ def wrap_email(body_html: str, preheader: str = "") -> str:
       font-weight: 600;
       color: #26304f;
       font-size: 13px;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
+    }}
+
+    .footer-contact {{
+      margin-top: 10px;
+      font-size: 11px;
+      color: #8891ab;
     }}
 
     /* Preheader */
@@ -157,6 +176,12 @@ def wrap_email(body_html: str, preheader: str = "") -> str:
               <img src="https://csm-production.up.railway.app/assets/peoples-clinic.svg" alt="People's Clinic" class="email-logo" height="28">
             </div>
 
+            {f'''<!-- Ticket banner -->
+            <div class="email-ticket-banner">
+              Denne besked er sendt som svar på din henvendelse til vores support.<br>
+              <strong>Sagsnr. {ticket_id}</strong>
+            </div>''' if ticket_id else ''}
+
             <!-- Body -->
             <div class="email-body">
               {body_html}
@@ -165,8 +190,8 @@ def wrap_email(body_html: str, preheader: str = "") -> str:
             <!-- Footer -->
             <div class="email-footer">
               <div class="footer-brand">People's Clinic</div>
-              <div>Den digitale sundhedsplatform for klinikker</div>
-              <div style="margin-top: 8px;">
+              <div class="footer-contact">
+                Telefon: +45 XX XX XX XX &nbsp;|&nbsp; <a href="mailto:support@peoplesclinic.dk">support@peoplesclinic.dk</a><br>
                 <a href="https://peoplesclinic.dk">peoplesclinic.dk</a>
               </div>
             </div>

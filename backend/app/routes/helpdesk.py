@@ -254,12 +254,19 @@ def add_ticket_message(ticket_id: str, data: TicketMessageCreate):
                 ticket_data = query("SELECT * FROM tickets WHERE id = %s", (ticket_id,))
                 if ticket_data and ticket_data[0].get("requester_email"):
                     t = ticket_data[0]
+                    # Ensure body has proper HTML paragraph formatting
+                    email_body = data.body
+                    if "<p>" not in email_body and "<br" not in email_body:
+                        paragraphs = email_body.strip().split("\n\n")
+                        email_body = "".join(f"<p>{p.replace(chr(10), '<br>')}</p>" for p in paragraphs)
+
                     result = send_email(
                         to=t["requester_email"],
                         subject=f"Re: {t['subject']}",
-                        body_html=data.body,
+                        body_html=email_body,
                         thread_id=t.get("gmail_thread_id"),
                         use_template=True,
+                        ticket_id=ticket_id,
                     )
                     if result:
                         # Store gmail references

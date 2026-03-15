@@ -32,6 +32,7 @@ def send_email(
     reply_to_message_id: Optional[str] = None,
     thread_id: Optional[str] = None,
     use_template: bool = False,
+    ticket_id: str = "",
 ) -> Optional[dict]:
     """
     Send an email via Gmail API.
@@ -45,7 +46,7 @@ def send_email(
 
     try:
         # Wrap in branded template if requested
-        final_html = wrap_email(body_html) if use_template else body_html
+        final_html = wrap_email(body_html, ticket_id=ticket_id) if use_template else body_html
 
         message = MIMEMultipart("alternative")
         message["to"] = to
