@@ -254,6 +254,14 @@ def init():
         END $$;
     """)
 
+    # Migration: add title (stillingsbetegnelse) to team_members
+    execute("""
+        DO $$ BEGIN
+            ALTER TABLE team_members ADD COLUMN title TEXT NOT NULL DEFAULT '';
+        EXCEPTION WHEN OTHERS THEN NULL;
+        END $$;
+    """)
+
     # Migration: add calendar_event_id to demo_bookings
     execute("""
         DO $$ BEGIN
@@ -460,14 +468,6 @@ def init():
         EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
     """, label="marketing_emails_sent.send_error")
-
-    # Migration: add title (stillingsbetegnelse) to team_members
-    _safe_exec("""
-        DO $$ BEGIN
-            ALTER TABLE team_members ADD COLUMN title TEXT NOT NULL DEFAULT '';
-        EXCEPTION WHEN OTHERS THEN NULL;
-        END $$;
-    """, label="team_members.title")
 
     # Seed FAQ items
     _safe_exec("""
