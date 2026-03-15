@@ -129,13 +129,6 @@ export const AskSynergyHub = {
     // Bold: **text**
     html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 
-    // Bullet lists: lines starting with - or •
-    html = html.replace(/^[\-\u2022]\s+(.+)$/gm, '<li>$1</li>');
-    html = html.replace(/(<li>.*<\/li>\n?)+/g, (match) => `<ul>${match}</ul>`);
-
-    // Numbered lists: lines starting with 1. 2. etc
-    html = html.replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>');
-
     // Headers: ### or ##
     html = html.replace(/^###\s+(.+)$/gm, '<strong class="ask-msg-h3">$1</strong>');
     html = html.replace(/^##\s+(.+)$/gm, '<strong class="ask-msg-h2">$1</strong>');
@@ -143,13 +136,37 @@ export const AskSynergyHub = {
     // Inline code: `text`
     html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
 
-    // Line breaks
+    // Bullet lists: group consecutive lines starting with - or •
+    html = html.replace(/(^[\-\u2022]\s+.+(\n|$))+/gm, (block) => {
+      const items = block.trim().split('\n')
+        .map(line => line.replace(/^[\-\u2022]\s+/, ''))
+        .map(line => `<li>${line}</li>`)
+        .join('');
+      return `\n<ul>${items}</ul>\n`;
+    });
+
+    // Numbered lists: group consecutive lines starting with 1. 2. etc
+    html = html.replace(/(^\d+\.\s+.+(\n|$))+/gm, (block) => {
+      const items = block.trim().split('\n')
+        .map(line => line.replace(/^\d+\.\s+/, ''))
+        .map(line => `<li>${line}</li>`)
+        .join('');
+      return `\n<ol>${items}</ol>\n`;
+    });
+
+    // Collapse multiple newlines to max 2
+    html = html.replace(/\n{3,}/g, '\n\n');
+
+    // Line breaks (only remaining \n)
     html = html.replace(/\n/g, '<br>');
 
-    // Clean up <br> inside <ul>
+    // Clean up stray <br> around block elements
     html = html.replace(/<br><ul>/g, '<ul>');
     html = html.replace(/<\/ul><br>/g, '</ul>');
-    html = html.replace(/<br><li>/g, '<li>');
+    html = html.replace(/<br><ol>/g, '<ol>');
+    html = html.replace(/<\/ol><br>/g, '</ol>');
+    html = html.replace(/^<br>/, '');
+    html = html.replace(/<br>$/, '');
 
     return html;
   },

@@ -5577,13 +5577,23 @@
   font-weight: var(--font-semibold);
 }
 
-.ask-msg-content ul {
-  margin: var(--space-1) 0;
-  padding-left: var(--space-4);
+.ask-msg-content ul,
+.ask-msg-content ol {
+  margin: var(--space-2) 0;
+  padding-left: var(--space-5);
+}
+
+.ask-msg-content ol {
+  list-style-type: decimal;
 }
 
 .ask-msg-content li {
   margin-bottom: 2px;
+  line-height: 1.5;
+}
+
+.ask-msg-content li:last-child {
+  margin-bottom: 0;
 }
 
 .ask-msg-content code {
@@ -5594,16 +5604,16 @@
   border-radius: 4px;
 }
 
-.ask-msg-h2 {
+.ask-msg-content .ask-msg-h2 {
+  display: block;
+  font-size: var(--text-base);
+  margin: var(--space-3) 0 var(--space-1);
+}
+
+.ask-msg-content .ask-msg-h3 {
   display: block;
   font-size: var(--text-sm);
   margin: var(--space-2) 0 var(--space-1);
-}
-
-.ask-msg-h3 {
-  display: block;
-  font-size: var(--text-sm);
-  margin: var(--space-1) 0;
 }
 
 /* Typing indicator */

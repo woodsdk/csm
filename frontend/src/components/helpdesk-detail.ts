@@ -138,7 +138,7 @@ export const HelpdeskDetail = {
             ` : ''}
             <div class="hd-sidebar-section">
               <label class="hd-sidebar-label">Kilde</label>
-              <div class="hd-sidebar-value">${t.source === 'manual' ? 'Manuel' : t.source === 'email' ? 'Email' : t.source === 'outbound_email' ? 'Udg\u00e5ende email' : t.source === 'outbound_message' ? 'Udg\u00e5ende besked' : t.source === 'chat' ? 'Chat' : t.source}</div>
+              <div class="hd-sidebar-value">${t.source === 'manual' ? 'Manuel' : t.source === 'email' ? 'Email' : t.source === 'outbound_email' ? 'Udg\u00e5ende email' : t.source === 'outbound_message' ? 'Udg\u00e5ende besked' : t.source === 'chat' ? 'Chat' : t.source === 'app' ? "People's Clinic App" : t.source}</div>
             </div>
             <div class="hd-sidebar-section">
               <label class="hd-sidebar-label">Oprettet</label>

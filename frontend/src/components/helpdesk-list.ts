@@ -252,6 +252,17 @@ export const HelpdeskList = {
               </select>
             </div>
           </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1">
+              <label class="form-label">Kilde</label>
+              <select class="input" id="hd-source">
+                <option value="manual" selected>Manuel</option>
+                <option value="email">Email</option>
+                <option value="chat">Chat</option>
+                <option value="app">People's Clinic App</option>
+              </select>
+            </div>
+          </div>
           <div class="form-group">
             <label class="form-label">Tildel til</label>
             <select class="input" id="hd-assignee">
@@ -305,6 +316,7 @@ export const HelpdeskList = {
     const description = (document.getElementById('hd-description') as HTMLTextAreaElement)?.value.trim() || '';
     const priority = (document.getElementById('hd-priority') as HTMLSelectElement)?.value || 'medium';
     const category = (document.getElementById('hd-category') as HTMLSelectElement)?.value || '';
+    const source = (document.getElementById('hd-source') as HTMLSelectElement)?.value || 'manual';
     const assigneeId = (document.getElementById('hd-assignee') as HTMLSelectElement)?.value || undefined;
     const requesterName = (document.getElementById('hd-requester-name') as HTMLInputElement)?.value.trim() || '';
     const requesterEmail = (document.getElementById('hd-requester-email') as HTMLInputElement)?.value.trim() || '';
@@ -313,7 +325,7 @@ export const HelpdeskList = {
 
     try {
       await HelpdeskAPI.create({
-        subject, description, priority, category,
+        subject, description, priority, category, source,
         requester_name: requesterName,
         requester_email: requesterEmail,
         assignee_id: assigneeId,
