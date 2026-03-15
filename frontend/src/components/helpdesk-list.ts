@@ -37,7 +37,7 @@ const PRIORITY_CLASSES: Record<string, string> = {
 export const HelpdeskList = {
   _tickets: [] as Ticket[],
   _stats: { open_count: 0, in_progress_count: 0, resolved_count: 0, closed_count: 0, total: 0 },
-  _filterStatus: 'active' as string,
+  _filterStatus: 'open' as string,
   _filterPriority: '' as string,
   _teamMembers: [] as TeamMember[],
   _gmailConnected: false,
@@ -120,7 +120,7 @@ export const HelpdeskList = {
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
           </svg>
-          <p>Ingen tickets${this._filterStatus && this._filterStatus !== 'active' ? ' med dette filter' : ''}.</p>
+          <p>Ingen tickets med dette filter.${this._filterStatus !== '' ? ' Pr\u00f8v at skifte status i dropdown ovenfor.' : ''}</p>
           <button class="btn btn-primary btn-sm" onclick="HelpdeskList.openCreateModal()">Opret f\u00f8rste ticket</button>
         </div>
       `;
@@ -170,6 +170,29 @@ export const HelpdeskList = {
         ${statsHTML}
         <div class="hd-toolbar">
           <div class="hd-toolbar-left">
+            <div class="hd-filter-bar">
+              <div class="hd-filter-group">
+                <label class="hd-filter-label">Status</label>
+                <select class="hd-filter-select" id="hd-filter-status" onchange="HelpdeskList.filterBySelect()">
+                  <option value="open"${this._filterStatus === 'open' ? ' selected' : ''}>\u00c5bne tickets</option>
+                  <option value="in_progress"${this._filterStatus === 'in_progress' ? ' selected' : ''}>I gang</option>
+                  <option value="active"${this._filterStatus === 'active' ? ' selected' : ''}>Aktive (\u00e5bne + i gang)</option>
+                  <option value="resolved"${this._filterStatus === 'resolved' ? ' selected' : ''}>L\u00f8ste tickets</option>
+                  <option value="closed"${this._filterStatus === 'closed' ? ' selected' : ''}>Lukkede tickets</option>
+                  <option value=""${this._filterStatus === '' ? ' selected' : ''}>Alle tickets</option>
+                </select>
+              </div>
+              <div class="hd-filter-group">
+                <label class="hd-filter-label">Prioritet</label>
+                <select class="hd-filter-select" id="hd-filter-priority" onchange="HelpdeskList.filterByPrioritySelect()">
+                  <option value=""${this._filterPriority === '' ? ' selected' : ''}>Alle</option>
+                  <option value="urgent"${this._filterPriority === 'urgent' ? ' selected' : ''}>Akut</option>
+                  <option value="high"${this._filterPriority === 'high' ? ' selected' : ''}>H\u00f8j</option>
+                  <option value="medium"${this._filterPriority === 'medium' ? ' selected' : ''}>Medium</option>
+                  <option value="low"${this._filterPriority === 'low' ? ' selected' : ''}>Lav</option>
+                </select>
+              </div>
+            </div>
             <span class="hd-sort-info">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4"/></svg>
               Sorteret efter prioritet
@@ -281,13 +304,29 @@ export const HelpdeskList = {
   },
 
   filterStatus(status: string): void {
-    // Clicking the already-active filter resets to default "active" view
+    // Clicking the already-active filter resets to default "open" view
     if (this._filterStatus === status) {
-      this._filterStatus = 'active';
+      this._filterStatus = 'open';
     } else {
       this._filterStatus = status;
     }
     (window as any).App.render();
+  },
+
+  filterBySelect(): void {
+    const el = document.getElementById('hd-filter-status') as HTMLSelectElement | null;
+    if (el) {
+      this._filterStatus = el.value;
+      (window as any).App.render();
+    }
+  },
+
+  filterByPrioritySelect(): void {
+    const el = document.getElementById('hd-filter-priority') as HTMLSelectElement | null;
+    if (el) {
+      this._filterPriority = el.value;
+      (window as any).App.render();
+    }
   },
 
   filterPriority(priority: string): void {
