@@ -28,6 +28,7 @@ import { MarketingPage } from './components/marketing-page';
 import { MarketingFlowEditor } from './components/marketing-flow-editor';
 import { DPAManager } from './components/dpa-manager';
 import { DPASign } from './components/dpa-sign';
+import { CommsPage } from './components/comms-page';
 import { GoogleCal } from './google-calendar';
 import type { Task, AppState } from './types';
 
@@ -162,6 +163,8 @@ export const App = {
       await this._renderMarketingPage(mainEl);
     } else if (this.state.page === 'dpa') {
       await this._renderDPAPage(mainEl);
+    } else if (this.state.page === 'comms') {
+      await this._renderCommsPage(mainEl);
     } else if (this.state.page === 'settings') {
       await this._renderSettingsPage(mainEl);
     } else if (this.state.view === 'calendar') {
@@ -474,6 +477,23 @@ export const App = {
       </div>
     `;
     MarketingFlowEditor.init();
+  },
+
+  async _renderCommsPage(container: HTMLElement): Promise<void> {
+    const contentHTML = await CommsPage.render();
+    container.innerHTML = `
+      <div class="main-header">
+        <div class="main-header-left">
+          <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <h2>Platform Kommunikation</h2>
+        </div>
+      </div>
+      <div class="main-content">
+        ${contentHTML}
+      </div>
+    `;
   },
 
   async _renderSettingsPage(container: HTMLElement): Promise<void> {

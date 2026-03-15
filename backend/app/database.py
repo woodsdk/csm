@@ -666,6 +666,35 @@ def init():
             dismissed_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             UNIQUE(signal_type, user_id)
         );
+
+        -- Platform announcements
+        CREATE TABLE IF NOT EXISTS announcements (
+            id              TEXT PRIMARY KEY,
+            title           TEXT NOT NULL,
+            body            TEXT NOT NULL DEFAULT '',
+            type            TEXT NOT NULL DEFAULT 'modal',
+            audience_type   TEXT NOT NULL DEFAULT 'all',
+            segment_id      TEXT REFERENCES marketing_segments(id) ON DELETE SET NULL,
+            status          TEXT NOT NULL DEFAULT 'draft',
+            publish_at      TIMESTAMPTZ,
+            expires_at      TIMESTAMPTZ,
+            created_by      TEXT NOT NULL DEFAULT '',
+            created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            published_at    TIMESTAMPTZ
+        );
+        CREATE INDEX IF NOT EXISTS idx_announcements_status ON announcements(status);
+
+        CREATE TABLE IF NOT EXISTS announcement_deliveries (
+            id                TEXT PRIMARY KEY,
+            announcement_id   TEXT NOT NULL REFERENCES announcements(id) ON DELETE CASCADE,
+            user_id           TEXT NOT NULL,
+            delivered_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            read_at           TIMESTAMPTZ,
+            UNIQUE(announcement_id, user_id)
+        );
+        CREATE INDEX IF NOT EXISTS idx_ad_announcement ON announcement_deliveries(announcement_id);
+        CREATE INDEX IF NOT EXISTS idx_ad_user ON announcement_deliveries(user_id);
     """)
 
     # Seed default marketing AI system prompt

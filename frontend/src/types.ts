@@ -261,7 +261,7 @@ export interface TicketMessage {
 }
 
 export interface AppState {
-  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training' | 'helpdesk' | 'helpdesk-detail' | 'calendar' | 'onboarding' | 'user-detail' | 'ask-synergyhub' | 'settings' | 'marketing' | 'dpa';
+  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training' | 'helpdesk' | 'helpdesk-detail' | 'calendar' | 'onboarding' | 'user-detail' | 'ask-synergyhub' | 'settings' | 'marketing' | 'dpa' | 'comms';
   tab: string;
   view: 'list' | 'kanban' | 'calendar';
   filters: TaskFilters;
@@ -527,4 +527,36 @@ export interface DPAPendingCustomer {
   latest_signing_status: string | null;
   latest_sent_at: string | null;
   latest_language: string | null;
+}
+
+/* ── Platform Communication ── */
+
+export interface Announcement {
+  id: string;
+  title: string;
+  body: string;
+  type: 'modal' | 'banner';
+  audience_type: 'all' | 'segment';
+  segment_id: string | null;
+  segment_name?: string;
+  status: 'draft' | 'scheduled' | 'published' | 'expired';
+  publish_at: string | null;
+  expires_at: string | null;
+  published_at: string | null;
+  created_by: string;
+  created_at: string;
+  delivery_count?: number;
+  read_count?: number;
+}
+
+export interface CommsStats {
+  announcements: {
+    total: number;
+    published: number;
+    draft: number;
+    scheduled: number;
+    expired: number;
+  };
+  platform_tickets_open: number;
+  platform_tickets_total: number;
 }

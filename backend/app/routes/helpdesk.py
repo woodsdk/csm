@@ -68,6 +68,7 @@ def list_tickets(
     priority: Optional[str] = None,
     assignee_id: Optional[str] = None,
     category: Optional[str] = None,
+    source: Optional[str] = None,
 ):
     """List tickets with optional filters."""
     sql = """SELECT t.*, tm.name as assignee_name,
@@ -97,6 +98,9 @@ def list_tickets(
     if category:
         sql += " AND t.category = %s"
         params.append(category)
+    if source:
+        sql += " AND t.source = %s"
+        params.append(source)
 
     # Smart sort: priority first (urgent → low), then newest first
     sql += """ ORDER BY

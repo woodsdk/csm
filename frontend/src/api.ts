@@ -2,7 +2,7 @@
    SynergyHub API Facade — Typed fetch wrappers
    ═══════════════════════════════════════════ */
 
-import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot, DemoInfo, DemoJoinCreate, DemoJoinResult, TrainingItem, FaqItem, Ticket, TicketMessage, OverviewData, OnboardingUser, FeedbackData, ChurnData, ContactPayload, UserDetailData, Signal, GoogleOAuthStatus, MarketingFlow, MarketingFlowStep, MarketingSegment, MarketingSentEmail, MarketingStats, MarketingPreview, MarketingEnrollment, DPADocument, DPASigning, DPAStats, DPAPendingCustomer } from './types';
+import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot, DemoInfo, DemoJoinCreate, DemoJoinResult, TrainingItem, FaqItem, Ticket, TicketMessage, OverviewData, OnboardingUser, FeedbackData, ChurnData, ContactPayload, UserDetailData, Signal, GoogleOAuthStatus, MarketingFlow, MarketingFlowStep, MarketingSegment, MarketingSentEmail, MarketingStats, MarketingPreview, MarketingEnrollment, DPADocument, DPASigning, DPAStats, DPAPendingCustomer, Announcement, CommsStats } from './types';
 
 const API_BASE = '/api';
 
@@ -816,3 +816,61 @@ export const DPAAPI = {
   },
 };
 (window as any).DPAAPI = DPAAPI;
+
+
+/* ── Platform Communication ── */
+
+export const CommsAPI = {
+  // Announcements
+  async getAnnouncements(): Promise<Announcement[]> {
+    const res = await fetch(`${API_BASE}/comms/announcements`);
+    if (!res.ok) throw new Error('Failed to fetch announcements');
+    return res.json();
+  },
+
+  async createAnnouncement(data: Partial<Announcement>): Promise<{ ok: boolean; id: string }> {
+    const res = await fetch(`${API_BASE}/comms/announcements`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    return res.json();
+  },
+
+  async updateAnnouncement(id: string, data: Partial<Announcement>): Promise<{ ok: boolean }> {
+    const res = await fetch(`${API_BASE}/comms/announcements/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    return res.json();
+  },
+
+  async deleteAnnouncement(id: string): Promise<{ ok: boolean }> {
+    const res = await fetch(`${API_BASE}/comms/announcements/${id}`, { method: 'DELETE' });
+    return res.json();
+  },
+
+  async publishAnnouncement(id: string): Promise<{ ok: boolean; delivered_to?: number }> {
+    const res = await fetch(`${API_BASE}/comms/announcements/${id}/publish`, { method: 'POST' });
+    return res.json();
+  },
+
+  async getAnnouncementStats(id: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/comms/announcements/${id}/stats`);
+    return res.json();
+  },
+
+  async getStats(): Promise<CommsStats> {
+    const res = await fetch(`${API_BASE}/comms/stats`);
+    return res.json();
+  },
+
+  // Platform tickets (filtered from helpdesk)
+  async getPlatformTickets(): Promise<Ticket[]> {
+    const res = await fetch(`${API_BASE}/helpdesk?source=platform`);
+    if (!res.ok) throw new Error('Failed to fetch platform tickets');
+    return res.json();
+  },
+};
+(window as any).CommsAPI = CommsAPI;
