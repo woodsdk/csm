@@ -42,6 +42,7 @@ export const Filters = {
           <option value="">Status</option>
           <option value="todo" ${f.status === 'todo' ? 'selected' : ''}>To Do</option>
           <option value="in-progress" ${f.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+          <option value="blocked" ${f.status === 'blocked' ? 'selected' : ''}>Blocked</option>
           <option value="review" ${f.status === 'review' ? 'selected' : ''}>Review</option>
           <option value="done" ${f.status === 'done' ? 'selected' : ''}>Done</option>
         </select>

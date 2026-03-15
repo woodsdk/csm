@@ -52,6 +52,7 @@ export const TaskModal = {
               <select class="select" id="task-status">
                 <option value="todo" ${isEdit && task!.status === 'todo' ? 'selected' : ''}>To Do</option>
                 <option value="in-progress" ${isEdit && task!.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                <option value="blocked" ${isEdit && task!.status === 'blocked' ? 'selected' : ''}>Blocked</option>
                 <option value="review" ${isEdit && task!.status === 'review' ? 'selected' : ''}>Review</option>
                 <option value="done" ${isEdit && task!.status === 'done' ? 'selected' : ''}>Done</option>
               </select>

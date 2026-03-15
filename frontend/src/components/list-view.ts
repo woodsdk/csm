@@ -51,6 +51,7 @@ export const ListView = {
           <option value="">Skift status...</option>
           <option value="todo">To Do</option>
           <option value="in-progress">In Progress</option>
+          <option value="blocked">Blocked</option>
           <option value="review">Review</option>
           <option value="done">Done</option>
         </select>
@@ -452,7 +453,7 @@ export const ListView = {
   _renderRow(task: Task, members: TeamMember[], today: string, isDone: boolean = false): string {
     const member = members.find(m => m.id === task.assignee_id);
     const isOverdue = task.deadline && task.deadline < today && task.status !== 'done';
-    const statusLabels: Record<string, string> = { todo: 'To Do', 'in-progress': 'In Progress', review: 'Review', done: 'Done' };
+    const statusLabels: Record<string, string> = { todo: 'To Do', 'in-progress': 'In Progress', blocked: 'Blocked', review: 'Review', done: 'Done' };
     const priorityLabels: Record<string, string> = { low: 'Low', medium: 'Medium', high: 'High', critical: 'Critical' };
     const typeLabels: Record<string, string> = { onboarding: 'Onboarding', support: 'Support', bug: 'Bug', 'feature-request': 'Feature', 'cs-followup': 'CS Follow-up', internal: 'Internal' };
 
@@ -554,7 +555,7 @@ export const ListView = {
     const { column, dir } = this._sort;
     const mul = dir === 'asc' ? 1 : -1;
 
-    const statusOrder = ['todo', 'in-progress', 'review', 'done'];
+    const statusOrder = ['todo', 'in-progress', 'blocked', 'review', 'done'];
     const priorityOrder = ['critical', 'high', 'medium', 'low'];
 
     return tasks.sort((a, b) => {

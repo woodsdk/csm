@@ -46,6 +46,8 @@
   --status-in-progress-bg: rgba(86, 105, 164, 0.1);
   --status-review: #F59E0B;
   --status-review-bg: #FFFBEB;
+  --status-blocked: #EF4444;
+  --status-blocked-bg: #FEF2F2;
   --status-done: #22C55E;
   --status-done-bg: #F0FDF4;
 
@@ -343,6 +345,7 @@ h4 { font-size: var(--text-md); font-weight: var(--font-medium); }
 .badge-todo { background: var(--status-todo-bg); color: var(--status-todo); }
 .badge-in-progress { background: var(--status-in-progress-bg); color: var(--status-in-progress); }
 .badge-review { background: var(--status-review-bg); color: var(--status-review); }
+.badge-blocked { background: var(--status-blocked-bg); color: var(--status-blocked); }
 .badge-done { background: var(--status-done-bg); color: var(--status-done); }
 
 .badge-low { background: var(--priority-low-bg); color: var(--priority-low); }

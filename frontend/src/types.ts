@@ -27,7 +27,7 @@ export interface Task {
   tab: string;
 }
 
-export type TaskStatus = 'todo' | 'in-progress' | 'review' | 'done';
+export type TaskStatus = 'todo' | 'in-progress' | 'blocked' | 'review' | 'done';
 export type TaskPriority = 'low' | 'medium' | 'high' | 'critical';
 export type TaskType = 'onboarding' | 'support' | 'bug' | 'feature-request' | 'cs-followup' | 'internal';
 
