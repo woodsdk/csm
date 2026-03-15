@@ -208,8 +208,39 @@ def update_task(task_id: str, data: TaskUpdate):
 
 @router.delete("/{task_id}")
 def delete_task(task_id: str):
+    # Guard: onboarding tasks cannot be deleted — they must be cancelled
+    rows = query("SELECT type FROM tasks WHERE id = %s", (task_id,))
+    if rows and rows[0].get("type") == "onboarding":
+        return {"error": "Onboarding-opgaver kan ikke slettes. Brug 'Aflys' i stedet.", "protected": True}
     execute("DELETE FROM tasks WHERE id = %s", (task_id,))
     return {"ok": True}
+
+
+class CancelRequest(BaseModel):
+    reason: str = ""
+
+
+@router.post("/{task_id}/cancel")
+def cancel_task(task_id: str, data: CancelRequest):
+    """Cancel a task (primarily for onboarding tasks that cannot be deleted)."""
+    rows = query("SELECT * FROM tasks WHERE id = %s", (task_id,))
+    if not rows:
+        return {"error": "Not found"}
+
+    now = datetime.utcnow().isoformat()
+    result = query(
+        """UPDATE tasks SET status = 'cancelled', cancel_reason = %s, updated_at = %s
+           WHERE id = %s RETURNING *""",
+        (data.reason or None, now, task_id),
+    )
+
+    # Activity log
+    execute(
+        "INSERT INTO activity_log (id, task_id, action, actor_id, old_value, new_value, created_at) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+        (gen_id("a_"), task_id, "cancelled", None, rows[0]["status"], "cancelled", now),
+    )
+
+    return result[0] if result else {"ok": True}
 
 
 @router.post("/reorder")
@@ -258,6 +289,22 @@ def bulk_update_tasks(data: BulkUpdateRequest):
 def bulk_delete_tasks(data: BulkDeleteRequest):
     if not data.ids:
         return {"ok": True, "count": 0}
+    # Filter out onboarding tasks — they cannot be deleted
     placeholders = ", ".join(["%s"] * len(data.ids))
-    execute(f"DELETE FROM tasks WHERE id IN ({placeholders})", tuple(data.ids))
-    return {"ok": True, "count": len(data.ids)}
+    protected = query(
+        f"SELECT id FROM tasks WHERE id IN ({placeholders}) AND type = 'onboarding'",
+        tuple(data.ids),
+    )
+    protected_ids = {r["id"] for r in protected}
+    deletable_ids = [id for id in data.ids if id not in protected_ids]
+
+    if deletable_ids:
+        placeholders2 = ", ".join(["%s"] * len(deletable_ids))
+        execute(f"DELETE FROM tasks WHERE id IN ({placeholders2})", tuple(deletable_ids))
+
+    return {
+        "ok": True,
+        "count": len(deletable_ids),
+        "skipped": len(protected_ids),
+        "message": f"{len(protected_ids)} onboarding-opgave(r) blev sprunget over (kan ikke slettes)" if protected_ids else None,
+    }

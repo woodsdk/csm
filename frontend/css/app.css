@@ -1099,6 +1099,26 @@
   background: rgba(239, 68, 68, 0.08);
 }
 
+.btn-cancel:hover {
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.08);
+}
+
+/* ── Cancelled task styling ── */
+.task-row-cancelled { opacity: 0.6; }
+.task-row-cancelled .inline-title { text-decoration: line-through; color: var(--text-tertiary); }
+
+.kanban-card-cancelled { opacity: 0.55; border-left-color: #d1d5db !important; }
+.kanban-card-cancelled .kanban-card-title { text-decoration: line-through; color: var(--text-tertiary); }
+
+.btn-warning {
+  background: #fbbf24;
+  color: #78350f;
+  border: none;
+  font-weight: 500;
+}
+.btn-warning:hover { background: #f59e0b; }
+
 /* ── Undo Toast ── */
 .toast-undo {
   display: flex;

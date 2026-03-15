@@ -347,6 +347,7 @@ h4 { font-size: var(--text-md); font-weight: var(--font-medium); }
 .badge-review { background: var(--status-review-bg); color: var(--status-review); }
 .badge-blocked { background: var(--status-blocked-bg); color: var(--status-blocked); }
 .badge-done { background: var(--status-done-bg); color: var(--status-done); }
+.badge-cancelled { background: #fef2f2; color: #991b1b; }
 
 .badge-low { background: var(--priority-low-bg); color: var(--priority-low); }
 .badge-medium { background: var(--priority-medium-bg); color: var(--priority-medium); }

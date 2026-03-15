@@ -69,6 +69,7 @@ export const TaskModal = {
                 <option value="blocked" ${isEdit && task!.status === 'blocked' ? 'selected' : ''}>Blocked</option>
                 <option value="review" ${isEdit && task!.status === 'review' ? 'selected' : ''}>Review</option>
                 <option value="done" ${isEdit && task!.status === 'done' ? 'selected' : ''}>Done</option>
+                ${isEdit && task!.status === 'cancelled' ? '<option value="cancelled" selected>Aflyst</option>' : ''}
               </select>
             </div>
             <div class="form-group">
@@ -110,7 +111,13 @@ export const TaskModal = {
 
         </div>
         <div class="modal-footer">
-          ${isEdit ? '<button class="btn btn-danger" onclick="TaskModal.delete()">Slet</button>' : '<span></span>'}
+          ${isEdit
+            ? task!.type === 'onboarding'
+              ? task!.status !== 'cancelled'
+                ? '<button class="btn btn-warning" onclick="TaskModal.cancel()">Aflys opgave</button>'
+                : '<span class="badge badge-cancelled">Aflyst</span>'
+              : '<button class="btn btn-danger" onclick="TaskModal.delete()">Slet</button>'
+            : '<span></span>'}
           <div class="modal-footer-actions">
             <button class="btn" onclick="TaskModal.close()">Annuller</button>
             <button class="btn btn-primary" onclick="TaskModal.save()">Gem</button>
@@ -166,8 +173,24 @@ export const TaskModal = {
     if (!taskId) return;
     if (!confirm('Er du sikker? Denne handling kan ikke fortrydes.')) return;
 
-    await TaskAPI.delete(taskId);
+    const result = await TaskAPI.delete(taskId) as any;
+    if (result.protected) {
+      (window as any).App.toast(result.error, 'error');
+      return;
+    }
     (window as any).App.toast('Opgave slettet', 'info');
+    this.close();
+    (window as any).App.render();
+  },
+
+  async cancel(): Promise<void> {
+    const taskId = this._el!.dataset.taskId;
+    if (!taskId) return;
+    const reason = prompt('Angiv årsag til aflysning:');
+    if (reason === null) return;
+
+    await TaskAPI.cancel(taskId, reason);
+    (window as any).App.toast('Opgave aflyst', 'info');
     this.close();
     (window as any).App.render();
   },

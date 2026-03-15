@@ -24,7 +24,7 @@ export const KanbanView = {
       <div class="kanban-board">
         ${this._columns.map(col => {
           const colTasks = tasks
-            .filter(t => t.status === col.status)
+            .filter(t => col.status === 'done' ? (t.status === 'done' || t.status === 'cancelled') : t.status === col.status)
             .sort((a, b) => {
               // Sort by priority first (critical first), then deadline
               const po = ['critical', 'high', 'medium', 'low'];
@@ -56,11 +56,12 @@ export const KanbanView = {
 
   _renderCard(task: Task, members: TeamMember[], today: string): string {
     const member = members.find(m => m.id === task.assignee_id);
-    const isOverdue = task.deadline && task.deadline < today && task.status !== 'done';
+    const isCancelled = task.status === 'cancelled';
+    const isOverdue = task.deadline && task.deadline < today && task.status !== 'done' && !isCancelled;
     const typeLabels: Record<string, string> = { onboarding: 'Onboarding', support: 'Support', bug: 'Bug', 'feature-request': 'Feature', 'cs-followup': 'CS Follow-up', internal: 'Internal' };
 
     return `
-      <div class="kanban-card priority-border-${task.priority}"
+      <div class="kanban-card priority-border-${task.priority} ${isCancelled ? 'kanban-card-cancelled' : ''}"
            draggable="true"
            data-task-id="${task.id}"
            ondragstart="KanbanView._onDragStart(event)"
@@ -68,7 +69,10 @@ export const KanbanView = {
            onclick="KanbanView._onCardClick('${task.id}')">
         <div class="kanban-card-header">
           <span class="tag text-xs">${typeLabels[task.type] || task.type}</span>
-          <span class="badge badge-${task.priority} text-xs">${task.priority}</span>
+          ${isCancelled
+            ? '<span class="badge badge-cancelled text-xs">Aflyst</span>'
+            : `<span class="badge badge-${task.priority} text-xs">${task.priority}</span>`
+          }
         </div>
         <div class="kanban-card-title">${escapeHtml(task.title)}</div>
         <div class="kanban-card-footer">

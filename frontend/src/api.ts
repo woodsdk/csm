@@ -83,13 +83,23 @@ export const TaskAPI = {
     return res.json();
   },
 
-  async bulkDelete(ids: string[]): Promise<{ ok: boolean; count: number }> {
+  async bulkDelete(ids: string[]): Promise<{ ok: boolean; count: number; skipped?: number; message?: string }> {
     const res = await fetch(`${API_BASE}/tasks/bulk-delete`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ids }),
     });
     if (!res.ok) throw new Error('Failed to bulk delete');
+    return res.json();
+  },
+
+  async cancel(id: string, reason: string): Promise<Task> {
+    const res = await fetch(`${API_BASE}/tasks/${encodeURIComponent(id)}/cancel`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reason }),
+    });
+    if (!res.ok) throw new Error('Failed to cancel task');
     return res.json();
   },
 };

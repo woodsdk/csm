@@ -137,7 +137,8 @@ def init():
             parent_task_id    TEXT REFERENCES tasks(id) ON DELETE SET NULL,
             sort_order        INTEGER NOT NULL DEFAULT 0,
             is_archived       BOOLEAN NOT NULL DEFAULT false,
-            tab               TEXT NOT NULL DEFAULT 'csm'
+            tab               TEXT NOT NULL DEFAULT 'csm',
+            cancel_reason     TEXT
         );
 
         CREATE TABLE IF NOT EXISTS activity_log (
@@ -231,6 +232,14 @@ def init():
         EXCEPTION WHEN OTHERS THEN NULL;
         END $$;
     """, label="tasks.checklist")
+
+    # Migration: add cancel_reason for onboarding task safety
+    _safe_exec("""
+        DO $$ BEGIN
+            ALTER TABLE tasks ADD COLUMN cancel_reason TEXT;
+        EXCEPTION WHEN OTHERS THEN NULL;
+        END $$;
+    """, label="tasks.cancel_reason")
 
     # Migration: add email and phone to team_members
     _safe_exec("""

@@ -45,6 +45,7 @@ export const Filters = {
           <option value="blocked" ${f.status === 'blocked' ? 'selected' : ''}>Blocked</option>
           <option value="review" ${f.status === 'review' ? 'selected' : ''}>Review</option>
           <option value="done" ${f.status === 'done' ? 'selected' : ''}>Done</option>
+          <option value="cancelled" ${f.status === 'cancelled' ? 'selected' : ''}>Aflyst</option>
         </select>
 
         <select class="select filter-select" onchange="Filters.set('priority', this.value)">

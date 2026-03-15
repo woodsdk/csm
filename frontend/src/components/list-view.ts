@@ -19,8 +19,8 @@ export const ListView = {
     const members: TeamMember[] = await TeamAPI.getAll();
     const today = new Date().toISOString().split('T')[0];
 
-    const activeTasks = this._sortTasks(tasks.filter(t => t.status !== 'done'));
-    const doneTasks = this._sortTasks(tasks.filter(t => t.status === 'done'));
+    const activeTasks = this._sortTasks(tasks.filter(t => t.status !== 'done' && t.status !== 'cancelled'));
+    const doneTasks = this._sortTasks(tasks.filter(t => t.status === 'done' || t.status === 'cancelled'));
 
     const isEmpty = activeTasks.length === 0 && doneTasks.length === 0;
     const allActiveIds = activeTasks.map(t => t.id);
@@ -163,9 +163,13 @@ export const ListView = {
   async bulkDelete(): Promise<void> {
     const ids = Array.from(this._selected);
     if (ids.length === 0) return;
-    await TaskAPI.bulkDelete(ids);
+    const result = await TaskAPI.bulkDelete(ids);
     this._selected.clear();
-    this._showUndoToast(`${ids.length} opgave${ids.length > 1 ? 'r' : ''} slettet`);
+    if (result.skipped && result.skipped > 0) {
+      (window as any).App.toast(`${result.count} slettet, ${result.skipped} onboarding-opgave(r) beskyttet`, 'info');
+    } else {
+      this._showUndoToast(`${result.count} opgave${result.count !== 1 ? 'r' : ''} slettet`);
+    }
     (window as any).App.render();
   },
 
@@ -220,8 +224,12 @@ export const ListView = {
   // ── Undo Toast (replaces confirm dialog) ──
 
   async deleteTask(taskId: string): Promise<void> {
-    // Get task data for undo
+    // Check if onboarding — block deletion
     const task = await TaskAPI.get(taskId);
+    if (task && task.type === 'onboarding') {
+      (window as any).App.toast('Onboarding-opgaver kan ikke slettes. Brug "Aflys" i stedet.', 'error');
+      return;
+    }
     await TaskAPI.delete(taskId);
     this._showUndoToast('Opgave slettet', async () => {
       // Recreate task on undo
@@ -240,6 +248,14 @@ export const ListView = {
         (window as any).App.render();
       }
     });
+    (window as any).App.render();
+  },
+
+  async cancelTask(taskId: string): Promise<void> {
+    const reason = prompt('Angiv årsag til aflysning:');
+    if (reason === null) return; // User pressed Cancel
+    await TaskAPI.cancel(taskId, reason);
+    (window as any).App.toast('Opgave aflyst', 'info');
     (window as any).App.render();
   },
 
@@ -470,7 +486,7 @@ export const ListView = {
   _renderRow(task: Task, members: TeamMember[], today: string, isDone: boolean = false): string {
     const member = members.find(m => m.id === task.assignee_id);
     const isOverdue = task.deadline && task.deadline < today && task.status !== 'done';
-    const statusLabels: Record<string, string> = { todo: 'To Do', 'in-progress': 'In Progress', blocked: 'Blocked', review: 'Review', done: 'Done' };
+    const statusLabels: Record<string, string> = { todo: 'To Do', 'in-progress': 'In Progress', blocked: 'Blocked', review: 'Review', done: 'Done', cancelled: 'Aflyst' };
     const priorityLabels: Record<string, string> = { low: 'Low', medium: 'Medium', high: 'High', critical: 'Critical' };
     const typeLabels: Record<string, string> = { onboarding: 'Onboarding', support: 'Support', bug: 'Bug', 'feature-request': 'Feature', 'cs-followup': 'CS Follow-up', internal: 'Internal' };
 
@@ -487,7 +503,7 @@ export const ListView = {
     const meetLink = meetMatch ? meetMatch[0] : '';
 
     return `
-      <tr class="task-row ${isDone ? 'task-row-done' : ''} ${isSelected ? 'task-row-selected' : ''}" data-id="${task.id}"
+      <tr class="task-row ${isDone ? 'task-row-done' : ''} ${task.status === 'cancelled' ? 'task-row-cancelled' : ''} ${isSelected ? 'task-row-selected' : ''}" data-id="${task.id}"
           draggable="${!isDone}" ondragstart="ListView.dragStart(event, '${task.id}')"
           ondragover="ListView.dragOver(event)" ondrop="ListView.drop(event)"
           ondragend="ListView.dragEnd(event)">
@@ -554,9 +570,16 @@ export const ListView = {
             <button class="btn-action btn-duplicate" onclick="ListView.duplicateTask('${task.id}')" title="Dupliker">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </button>
-            <button class="btn-action btn-delete" onclick="ListView.deleteTask('${task.id}')" title="Slet">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-            </button>
+            ${task.type === 'onboarding' && task.status !== 'cancelled'
+              ? `<button class="btn-action btn-cancel" onclick="ListView.cancelTask('${task.id}')" title="Aflys">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                </button>`
+              : task.type !== 'onboarding'
+                ? `<button class="btn-action btn-delete" onclick="ListView.deleteTask('${task.id}')" title="Slet">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  </button>`
+                : ''
+            }
           </div>
         </td>
       </tr>
