@@ -60,12 +60,13 @@ export const TeamList = {
           <table class="tl-table">
             <thead>
               <tr>
-                <th style="width: 30%">Navn</th>
-                <th style="width: 22%">Email</th>
-                <th style="width: 14%">Telefon</th>
-                <th style="width: 14%">Rolle</th>
-                <th style="width: 10%">Status</th>
-                <th style="width: 10%"></th>
+                <th style="width: 24%">Navn</th>
+                <th style="width: 16%">Stilling</th>
+                <th style="width: 18%">Email</th>
+                <th style="width: 12%">Telefon</th>
+                <th style="width: 12%">Rolle</th>
+                <th style="width: 9%">Status</th>
+                <th style="width: 9%"></th>
               </tr>
             </thead>
             <tbody>${rows}</tbody>
@@ -112,6 +113,8 @@ export const TeamList = {
     const roleLabel = ROLE_LABELS[m.role] || m.role;
     const inactiveClass = m.is_active ? '' : 'tl-row-inactive';
 
+    const titleDisplay = m.title ? escapeHtml(m.title) : '<span class="tl-empty-val">\u2014</span>';
+
     return `
       <tr class="${inactiveClass}" onclick="TeamList.openModal('${m.id}')">
         <td>
@@ -120,6 +123,7 @@ export const TeamList = {
             <span class="tl-name">${escapeHtml(m.name)}</span>
           </div>
         </td>
+        <td><span class="tl-title-text">${titleDisplay}</span></td>
         <td>${m.email ? `<a class="tl-email" href="mailto:${escapeHtml(m.email)}" onclick="event.stopPropagation()">${escapeHtml(m.email)}</a>` : '<span class="tl-empty-val">\u2014</span>'}</td>
         <td>${m.phone ? `<a class="tl-phone" href="tel:${escapeHtml(m.phone)}" onclick="event.stopPropagation()">${escapeHtml(m.phone)}</a>` : '<span class="tl-empty-val">\u2014</span>'}</td>
         <td><span class="tl-role ${roleClass}">${roleLabel}</span></td>
@@ -161,6 +165,7 @@ export const TeamList = {
             <span class="tl-card-name">${escapeHtml(m.name)}</span>
             <span class="tl-role ${roleClass}">${roleLabel}</span>
           </div>
+          ${m.title ? `<div class="tl-card-title">${escapeHtml(m.title)}</div>` : ''}
           <div class="tl-card-contact">
             ${m.email ? `<a href="mailto:${escapeHtml(m.email)}" onclick="event.stopPropagation()">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
@@ -182,6 +187,7 @@ export const TeamList = {
         m.name.toLowerCase().includes(q) ||
         m.email.toLowerCase().includes(q) ||
         m.phone.toLowerCase().includes(q) ||
+        (m.title || '').toLowerCase().includes(q) ||
         (ROLE_LABELS[m.role] || m.role).toLowerCase().includes(q)
       );
     }
@@ -212,6 +218,7 @@ export const TeamList = {
 
     const isEdit = !!member;
     const name = member?.name || '';
+    const title = member?.title || '';
     const email = member?.email || '';
     const phone = member?.phone || '';
     const role = member?.role || 'member';
@@ -244,6 +251,29 @@ export const TeamList = {
           </div>
           <div class="form-row">
             <div class="form-group">
+              <label class="form-label">Stilling / Titel</label>
+              <input class="input" type="text" id="tl-title" value="${escapeHtml(title)}" placeholder="F.eks. Customer Success Manager" list="tl-title-suggestions">
+              <datalist id="tl-title-suggestions">
+                <option value="CEO & Co-Founder">
+                <option value="CTO & Co-Founder">
+                <option value="COO">
+                <option value="Customer Success Manager">
+                <option value="Support Lead">
+                <option value="Account Manager">
+                <option value="Onboarding Specialist">
+                <option value="Studentermedhjælper">
+                <option value="Praktikant">
+                <option value="Produktchef">
+                <option value="Udvikler">
+              </datalist>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Rolle</label>
+              <select class="input" id="tl-role">${roleOptions}</select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
               <label class="form-label">Email</label>
               <input class="input" type="email" id="tl-email" value="${escapeHtml(email)}" placeholder="email@peoplesdoctor.com">
             </div>
@@ -251,10 +281,6 @@ export const TeamList = {
               <label class="form-label">Telefon</label>
               <input class="input" type="tel" id="tl-phone" value="${escapeHtml(phone)}" placeholder="+45 ...">
             </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Rolle</label>
-            <select class="input" id="tl-role">${roleOptions}</select>
           </div>
           <div class="form-group">
             <label class="form-label">Avatar-farve</label>
@@ -318,6 +344,7 @@ export const TeamList = {
 
   async save(): Promise<void> {
     const nameEl = document.getElementById('tl-name') as HTMLInputElement | null;
+    const titleEl = document.getElementById('tl-title') as HTMLInputElement | null;
     const emailEl = document.getElementById('tl-email') as HTMLInputElement | null;
     const phoneEl = document.getElementById('tl-phone') as HTMLInputElement | null;
     const roleEl = document.getElementById('tl-role') as HTMLSelectElement | null;
@@ -336,6 +363,7 @@ export const TeamList = {
 
     const data: Partial<TeamMember> = {
       name,
+      title: titleEl?.value.trim() || '',
       email: emailEl?.value.trim() || '',
       phone: phoneEl?.value.trim() || '',
       role: roleEl?.value || 'member',

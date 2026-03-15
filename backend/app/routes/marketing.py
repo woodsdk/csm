@@ -69,7 +69,10 @@ def get_stats():
     )
 
     per_flow = query("""
-        SELECT mf.id as flow_id, mf.name as flow_name, COUNT(mes.id) as sent_count
+        SELECT mf.id as flow_id, mf.name as flow_name,
+               COUNT(mes.id) as sent_count,
+               (SELECT COUNT(*) FROM marketing_enrollments me WHERE me.flow_id = mf.id) as enrollment_count,
+               (SELECT COUNT(*) FROM marketing_enrollments me WHERE me.flow_id = mf.id AND me.status = 'completed') as completed_count
         FROM marketing_flows mf
         LEFT JOIN marketing_emails_sent mes ON mes.flow_id = mf.id
         WHERE mf.is_template = false
@@ -77,11 +80,16 @@ def get_stats():
         ORDER BY sent_count DESC
     """)
 
+    failed_count = query(
+        "SELECT COUNT(*) as cnt FROM marketing_emails_sent WHERE send_error IS NOT NULL"
+    )
+
     return {
         "total_sent": total_sent[0]["cnt"] if total_sent else 0,
         "sent_this_week": sent_week[0]["cnt"] if sent_week else 0,
         "active_flows": active_flows[0]["cnt"] if active_flows else 0,
         "active_enrollments": active_enrollments[0]["cnt"] if active_enrollments else 0,
+        "failed_count": failed_count[0]["cnt"] if failed_count else 0,
         "per_flow": per_flow or [],
     }
 
@@ -217,7 +225,18 @@ def update_flow(flow_id: str, data: FlowUpdate):
 
 @router.delete("/flows/{flow_id}")
 def delete_flow(flow_id: str):
-    """Delete a flow (cascades to steps and enrollments)."""
+    """Delete a flow with all related data (steps, enrollments, sent emails)."""
+    # Check flow exists
+    flows = query("SELECT id, is_template FROM marketing_flows WHERE id = %s", (flow_id,))
+    if not flows:
+        return {"error": "Flow not found"}
+    if flows[0].get("is_template"):
+        return {"error": "Skabeloner kan ikke slettes"}
+
+    # Cascade delete related data
+    execute("DELETE FROM marketing_emails_sent WHERE flow_id = %s", (flow_id,))
+    execute("DELETE FROM marketing_enrollments WHERE flow_id = %s", (flow_id,))
+    execute("DELETE FROM marketing_flow_steps WHERE flow_id = %s", (flow_id,))
     execute("DELETE FROM marketing_flows WHERE id = %s", (flow_id,))
     return {"ok": True}
 
@@ -298,6 +317,7 @@ def preview_step(flow_id: str, step_id: str):
     """Generate AI preview for an email step using a sample user."""
     from ..marketing_engine import _build_user_context
     from ..openai_helper import generate_marketing_email
+    from ..email_template import wrap_email
 
     steps = query("SELECT * FROM marketing_flow_steps WHERE id = %s", (step_id,))
     if not steps:
@@ -332,7 +352,64 @@ def preview_step(flow_id: str, step_id: str):
     return {
         "subject": result["subject"],
         "body_html": result["body_html"],
+        "template_html": wrap_email(result["body_html"]),
         "preview_user": {"name": user["name"], "clinic_name": user["clinic_name"]},
+    }
+
+
+@router.post("/flows/{flow_id}/reorder-steps")
+def reorder_steps(flow_id: str, data: dict):
+    """Reorder steps by providing an ordered list of step IDs."""
+    step_ids = data.get("step_ids", [])
+    for i, step_id in enumerate(step_ids):
+        execute(
+            "UPDATE marketing_flow_steps SET step_order = %s WHERE id = %s AND flow_id = %s",
+            (i, step_id, flow_id),
+        )
+    return {"ok": True}
+
+
+class CampaignPreviewRequest(BaseModel):
+    segment_id: str
+    brief: str
+    subject_hint: str = ""
+
+
+@router.post("/preview-campaign")
+def preview_campaign(data: CampaignPreviewRequest):
+    """Generate a preview for a campaign email using a sample user from the segment."""
+    from ..marketing_engine import _build_user_context, query_segment_users
+    from ..openai_helper import generate_marketing_email
+    from ..email_template import wrap_email
+
+    # Get segment
+    segments = query("SELECT * FROM marketing_segments WHERE id = %s", (data.segment_id,))
+    if not segments:
+        return {"error": "Segment not found"}
+
+    rules = segments[0].get("filter_rules") or {}
+    if isinstance(rules, str):
+        rules = json.loads(rules)
+
+    users = query_segment_users(rules)
+    if not users:
+        return {"error": "No users in this segment"}
+
+    # Pick sample user
+    import random as rnd
+    user = rnd.choice(users)
+    context = _build_user_context(user)
+    result = generate_marketing_email(context, data.brief, data.subject_hint)
+
+    if not result:
+        return {"error": "AI generation failed"}
+
+    return {
+        "subject": result["subject"],
+        "body_html": result["body_html"],
+        "template_html": wrap_email(result["body_html"]),
+        "preview_user": {"name": user["name"], "clinic_name": user.get("clinic_name", "")},
+        "segment_user_count": len(users),
     }
 
 
@@ -446,7 +523,10 @@ def delete_segment(segment_id: str):
 def get_history(flow_id: str = "", limit: int = 50, offset: int = 0):
     """Get sent marketing emails."""
     sql = """
-        SELECT mes.*, pu.name as user_name, pu.clinic_name,
+        SELECT mes.id, mes.user_id, mes.to_email, mes.subject, mes.brief,
+               mes.gmail_message_id, mes.send_error, mes.campaign_batch, mes.sent_at,
+               mes.flow_id, mes.step_id,
+               pu.name as user_name, pu.clinic_name,
                mf.name as flow_name
         FROM marketing_emails_sent mes
         JOIN platform_users pu ON pu.id = mes.user_id

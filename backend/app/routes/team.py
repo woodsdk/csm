@@ -11,6 +11,7 @@ router = APIRouter()
 class TeamMemberCreate(BaseModel):
     name: str = ""
     role: str = "member"
+    title: str = ""
     avatar_color: str = "#38456D"
     is_active: bool = True
     email: str = ""
@@ -20,6 +21,7 @@ class TeamMemberCreate(BaseModel):
 class TeamMemberUpdate(BaseModel):
     name: Optional[str] = None
     role: Optional[str] = None
+    title: Optional[str] = None
     avatar_color: Optional[str] = None
     is_active: Optional[bool] = None
     email: Optional[str] = None
@@ -45,11 +47,11 @@ def get_member(member_id: str):
 def create_member(data: TeamMemberCreate):
     member_id = gen_id("tm_")
     rows = query(
-        """INSERT INTO team_members (id, name, role, avatar_color, is_active, email, phone)
-           VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """INSERT INTO team_members (id, name, role, title, avatar_color, is_active, email, phone)
+           VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
            RETURNING *""",
         (
-            member_id, data.name, data.role, data.avatar_color,
+            member_id, data.name, data.role, data.title, data.avatar_color,
             data.is_active, data.email, data.phone,
         ),
     )
@@ -66,7 +68,7 @@ def update_member(member_id: str, data: TeamMemberUpdate):
     params = []
     data_dict = data.model_dump(exclude_unset=True)
 
-    allowed = ["name", "role", "avatar_color", "is_active", "email", "phone"]
+    allowed = ["name", "role", "title", "avatar_color", "is_active", "email", "phone"]
 
     for key in allowed:
         if key in data_dict:

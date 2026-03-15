@@ -440,20 +440,17 @@ Generér et JSON-objekt med "subject" og "body" for en professionel outbound-bes
 
 # ── Marketing Email Generation ─────────────────────────────────────────
 
-def generate_marketing_email(
-    user_context: dict,
-    brief: str,
-    subject_hint: str = "",
-) -> dict | None:
-    """Generate a personalized marketing email from a CS team brief.
-
-    Returns {"subject": "...", "body_html": "..."} or None.
-    """
-    client = _get_client()
-    if not client:
-        return None
-
-    system_prompt = """Du er en professionel email-forfatter for People's Clinic, en dansk digital sundhedsplatform der bruger AI til at opsummere læge-patient samtaler.
+def _get_marketing_system_prompt() -> str:
+    """Get the marketing AI system prompt from database settings."""
+    try:
+        from .database import query
+        rows = query("SELECT value FROM app_settings WHERE key = 'marketing_ai_prompt'")
+        if rows and rows[0].get("value"):
+            return rows[0]["value"]
+    except Exception:
+        pass
+    # Fallback default
+    return """Du er en professionel email-forfatter for People's Clinic, en dansk digital sundhedsplatform der bruger AI til at opsummere læge-patient samtaler.
 
 REGLER:
 - Skriv ALTID på dansk
@@ -468,6 +465,22 @@ REGLER:
 - SVAR KUN med et JSON-objekt: {"subject": "...", "body_html": "..."}
 - body_html: brug simple HTML tags (<p>, <br>, <strong>) — INGEN inline styles
 - Subject: max 60 tegn, relevant og engagerende"""
+
+
+def generate_marketing_email(
+    user_context: dict,
+    brief: str,
+    subject_hint: str = "",
+) -> dict | None:
+    """Generate a personalized marketing email from a CS team brief.
+
+    Returns {"subject": "...", "body_html": "..."} or None.
+    """
+    client = _get_client()
+    if not client:
+        return None
+
+    system_prompt = _get_marketing_system_prompt()
 
     uc = user_context
     user_block = f"""BRUGER KONTEKST:
@@ -535,3 +548,94 @@ Generér et JSON-objekt med "subject" og "body_html":"""
     except Exception as e:
         logger.error(f"OpenAI API error (marketing email): {e}")
         return None
+
+
+# ── Ticket Priority Classification ─────────────────────────────────────
+
+def classify_ticket_priority(
+    subject: str,
+    body: str = "",
+) -> dict:
+    """Classify a helpdesk ticket's priority and category using AI.
+
+    Analyzes the subject and body to determine appropriate priority
+    (urgent/high/medium/low) and category (billing/technical/onboarding/general).
+
+    Returns {"priority": "...", "category": "..."} or defaults on failure.
+    """
+    client = _get_client()
+    if not client:
+        return {"priority": "medium", "category": "general"}
+
+    system_prompt = """Du er en helpdesk-triage AI for People's Clinic, en dansk sundhedstech-virksomhed.
+
+Din opgave er at analysere indkommende tickets og klassificere dem.
+
+PRIORITET — vurder ud fra:
+- "urgent": Systemnedbrud, datatabsfejl, sikkerhedshændelser, GDPR-brud, produktion nede, flere brugere påvirket
+- "high": Kritisk funktionalitet virker ikke, betalingsproblemer, klinik kan ikke arbejde, bruger meget utilfreds
+- "medium": Generelle spørgsmål, mindre fejl, feature-forespørgsler, standard onboarding-spørgsmål
+- "low": Feedback, forbedringsforslag, kosmetiske fejl, generel information
+
+KATEGORI — vælg den mest passende:
+- "technical": Tekniske problemer, fejl, bugs, integration, system, login
+- "billing": Fakturering, betaling, priser, abonnement, kontrakt
+- "onboarding": Opstart, opsætning, første brug, migration, træning
+- "general": Alt andet — generelle spørgsmål, feedback, etc.
+
+SVAR KUN med et JSON-objekt: {"priority": "...", "category": "..."}
+Ingen forklaring, kun JSON."""
+
+    user_prompt = f"""Klassificér denne ticket:
+
+EMNE: {subject}
+{f'BESKED: {body[:500]}' if body else ''}
+
+JSON:"""
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+            max_tokens=50,
+            temperature=0.1,
+        )
+        content = response.choices[0].message.content.strip()
+
+        try:
+            result = json.loads(content)
+            priority = result.get("priority", "medium")
+            category = result.get("category", "general")
+
+            # Validate values
+            if priority not in ("urgent", "high", "medium", "low"):
+                priority = "medium"
+            if category not in ("technical", "billing", "onboarding", "general"):
+                category = "general"
+
+            return {"priority": priority, "category": category}
+        except json.JSONDecodeError:
+            pass
+
+        # Fallback: try markdown code block
+        if "```" in content:
+            json_match = content.split("```")[1]
+            if json_match.startswith("json"):
+                json_match = json_match[4:]
+            try:
+                result = json.loads(json_match.strip())
+                return {
+                    "priority": result.get("priority", "medium"),
+                    "category": result.get("category", "general"),
+                }
+            except json.JSONDecodeError:
+                pass
+
+        return {"priority": "medium", "category": "general"}
+
+    except Exception as e:
+        logger.error(f"OpenAI API error (classify ticket): {e}")
+        return {"priority": "medium", "category": "general"}

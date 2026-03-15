@@ -331,7 +331,39 @@ def _execute_condition_step(enrollment: dict, step: dict, config: dict):
             "SELECT health_score FROM platform_users WHERE id = %s",
             (user_id,),
         )
-        met = result[0]["health_score"] >= threshold if result else False
+        met = (result[0]["health_score"] or 0) >= threshold if result else False
+
+    elif check == "health_below":
+        threshold = config.get("threshold", 30)
+        result = query(
+            "SELECT health_score FROM platform_users WHERE id = %s",
+            (user_id,),
+        )
+        met = (result[0]["health_score"] or 0) < threshold if result else False
+
+    elif check == "is_active":
+        result = query(
+            "SELECT status FROM platform_users WHERE id = %s",
+            (user_id,),
+        )
+        met = result[0]["status"] == "active" if result else False
+
+    elif check == "has_plan":
+        plan = config.get("plan", "")
+        result = query(
+            "SELECT plan FROM platform_users WHERE id = %s",
+            (user_id,),
+        )
+        met = result[0]["plan"] == plan if result else False
+
+    elif check == "days_since_signup":
+        min_days = config.get("min_days", 0)
+        result = query(
+            """SELECT EXTRACT(DAY FROM NOW() - signup_at)::int as days
+               FROM platform_users WHERE id = %s""",
+            (user_id,),
+        )
+        met = (result[0]["days"] or 0) >= min_days if result else False
 
     if not met and if_false == "skip_rest":
         execute(
@@ -374,21 +406,8 @@ def _advance_enrollment(enrollment: dict):
 
 def _wrap_email_template(body_html: str) -> str:
     """Wrap AI-generated body in the People's Clinic email template."""
-    return f"""
-    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 560px; margin: 0 auto; color: #1e293b;">
-        <div style="text-align: center; padding: 24px 0 16px;">
-            <img src="https://csm-production.up.railway.app/assets/peoplesclinic.png" alt="People's Clinic" width="180" style="display: inline-block; max-width: 180px; height: auto;">
-        </div>
-        <div style="padding: 0 8px;">
-            {body_html}
-        </div>
-        <div style="text-align: center; padding: 24px 0 8px; border-top: 1px solid #e2e8f0; margin-top: 24px;">
-            <p style="font-size: 12px; color: #94a3b8; margin: 0;">
-                People's Clinic — Digital sundhedsplatform
-            </p>
-        </div>
-    </div>
-    """
+    from .email_template import wrap_email
+    return wrap_email(body_html)
 
 
 # ── Segment Query Builder ─────────────────────────────────────────────
@@ -460,20 +479,36 @@ def send_campaign(segment_id: str, brief: str, subject_hint: str = "") -> dict:
 
     users = query_segment_users(rules)
     sent_count = 0
+    skipped_count = 0
     errors = []
+
+    # Generate a campaign batch ID for deduplication
+    campaign_batch = gen_id("cb_")
 
     for user in users:
         try:
+            # Duplicate prevention: skip if same user+brief was sent in last 24h
+            recent = query(
+                """SELECT id FROM marketing_emails_sent
+                   WHERE user_id = %s AND brief = %s AND flow_id IS NULL
+                   AND sent_at > NOW() - INTERVAL '24 hours'""",
+                (user["id"], brief),
+            )
+            if recent:
+                skipped_count += 1
+                continue
+
             context = _build_user_context(user)
             result = generate_marketing_email(context, brief, subject_hint)
             if not result:
-                errors.append(f"AI generation failed for {user['email']}")
+                errors.append(f"AI fejl: {user['email']}")
                 continue
 
             full_html = _wrap_email_template(result["body_html"])
 
             # Send via Gmail
             gmail_result = None
+            send_error = None
             try:
                 from .google_oauth import is_connected as gmail_connected
                 if gmail_connected():
@@ -483,14 +518,17 @@ def send_campaign(segment_id: str, brief: str, subject_hint: str = "") -> dict:
                         subject=result["subject"],
                         body_html=full_html,
                     )
+                else:
+                    send_error = "Gmail ikke forbundet"
             except Exception as e:
-                errors.append(f"Gmail failed for {user['email']}: {e}")
+                send_error = str(e)
+                errors.append(f"Gmail fejl: {user['email']}")
 
-            # Log
+            # Log with error tracking
             execute(
                 """INSERT INTO marketing_emails_sent
-                   (id, flow_id, user_id, to_email, subject, body_html, brief, gmail_message_id)
-                   VALUES (%s, NULL, %s, %s, %s, %s, %s, %s)""",
+                   (id, flow_id, user_id, to_email, subject, body_html, brief, gmail_message_id, campaign_batch, send_error)
+                   VALUES (%s, NULL, %s, %s, %s, %s, %s, %s, %s, %s)""",
                 (
                     gen_id("mes_"),
                     user["id"],
@@ -499,11 +537,20 @@ def send_campaign(segment_id: str, brief: str, subject_hint: str = "") -> dict:
                     full_html,
                     brief,
                     gmail_result.get("message_id") if gmail_result else None,
+                    campaign_batch,
+                    send_error,
                 ),
             )
-            sent_count += 1
+            if not send_error:
+                sent_count += 1
 
         except Exception as e:
-            errors.append(f"Error for {user.get('email', '?')}: {e}")
+            errors.append(f"Fejl: {user.get('email', '?')}: {e}")
 
-    return {"sent_count": sent_count, "total_users": len(users), "errors": errors[:5]}
+    return {
+        "sent_count": sent_count,
+        "total_users": len(users),
+        "skipped": skipped_count,
+        "errors": errors[:10],
+        "campaign_batch": campaign_batch,
+    }

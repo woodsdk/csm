@@ -43,6 +43,9 @@ export const MarketingPage = {
   _campaignBrief: '',
   _campaignSubject: '',
   _campaignSending: false,
+  _campaignPreview: null as { subject: string; body_html: string; template_html?: string; preview_user: { name: string; clinic_name: string }; segment_user_count: number } | null,
+  _campaignPreviewing: false,
+  _showCampaignTemplate: false,
   _showTemplates: false,
   _showSegmentForm: false,
   _newSegName: '',
@@ -148,9 +151,7 @@ export const MarketingPage = {
               ? `<button class="btn btn-xs" onclick="event.stopPropagation(); MarketingPage.pauseFlow('${f.id}')">Pause</button>`
               : ''}
             <button class="btn btn-xs" onclick="event.stopPropagation(); MarketingPage.openFlow('${f.id}')">Rediger</button>
-            ${f.status === 'draft'
-              ? `<button class="btn btn-xs btn-danger" onclick="event.stopPropagation(); MarketingPage.deleteFlow('${f.id}')">Slet</button>`
-              : ''}
+            <button class="btn btn-xs btn-danger" onclick="event.stopPropagation(); MarketingPage.deleteFlow('${f.id}')">Slet</button>
           </div>
         </div>
       `;
@@ -244,28 +245,56 @@ export const MarketingPage = {
           <label class="form-label">Beskrivelse</label>
           <input class="input" id="mk-seg-desc" type="text" placeholder="Kort beskrivelse..." value="${escapeHtml(this._newSegDesc)}">
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Status (kommasepareret)</label>
-            <input class="input" id="mk-seg-status" type="text" placeholder="active,onboarding">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Max health score</label>
-            <input class="input" id="mk-seg-health-max" type="number" placeholder="Fx: 40">
+
+        <div class="form-group">
+          <label class="form-label">Brugerstatus</label>
+          <div class="mk-checkbox-group">
+            <label class="mk-checkbox"><input type="checkbox" id="mk-seg-st-active" checked> Aktiv</label>
+            <label class="mk-checkbox"><input type="checkbox" id="mk-seg-st-onboarding"> Onboarding</label>
+            <label class="mk-checkbox"><input type="checkbox" id="mk-seg-st-inactive"> Inaktiv</label>
+            <label class="mk-checkbox"><input type="checkbox" id="mk-seg-st-churned"> Churned</label>
           </div>
         </div>
+
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Min dage inaktiv</label>
-            <input class="input" id="mk-seg-inactive-min" type="number" placeholder="Fx: 14">
+            <label class="form-label">Health score maks</label>
+            <input class="input" id="mk-seg-health-max" type="number" min="0" max="100" placeholder="Alle">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Health score min</label>
+            <input class="input" id="mk-seg-health-min" type="number" min="0" max="100" placeholder="Alle">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Inaktiv i dage (min)</label>
+            <input class="input" id="mk-seg-inactive-min" type="number" min="0" placeholder="Ingen gr\u00e6nse">
           </div>
           <div class="form-group">
             <label class="form-label">Signup dage siden (min)</label>
-            <input class="input" id="mk-seg-signup-min" type="number" placeholder="Fx: 7">
+            <input class="input" id="mk-seg-signup-min" type="number" min="0" placeholder="Alle">
           </div>
         </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Signup dage siden (maks)</label>
+            <input class="input" id="mk-seg-signup-max" type="number" min="0" placeholder="Alle">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Konsultation</label>
+            <select class="select" id="mk-seg-consultation">
+              <option value="">Alle</option>
+              <option value="yes">Har haft konsultation</option>
+              <option value="no">Ingen konsultation endnu</option>
+            </select>
+          </div>
+        </div>
+
         <div class="mk-inline-form-actions">
-          <button class="btn btn-primary" onclick="MarketingPage.submitNewSegment()">Opret</button>
+          <button class="btn btn-primary" onclick="MarketingPage.submitNewSegment()">Opret segment</button>
           <button class="btn" onclick="MarketingPage.toggleSegmentForm()">Annuller</button>
         </div>
       </div>
@@ -293,29 +322,45 @@ export const MarketingPage = {
       return '<div class="mk-empty">Ingen emails sendt endnu.</div>';
     }
 
-    const rows = this._history.map(e => {
+    const rows = this._history.map((e: any) => {
       const date = e.sent_at ? new Date(e.sent_at).toLocaleDateString('da-DK', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
+      const isSent = !!e.gmail_message_id;
+      const hasError = !!e.send_error;
+      const statusClass = hasError ? 'mk-sent-error' : (isSent ? 'mk-sent-ok' : 'mk-sent-pending');
+      const statusLabel = hasError ? 'Fejl' : (isSent ? 'Sendt' : 'Afventer');
+      const source = e.flow_name || (e.campaign_batch ? 'Kampagne' : 'Manuel');
       return `
         <tr>
           <td>${date}</td>
           <td>${escapeHtml(e.user_name || '')}</td>
           <td>${escapeHtml(e.clinic_name || '')}</td>
-          <td>${escapeHtml(e.flow_name || 'Kampagne')}</td>
-          <td>${escapeHtml(e.subject)}</td>
-          <td><span class="mk-sent-badge">${e.gmail_message_id ? 'Sendt' : 'Fejl'}</span></td>
+          <td><span class="mk-source-tag">${escapeHtml(source)}</span></td>
+          <td class="mk-history-subject">${escapeHtml(e.subject)}</td>
+          <td>
+            <span class="mk-sent-badge ${statusClass}">${statusLabel}</span>
+            ${hasError ? `<span class="mk-error-detail" title="${escapeHtml(e.send_error)}">?</span>` : ''}
+          </td>
         </tr>
       `;
     }).join('');
 
+    const sentCount = this._history.filter((e: any) => e.gmail_message_id).length;
+    const errorCount = this._history.filter((e: any) => e.send_error).length;
+
     return `
       <div class="mk-history-section">
+        <div class="mk-history-stats">
+          <span class="mk-history-stat mk-sent-ok">${sentCount} sendt</span>
+          ${errorCount > 0 ? `<span class="mk-history-stat mk-sent-error">${errorCount} fejlet</span>` : ''}
+          <span class="mk-history-stat">${this._history.length} total</span>
+        </div>
         <table class="mk-table">
           <thead>
             <tr>
               <th>Dato</th>
               <th>Bruger</th>
               <th>Klinik</th>
-              <th>Flow</th>
+              <th>Kilde</th>
               <th>Emne</th>
               <th>Status</th>
             </tr>
@@ -334,6 +379,31 @@ export const MarketingPage = {
       `<option value="${s.id}" ${this._campaignSegmentId === s.id ? 'selected' : ''}>${escapeHtml(s.name)} (${s.user_count} brugere)</option>`
     ).join('');
 
+    const previewHtml = this._campaignPreview ? `
+      <div class="mk-preview-box" style="margin-top: var(--space-3)">
+        <div class="mk-preview-header">
+          <div class="mk-preview-meta">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Preview for: ${escapeHtml(this._campaignPreview.preview_user.name)} (${escapeHtml(this._campaignPreview.preview_user.clinic_name)})
+            \u00b7 ${this._campaignPreview.segment_user_count} brugere i segment
+          </div>
+          <div class="mk-preview-actions">
+            <button class="btn btn-xs ${this._showCampaignTemplate ? 'btn-primary' : ''}" onclick="MarketingPage.toggleCampaignTemplate()">
+              ${this._showCampaignTemplate ? 'Vis tekst' : 'Vis i email-skabelon'}
+            </button>
+          </div>
+        </div>
+        <div class="mk-preview-subject"><strong>Emne:</strong> ${escapeHtml(this._campaignPreview.subject)}</div>
+        ${this._showCampaignTemplate && this._campaignPreview.template_html ? `
+          <div class="mk-preview-template">
+            <iframe class="mk-preview-iframe" srcdoc="${escapeHtml(this._campaignPreview.template_html)}" sandbox=""></iframe>
+          </div>
+        ` : `
+          <div class="mk-preview-body">${this._campaignPreview.body_html}</div>
+        `}
+      </div>
+    ` : '';
+
     return `
       <div class="mk-campaign-section">
         <div class="mk-campaign-info">
@@ -350,19 +420,27 @@ export const MarketingPage = {
         </div>
 
         <div class="form-group">
-          <label class="form-label">Brief til AI</label>
+          <label class="form-label">Brief til AI <span class="mk-step-hint">Beskriv hvad emailen skal kommunikere</span></label>
           <textarea class="textarea" id="mk-campaign-brief" rows="3" placeholder="Beskriv kort hvad emailen skal handle om, fx: 'F\u00f8lg op p\u00e5 inaktive brugere og fort\u00e6l om nye features'">${escapeHtml(this._campaignBrief)}</textarea>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Emne-hint (valgfrit)</label>
+          <label class="form-label">Emne-hint <span class="mk-step-hint">Valgfrit \u2014 AI genererer ellers selv</span></label>
           <input class="input" id="mk-campaign-subject" type="text" placeholder="Fx: Nyt fra People's Clinic" value="${escapeHtml(this._campaignSubject)}">
         </div>
 
-        <button class="btn btn-primary ${this._campaignSending ? 'btn-loading' : ''}" onclick="MarketingPage.sendCampaign()" ${this._campaignSending ? 'disabled' : ''}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          ${this._campaignSending ? 'Sender...' : 'Send kampagne'}
-        </button>
+        <div class="mk-campaign-actions">
+          <button class="btn ${this._campaignPreviewing ? 'btn-loading' : ''}" onclick="MarketingPage.previewCampaign()" ${this._campaignPreviewing ? 'disabled' : ''}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            ${this._campaignPreviewing ? 'Genererer...' : 'Preview f\u00f8rst'}
+          </button>
+          <button class="btn btn-primary ${this._campaignSending ? 'btn-loading' : ''}" onclick="MarketingPage.sendCampaign()" ${this._campaignSending ? 'disabled' : ''}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            ${this._campaignSending ? 'Sender...' : 'Send kampagne'}
+          </button>
+        </div>
+
+        ${previewHtml}
       </div>
     `;
   },
@@ -449,9 +527,13 @@ export const MarketingPage = {
   },
 
   async deleteFlow(flowId: string): Promise<void> {
-    if (!confirm('Er du sikker p\u00e5, at du vil slette dette flow?')) return;
+    if (!confirm('Er du sikker p\u00e5, at du vil slette dette flow?\n\nAlle trin, enrollments og historik knyttet til dette flow slettes permanent.')) return;
     try {
-      await MarketingAPI.deleteFlow(flowId);
+      const result = await MarketingAPI.deleteFlow(flowId);
+      if (result.error) {
+        (window as any).App.toast(result.error, 'error');
+        return;
+      }
       this._flows = null;
       this._stats = null;
       (window as any).App.toast('Flow slettet', 'info');
@@ -467,14 +549,29 @@ export const MarketingPage = {
     if (!name) { (window as any).App.toast('Indtast et segmentnavn', 'error'); return; }
 
     const rules: Record<string, any> = {};
-    const statusVal = (document.getElementById('mk-seg-status') as HTMLInputElement)?.value?.trim();
-    if (statusVal) rules.status = statusVal.split(',').map(s => s.trim());
+
+    // Status checkboxes
+    const statuses: string[] = [];
+    if ((document.getElementById('mk-seg-st-active') as HTMLInputElement)?.checked) statuses.push('active');
+    if ((document.getElementById('mk-seg-st-onboarding') as HTMLInputElement)?.checked) statuses.push('onboarding');
+    if ((document.getElementById('mk-seg-st-inactive') as HTMLInputElement)?.checked) statuses.push('inactive');
+    if ((document.getElementById('mk-seg-st-churned') as HTMLInputElement)?.checked) statuses.push('churned');
+    if (statuses.length > 0 && statuses.length < 4) rules.status = statuses;
+
     const healthMax = (document.getElementById('mk-seg-health-max') as HTMLInputElement)?.value;
     if (healthMax) rules.health_score_max = parseInt(healthMax);
+    const healthMin = (document.getElementById('mk-seg-health-min') as HTMLInputElement)?.value;
+    if (healthMin) rules.health_score_min = parseInt(healthMin);
     const inactiveMin = (document.getElementById('mk-seg-inactive-min') as HTMLInputElement)?.value;
     if (inactiveMin) rules.days_inactive_min = parseInt(inactiveMin);
     const signupMin = (document.getElementById('mk-seg-signup-min') as HTMLInputElement)?.value;
     if (signupMin) rules.signup_days_ago_min = parseInt(signupMin);
+    const signupMax = (document.getElementById('mk-seg-signup-max') as HTMLInputElement)?.value;
+    if (signupMax) rules.signup_days_ago_max = parseInt(signupMax);
+
+    const consultation = (document.getElementById('mk-seg-consultation') as HTMLSelectElement)?.value;
+    if (consultation === 'yes') rules.has_consultation = true;
+    if (consultation === 'no') rules.has_consultation = false;
 
     try {
       await MarketingAPI.createSegment({ name, description: desc, filter_rules: rules });
@@ -499,6 +596,46 @@ export const MarketingPage = {
     }
   },
 
+  async previewCampaign(): Promise<void> {
+    const segId = (document.getElementById('mk-campaign-segment') as HTMLSelectElement)?.value;
+    const brief = (document.getElementById('mk-campaign-brief') as HTMLTextAreaElement)?.value?.trim();
+    const subjectHint = (document.getElementById('mk-campaign-subject') as HTMLInputElement)?.value?.trim() || '';
+
+    if (!segId) { (window as any).App.toast('V\u00e6lg et segment', 'error'); return; }
+    if (!brief) { (window as any).App.toast('Skriv et brief til AI', 'error'); return; }
+
+    this._campaignPreviewing = true;
+    this._campaignPreview = null;
+    this._campaignSegmentId = segId;
+    this._campaignBrief = brief;
+    this._campaignSubject = subjectHint;
+    (window as any).App.render();
+
+    try {
+      const resp = await fetch('/api/marketing/preview-campaign', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ segment_id: segId, brief, subject_hint: subjectHint }),
+      });
+      const result = await resp.json();
+
+      if (result.error) {
+        (window as any).App.toast(result.error, 'error');
+      } else {
+        this._campaignPreview = result;
+      }
+    } catch {
+      (window as any).App.toast('Preview fejlede', 'error');
+    }
+    this._campaignPreviewing = false;
+    (window as any).App.render();
+  },
+
+  toggleCampaignTemplate(): void {
+    this._showCampaignTemplate = !this._showCampaignTemplate;
+    (window as any).App.render();
+  },
+
   async sendCampaign(): Promise<void> {
     const segId = (document.getElementById('mk-campaign-segment') as HTMLSelectElement)?.value;
     const brief = (document.getElementById('mk-campaign-brief') as HTMLTextAreaElement)?.value?.trim();
@@ -506,6 +643,15 @@ export const MarketingPage = {
 
     if (!segId) { (window as any).App.toast('V\u00e6lg et segment', 'error'); return; }
     if (!brief) { (window as any).App.toast('Skriv et brief til AI', 'error'); return; }
+
+    // Find segment name and user count for confirmation
+    const seg = (this._segments || []).find(s => s.id === segId);
+    const segName = seg ? seg.name : 'Ukendt';
+    const userCount = seg ? seg.user_count : '?';
+
+    if (!confirm(`Er du sikker?\n\nDu er ved at sende en AI-personaliseret email til ${userCount} brugere i segmentet "${segName}".\n\nDenne handling kan ikke fortrydes.`)) {
+      return;
+    }
 
     this._campaignSending = true;
     (window as any).App.render();
@@ -515,7 +661,12 @@ export const MarketingPage = {
       this._stats = null;
       this._history = null;
       this._campaignSending = false;
-      (window as any).App.toast(`Kampagne sendt: ${result.sent} emails`, 'success');
+
+      let msg = `Kampagne sendt: ${result.sent_count ?? result.sent ?? 0} emails`;
+      if (result.skipped) msg += ` (${result.skipped} sprunget over — allerede sendt)`;
+      if (result.errors?.length) msg += ` · ${result.errors.length} fejl`;
+
+      (window as any).App.toast(msg, result.errors?.length ? 'warning' : 'success');
       (window as any).App.render();
     } catch {
       this._campaignSending = false;
@@ -528,11 +679,14 @@ export const MarketingPage = {
     if (!rules || typeof rules !== 'object') return '';
     const parts: string[] = [];
     if (rules.status) parts.push(`Status: ${Array.isArray(rules.status) ? rules.status.join(', ') : rules.status}`);
-    if (rules.health_score_max) parts.push(`Health \u2264 ${rules.health_score_max}`);
+    if (rules.health_score_max != null) parts.push(`Health \u2264 ${rules.health_score_max}`);
+    if (rules.health_score_min != null) parts.push(`Health \u2265 ${rules.health_score_min}`);
     if (rules.days_inactive_min) parts.push(`Inaktiv \u2265 ${rules.days_inactive_min}d`);
     if (rules.signup_days_ago_min) parts.push(`Signup \u2265 ${rules.signup_days_ago_min}d siden`);
     if (rules.signup_days_ago_max) parts.push(`Signup \u2264 ${rules.signup_days_ago_max}d siden`);
+    if (rules.has_consultation === true) parts.push('Har konsultation');
     if (rules.has_consultation === false) parts.push('Ingen konsultation');
+    if (rules.plan) parts.push(`Plan: ${Array.isArray(rules.plan) ? rules.plan.join(', ') : rules.plan}`);
     return parts.length ? parts.join(' \u00b7 ') : 'Alle brugere';
   },
 };

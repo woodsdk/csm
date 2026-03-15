@@ -546,7 +546,7 @@ export const MarketingAPI = {
     return res.json();
   },
 
-  async deleteFlow(id: string): Promise<{ ok: boolean }> {
+  async deleteFlow(id: string): Promise<{ ok?: boolean; error?: string }> {
     const res = await fetch(`${API_BASE}/marketing/flows/${encodeURIComponent(id)}`, { method: 'DELETE' });
     if (!res.ok) throw new Error('Failed to delete flow');
     return res.json();
@@ -680,7 +680,7 @@ export const MarketingAPI = {
   },
 
   // ── Campaign ──
-  async sendCampaign(data: { segment_id: string; brief: string; subject_hint?: string }): Promise<{ sent: number; errors: number }> {
+  async sendCampaign(data: { segment_id: string; brief: string; subject_hint?: string }): Promise<{ sent_count?: number; sent?: number; total_users?: number; skipped?: number; errors?: string[]; campaign_batch?: string }> {
     const res = await fetch(`${API_BASE}/marketing/send-campaign`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

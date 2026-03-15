@@ -71,6 +71,7 @@ export interface TeamMember {
   id: string;
   name: string;
   role: string;
+  title: string;
   avatar_color: string;
   is_active: boolean;
   email: string;
@@ -242,6 +243,7 @@ export interface Ticket {
   platform_user_consultations?: number;
   platform_user_avg_rating?: number | null;
   platform_user_days_since_signup?: number;
+  priority_source?: string;
   created_at: string;
   updated_at: string;
   resolved_at: string | null;

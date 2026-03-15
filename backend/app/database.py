@@ -318,21 +318,22 @@ def init():
 
     # Seed team members
     execute("""
-        INSERT INTO team_members (id, name, role, avatar_color, is_active, email, phone, can_give_demos) VALUES
-            ('morten',  'Morten Skov',              'lead',    '#38456D', true, 'morten@peoplesdoctor.com', '',              true),
-            ('shubi',   'Shubinthan Kathiramalai',   'support', '#5669A4', true, 'ska@peoplesdoctor.com',    '50732313',      true),
-            ('simon',   'Simon Ussing',              'cs',      '#22C55E', true, 'sus@peoplesdoctor.com',    '00336 33234997', true),
-            ('emma',    'Emma Heerfordt',            'member',  '#F59E0B', true, 'ehe@peoplesdoctor.com',    '24494742',      true),
-            ('filip',   'Filip Syderbø',             'member',  '#3B82F6', true, 'fsy@peoplesdoctor.com',    '52637516',      true),
-            ('josef',   'Josef Abuna',               'member',  '#8B5CF6', true, 'jab@peoplesdoctor.com',    '52242880',      true),
-            ('rasmus',  'Rasmus Kvist Bonde',        'member',  '#EC4899', true, 'rkb@peoplesdoctor.com',    '',              true),
-            ('lars',    'Lars Kensmark',             'member',  '#14B8A6', true, 'lke@peoplesdoctor.com',    '31170644',      true)
+        INSERT INTO team_members (id, name, role, title, avatar_color, is_active, email, phone, can_give_demos) VALUES
+            ('morten',  'Morten Skov',              'lead',    'CEO & Co-Founder',           '#38456D', true, 'morten@peoplesdoctor.com', '',              true),
+            ('shubi',   'Shubinthan Kathiramalai',   'support', 'Support Lead',               '#5669A4', true, 'ska@peoplesdoctor.com',    '50732313',      true),
+            ('simon',   'Simon Ussing',              'cs',      'Customer Success Manager',   '#22C55E', true, 'sus@peoplesdoctor.com',    '00336 33234997', true),
+            ('emma',    'Emma Heerfordt',            'member',  'Studentermedhjælper',        '#F59E0B', true, 'ehe@peoplesdoctor.com',    '24494742',      true),
+            ('filip',   'Filip Syderbø',             'member',  'Studentermedhjælper',        '#3B82F6', true, 'fsy@peoplesdoctor.com',    '52637516',      true),
+            ('josef',   'Josef Abuna',               'member',  'Studentermedhjælper',        '#8B5CF6', true, 'jab@peoplesdoctor.com',    '52242880',      true),
+            ('rasmus',  'Rasmus Kvist Bonde',        'member',  'CTO & Co-Founder',           '#EC4899', true, 'rkb@peoplesdoctor.com',    '',              true),
+            ('lars',    'Lars Kensmark',             'member',  'Studentermedhjælper',        '#14B8A6', true, 'lke@peoplesdoctor.com',    '31170644',      true)
         ON CONFLICT (id) DO UPDATE SET
             name = EXCLUDED.name,
             email = EXCLUDED.email,
             phone = EXCLUDED.phone,
             avatar_color = EXCLUDED.avatar_color,
-            can_give_demos = EXCLUDED.can_give_demos
+            can_give_demos = EXCLUDED.can_give_demos,
+            title = EXCLUDED.title
     """)
 
     # Migration: create faq_items table
@@ -416,6 +417,36 @@ def init():
     execute("""
         DO $$ BEGIN
             ALTER TABLE ticket_messages ADD COLUMN gmail_message_id TEXT;
+        EXCEPTION WHEN duplicate_column THEN NULL;
+        END $$;
+    """)
+
+    # Migration: AI priority classification tracking
+    execute("""
+        DO $$ BEGIN
+            ALTER TABLE tickets ADD COLUMN priority_source TEXT NOT NULL DEFAULT 'manual';
+        EXCEPTION WHEN duplicate_column THEN NULL;
+        END $$;
+    """)
+
+    # Migration: add campaign_batch and send_error to marketing_emails_sent
+    execute("""
+        DO $$ BEGIN
+            ALTER TABLE marketing_emails_sent ADD COLUMN campaign_batch TEXT;
+        EXCEPTION WHEN duplicate_column THEN NULL;
+        END $$;
+    """)
+    execute("""
+        DO $$ BEGIN
+            ALTER TABLE marketing_emails_sent ADD COLUMN send_error TEXT;
+        EXCEPTION WHEN duplicate_column THEN NULL;
+        END $$;
+    """)
+
+    # Migration: add title (stillingsbetegnelse) to team_members
+    execute("""
+        DO $$ BEGIN
+            ALTER TABLE team_members ADD COLUMN title TEXT NOT NULL DEFAULT '';
         EXCEPTION WHEN duplicate_column THEN NULL;
         END $$;
     """)
@@ -575,6 +606,36 @@ def init():
         CREATE INDEX IF NOT EXISTS idx_mes_user ON marketing_emails_sent(user_id);
         CREATE INDEX IF NOT EXISTS idx_mes_flow ON marketing_emails_sent(flow_id);
         CREATE INDEX IF NOT EXISTS idx_mes_sent ON marketing_emails_sent(sent_at);
+    """)
+
+    # App settings (key-value store for system-wide config)
+    execute("""
+        CREATE TABLE IF NOT EXISTS app_settings (
+            key   TEXT PRIMARY KEY,
+            value TEXT NOT NULL DEFAULT ''
+        );
+    """)
+
+    # Seed default marketing AI system prompt
+    execute("""
+        INSERT INTO app_settings (key, value) VALUES (
+            'marketing_ai_prompt',
+            'Du er en professionel email-forfatter for People''s Clinic, en dansk digital sundhedsplatform der bruger AI til at opsummere læge-patient samtaler.
+
+REGLER:
+- Skriv ALTID på dansk
+- Vær varm, professionel og empatisk — aldrig sælgende eller pushy
+- Personaliser baseret på brugerens data (navn, klinik, speciale, aktivitet)
+- Hold emailen kort (3-5 afsnit, max 150 ord)
+- Giv ALDRIG medicinsk rådgivning eller diagnosticering
+- Nævn aldrig patientdata eller specifik patientinformation
+- Henvis til platformen for konkret sundhedsrådgivning
+- Start med "Hej [fornavn],"
+- Afslut med "Med venlig hilsen,\nPeople''s Clinic Teamet"
+- SVAR KUN med et JSON-objekt: {"subject": "...", "body_html": "..."}
+- body_html: brug simple HTML tags (<p>, <br>, <strong>) — INGEN inline styles
+- Subject: max 60 tegn, relevant og engagerende'
+        ) ON CONFLICT (key) DO NOTHING
     """)
 
     _seed_platform_data()

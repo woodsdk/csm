@@ -10,6 +10,7 @@ from email.mime.multipart import MIMEMultipart
 from typing import Optional
 
 from .google_oauth import get_gmail_service, get_connected_email
+from .email_template import wrap_email
 
 logger = logging.getLogger(__name__)
 
@@ -30,9 +31,11 @@ def send_email(
     body_html: str,
     reply_to_message_id: Optional[str] = None,
     thread_id: Optional[str] = None,
+    use_template: bool = False,
 ) -> Optional[dict]:
     """
     Send an email via Gmail API.
+    If use_template=True, wraps content in the branded People's Clinic template.
     Returns {'message_id': ..., 'thread_id': ...} on success, None on failure.
     """
     service = get_gmail_service()
@@ -41,6 +44,9 @@ def send_email(
         return None
 
     try:
+        # Wrap in branded template if requested
+        final_html = wrap_email(body_html) if use_template else body_html
+
         message = MIMEMultipart("alternative")
         message["to"] = to
         message["subject"] = subject
@@ -49,7 +55,7 @@ def send_email(
             message["In-Reply-To"] = reply_to_message_id
             message["References"] = reply_to_message_id
 
-        message.attach(MIMEText(body_html, "html"))
+        message.attach(MIMEText(final_html, "html"))
 
         raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
         body = {"raw": raw}
@@ -328,13 +334,22 @@ def sync_inbox(max_results: int = 20) -> dict:
                     # Clean subject (remove Re:/Fwd: prefixes for ticket subject)
                     clean_subject = re.sub(r"^(Re|Fwd|Sv|Vs):\s*", "", subject, flags=re.IGNORECASE).strip()
 
+                    # AI-classify priority and category
+                    from .openai_helper import classify_ticket_priority
+                    classification = classify_ticket_priority(
+                        subject=clean_subject or subject,
+                        body=body[:500] if body else "",
+                    )
+                    ai_priority = classification["priority"]
+                    ai_category = classification["category"]
+
                     query(
                         """INSERT INTO tickets
                            (id, subject, description, status, priority, category, source,
-                            requester_name, requester_email, gmail_thread_id)
-                           VALUES (%s, %s, '', 'open', 'medium', '', 'email', %s, %s, %s)
+                            requester_name, requester_email, gmail_thread_id, priority_source)
+                           VALUES (%s, %s, '', 'open', %s, %s, 'email', %s, %s, %s, 'ai')
                            RETURNING id""",
-                        (ticket_id, clean_subject or subject, from_name, from_email, thread_id),
+                        (ticket_id, clean_subject or subject, ai_priority, ai_category, from_name, from_email, thread_id),
                     )
 
                     # Add the email body as first message

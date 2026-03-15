@@ -87,11 +87,11 @@ export const HelpdeskList = {
       <div class="hd-stats">
         <button class="hd-stat-card ${this._filterStatus === 'active' ? 'hd-stat-active' : ''}" onclick="HelpdeskList.filterStatus('active')">
           <span class="hd-stat-num">${activeCount}</span>
-          <span class="hd-stat-label">Aktive</span>
+          <span class="hd-stat-label">Aktive tickets</span>
         </button>
         <button class="hd-stat-card ${this._filterStatus === 'open' ? 'hd-stat-active' : ''}" onclick="HelpdeskList.filterStatus('open')">
           <span class="hd-stat-num">${stats.open_count}</span>
-          <span class="hd-stat-label">\u00c5bne</span>
+          <span class="hd-stat-label">\u00c5bne tickets</span>
         </button>
         <button class="hd-stat-card ${this._filterStatus === 'in_progress' ? 'hd-stat-active' : ''}" onclick="HelpdeskList.filterStatus('in_progress')">
           <span class="hd-stat-num">${stats.in_progress_count}</span>
@@ -99,15 +99,15 @@ export const HelpdeskList = {
         </button>
         <button class="hd-stat-card ${this._filterStatus === 'resolved' ? 'hd-stat-active' : ''}" onclick="HelpdeskList.filterStatus('resolved')">
           <span class="hd-stat-num">${stats.resolved_count}</span>
-          <span class="hd-stat-label">L\u00f8st</span>
+          <span class="hd-stat-label">L\u00f8ste tickets</span>
         </button>
         <button class="hd-stat-card ${this._filterStatus === 'closed' ? 'hd-stat-active' : ''}" onclick="HelpdeskList.filterStatus('closed')">
           <span class="hd-stat-num">${stats.closed_count}</span>
-          <span class="hd-stat-label">Lukket</span>
+          <span class="hd-stat-label">Lukkede tickets</span>
         </button>
         <button class="hd-stat-card ${this._filterStatus === '' ? 'hd-stat-active' : ''}" onclick="HelpdeskList.filterStatus('')">
           <span class="hd-stat-num">${stats.total}</span>
-          <span class="hd-stat-label">Alle</span>
+          <span class="hd-stat-label">Alle tickets</span>
         </button>
       </div>
     `;
@@ -170,13 +170,10 @@ export const HelpdeskList = {
         ${statsHTML}
         <div class="hd-toolbar">
           <div class="hd-toolbar-left">
-            <select class="input hd-filter-select" onchange="HelpdeskList.filterPriority(this.value)">
-              <option value="" ${this._filterPriority === '' ? 'selected' : ''}>Alle prioriteter</option>
-              <option value="urgent" ${this._filterPriority === 'urgent' ? 'selected' : ''}>Akut</option>
-              <option value="high" ${this._filterPriority === 'high' ? 'selected' : ''}>H\u00f8j</option>
-              <option value="medium" ${this._filterPriority === 'medium' ? 'selected' : ''}>Medium</option>
-              <option value="low" ${this._filterPriority === 'low' ? 'selected' : ''}>Lav</option>
-            </select>
+            <span class="hd-sort-info">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5h10M11 9h7M11 13h4M3 17l3 3 3-3M6 18V4"/></svg>
+              Sorteret efter prioritet
+            </span>
           </div>
           <button class="btn btn-primary btn-sm" onclick="HelpdeskList.openCreateModal()">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -196,6 +193,14 @@ export const HelpdeskList = {
     const prioClass = PRIORITY_CLASSES[t.priority] || '';
     const timeAgo = this._timeAgo(t.created_at);
     const assigneeName = t.assignee_name || 'Ikke tildelt';
+    const isAiPriority = t.priority_source === 'ai';
+
+    const CATEGORY_LABELS: Record<string, string> = {
+      billing: 'Fakturering',
+      technical: 'Teknisk',
+      onboarding: 'Onboarding',
+      general: 'Generelt',
+    };
 
     return `
       <div class="hd-ticket-row" onclick="App.navigateTo('helpdesk-detail', '${t.id}')">
@@ -204,12 +209,12 @@ export const HelpdeskList = {
           <div class="hd-ticket-meta">
             ${t.requester_name ? `<span class="hd-ticket-requester">${escapeHtml(t.requester_name)}</span>` : ''}
             ${(t as any).platform_user_name ? `<span class="hd-ticket-platform-user" title="Linket til ${escapeHtml((t as any).platform_user_name)}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> ${escapeHtml((t as any).platform_user_name)}</span>` : ''}
-            ${t.category ? `<span class="hd-ticket-category">${escapeHtml(t.category)}</span>` : ''}
+            ${t.category ? `<span class="hd-ticket-category">${CATEGORY_LABELS[t.category] || escapeHtml(t.category)}</span>` : ''}
             <span class="hd-ticket-time">${timeAgo}</span>
           </div>
         </div>
         <div class="hd-ticket-badges">
-          <span class="hd-badge ${prioClass}">${prioLabel}</span>
+          <span class="hd-badge ${prioClass}">${prioLabel}${isAiPriority ? '<span class="hd-ai-tag" title="Prioritet sat af AI">AI</span>' : ''}</span>
           <span class="hd-badge ${statusClass}">${statusLabel}</span>
           <span class="hd-ticket-assignee">${escapeHtml(assigneeName)}</span>
         </div>
@@ -328,18 +333,18 @@ export const HelpdeskList = {
           </div>
           <div class="form-row">
             <div class="form-group" style="flex:1">
-              <label class="form-label">Prioritet</label>
+              <label class="form-label">Prioritet <span class="hd-ai-hint">AI klassificerer automatisk</span></label>
               <select class="input" id="hd-priority">
+                <option value="medium" selected>Automatisk (AI)</option>
                 <option value="low">Lav</option>
-                <option value="medium" selected>Medium</option>
                 <option value="high">H\u00f8j</option>
                 <option value="urgent">Akut</option>
               </select>
             </div>
             <div class="form-group" style="flex:1">
-              <label class="form-label">Kategori</label>
+              <label class="form-label">Kategori <span class="hd-ai-hint">Sættes automatisk</span></label>
               <select class="input" id="hd-category">
-                <option value="">V\u00e6lg...</option>
+                <option value="">Automatisk (AI)</option>
                 <option value="billing">Fakturering</option>
                 <option value="technical">Teknisk</option>
                 <option value="onboarding">Onboarding</option>

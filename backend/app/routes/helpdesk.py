@@ -5,7 +5,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import Optional
 from ..database import query, execute, gen_id
-from ..openai_helper import generate_reply_suggestion, is_configured as openai_configured
+from ..openai_helper import generate_reply_suggestion, classify_ticket_priority, is_configured as openai_configured
 
 router = APIRouter()
 
@@ -135,17 +135,35 @@ def get_ticket(ticket_id: str):
 
 @router.post("", status_code=201)
 def create_ticket(data: TicketCreate):
-    """Create a new ticket."""
+    """Create a new ticket. Uses AI to classify priority if not explicitly set."""
     ticket_id = gen_id("tk_")
+
+    priority = data.priority
+    category = data.category
+    priority_source = "manual"
+
+    # If priority is default 'medium' and no explicit override, let AI classify
+    if data.priority == "medium":
+        classification = classify_ticket_priority(
+            subject=data.subject,
+            body=data.description,
+        )
+        priority = classification["priority"]
+        priority_source = "ai"
+        # Also auto-set category if none chosen
+        if not data.category:
+            category = classification["category"]
+
     rows = query(
         """INSERT INTO tickets (id, subject, description, status, priority, category,
-           source, requester_name, requester_email, assignee_id, platform_user_id)
-           VALUES (%s, %s, %s, 'open', %s, %s, %s, %s, %s, %s, %s)
+           source, requester_name, requester_email, assignee_id, platform_user_id, priority_source)
+           VALUES (%s, %s, %s, 'open', %s, %s, %s, %s, %s, %s, %s, %s)
            RETURNING *""",
         (
-            ticket_id, data.subject, data.description, data.priority,
-            data.category, data.source, data.requester_name,
+            ticket_id, data.subject, data.description, priority,
+            category, data.source, data.requester_name,
             data.requester_email, data.assignee_id, data.platform_user_id,
+            priority_source,
         ),
     )
     return rows[0]
@@ -166,6 +184,10 @@ def update_ticket(ticket_id: str, data: TicketUpdate):
         if key in data_dict:
             fields.append(f"{key} = %s")
             params.append(data_dict[key])
+
+    # If priority is manually changed, update source to 'manual'
+    if "priority" in data_dict:
+        fields.append("priority_source = 'manual'")
 
     # Track resolved_at
     if "status" in data_dict:
@@ -233,6 +255,7 @@ def add_ticket_message(ticket_id: str, data: TicketMessageCreate):
                         subject=f"Re: {t['subject']}",
                         body_html=data.body,
                         thread_id=t.get("gmail_thread_id"),
+                        use_template=True,
                     )
                     if result:
                         # Store gmail references
