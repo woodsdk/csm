@@ -49,9 +49,11 @@ class EnrollRequest(BaseModel):
     user_ids: list[str]
 
 class CampaignRequest(BaseModel):
-    segment_id: str
+    segment_ids: list[str] = []   # multiple segments
+    segment_id: str = ""           # backward compat single segment
     brief: str
     subject_hint: str = ""
+    all_users: bool = False        # send to ALL users
 
 
 # ── Stats ────────────────────────────────────────────────────────────
@@ -370,32 +372,46 @@ def reorder_steps(flow_id: str, data: dict):
 
 
 class CampaignPreviewRequest(BaseModel):
-    segment_id: str
+    segment_ids: list[str] = []
+    segment_id: str = ""
     brief: str
     subject_hint: str = ""
+    all_users: bool = False
 
 
 @router.post("/preview-campaign")
 def preview_campaign(data: CampaignPreviewRequest):
-    """Generate a preview for a campaign email using a sample user from the segment."""
+    """Generate a preview for a campaign email using a sample user."""
     from ..marketing_engine import _build_user_context, query_segment_users
     from ..openai_helper import generate_marketing_email
     from ..email_template import wrap_email
 
-    # Get segment
-    segments = query("SELECT * FROM marketing_segments WHERE id = %s", (data.segment_id,))
-    if not segments:
-        return {"error": "Segment not found"}
+    # Resolve segment IDs (backward compat + new multi)
+    seg_ids = data.segment_ids if data.segment_ids else ([data.segment_id] if data.segment_id else [])
 
-    rules = segments[0].get("filter_rules") or {}
-    if isinstance(rules, str):
-        rules = json.loads(rules)
+    # Collect users from all segments or all users
+    users = []
+    if data.all_users:
+        users = query("SELECT * FROM customers WHERE lifecycle != 'churned'") or []
+    elif seg_ids:
+        seen = set()
+        for sid in seg_ids:
+            segs = query("SELECT * FROM marketing_segments WHERE id = %s", (sid,))
+            if not segs:
+                continue
+            rules = segs[0].get("filter_rules") or {}
+            if isinstance(rules, str):
+                rules = json.loads(rules)
+            for u in query_segment_users(rules):
+                if u["id"] not in seen:
+                    seen.add(u["id"])
+                    users.append(u)
+    else:
+        return {"error": "V\u00e6lg mindst \u00e9t segment eller 'Alle brugere'"}
 
-    users = query_segment_users(rules)
     if not users:
-        return {"error": "No users in this segment"}
+        return {"error": "Ingen brugere i de valgte segmenter"}
 
-    # Pick sample user
     import random as rnd
     user = rnd.choice(users)
     context = _build_user_context(user)
@@ -546,10 +562,41 @@ def get_history(flow_id: str = "", limit: int = 50, offset: int = 0):
 
 @router.post("/send-campaign")
 def send_campaign_route(data: CampaignRequest):
-    """Send AI-personalized email to all users in a segment."""
-    from ..marketing_engine import send_campaign
-    result = send_campaign(data.segment_id, data.brief, data.subject_hint)
-    return result
+    """Send AI-personalized email to users in one or more segments."""
+    from ..marketing_engine import send_campaign, send_campaign_to_users, query_segment_users
+
+    seg_ids = data.segment_ids if data.segment_ids else ([data.segment_id] if data.segment_id else [])
+
+    if data.all_users:
+        # Send to all non-churned users
+        users = query("SELECT * FROM customers WHERE lifecycle != 'churned'") or []
+        if not users:
+            return {"error": "Ingen brugere fundet", "sent_count": 0}
+        return send_campaign_to_users(users, data.brief, data.subject_hint)
+    elif len(seg_ids) == 1:
+        # Single segment - use original function
+        return send_campaign(seg_ids[0], data.brief, data.subject_hint)
+    elif len(seg_ids) > 1:
+        # Multi-segment: collect users, deduplicate
+        seen = set()
+        users = []
+        for sid in seg_ids:
+            segs = query("SELECT * FROM marketing_segments WHERE id = %s", (sid,))
+            if not segs:
+                continue
+            rules = segs[0].get("filter_rules") or {}
+            if isinstance(rules, str):
+                import json
+                rules = json.loads(rules)
+            for u in query_segment_users(rules):
+                if u["id"] not in seen:
+                    seen.add(u["id"])
+                    users.append(u)
+        if not users:
+            return {"error": "Ingen brugere i de valgte segmenter", "sent_count": 0}
+        return send_campaign_to_users(users, data.brief, data.subject_hint)
+    else:
+        return {"error": "V\u00e6lg mindst \u00e9t segment", "sent_count": 0}
 
 
 # ── Engine Status ────────────────────────────────────────────────────

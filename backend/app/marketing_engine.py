@@ -554,3 +554,80 @@ def send_campaign(segment_id: str, brief: str, subject_hint: str = "") -> dict:
         "errors": errors[:10],
         "campaign_batch": campaign_batch,
     }
+
+
+def send_campaign_to_users(users: list, brief: str, subject_hint: str = "") -> dict:
+    """Send an AI-personalized email to an arbitrary list of users."""
+    from .openai_helper import generate_marketing_email
+
+    sent_count = 0
+    skipped_count = 0
+    errors = []
+    campaign_batch = gen_id("cb_")
+
+    for user in users:
+        try:
+            recent = query(
+                """SELECT id FROM marketing_emails_sent
+                   WHERE user_id = %s AND brief = %s AND flow_id IS NULL
+                   AND sent_at > NOW() - INTERVAL '24 hours'""",
+                (user["id"], brief),
+            )
+            if recent:
+                skipped_count += 1
+                continue
+
+            context = _build_user_context(user)
+            result = generate_marketing_email(context, brief, subject_hint)
+            if not result:
+                errors.append(f"AI fejl: {user['email']}")
+                continue
+
+            full_html = _wrap_email_template(result["body_html"])
+
+            gmail_result = None
+            send_error = None
+            try:
+                from .google_oauth import is_connected as gmail_connected
+                if gmail_connected():
+                    from .gmail import send_email
+                    gmail_result = send_email(
+                        to=user["email"],
+                        subject=result["subject"],
+                        body_html=full_html,
+                    )
+                else:
+                    send_error = "Gmail ikke forbundet"
+            except Exception as e:
+                send_error = str(e)
+                errors.append(f"Gmail fejl: {user['email']}")
+
+            execute(
+                """INSERT INTO marketing_emails_sent
+                   (id, flow_id, user_id, to_email, subject, body_html, brief, gmail_message_id, campaign_batch, send_error)
+                   VALUES (%s, NULL, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                (
+                    gen_id("mes_"),
+                    user["id"],
+                    user["email"],
+                    result["subject"],
+                    full_html,
+                    brief,
+                    gmail_result.get("message_id") if gmail_result else None,
+                    campaign_batch,
+                    send_error,
+                ),
+            )
+            if not send_error:
+                sent_count += 1
+
+        except Exception as e:
+            errors.append(f"Fejl: {user.get('email', '?')}: {e}")
+
+    return {
+        "sent_count": sent_count,
+        "total_users": len(users),
+        "skipped": skipped_count,
+        "errors": errors[:10],
+        "campaign_batch": campaign_batch,
+    }

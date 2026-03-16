@@ -30,6 +30,42 @@ class ListenerCreate(BaseModel):
     listener_phone: str = ""
 
 
+def _auto_seed_simon(from_date: str, to_date: str):
+    """Auto-seed Simon Ussing as bagvagt for all unfilled slots in range."""
+    # Get Simon's info
+    simon = query(
+        "SELECT id, name, email FROM team_members WHERE id = 'simon' AND is_active = true"
+    )
+    if not simon:
+        return
+
+    s = simon[0]
+    existing = query(
+        "SELECT date, start_time FROM shifts WHERE date >= %s AND date <= %s AND status != 'cancelled'",
+        (from_date, to_date),
+    )
+    taken = set((r["date"], r["start_time"]) for r in existing)
+
+    today = datetime.now().strftime("%Y-%m-%d")
+    d = datetime.strptime(from_date, "%Y-%m-%d")
+    end = datetime.strptime(to_date, "%Y-%m-%d")
+
+    while d <= end:
+        if d.weekday() < 5:  # Mon-Fri
+            date_str = d.strftime("%Y-%m-%d")
+            if date_str >= today:  # Only future dates
+                for slot in SHIFT_SLOTS:
+                    if (date_str, slot["start_time"]) not in taken:
+                        shift_id = gen_id("sh_")
+                        execute(
+                            """INSERT INTO shifts (id, date, start_time, end_time, staff_name, staff_email, staff_id, status)
+                               VALUES (%s, %s, %s, %s, %s, %s, %s, 'confirmed')""",
+                            (shift_id, date_str, slot["start_time"], slot["end_time"],
+                             s["name"], s["email"], s["id"]),
+                        )
+        d += timedelta(days=1)
+
+
 @router.get("")
 def list_shifts(date: Optional[str] = None, from_date: Optional[str] = None, to_date: Optional[str] = None):
     sql = "SELECT * FROM shifts WHERE status != 'cancelled'"
@@ -39,6 +75,12 @@ def list_shifts(date: Optional[str] = None, from_date: Optional[str] = None, to_
         sql += " AND date = %s"
         params.append(date)
     if from_date and to_date:
+        # Auto-seed Simon Ussing on unfilled future slots
+        try:
+            _auto_seed_simon(from_date, to_date)
+        except Exception:
+            pass  # Don't break listing if seeding fails
+
         sql += " AND date >= %s AND date <= %s"
         params.extend([from_date, to_date])
 

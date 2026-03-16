@@ -8247,6 +8247,19 @@
   gap: var(--space-2);
 }
 
+/* Segment picker for campaigns */
+.mk-segment-picker { border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-3); background: var(--bg); }
+.mk-segment-picker .mk-checkbox-all { margin-bottom: var(--space-2); padding-bottom: var(--space-2); border-bottom: 1px solid var(--border); }
+.mk-segment-checkboxes { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.mk-segment-checkboxes.mk-disabled { opacity: 0.4; pointer-events: none; }
+.mk-seg-count { color: var(--text-tertiary); font-size: var(--text-xs); }
+.mk-empty-inline { color: var(--text-tertiary); font-size: var(--text-sm); font-style: italic; }
+
+/* Segment modal */
+.mk-segment-modal { max-width: 560px; }
+.mk-segment-modal .form-row { display: flex; gap: var(--space-3); }
+.mk-segment-modal .form-row .form-group { flex: 1; }
+
 .mk-checkbox {
   display: inline-flex;
   align-items: center;

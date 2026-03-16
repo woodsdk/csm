@@ -39,7 +39,8 @@ export const MarketingPage = {
   _segments: null as MarketingSegment[] | null,
   _history: null as MarketingSentEmail[] | null,
   _stats: null as MarketingStats | null,
-  _campaignSegmentId: '',
+  _campaignSegmentIds: [] as string[],
+  _campaignAllUsers: false,
   _campaignBrief: '',
   _campaignSubject: '',
   _campaignSending: false,
@@ -235,83 +236,104 @@ export const MarketingPage = {
       </div>
     `).join('');
 
-    const newSegForm = this._showSegmentForm ? `
-      <div class="mk-inline-form">
-        <div class="form-group">
-          <label class="form-label">Segmentnavn</label>
-          <input class="input" id="mk-seg-name" type="text" placeholder="Fx: VIP-kunder" value="${escapeHtml(this._newSegName)}">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Beskrivelse</label>
-          <input class="input" id="mk-seg-desc" type="text" placeholder="Kort beskrivelse..." value="${escapeHtml(this._newSegDesc)}">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Brugerstatus</label>
-          <div class="mk-checkbox-group">
-            <label class="mk-checkbox"><input type="checkbox" id="mk-seg-st-active" checked> Aktiv</label>
-            <label class="mk-checkbox"><input type="checkbox" id="mk-seg-st-onboarding"> Onboarding</label>
-            <label class="mk-checkbox"><input type="checkbox" id="mk-seg-st-inactive"> Inaktiv</label>
-            <label class="mk-checkbox"><input type="checkbox" id="mk-seg-st-churned"> Churned</label>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Health score maks</label>
-            <input class="input" id="mk-seg-health-max" type="number" min="0" max="100" placeholder="Alle">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Health score min</label>
-            <input class="input" id="mk-seg-health-min" type="number" min="0" max="100" placeholder="Alle">
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Inaktiv i dage (min)</label>
-            <input class="input" id="mk-seg-inactive-min" type="number" min="0" placeholder="Ingen gr\u00e6nse">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Signup dage siden (min)</label>
-            <input class="input" id="mk-seg-signup-min" type="number" min="0" placeholder="Alle">
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Signup dage siden (maks)</label>
-            <input class="input" id="mk-seg-signup-max" type="number" min="0" placeholder="Alle">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Konsultation</label>
-            <select class="select" id="mk-seg-consultation">
-              <option value="">Alle</option>
-              <option value="yes">Har haft konsultation</option>
-              <option value="no">Ingen konsultation endnu</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="mk-inline-form-actions">
-          <button class="btn btn-primary" onclick="MarketingPage.submitNewSegment()">Opret segment</button>
-          <button class="btn" onclick="MarketingPage.toggleSegmentForm()">Annuller</button>
-        </div>
-      </div>
-    ` : '';
-
     return `
       <div class="mk-segments-section">
         ${cards || '<div class="mk-empty">Ingen segmenter oprettet endnu.</div>'}
         <div class="mk-flow-actions-bar">
-          <button class="btn btn-primary" onclick="MarketingPage.toggleSegmentForm()">
+          <button class="btn btn-primary" onclick="MarketingPage.openSegmentModal()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Opret segment
           </button>
         </div>
-        ${newSegForm}
       </div>
     `;
+  },
+
+  openSegmentModal(): void {
+    const modal = document.getElementById('shift-modal');
+    if (!modal) return;
+
+    modal.innerHTML = `
+      <div class="vp-modal mk-segment-modal" onclick="event.stopPropagation()">
+        <div class="vp-modal-header">
+          <h3>Opret segment</h3>
+          <button class="btn-icon" onclick="MarketingPage.closeSegmentModal()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="vp-modal-body">
+          <div class="form-group">
+            <label class="form-label">Segmentnavn</label>
+            <input class="input" id="mk-seg-name" type="text" placeholder="Fx: VIP-kunder">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Beskrivelse</label>
+            <input class="input" id="mk-seg-desc" type="text" placeholder="Kort beskrivelse...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Brugerstatus</label>
+            <div class="mk-checkbox-group">
+              <label class="mk-checkbox"><input type="checkbox" id="mk-seg-st-active" checked> Aktiv</label>
+              <label class="mk-checkbox"><input type="checkbox" id="mk-seg-st-onboarding"> Onboarding</label>
+              <label class="mk-checkbox"><input type="checkbox" id="mk-seg-st-inactive"> Inaktiv</label>
+              <label class="mk-checkbox"><input type="checkbox" id="mk-seg-st-churned"> Churned</label>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Health score maks</label>
+              <input class="input" id="mk-seg-health-max" type="number" min="0" max="100" placeholder="Alle">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Health score min</label>
+              <input class="input" id="mk-seg-health-min" type="number" min="0" max="100" placeholder="Alle">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Inaktiv i dage (min)</label>
+              <input class="input" id="mk-seg-inactive-min" type="number" min="0" placeholder="Ingen gr\u00e6nse">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Signup dage siden (min)</label>
+              <input class="input" id="mk-seg-signup-min" type="number" min="0" placeholder="Alle">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Signup dage siden (maks)</label>
+              <input class="input" id="mk-seg-signup-max" type="number" min="0" placeholder="Alle">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Konsultation</label>
+              <select class="select" id="mk-seg-consultation">
+                <option value="">Alle</option>
+                <option value="yes">Har haft konsultation</option>
+                <option value="no">Ingen konsultation endnu</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="vp-modal-footer">
+          <button class="btn" onclick="MarketingPage.closeSegmentModal()">Annuller</button>
+          <button class="btn btn-primary" onclick="MarketingPage.submitNewSegment()">Opret segment</button>
+        </div>
+      </div>
+    `;
+
+    modal.classList.add('open');
+    requestAnimationFrame(() => {
+      const nameInput = document.getElementById('mk-seg-name') as HTMLInputElement | null;
+      if (nameInput) nameInput.focus();
+    });
+  },
+
+  closeSegmentModal(): void {
+    const modal = document.getElementById('shift-modal');
+    if (modal) {
+      modal.classList.remove('open');
+      modal.innerHTML = '';
+    }
   },
 
   /* ────────── HISTORY TAB ────────── */
@@ -375,9 +397,17 @@ export const MarketingPage = {
   async _renderCampaign(): Promise<string> {
     if (!this._segments) this._segments = await MarketingAPI.getSegments();
 
-    const segOptions = (this._segments || []).map(s =>
-      `<option value="${s.id}" ${this._campaignSegmentId === s.id ? 'selected' : ''}>${escapeHtml(s.name)} (${s.user_count} brugere)</option>`
+    const segCheckboxes = (this._segments || []).map(s =>
+      `<label class="mk-checkbox">
+        <input type="checkbox" value="${s.id}" ${this._campaignSegmentIds.includes(s.id) ? 'checked' : ''}
+               onchange="MarketingPage.toggleCampaignSegment('${s.id}')" ${this._campaignAllUsers ? 'disabled' : ''}>
+        ${escapeHtml(s.name)} <span class="mk-seg-count">(${s.user_count})</span>
+      </label>`
     ).join('');
+
+    const totalSelected = this._campaignAllUsers
+      ? 'alle'
+      : (this._segments || []).filter(s => this._campaignSegmentIds.includes(s.id)).reduce((sum, s) => sum + (s.user_count || 0), 0);
 
     const previewHtml = this._campaignPreview ? `
       <div class="mk-preview-box" style="margin-top: var(--space-3)">
@@ -385,7 +415,7 @@ export const MarketingPage = {
           <div class="mk-preview-meta">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             Preview for: ${escapeHtml(this._campaignPreview.preview_user.name)} (${escapeHtml(this._campaignPreview.preview_user.clinic_name)})
-            \u00b7 ${this._campaignPreview.segment_user_count} brugere i segment
+            \u00b7 ${this._campaignPreview.segment_user_count} brugere
           </div>
           <div class="mk-preview-actions">
             <button class="btn btn-xs ${this._showCampaignTemplate ? 'btn-primary' : ''}" onclick="MarketingPage.toggleCampaignTemplate()">
@@ -408,15 +438,20 @@ export const MarketingPage = {
       <div class="mk-campaign-section">
         <div class="mk-campaign-info">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-          <span>Send en AI-personaliseret email til alle brugere i et segment. AI'en skriver en unik email til hver bruger baseret p\u00e5 deres data.</span>
+          <span>Send en AI-personaliseret email til brugere i \u00e9t eller flere segmenter. AI'en skriver en unik email til hver bruger baseret p\u00e5 deres data.</span>
         </div>
 
         <div class="form-group">
-          <label class="form-label">V\u00e6lg segment</label>
-          <select class="select" id="mk-campaign-segment" onchange="MarketingPage._campaignSegmentId = this.value">
-            <option value="">V\u00e6lg segment...</option>
-            ${segOptions}
-          </select>
+          <label class="form-label">Modtagere <span class="mk-step-hint">${totalSelected} brugere valgt</span></label>
+          <div class="mk-segment-picker">
+            <label class="mk-checkbox mk-checkbox-all">
+              <input type="checkbox" ${this._campaignAllUsers ? 'checked' : ''} onchange="MarketingPage.toggleAllUsers()">
+              <strong>Alle brugere</strong>
+            </label>
+            <div class="mk-segment-checkboxes ${this._campaignAllUsers ? 'mk-disabled' : ''}">
+              ${segCheckboxes || '<span class="mk-empty-inline">Ingen segmenter oprettet</span>'}
+            </div>
+          </div>
         </div>
 
         <div class="form-group">
@@ -465,6 +500,19 @@ export const MarketingPage = {
 
   toggleSegmentForm(): void {
     this._showSegmentForm = !this._showSegmentForm;
+    (window as any).App.render();
+  },
+
+  toggleCampaignSegment(segId: string): void {
+    const idx = this._campaignSegmentIds.indexOf(segId);
+    if (idx >= 0) this._campaignSegmentIds.splice(idx, 1);
+    else this._campaignSegmentIds.push(segId);
+    (window as any).App.render();
+  },
+
+  toggleAllUsers(): void {
+    this._campaignAllUsers = !this._campaignAllUsers;
+    if (this._campaignAllUsers) this._campaignSegmentIds = [];
     (window as any).App.render();
   },
 
@@ -577,6 +625,7 @@ export const MarketingPage = {
       await MarketingAPI.createSegment({ name, description: desc, filter_rules: rules });
       this._segments = null;
       this._showSegmentForm = false;
+      this.closeSegmentModal();
       (window as any).App.toast('Segment oprettet', 'success');
       (window as any).App.render();
     } catch {
@@ -597,16 +646,14 @@ export const MarketingPage = {
   },
 
   async previewCampaign(): Promise<void> {
-    const segId = (document.getElementById('mk-campaign-segment') as HTMLSelectElement)?.value;
     const brief = (document.getElementById('mk-campaign-brief') as HTMLTextAreaElement)?.value?.trim();
     const subjectHint = (document.getElementById('mk-campaign-subject') as HTMLInputElement)?.value?.trim() || '';
 
-    if (!segId) { (window as any).App.toast('V\u00e6lg et segment', 'error'); return; }
+    if (!this._campaignAllUsers && this._campaignSegmentIds.length === 0) { (window as any).App.toast('V\u00e6lg mindst \u00e9t segment eller "Alle brugere"', 'error'); return; }
     if (!brief) { (window as any).App.toast('Skriv et brief til AI', 'error'); return; }
 
     this._campaignPreviewing = true;
     this._campaignPreview = null;
-    this._campaignSegmentId = segId;
     this._campaignBrief = brief;
     this._campaignSubject = subjectHint;
     (window as any).App.render();
@@ -615,7 +662,7 @@ export const MarketingPage = {
       const resp = await fetch('/api/marketing/preview-campaign', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ segment_id: segId, brief, subject_hint: subjectHint }),
+        body: JSON.stringify({ segment_ids: this._campaignSegmentIds, brief, subject_hint: subjectHint, all_users: this._campaignAllUsers }),
       });
       const result = await resp.json();
 
@@ -637,19 +684,17 @@ export const MarketingPage = {
   },
 
   async sendCampaign(): Promise<void> {
-    const segId = (document.getElementById('mk-campaign-segment') as HTMLSelectElement)?.value;
     const brief = (document.getElementById('mk-campaign-brief') as HTMLTextAreaElement)?.value?.trim();
     const subjectHint = (document.getElementById('mk-campaign-subject') as HTMLInputElement)?.value?.trim() || '';
 
-    if (!segId) { (window as any).App.toast('V\u00e6lg et segment', 'error'); return; }
+    if (!this._campaignAllUsers && this._campaignSegmentIds.length === 0) { (window as any).App.toast('V\u00e6lg mindst \u00e9t segment eller "Alle brugere"', 'error'); return; }
     if (!brief) { (window as any).App.toast('Skriv et brief til AI', 'error'); return; }
 
-    // Find segment name and user count for confirmation
-    const seg = (this._segments || []).find(s => s.id === segId);
-    const segName = seg ? seg.name : 'Ukendt';
-    const userCount = seg ? seg.user_count : '?';
+    const targetDesc = this._campaignAllUsers
+      ? 'ALLE brugere'
+      : (this._segments || []).filter(s => this._campaignSegmentIds.includes(s.id)).map(s => s.name).join(', ');
 
-    if (!confirm(`Er du sikker?\n\nDu er ved at sende en AI-personaliseret email til ${userCount} brugere i segmentet "${segName}".\n\nDenne handling kan ikke fortrydes.`)) {
+    if (!confirm(`Er du sikker?\n\nDu er ved at sende en AI-personaliseret email til ${targetDesc}.\n\nDenne handling kan ikke fortrydes.`)) {
       return;
     }
 
@@ -657,14 +702,19 @@ export const MarketingPage = {
     (window as any).App.render();
 
     try {
-      const result = await MarketingAPI.sendCampaign({ segment_id: segId, brief, subject_hint: subjectHint });
+      const resp = await fetch('/api/marketing/send-campaign', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ segment_ids: this._campaignSegmentIds, brief, subject_hint: subjectHint, all_users: this._campaignAllUsers }),
+      });
+      const result = await resp.json();
       this._stats = null;
       this._history = null;
       this._campaignSending = false;
 
       let msg = `Kampagne sendt: ${result.sent_count ?? result.sent ?? 0} emails`;
-      if (result.skipped) msg += ` (${result.skipped} sprunget over — allerede sendt)`;
-      if (result.errors?.length) msg += ` · ${result.errors.length} fejl`;
+      if (result.skipped) msg += ` (${result.skipped} sprunget over)`;
+      if (result.errors?.length) msg += ` \u00b7 ${result.errors.length} fejl`;
 
       (window as any).App.toast(msg, result.errors?.length ? 'warning' : 'success');
       (window as any).App.render();
