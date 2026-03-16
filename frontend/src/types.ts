@@ -503,6 +503,9 @@ export interface DPASigning {
   cs_notified: boolean;
   customer_name?: string;
   customer_email?: string;
+  recipient_name?: string;
+  recipient_email?: string;
+  recipient_company?: string;
   document_version?: number;
   document_filename?: string;
 }

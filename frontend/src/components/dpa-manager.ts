@@ -190,13 +190,23 @@ export const DPAManager = {
           ${recent.map(s => `
             <div class="dpa-signing-row">
               <div class="dpa-signing-info">
-                <span class="dpa-signing-name">${escapeHtml(s.customer_name || '')}</span>
+                <span class="dpa-signing-name">${escapeHtml(s.customer_name || s.recipient_name || '')}</span>
                 <span class="dpa-signing-meta">
                   Underskrevet ${this._formatDate(s.signed_at || '')} \u00b7 v${s.document_version || '?'} ${s.language === 'da' ? 'DK' : 'EN'}
                   \u00b7 ${escapeHtml(s.signer_name)}
                 </span>
               </div>
-              <span class="dpa-badge dpa-badge-signed">Underskrevet</span>
+              <div class="dpa-signing-actions">
+                <a href="/api/dpa/${s.token}/certificate" target="_blank" class="btn btn-sm" title="Se signing certificate">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Certifikat
+                </a>
+                <a href="/api/dpa/${s.token}/pdf" target="_blank" class="btn btn-sm" title="Download DPA PDF">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  PDF
+                </a>
+                <span class="dpa-badge dpa-badge-signed">Underskrevet</span>
+              </div>
             </div>
           `).join('')}
         </div>

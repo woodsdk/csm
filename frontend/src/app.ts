@@ -133,7 +133,17 @@ export const App = {
     const mainEl = document.getElementById('main');
     if (!sidebarEl || !mainEl) return;
 
-    // Public page — no sidebar
+    // Public pages — re-check URL so render() works from public page callbacks
+    const dpaMatch = window.location.pathname.match(/^\/dpa\/([^/]+)$/);
+    if (dpaMatch) {
+      await this._renderPublicDPAPage();
+      return;
+    }
+    const joinMatch = window.location.pathname.match(/^\/demo\/([^/]+)\/join$/);
+    if (joinMatch) {
+      await this._renderPublicJoinPage();
+      return;
+    }
     if (this.state.page === 'book-demo') {
       await this._renderPublicBookingPage();
       return;

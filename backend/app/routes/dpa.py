@@ -437,8 +437,15 @@ def send_reminder(signing_id: str):
 
     signing_url = f"{BASE_URL}/dpa/{signing['token']}"
 
+    # Resolve name and email (support both customer-linked and manual sends)
+    recipient_name = signing.get('recipient_name') or signing.get('contact_name') or signing.get('customer_name', '')
+    recipient_email = signing.get('recipient_email') or signing.get('contact_email')
+
+    if not recipient_email:
+        return {"error": "Ingen email-adresse fundet for denne DPA"}
+
     email_html = f"""
-        <p>Hej {signing.get('contact_name') or signing.get('customer_name', '')},</p>
+        <p>Hej {recipient_name},</p>
 
         <p>Vi minder venligt om, at din databehandleraftale (DPA) med People's Clinic stadig afventer din underskrift.</p>
 
@@ -459,7 +466,7 @@ def send_reminder(signing_id: str):
 
     from ..gmail import send_email
     result = send_email(
-        to=signing['contact_email'],
+        to=recipient_email,
         subject="P\u00e5mindelse: Databehandleraftale afventer underskrift",
         body_html=email_html,
         use_template=True,
@@ -753,7 +760,8 @@ def process_dpa_reminders():
 
     # 1st reminder: 2 days after send, not yet reminded
     pending_2d = query("""
-        SELECT s.id, s.token, s.language, c.contact_name, c.contact_email, c.name as customer_name,
+        SELECT s.id, s.token, s.language, s.recipient_name, s.recipient_email,
+               c.contact_name, c.contact_email, c.name as customer_name,
                d.version as document_version
         FROM dpa_signings s
         LEFT JOIN customers c ON s.customer_id = c.id
@@ -764,11 +772,13 @@ def process_dpa_reminders():
     """)
 
     for signing in pending_2d:
-        if not signing.get('contact_email'):
+        email = signing.get('recipient_email') or signing.get('contact_email')
+        name = signing.get('recipient_name') or signing.get('contact_name') or signing.get('customer_name', '')
+        if not email:
             continue
         signing_url = f"{BASE_URL}/dpa/{signing['token']}"
         html = f"""
-            <p>Hej {signing.get('contact_name') or signing.get('customer_name', '')},</p>
+            <p>Hej {name},</p>
             <p>Vi minder venligt om, at din databehandleraftale (DPA) med People's Clinic afventer din underskrift.</p>
             <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
                 <tr><td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
@@ -777,13 +787,14 @@ def process_dpa_reminders():
             </table>
             <p>Med venlig hilsen,<br>People's Clinic Teamet</p>
         """
-        result = send_email(to=signing['contact_email'], subject="P\u00e5mindelse: Databehandleraftale afventer", body_html=html, use_template=True)
+        result = send_email(to=email, subject="P\u00e5mindelse: Databehandleraftale afventer", body_html=html, use_template=True)
         if result:
             execute("UPDATE dpa_signings SET reminder_count = 1, last_reminder_at = NOW() WHERE id = %s", (signing['id'],))
 
     # 2nd reminder: 5 days after send, only 1 reminder sent so far
     pending_5d = query("""
-        SELECT s.id, s.token, s.language, c.contact_name, c.contact_email, c.name as customer_name,
+        SELECT s.id, s.token, s.language, s.recipient_name, s.recipient_email,
+               c.contact_name, c.contact_email, c.name as customer_name,
                d.version as document_version
         FROM dpa_signings s
         LEFT JOIN customers c ON s.customer_id = c.id
@@ -794,11 +805,13 @@ def process_dpa_reminders():
     """)
 
     for signing in pending_5d:
-        if not signing.get('contact_email'):
+        email = signing.get('recipient_email') or signing.get('contact_email')
+        name = signing.get('recipient_name') or signing.get('contact_name') or signing.get('customer_name', '')
+        if not email:
             continue
         signing_url = f"{BASE_URL}/dpa/{signing['token']}"
         html = f"""
-            <p>Hej {signing.get('contact_name') or signing.get('customer_name', '')},</p>
+            <p>Hej {name},</p>
             <p>Dette er en venlig p\u00e5mindelse om at din databehandleraftale (DPA) med People's Clinic stadig afventer din underskrift.</p>
             <p>For at vi kan forts\u00e6tte samarbejdet i overensstemmelse med GDPR, beder vi dig venligst underskrive aftalen.</p>
             <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
@@ -808,6 +821,6 @@ def process_dpa_reminders():
             </table>
             <p>Med venlig hilsen,<br>People's Clinic Teamet</p>
         """
-        result = send_email(to=signing['contact_email'], subject="Sidste p\u00e5mindelse: DPA afventer underskrift", body_html=html, use_template=True)
+        result = send_email(to=email, subject="Sidste p\u00e5mindelse: DPA afventer underskrift", body_html=html, use_template=True)
         if result:
             execute("UPDATE dpa_signings SET reminder_count = 2, last_reminder_at = NOW(), cs_notified = true WHERE id = %s", (signing['id'],))

@@ -14,8 +14,12 @@ export const DPASign = {
   _error: '',
 
   setToken(token: string): void {
-    this._token = token;
-    this._step = 'loading';
+    // Only reset to loading if token changed (avoid resetting mid-flow)
+    if (token !== this._token) {
+      this._token = token;
+      this._step = 'loading';
+      this._signingInfo = null;
+    }
   },
 
   async render(): Promise<string> {
