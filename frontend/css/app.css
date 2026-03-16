@@ -2203,7 +2203,8 @@
 .vp-cell:nth-child(6n) { border-right: none; }
 
 .vp-today-col {
-  background: rgba(56, 69, 109, 0.02);
+  background: rgba(79, 95, 163, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(79, 95, 163, 0.12);
 }
 
 .vp-past {
@@ -2246,22 +2247,23 @@
 }
 
 .vp-booked-avatar {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--text-xs);
+  font-size: 10px;
   font-weight: var(--font-bold);
   color: white;
   flex-shrink: 0;
+  opacity: 0.55;
 }
 
 .vp-booked-name {
-  font-size: var(--text-xs);
-  font-weight: var(--font-medium);
-  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
   text-align: center;
   line-height: 1.2;
   max-width: 100%;
@@ -2270,12 +2272,14 @@
   white-space: nowrap;
 }
 
+.vp-cell { position: relative; }
+
 .vp-cancel-btn {
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 18px;
-  height: 18px;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
   border: none;
   background: var(--error-bg);
   color: var(--error);
@@ -2285,6 +2289,7 @@
   align-items: center;
   justify-content: center;
   opacity: 0;
+  z-index: 5;
   transition: all var(--transition-fast);
 }
 

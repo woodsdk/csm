@@ -151,7 +151,7 @@ def list_pending_customers():
         FROM dpa_signings s
         LEFT JOIN customers c ON s.customer_id = c.id
         LEFT JOIN dpa_documents d ON s.document_id = d.id
-        WHERE s.status = 'pending'
+        WHERE s.status = 'pending' AND s.is_archived = false
         ORDER BY s.sent_at DESC
     """)
     return signings
@@ -169,6 +169,7 @@ def list_signing_history():
         FROM dpa_signings s
         LEFT JOIN customers c ON s.customer_id = c.id
         LEFT JOIN dpa_documents d ON s.document_id = d.id
+        WHERE s.is_archived = false
         ORDER BY s.sent_at DESC
     """)
     return history
@@ -179,13 +180,24 @@ def get_dpa_stats():
     """Dashboard stats for DPA overview."""
     stats = query("""
         SELECT
-            (SELECT COUNT(*) FROM dpa_signings WHERE status = 'pending') as pending_count,
-            (SELECT COUNT(*) FROM dpa_signings WHERE status = 'signed') as signed_count,
-            (SELECT COUNT(*) FROM dpa_signings WHERE status = 'expired') as expired_count,
-            (SELECT COUNT(*) FROM dpa_signings WHERE status = 'pending' AND cs_notified = true) as needs_attention_count,
-            (SELECT COUNT(*) FROM dpa_signings) as total_sent
+            (SELECT COUNT(*) FROM dpa_signings WHERE status = 'pending' AND is_archived = false) as pending_count,
+            (SELECT COUNT(*) FROM dpa_signings WHERE status = 'signed' AND is_archived = false) as signed_count,
+            (SELECT COUNT(*) FROM dpa_signings WHERE status = 'expired' AND is_archived = false) as expired_count,
+            (SELECT COUNT(*) FROM dpa_signings WHERE status = 'pending' AND cs_notified = true AND is_archived = false) as needs_attention_count,
+            (SELECT COUNT(*) FROM dpa_signings WHERE is_archived = false) as total_sent
     """)
     return stats[0] if stats else {}
+
+
+@router.delete("/signings/{signing_id}")
+def archive_signing(signing_id: str):
+    """Soft-delete (archive) a signing. Data is preserved but hidden from lists."""
+    signings = query("SELECT id, status FROM dpa_signings WHERE id = %s", (signing_id,))
+    if not signings:
+        return {"error": "Signing ikke fundet"}
+
+    execute("UPDATE dpa_signings SET is_archived = true WHERE id = %s", (signing_id,))
+    return {"ok": True}
 
 
 @router.get("/audit-log")
@@ -255,7 +267,7 @@ def send_dpa(data: DPASendRequest):
     """, (data.language,))
 
     if not docs:
-        return {"error": f"Ingen aktuel DPA fundet for sprog: {data.language}"}
+        return {"error": f"Ingen aktuel databehandleraftale fundet for sprog: {data.language}"}
 
     doc = docs[0]
 
@@ -276,15 +288,15 @@ def send_dpa(data: DPASendRequest):
     email_html = f"""
         <p>Hej {customer.get('contact_name') or customer.get('name', '')},</p>
 
-        <p>Vi sender hermed vores databehandleraftale (DPA), som vi beder dig genneml\u00e6se og underskrive digitalt.</p>
+        <p>Vi sender hermed vores databehandleraftale, som vi beder dig genneml\u00e6se og underskrive digitalt.</p>
 
-        <p>Databehandleraftalen sikrer, at behandlingen af persondata mellem dig og People's Clinic sker i overensstemmelse med GDPR.</p>
+        <p>Databehandleraftalen sikrer, at behandlingen af persondata mellem dig og People's Doctor sker i overensstemmelse med GDPR.</p>
 
         <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
             <tr>
                 <td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
                     <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block;">
-                        L\u00e6s og underskriv DPA
+                        L\u00e6s og underskriv databehandleraftale
                     </a>
                 </td>
             </tr>
@@ -297,13 +309,13 @@ def send_dpa(data: DPASendRequest):
 
         <p>Har du sp\u00f8rgsm\u00e5l, er du velkommen til at kontakte os.</p>
 
-        <p>Med venlig hilsen,<br>People's Clinic Teamet</p>
+        <p>Med venlig hilsen,<br>People's Doctor Teamet</p>
     """
 
     from ..gmail import send_email
     result = send_email(
         to=customer['contact_email'],
-        subject="Databehandleraftale \u2014 People's Clinic",
+        subject="Databehandleraftale \u2014 People's Doctor",
         body_html=email_html,
         use_template=True,
     )
@@ -328,7 +340,7 @@ def send_dpa_manual(data: DPAManualSendRequest):
     """, (data.language,))
 
     if not docs:
-        return {"error": f"Ingen aktuel DPA fundet for sprog: {data.language}"}
+        return {"error": f"Ingen aktuel databehandleraftale fundet for sprog: {data.language}"}
 
     doc = docs[0]
 
@@ -339,7 +351,7 @@ def send_dpa_manual(data: DPAManualSendRequest):
         LIMIT 1
     """, (data.email,))
     if existing:
-        return {"error": "Der er allerede en afventende DPA for denne email"}
+        return {"error": "Der er allerede en afventende databehandleraftale for denne email"}
 
     # Generate secure token
     token = secrets.token_urlsafe(32)
@@ -361,34 +373,34 @@ def send_dpa_manual(data: DPAManualSendRequest):
     email_html = f"""
         <p>Hej {data.name},</p>
 
-        <p>Vi sender hermed vores databehandleraftale (DPA), som vi beder dig gennemlæse og underskrive digitalt.</p>
+        <p>Vi sender hermed vores databehandleraftale, som vi beder dig genneml\u00e6se og underskrive digitalt.</p>
 
-        <p>Databehandleraftalen sikrer, at behandlingen af persondata mellem dig og People's Clinic sker i overensstemmelse med GDPR.</p>
+        <p>Databehandleraftalen sikrer, at behandlingen af persondata mellem dig og People's Doctor sker i overensstemmelse med GDPR.</p>
 
         <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
             <tr>
                 <td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
                     <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block;">
-                        Læs og underskriv DPA
+                        L\u00e6s og underskriv databehandleraftale
                     </a>
                 </td>
             </tr>
         </table>
 
         <p style="font-size: 13px; color: #6b7280;">
-            Dokumentet er på {lang_label} (version {doc['version']}).<br>
-            Linket udløber om 30 dage.
+            Dokumentet er p\u00e5 {lang_label} (version {doc['version']}).<br>
+            Linket udl\u00f8ber om 30 dage.
         </p>
 
-        <p>Har du spørgsmål, er du velkommen til at kontakte os.</p>
+        <p>Har du sp\u00f8rgsm\u00e5l, er du velkommen til at kontakte os.</p>
 
-        <p>Med venlig hilsen,<br>People's Clinic Teamet</p>
+        <p>Med venlig hilsen,<br>People's Doctor Teamet</p>
     """
 
     from ..gmail import send_email
     result = send_email(
         to=data.email,
-        subject="Databehandleraftale — People's Clinic",
+        subject="Databehandleraftale \u2014 People's Doctor",
         body_html=email_html,
         use_template=True,
     )
@@ -433,7 +445,7 @@ def send_reminder(signing_id: str):
 
     signing = signings[0]
     if signing['status'] != 'pending':
-        return {"error": "DPA er allerede underskrevet eller udl\u00f8bet"}
+        return {"error": "Databehandleraftalen er allerede underskrevet eller udl\u00f8bet"}
 
     signing_url = f"{BASE_URL}/dpa/{signing['token']}"
 
@@ -442,12 +454,12 @@ def send_reminder(signing_id: str):
     recipient_email = signing.get('recipient_email') or signing.get('contact_email')
 
     if not recipient_email:
-        return {"error": "Ingen email-adresse fundet for denne DPA"}
+        return {"error": "Ingen email-adresse fundet for denne databehandleraftale"}
 
     email_html = f"""
         <p>Hej {recipient_name},</p>
 
-        <p>Vi minder venligt om, at din databehandleraftale (DPA) med People's Clinic stadig afventer din underskrift.</p>
+        <p>Vi minder venligt om, at din databehandleraftale med People's Doctor stadig afventer din underskrift.</p>
 
         <p>For at vi kan forts\u00e6tte samarbejdet i overensstemmelse med GDPR, beder vi dig venligst underskrive aftalen hurtigst muligt.</p>
 
@@ -455,13 +467,13 @@ def send_reminder(signing_id: str):
             <tr>
                 <td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
                     <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block;">
-                        L\u00e6s og underskriv DPA
+                        L\u00e6s og underskriv databehandleraftale
                     </a>
                 </td>
             </tr>
         </table>
 
-        <p>Med venlig hilsen,<br>People's Clinic Teamet</p>
+        <p>Med venlig hilsen,<br>People's Doctor Teamet</p>
     """
 
     from ..gmail import send_email
@@ -569,17 +581,17 @@ def sign_dpa(token: str, data: DPASignRequest, request: Request):
     signing = signings[0]
 
     if signing['status'] == 'signed':
-        return {"error": "DPA er allerede underskrevet", "already_signed": True}
+        return {"error": "Databehandleraftalen er allerede underskrevet", "already_signed": True}
 
     if signing['status'] == 'expired':
-        return {"error": "Linket er udl\u00f8bet. Kontakt People's Clinic for et nyt link."}
+        return {"error": "Linket er udl\u00f8bet. Kontakt People's Doctor for et nyt link."}
 
     # Check expiry
     if signing.get('expires_at'):
         expires = datetime.fromisoformat(signing['expires_at']) if isinstance(signing['expires_at'], str) else signing['expires_at']
         if datetime.now(expires.tzinfo) > expires:
             execute("UPDATE dpa_signings SET status = 'expired' WHERE token = %s", (token,))
-            return {"error": "Linket er udl\u00f8bet. Kontakt People's Clinic for et nyt link."}
+            return {"error": "Linket er udl\u00f8bet. Kontakt People's Doctor for et nyt link."}
 
     # Get client IP and user agent
     client_ip = request.client.host if request.client else ""
@@ -632,7 +644,7 @@ def get_signing_certificate(token: str):
     """, (token,))
 
     if not signings:
-        return {"error": "Ingen underskrevet DPA fundet"}
+        return {"error": "Ingen underskrevet databehandleraftale fundet"}
 
     s = signings[0]
     lang_label = "Dansk" if s.get('language') == 'da' else "English"
@@ -655,7 +667,7 @@ def get_signing_certificate(token: str):
 <html lang="da">
 <head>
     <meta charset="UTF-8">
-    <title>DPA Signing Certificate</title>
+    <title>Signing Certificate — Databehandleraftale</title>
     <style>
         body {{ font-family: 'Inter', -apple-system, sans-serif; max-width: 700px; margin: 40px auto; padding: 20px; color: #26304f; }}
         .cert-header {{ text-align: center; border-bottom: 2px solid #4f5fa3; padding-bottom: 20px; margin-bottom: 30px; }}
@@ -672,7 +684,7 @@ def get_signing_certificate(token: str):
 <body>
     <div class="cert-header">
         <h1>Signing Certificate</h1>
-        <p>Databehandleraftale &mdash; People's Clinic</p>
+        <p>Databehandleraftale &mdash; People's Doctor</p>
     </div>
 
     <div class="cert-section">
@@ -699,7 +711,7 @@ def get_signing_certificate(token: str):
 
     <div class="cert-footer">
         <p>Dette certifikat bekr\u00e6fter at ovenst\u00e5ende person digitalt har underskrevet databehandleraftalen p\u00e5 vegne af {display_name}.</p>
-        <p>Genereret af People's Clinic &mdash; SynergyHub</p>
+        <p>Genereret af People's Doctor &mdash; SynergyHub</p>
     </div>
 </body>
 </html>"""
@@ -716,30 +728,31 @@ def _send_confirmation_email(signing: dict, data: DPASignRequest):
         return
 
     cert_url = f"{BASE_URL}/api/dpa/{signing['token']}/certificate"
+    company_name = signing.get('customer_name') or signing.get('recipient_company') or signing.get('recipient_name') or ''
 
     email_html = f"""
-        <p>Hej {data.signer_name},</p>
+<p>Hej {data.signer_name},</p>
 
-        <p>Tak for at du har underskrevet databehandleraftalen med People's Clinic.</p>
+<p>Tak for at du har underskrevet databehandleraftalen med People's Doctor.</p>
 
-        <p><strong>Kvittering:</strong></p>
-        <ul style="color: #4b5563;">
-            <li>Kunde: {signing.get('customer_name', '')}</li>
-            <li>Dokument: DPA v{signing.get('document_version', '')} ({signing.get('language', 'da').upper()})</li>
-            <li>Underskrevet af: {data.signer_name}</li>
-            <li>Dato: {datetime.now().strftime('%d/%m/%Y kl. %H:%M')}</li>
-        </ul>
+<p><strong>Kvittering:</strong></p>
+<table cellpadding="0" cellspacing="0" border="0" style="margin: 8px 0 16px 0; font-size: 15px; color: #4b5563;">
+  <tr><td style="padding: 4px 0;">Virksomhed:</td><td style="padding: 4px 0 4px 12px;">{company_name}</td></tr>
+  <tr><td style="padding: 4px 0;">Dokument:</td><td style="padding: 4px 0 4px 12px;">Databehandleraftale v{signing.get('document_version', '')} ({signing.get('language', 'da').upper()})</td></tr>
+  <tr><td style="padding: 4px 0;">Underskrevet af:</td><td style="padding: 4px 0 4px 12px;">{data.signer_name}</td></tr>
+  <tr><td style="padding: 4px 0;">Dato:</td><td style="padding: 4px 0 4px 12px;">{datetime.now().strftime('%d/%m/%Y kl. %H:%M')}</td></tr>
+</table>
 
-        <p>Du kan til enhver tid se dit signing certificate her:<br>
-        <a href="{cert_url}" style="color: #4f5fa3;">{cert_url}</a></p>
+<p>Du kan til enhver tid se dit signing certificate her:<br>
+<a href="{cert_url}" style="color: #4f5fa3;">{cert_url}</a></p>
 
-        <p>Med venlig hilsen,<br>People's Clinic Teamet</p>
+<p>Med venlig hilsen,<br>People's Doctor Teamet</p>
     """
 
     from ..gmail import send_email
     send_email(
         to=email,
-        subject="DPA underskrevet \u2014 bekr\u00e6ftelse",
+        subject="Databehandleraftale underskrevet \u2014 bekr\u00e6ftelse",
         body_html=email_html,
         use_template=True,
     )
@@ -783,13 +796,13 @@ def process_dpa_reminders():
         signing_url = f"{BASE_URL}/dpa/{signing['token']}"
         html = f"""
             <p>Hej {name},</p>
-            <p>Vi minder venligt om, at din databehandleraftale (DPA) med People's Clinic afventer din underskrift.</p>
+            <p>Vi minder venligt om, at din databehandleraftale med People's Doctor afventer din underskrift.</p>
             <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
                 <tr><td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
-                    <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px;">L\u00e6s og underskriv DPA</a>
+                    <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px;">L\u00e6s og underskriv databehandleraftale</a>
                 </td></tr>
             </table>
-            <p>Med venlig hilsen,<br>People's Clinic Teamet</p>
+            <p>Med venlig hilsen,<br>People's Doctor Teamet</p>
         """
         result = send_email(to=email, subject="P\u00e5mindelse: Databehandleraftale afventer", body_html=html, use_template=True)
         if result:
@@ -816,15 +829,15 @@ def process_dpa_reminders():
         signing_url = f"{BASE_URL}/dpa/{signing['token']}"
         html = f"""
             <p>Hej {name},</p>
-            <p>Dette er en venlig p\u00e5mindelse om at din databehandleraftale (DPA) med People's Clinic stadig afventer din underskrift.</p>
+            <p>Dette er en venlig p\u00e5mindelse om at din databehandleraftale med People's Doctor stadig afventer din underskrift.</p>
             <p>For at vi kan forts\u00e6tte samarbejdet i overensstemmelse med GDPR, beder vi dig venligst underskrive aftalen.</p>
             <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
                 <tr><td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
-                    <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px;">Underskriv DPA nu</a>
+                    <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px;">Underskriv databehandleraftale nu</a>
                 </td></tr>
             </table>
-            <p>Med venlig hilsen,<br>People's Clinic Teamet</p>
+            <p>Med venlig hilsen,<br>People's Doctor Teamet</p>
         """
-        result = send_email(to=email, subject="Sidste p\u00e5mindelse: DPA afventer underskrift", body_html=html, use_template=True)
+        result = send_email(to=email, subject="Sidste p\u00e5mindelse: Databehandleraftale afventer underskrift", body_html=html, use_template=True)
         if result:
             execute("UPDATE dpa_signings SET reminder_count = 2, last_reminder_at = NOW(), cs_notified = true WHERE id = %s", (signing['id'],))

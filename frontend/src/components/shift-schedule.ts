@@ -174,12 +174,12 @@ export const ShiftSchedule = {
           const avatarColor = colorMap.get(shift.staff_name) || '#94a3b8';
           const listeners = shift.listeners || [];
 
-          html += `<div class="vp-booked">
-            <div class="vp-booked-avatar" style="background: ${avatarColor}">${initials}</div>
-            <div class="vp-booked-name">${escapeHtml(shift.staff_name)}</div>
-            ${!isPast ? `<button class="vp-cancel-btn" onclick="event.stopPropagation(); ShiftSchedule.cancelShift('${shift.id}')" title="Afmeld">
+          html += `${!isPast ? `<button class="vp-cancel-btn" onclick="event.stopPropagation(); ShiftSchedule.cancelShift('${shift.id}')" title="Afmeld">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>` : ''}`;
+            </button>` : ''}
+          <div class="vp-booked">
+            <div class="vp-booked-avatar" style="background: ${avatarColor}">${initials}</div>
+            <div class="vp-booked-name">${escapeHtml(shift.staff_name)}</div>`;
 
           // Listeners
           if (listeners.length > 0) {

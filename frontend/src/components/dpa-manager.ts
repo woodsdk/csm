@@ -37,8 +37,8 @@ export const DPAManager = {
     return `
       <div class="dpa-container">
         <div class="dpa-header">
-          <h2 class="dpa-title">Databehandleraftaler (DPA)</h2>
-          ${!hasDocs ? '<div class="dpa-warning">Upload en DPA-PDF under Dokumenter-fanen f\u00f8r du kan sende underskriftslinks.</div>' : ''}
+          <h2 class="dpa-title">Databehandleraftaler (DBA)</h2>
+          ${!hasDocs ? '<div class="dpa-warning">Upload en databehandleraftale (PDF) under Dokumenter-fanen f\u00f8r du kan sende underskriftslinks.</div>' : ''}
         </div>
 
         <div class="dpa-stats">
@@ -89,7 +89,7 @@ export const DPAManager = {
         <div class="dpa-section dpa-send-section">
           <h3 class="dpa-section-title">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-            Send DPA til underskrift
+            Send databehandleraftale til underskrift
           </h3>
           <div class="dpa-send-form">
             <div class="form-row">
@@ -114,18 +114,18 @@ export const DPAManager = {
                   <option value="en">English</option>
                 </select>
               </div>
-              <div class="form-group" style="flex: 0 0 auto; display: flex; align-items: flex-end">
-                <button class="btn btn-primary ${this._sending ? 'btn-loading' : ''}" id="dpa-send-btn" onclick="DPAManager.sendManual()" ${this._sending ? 'disabled' : ''}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-                  ${this._sending ? 'Sender...' : 'Send DPA'}
-                </button>
-              </div>
+            </div>
+            <div style="margin-top: var(--space-2); display: flex; justify-content: flex-end;">
+              <button class="btn btn-primary ${this._sending ? 'btn-loading' : ''}" id="dpa-send-btn" onclick="DPAManager.sendManual()" ${this._sending ? 'disabled' : ''}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                ${this._sending ? 'Sender...' : 'Send databehandleraftale'}
+              </button>
             </div>
           </div>
         </div>`;
     } else {
       html += `<div class="dpa-empty">
-        <p>Upload en DPA-PDF under <strong>Dokumenter</strong>-fanen f\u00f8r du kan sende underskriftslinks.</p>
+        <p>Upload en databehandleraftale (PDF) under <strong>Dokumenter</strong>-fanen f\u00f8r du kan sende underskriftslinks.</p>
       </div>`;
     }
 
@@ -173,7 +173,7 @@ export const DPAManager = {
       html += `<div class="dpa-section">
         <div class="dpa-empty" style="padding: var(--space-4)">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <p>Ingen afventende underskrifter. Brug formularen ovenfor til at sende en DPA.</p>
+          <p>Ingen afventende underskrifter. Brug formularen ovenfor til at sende en databehandleraftale.</p>
         </div>
       </div>`;
     }
@@ -201,10 +201,13 @@ export const DPAManager = {
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                   Certifikat
                 </a>
-                <a href="/api/dpa/${s.token}/pdf" target="_blank" class="btn btn-sm" title="Download DPA PDF">
+                <a href="/api/dpa/${s.token}/pdf" target="_blank" class="btn btn-sm" title="Download PDF">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                   PDF
                 </a>
+                <button class="btn btn-sm" style="color: var(--error)" onclick="DPAManager.archiveSigning('${s.id}', '${escapeHtml(s.customer_name || s.recipient_name || '')}')" title="Fjern fra listen">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
                 <span class="dpa-badge dpa-badge-signed">Underskrevet</span>
               </div>
             </div>
@@ -237,7 +240,7 @@ export const DPAManager = {
     let html = `
       <div class="dpa-section">
         <div class="dpa-doc-upload">
-          <h3 class="dpa-section-title">Upload ny DPA-version</h3>
+          <h3 class="dpa-section-title">Upload ny version</h3>
           <div class="dpa-upload-form">
             <div class="form-row">
               <div class="form-group" style="flex:0 0 80px">
@@ -259,7 +262,7 @@ export const DPAManager = {
             <div style="margin-top: var(--space-3); display: flex; justify-content: flex-end;">
               <button class="btn btn-primary" id="dpa-upload-btn" onclick="DPAManager.uploadDocument()">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                Upload DPA
+                Upload
               </button>
             </div>
           </div>
@@ -268,7 +271,7 @@ export const DPAManager = {
     `;
 
     if (versions.length === 0) {
-      html += `<div class="dpa-empty"><p>Ingen DPA-dokumenter uploadet endnu.</p></div>`;
+      html += `<div class="dpa-empty"><p>Ingen dokumenter uploadet endnu.</p></div>`;
     } else {
       for (const v of versions) {
         const docs = grouped[v];
@@ -316,15 +319,15 @@ export const DPAManager = {
     `;
 
     if (log.length === 0) {
-      html += '<div class="dpa-empty"><p>Ingen DPA-handlinger endnu.</p></div>';
+      html += '<div class="dpa-empty"><p>Ingen handlinger endnu.</p></div>';
     } else {
       html += '<div class="dpa-audit-list">';
       for (const entry of log) {
         const isSigned = entry.status === 'signed';
         const date = isSigned ? entry.signed_at : entry.sent_at;
         const action = isSigned
-          ? `<strong>${escapeHtml(entry.customer_name || '')}</strong> underskrev DPA v${entry.document_version || '?'} (${entry.language === 'da' ? 'dansk' : 'engelsk'})`
-          : `DPA v${entry.document_version || '?'} (${entry.language === 'da' ? 'dansk' : 'engelsk'}) sendt til <strong>${escapeHtml(entry.customer_name || '')}</strong>`;
+          ? `<strong>${escapeHtml(entry.customer_name || '')}</strong> underskrev databehandleraftale v${entry.document_version || '?'} (${entry.language === 'da' ? 'dansk' : 'engelsk'})`
+          : `Databehandleraftale v${entry.document_version || '?'} (${entry.language === 'da' ? 'dansk' : 'engelsk'}) sendt til <strong>${escapeHtml(entry.customer_name || '')}</strong>`;
 
         html += `
           <div class="dpa-audit-entry">
@@ -376,7 +379,7 @@ export const DPAManager = {
     try {
       const result = await DPAAPI.sendManual({ name, email, company, language });
       if (result.ok) {
-        (window as any).App.toast(`DPA sendt til ${name}!`, 'success');
+        (window as any).App.toast(`Databehandleraftale sendt til ${name}!`, 'success');
         // Clear form & reload
         this._stats = null;
         this._pending = [];
@@ -386,7 +389,7 @@ export const DPAManager = {
         (window as any).App.toast(result.error || 'Fejl ved afsendelse', 'error');
       }
     } catch {
-      (window as any).App.toast('Kunne ikke sende DPA', 'error');
+      (window as any).App.toast('Kunne ikke sende databehandleraftale', 'error');
     }
     this._sending = false;
   },
@@ -429,13 +432,32 @@ export const DPAManager = {
       if (result.error) {
         (window as any).App.toast(result.error, 'error');
       } else {
-        (window as any).App.toast('DPA-dokument uploadet!', 'success');
+        (window as any).App.toast('Dokument uploadet!', 'success');
         (window as any).App.render();
       }
     } catch {
       (window as any).App.toast('Fejl ved upload', 'error');
     } finally {
       if (btn) { btn.innerHTML = 'Upload'; btn.disabled = false; }
+    }
+  },
+
+  async archiveSigning(signingId: string, name: string): Promise<void> {
+    const confirmed = confirm(`Er du sikker på at du vil fjerne "${name}" fra listen?\n\nDette fjerner den fra oversigten, men data bevares i systemet.`);
+    if (!confirmed) return;
+    const doubleConfirm = confirm(`Bekræft venligst: Fjern "${name}" fra DBA-listen?`);
+    if (!doubleConfirm) return;
+
+    try {
+      const result = await DPAAPI.archiveSigning(signingId);
+      if (result.ok) {
+        (window as any).App.toast('Fjernet fra listen', 'success');
+        (window as any).App.render();
+      } else {
+        (window as any).App.toast(result.error || 'Fejl', 'error');
+      }
+    } catch {
+      (window as any).App.toast('Kunne ikke fjerne', 'error');
     }
   },
 

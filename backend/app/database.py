@@ -703,6 +703,7 @@ def init():
     _safe_exec("ALTER TABLE dpa_signings ADD COLUMN IF NOT EXISTS recipient_email TEXT NOT NULL DEFAULT ''", label="dpa_signings_recipient_email")
     _safe_exec("ALTER TABLE dpa_signings ADD COLUMN IF NOT EXISTS recipient_company TEXT NOT NULL DEFAULT ''", label="dpa_signings_recipient_company")
     _safe_exec("ALTER TABLE dpa_signings ALTER COLUMN customer_id DROP NOT NULL", label="dpa_signings_customer_id_nullable")
+    _safe_exec("ALTER TABLE dpa_signings ADD COLUMN IF NOT EXISTS is_archived BOOLEAN NOT NULL DEFAULT false", label="dpa_signings_is_archived")
 
     # Dismissed signals: track which CS signals have been dismissed
     _safe_exec("""

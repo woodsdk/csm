@@ -189,10 +189,11 @@ def wrap_email(body_html: str, preheader: str = "", ticket_id: str = "") -> str:
 
             <!-- Footer -->
             <div class="email-footer">
-              <div class="footer-brand">People's Clinic</div>
+              <div class="footer-brand">People's Doctor</div>
               <div class="footer-contact">
-                Telefon: +45 XX XX XX XX &nbsp;|&nbsp; <a href="mailto:support@peoplesclinic.dk">support@peoplesclinic.dk</a><br>
-                <a href="https://peoplesclinic.dk">peoplesclinic.dk</a>
+                Teglv\u00e6rksvej 2, 5600 Faaborg &nbsp;|&nbsp; CVR: 40930809<br>
+                Telefon: <a href="tel:+4552515025">+45 52 51 50 25</a> &nbsp;|&nbsp; <a href="mailto:support@peoplesdoctor.com">support@peoplesdoctor.com</a><br>
+                <a href="https://peoplesdoctor.com">peoplesdoctor.com</a>
               </div>
             </div>
           </div>

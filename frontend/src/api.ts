@@ -852,6 +852,11 @@ export const DPAAPI = {
     });
     return res.json();
   },
+
+  async archiveSigning(signingId: string): Promise<{ ok?: boolean; error?: string }> {
+    const res = await fetch(`${API_BASE}/dpa/signings/${signingId}`, { method: 'DELETE' });
+    return res.json();
+  },
 };
 (window as any).DPAAPI = DPAAPI;
 

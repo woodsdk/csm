@@ -41,7 +41,7 @@ export const DPASign = {
         }
       } catch {
         this._step = 'error';
-        this._error = 'Kunne ikke indl\u00e6se DPA-information.';
+        this._error = 'Kunne ikke indl\u00e6se information.';
       }
     }
 
@@ -51,7 +51,7 @@ export const DPASign = {
     return `
       <div class="dpa-public">
         <div class="dpa-public-header">
-          <img src="/assets/peoples-clinic.svg" alt="People's Clinic" class="dpa-public-logo" onerror="this.style.display='none'">
+          <img src="/assets/peoples-clinic.svg" alt="People's Doctor" class="dpa-public-logo" onerror="this.style.display='none'">
         </div>
 
         <div class="dpa-public-content">
@@ -65,7 +65,7 @@ export const DPASign = {
         </div>
 
         <div class="dpa-public-footer">
-          <p>People's Clinic \u00b7 Databehandleraftale</p>
+          <p>People's Doctor \u00b7 Databehandleraftale</p>
         </div>
       </div>
     `;
@@ -75,7 +75,7 @@ export const DPASign = {
     return `
       <div class="dpa-public-center">
         <span class="vp-spinner"></span>
-        <p>Indl\u00e6ser databehandleraftale...</p>
+        <p>Indl\u00e6ser...</p>
       </div>
     `;
   },
@@ -88,7 +88,7 @@ export const DPASign = {
         </svg>
         <h2>Ugyldigt link</h2>
         <p>${escapeHtml(this._error)}</p>
-        <p style="margin-top: 16px; color: #6b7280;">Kontakt People's Clinic for at f\u00e5 tilsendt et nyt link.</p>
+        <p style="margin-top: 16px; color: #6b7280;">Kontakt People's Doctor for at f\u00e5 tilsendt et nyt link.</p>
       </div>
     `;
   },
@@ -100,7 +100,7 @@ export const DPASign = {
           <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
         </svg>
         <h2>Linket er udl\u00f8bet</h2>
-        <p>Dette underskriftslink er ikke l\u00e6ngere gyldigt. Kontakt People's Clinic for at f\u00e5 tilsendt et nyt link.</p>
+        <p>Dette underskriftslink er ikke l\u00e6ngere gyldigt. Kontakt People's Doctor for at f\u00e5 tilsendt et nyt link.</p>
       </div>
     `;
   },
@@ -112,7 +112,7 @@ export const DPASign = {
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="1.5">
           <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
         </svg>
-        <h2>DPA allerede underskrevet</h2>
+        <h2>Allerede underskrevet</h2>
         <p>Denne databehandleraftale blev underskrevet af <strong>${escapeHtml(info?.signer_name || '')}</strong>
         ${info?.signed_at ? ` den ${new Date(info.signed_at).toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' })}` : ''}.</p>
         <a href="/api/dpa/${this._token}/certificate" target="_blank" class="btn btn-primary" style="margin-top: 16px;">
@@ -192,7 +192,7 @@ export const DPASign = {
             </button>
             <button class="btn btn-primary" id="dpa-sign-btn" onclick="DPASign.submitSignature()">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-              Underskriv DPA
+              Underskriv
             </button>
           </div>
         </div>
@@ -213,7 +213,7 @@ export const DPASign = {
         <div class="dpa-done-details">
           <div class="dpa-done-row"><span>Underskrevet af:</span><strong>${escapeHtml(info?._signedName || '')}</strong></div>
           <div class="dpa-done-row"><span>Dato:</span><strong>${new Date().toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</strong></div>
-          <div class="dpa-done-row"><span>Dokument:</span><strong>DPA v${info?.document_version || '?'} (${info?.language === 'en' ? 'English' : 'Dansk'})</strong></div>
+          <div class="dpa-done-row"><span>Dokument:</span><strong>Databehandleraftale v${info?.document_version || '?'} (${info?.language === 'en' ? 'English' : 'Dansk'})</strong></div>
         </div>
 
         <p style="color: #6b7280; margin-top: 16px;">En bekr\u00e6ftelse er sendt til din email.</p>
@@ -270,11 +270,11 @@ export const DPASign = {
         (window as any).App.render();
       } else {
         alert(result.error || 'Fejl ved underskrift');
-        if (btn) { btn.innerHTML = 'Underskriv DPA'; btn.disabled = false; }
+        if (btn) { btn.innerHTML = 'Underskriv'; btn.disabled = false; }
       }
     } catch {
       alert('Der skete en fejl. Pr\u00f8v igen.');
-      if (btn) { btn.innerHTML = 'Underskriv DPA'; btn.disabled = false; }
+      if (btn) { btn.innerHTML = 'Underskriv'; btn.disabled = false; }
     }
   },
 };
