@@ -275,6 +275,35 @@ def sync_inbox(max_results: int = 20) -> dict:
                     continue
 
                 subject = headers.get("subject", "(Ingen emne)")
+                subject_lower = subject.lower()
+
+                # Skip delivery failure / bounce emails
+                _bounce_senders = {"mailer-daemon", "postmaster", "mail delivery subsystem"}
+                if (
+                    from_email.lower().split("@")[0] in _bounce_senders
+                    or "noreply" in from_email.lower()
+                    or any(kw in subject_lower for kw in [
+                        "delivery status notification",
+                        "undeliverable", "mail delivery failed",
+                        "returned mail", "failure notice",
+                        "delivery has failed", "nicht zustellbar",
+                    ])
+                ):
+                    mark_as_read(msg_id)
+                    logger.info(f"Skipped bounce/delivery-failure: {subject}")
+                    continue
+
+                # Skip booking confirmation emails (system-generated)
+                if any(kw in subject_lower for kw in [
+                    "din demo er bekræftet",
+                    "your demo is confirmed",
+                    "booking bekræftelse",
+                    "booking confirmation",
+                    "databehandleraftale",
+                ]):
+                    mark_as_read(msg_id)
+                    logger.info(f"Skipped system email: {subject}")
+                    continue
                 thread_id = msg.get("threadId", "")
 
                 # Extract body

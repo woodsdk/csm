@@ -45,15 +45,7 @@ export const Sidebar = {
             </button>
           `).join('')}
 
-          <button class="sidebar-nav-item ${isOnboardingPage ? 'active' : ''}" onclick="App.navigateTo('onboarding')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-              <circle cx="9" cy="7" r="4"/>
-              <line x1="19" y1="8" x2="19" y2="14"/>
-              <line x1="22" y1="11" x2="16" y2="11"/>
-            </svg>
-            Dashboard
-          </button>
+          <!-- Dashboard hidden for now -->
 
           <button class="sidebar-nav-item ${isCalendarPage ? 'active' : ''}" onclick="App.navigateTo('calendar')">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -74,12 +66,7 @@ export const Sidebar = {
             Marketing
           </button>
 
-          <button class="sidebar-nav-item ${app.state.page === 'comms' ? 'active' : ''}" onclick="App.navigateTo('comms')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-            </svg>
-            Platform Komm.
-          </button>
+          <!-- Platform Komm. hidden for now -->
 
           <div class="sidebar-section-title" style="margin-top: var(--space-4)">Compliance</div>
 
