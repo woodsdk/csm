@@ -2118,18 +2118,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-3);
+  padding: var(--space-2);
   border-bottom: 1px solid var(--border);
   border-right: 1px solid var(--border);
-  background: var(--bg-body);
+  background: var(--bg-surface);
 }
 
 .vp-corner-label {
-  font-size: var(--text-xs);
-  font-weight: var(--font-semibold);
+  font-size: 10px;
+  font-weight: var(--font-medium);
   color: var(--text-tertiary);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
+  opacity: 0.6;
 }
 
 .vp-day-header {
@@ -2137,32 +2138,32 @@
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  padding: var(--space-3) var(--space-2);
+  padding: var(--space-2) var(--space-2);
   border-bottom: 1px solid var(--border);
   border-right: 1px solid var(--border);
-  background: var(--bg-body);
+  background: var(--bg-surface);
 }
 
 .vp-day-header:last-child { border-right: none; }
 
 .vp-day-header.vp-today {
-  background: var(--accent-bg);
+  background: rgba(79, 95, 163, 0.04);
 }
 
 .vp-day-name {
-  font-size: var(--text-xs);
-  font-weight: var(--font-semibold);
+  font-size: 10px;
+  font-weight: var(--font-medium);
   color: var(--text-tertiary);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
 }
 
 .vp-day-date {
-  font-size: var(--text-md);
-  font-weight: var(--font-bold);
-  color: var(--text-primary);
-  width: 28px;
-  height: 28px;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--text-secondary);
+  width: 26px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2172,6 +2173,7 @@
 .vp-today-badge {
   background: var(--navy-600);
   color: white !important;
+  font-weight: var(--font-bold);
 }
 
 .vp-time {
@@ -2181,10 +2183,10 @@
   padding: var(--space-2);
   border-bottom: 1px solid var(--border);
   border-right: 1px solid var(--border);
-  font-size: var(--text-xs);
-  font-weight: var(--font-semibold);
-  color: var(--navy-500);
-  background: var(--bg-body);
+  font-size: 11px;
+  font-weight: var(--font-medium);
+  color: var(--text-tertiary);
+  background: var(--bg-surface);
 }
 
 .vp-cell {
@@ -2194,7 +2196,7 @@
   padding: var(--space-2);
   border-bottom: 1px solid var(--border);
   border-right: 1px solid var(--border);
-  min-height: 72px;
+  min-height: 64px;
   transition: background var(--transition-fast);
 }
 
@@ -2203,8 +2205,7 @@
 .vp-cell:nth-child(6n) { border-right: none; }
 
 .vp-today-col {
-  background: rgba(79, 95, 163, 0.06);
-  box-shadow: inset 0 0 0 1px rgba(79, 95, 163, 0.12);
+  background: rgba(79, 95, 163, 0.03);
 }
 
 .vp-past {
@@ -2214,25 +2215,25 @@
 
 /* ── Open slot button ── */
 .vp-open {
-  width: 40px;
-  height: 40px;
-  border: 2px dashed var(--navy-200);
+  width: 32px;
+  height: 32px;
+  border: 1.5px dashed var(--navy-200);
   border-radius: var(--radius-full);
   background: transparent;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--navy-300);
+  color: var(--navy-200);
   transition: all var(--transition-fast);
+  opacity: 0.6;
 }
 
 .vp-open:hover {
-  border-color: var(--navy-500);
-  color: var(--navy-600);
+  border-color: var(--navy-400);
+  color: var(--navy-500);
   background: var(--accent-bg);
-  transform: scale(1.1);
-  box-shadow: var(--shadow-sm);
+  opacity: 1;
 }
 
 /* ── Booked slot ── */
@@ -2240,32 +2241,32 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   position: relative;
   width: 100%;
   padding: 4px;
 }
 
 .vp-booked-avatar {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: var(--font-bold);
   color: white;
   flex-shrink: 0;
-  opacity: 0.55;
+  opacity: 0.35;
 }
 
 .vp-booked-name {
-  font-size: var(--text-sm);
-  font-weight: var(--font-semibold);
-  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
   text-align: center;
-  line-height: 1.2;
+  line-height: 1.25;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2550,8 +2551,7 @@
 }
 
 .vp-week-section.vp-week-current {
-  border-color: var(--navy-400);
-  box-shadow: 0 0 0 1px var(--navy-400);
+  border-color: var(--navy-300);
 }
 
 .vp-week-section-header {
@@ -9161,6 +9161,18 @@
   width: 100%;
   height: min(450px, 50vh);
   border: none;
+}
+
+.dpa-pdf-mobile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  text-align: center;
 }
 
 .dpa-public-actions {

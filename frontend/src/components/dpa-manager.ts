@@ -161,7 +161,7 @@ export const DPAManager = {
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                   P\u00e5mind
                 </button>
-                <button class="btn btn-sm btn-icon dpa-archive-btn" onclick="DPAManager.archiveSigning('${s.id}', '${escapeHtml(s.display_name)}')" title="Fjern fra listen">
+                <button class="btn btn-sm btn-icon dpa-archive-btn" data-id="${s.id}" data-name="${escapeHtml(s.display_name)}" onclick="DPAManager.archiveSigning(this.dataset.id, this.dataset.name)" title="Fjern fra listen">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                 </button>
               </div>
@@ -208,8 +208,8 @@ export const DPAManager = {
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                   PDF
                 </a>
-                <button class="btn btn-sm" style="color: var(--error)" onclick="DPAManager.archiveSigning('${s.id}', '${escapeHtml(s.customer_name || s.recipient_name || '')}')" title="Fjern fra listen">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                <button class="btn btn-sm btn-icon dpa-archive-btn" data-id="${s.id}" data-name="${escapeHtml(s.customer_name || s.recipient_name || '')}" onclick="DPAManager.archiveSigning(this.dataset.id, this.dataset.name)" title="Fjern fra listen">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                 </button>
                 <span class="dpa-badge dpa-badge-signed">Underskrevet</span>
               </div>

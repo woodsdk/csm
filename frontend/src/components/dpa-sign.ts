@@ -138,10 +138,24 @@ export const DPASign = {
         </p>
 
         <div class="dpa-pdf-container">
-          <iframe src="${pdfUrl}" class="dpa-pdf-viewer" title="Databehandleraftale PDF"></iframe>
-          <p class="dpa-pdf-fallback" style="text-align:center; margin-top:8px; font-size:13px; color:#6b7280;">
-            Kan du ikke se dokumentet? <a href="${pdfUrl}" target="_blank">Download PDF her</a>.
-          </p>
+          ${/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ? `
+            <div class="dpa-pdf-mobile">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.5">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+              </svg>
+              <p style="margin: 12px 0 4px; font-weight: 500; color: #26304f;">Databehandleraftale v${info?.document_version || '?'}</p>
+              <p style="font-size: 13px; color: #6b7280; margin-bottom: 16px;">\u00c5bn dokumentet for at l\u00e6se aftalen f\u00f8r du underskriver.</p>
+              <a href="${pdfUrl}" target="_blank" class="btn btn-primary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                \u00c5bn PDF
+              </a>
+            </div>
+          ` : `
+            <iframe src="${pdfUrl}" class="dpa-pdf-viewer" title="Databehandleraftale PDF"></iframe>
+            <p class="dpa-pdf-fallback" style="text-align:center; margin-top:8px; font-size:13px; color:#6b7280;">
+              Kan du ikke se dokumentet? <a href="${pdfUrl}" target="_blank">Download PDF her</a>.
+            </p>
+          `}
         </div>
 
         <div class="dpa-public-actions">
