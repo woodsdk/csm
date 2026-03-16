@@ -637,6 +637,10 @@ def get_signing_certificate(token: str):
     s = signings[0]
     lang_label = "Dansk" if s.get('language') == 'da' else "English"
 
+    # Resolve display name: customer name OR recipient company/name for manual sends
+    display_name = s.get('customer_name') or s.get('recipient_company') or s.get('recipient_name') or ''
+    company_label = s.get('recipient_company') or s.get('customer_name') or ''
+
     signed_at = s.get('signed_at', '')
     if isinstance(signed_at, str) and signed_at:
         try:
@@ -673,7 +677,7 @@ def get_signing_certificate(token: str):
 
     <div class="cert-section">
         <h3>Dokument</h3>
-        <div class="cert-row"><span class="cert-label">Kunde</span><span class="cert-value">{s.get('customer_name', '')}</span></div>
+        <div class="cert-row"><span class="cert-label">Virksomhed</span><span class="cert-value">{company_label}</span></div>
         <div class="cert-row"><span class="cert-label">Dokument</span><span class="cert-value">{s.get('document_filename', '')} (v{s.get('document_version', '')})</span></div>
         <div class="cert-row"><span class="cert-label">Sprog</span><span class="cert-value">{lang_label}</span></div>
     </div>
@@ -682,7 +686,7 @@ def get_signing_certificate(token: str):
         <h3>Underskrift</h3>
         <div class="cert-row"><span class="cert-label">Underskriver</span><span class="cert-value">{s.get('signer_name', '')}</span></div>
         <div class="cert-row"><span class="cert-label">Email</span><span class="cert-value">{s.get('signer_email', '')}</span></div>
-        <div class="cert-row"><span class="cert-label">Titel</span><span class="cert-value">{s.get('signer_title', '') or 'Ikke angivet'}</span></div>
+        <div class="cert-row"><span class="cert-label">Titel / Rolle</span><span class="cert-value">{s.get('signer_title', '') or 'Ikke angivet'}</span></div>
         <div class="cert-row"><span class="cert-label">Underskrevet</span><span class="cert-value">{signed_at_formatted}</span></div>
     </div>
 
@@ -694,7 +698,7 @@ def get_signing_certificate(token: str):
     </div>
 
     <div class="cert-footer">
-        <p>Dette certifikat bekr\u00e6fter at ovenst\u00e5ende person digitalt har underskrevet databehandleraftalen.</p>
+        <p>Dette certifikat bekr\u00e6fter at ovenst\u00e5ende person digitalt har underskrevet databehandleraftalen p\u00e5 vegne af {display_name}.</p>
         <p>Genereret af People's Clinic &mdash; SynergyHub</p>
     </div>
 </body>
