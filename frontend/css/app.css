@@ -8958,9 +8958,19 @@
   gap: var(--space-3);
 }
 
+.dpa-signing-row.dpa-signing-attention { border-color: #fca5a5; background: #fef2f2; }
 .dpa-signing-info { flex: 1; }
 .dpa-signing-name { font-size: var(--text-sm); font-weight: 500; color: var(--navy-800); display: block; }
-.dpa-signing-meta { font-size: var(--text-xs); color: var(--text-tertiary); }
+.dpa-signing-email { font-size: var(--text-xs); color: var(--text-secondary); margin-left: 6px; }
+.dpa-signing-company { font-size: var(--text-xs); color: var(--text-tertiary); margin-left: 6px; }
+.dpa-signing-company::before { content: '\u00b7'; margin-right: 6px; }
+.dpa-signing-meta { font-size: var(--text-xs); color: var(--text-tertiary); display: block; margin-top: 2px; }
+
+/* Send form */
+.dpa-send-section { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-4); }
+.dpa-send-form { margin-top: var(--space-3); }
+.dpa-send-form .form-row { display: flex; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-3); }
+.dpa-send-form .form-row:last-child { margin-bottom: 0; }
 
 .dpa-signing-actions { display: flex; align-items: center; gap: var(--space-2); }
 

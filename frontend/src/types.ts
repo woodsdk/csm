@@ -508,26 +508,26 @@ export interface DPASigning {
 }
 
 export interface DPAStats {
-  unsigned_count: number;
   pending_count: number;
   signed_count: number;
   expired_count: number;
   needs_attention_count: number;
+  total_sent: number;
 }
 
 export interface DPAPendingCustomer {
   id: string;
-  name: string;
-  contact_name: string;
-  contact_email: string;
-  lifecycle: string;
-  plan: string;
-  dpa_signed: boolean;
-  dpa_signed_at: string | null;
-  latest_signing_id: string | null;
-  latest_signing_status: string | null;
-  latest_sent_at: string | null;
-  latest_language: string | null;
+  customer_id: string | null;
+  status: string;
+  sent_at: string;
+  language: string;
+  display_name: string;
+  display_email: string;
+  display_company: string;
+  document_version: number;
+  reminder_count: number;
+  cs_notified: boolean;
+  token: string;
 }
 
 /* ── Platform Communication ── */

@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════
-   DPA Manager — Internal DPA overview & management
-   3 tabs: Oversigt, Dokumenter, Audit Log
+   DPA Manager — Manual DPA sending & tracking
+   3 tabs: Send & Track, Dokumenter, Audit Log
    ═══════════════════════════════════════════ */
 
 import { DPAAPI } from '../api';
@@ -13,9 +13,7 @@ export const DPAManager = {
   _pending: [] as DPAPendingCustomer[],
   _history: [] as DPASigning[],
   _documents: [] as DPADocument[],
-  _auditLog: [] as DPASigning[],
-  _selectedIds: new Set<string>(),
-  _bulkLanguage: 'da' as string,
+  _sending: false,
 
   async render(): Promise<string> {
     try {
@@ -30,26 +28,25 @@ export const DPAManager = {
       this._history = history;
       this._documents = docs;
     } catch {
-      this._stats = { unsigned_count: 0, pending_count: 0, signed_count: 0, expired_count: 0, needs_attention_count: 0 };
+      this._stats = { pending_count: 0, signed_count: 0, expired_count: 0, needs_attention_count: 0, total_sent: 0 };
     }
 
     const st = this._stats!;
-
     const hasDocs = this._documents.length > 0;
 
     return `
       <div class="dpa-container">
         <div class="dpa-header">
           <h2 class="dpa-title">Databehandleraftaler (DPA)</h2>
-          ${!hasDocs ? '<div class="dpa-warning">Du skal uploade en DPA-PDF f\u00f8r du kan sende underskriftslinks.</div>' : ''}
+          ${!hasDocs ? '<div class="dpa-warning">Upload en DPA-PDF under Dokumenter-fanen f\u00f8r du kan sende underskriftslinks.</div>' : ''}
         </div>
 
         <div class="dpa-stats">
           <div class="dpa-stat-card">
-            <span class="dpa-stat-num">${st.unsigned_count}</span>
-            <span class="dpa-stat-label">Mangler DPA</span>
+            <span class="dpa-stat-num">${st.total_sent}</span>
+            <span class="dpa-stat-label">Sendt i alt</span>
           </div>
-          <div class="dpa-stat-card">
+          <div class="dpa-stat-card dpa-stat-warning">
             <span class="dpa-stat-num">${st.pending_count}</span>
             <span class="dpa-stat-label">Afventer svar</span>
           </div>
@@ -58,14 +55,14 @@ export const DPAManager = {
             <span class="dpa-stat-label">Underskrevet</span>
           </div>
           ${st.needs_attention_count > 0 ? `
-          <div class="dpa-stat-card dpa-stat-warning">
-            <span class="dpa-stat-num">${st.needs_attention_count}</span>
-            <span class="dpa-stat-label">Kr\u00e6ver opm\u00e6rksomhed</span>
+          <div class="dpa-stat-card" style="border-color: var(--error)">
+            <span class="dpa-stat-num" style="color: var(--error)">${st.needs_attention_count}</span>
+            <span class="dpa-stat-label">Kr\u00e6ver opm.</span>
           </div>` : ''}
         </div>
 
         <div class="dpa-tabs">
-          <button class="dpa-tab ${this._tab === 'overview' ? 'dpa-tab-active' : ''}" onclick="DPAManager.setTab('overview')">Oversigt</button>
+          <button class="dpa-tab ${this._tab === 'overview' ? 'dpa-tab-active' : ''}" onclick="DPAManager.setTab('overview')">Send & Track</button>
           <button class="dpa-tab ${this._tab === 'documents' ? 'dpa-tab-active' : ''}" onclick="DPAManager.setTab('documents')">Dokumenter</button>
           <button class="dpa-tab ${this._tab === 'audit' ? 'dpa-tab-active' : ''}" onclick="DPAManager.setTab('audit')">Audit Log</button>
         </div>
@@ -79,88 +76,80 @@ export const DPAManager = {
     `;
   },
 
-  /* ── Tab: Oversigt ── */
+  /* ── Tab: Send & Track ── */
   _renderOverview(): string {
     const hasDocs = this._documents.some(d => d.is_current);
-
-    // Split history into pending and signed
-    const pendingSignings = this._history.filter(h => h.status === 'pending');
     const signedSignings = this._history.filter(h => h.status === 'signed');
 
-    // Customers without any signing sent
-    const unsent = this._pending.filter(c => !c.latest_signing_id);
-    const sent = this._pending.filter(c => c.latest_signing_id && c.latest_signing_status === 'pending');
-
-    const selectedCount = this._selectedIds.size;
-
     let html = '';
+
+    // Send form
+    if (hasDocs) {
+      html += `
+        <div class="dpa-section dpa-send-section">
+          <h3 class="dpa-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            Send DPA til underskrift
+          </h3>
+          <div class="dpa-send-form">
+            <div class="form-row">
+              <div class="form-group" style="flex: 1">
+                <label class="form-label">Navn <span style="color: var(--error)">*</span></label>
+                <input class="input" type="text" id="dpa-send-name" placeholder="Kontaktpersonens fulde navn">
+              </div>
+              <div class="form-group" style="flex: 1">
+                <label class="form-label">Email <span style="color: var(--error)">*</span></label>
+                <input class="input" type="email" id="dpa-send-email" placeholder="email@virksomhed.dk">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group" style="flex: 1">
+                <label class="form-label">Virksomhed / Klinik</label>
+                <input class="input" type="text" id="dpa-send-company" placeholder="Valgfrit">
+              </div>
+              <div class="form-group" style="flex: 0 0 120px">
+                <label class="form-label">Sprog</label>
+                <select class="input" id="dpa-send-lang">
+                  <option value="da">Dansk</option>
+                  <option value="en">English</option>
+                </select>
+              </div>
+              <div class="form-group" style="flex: 0 0 auto; display: flex; align-items: flex-end">
+                <button class="btn btn-primary ${this._sending ? 'btn-loading' : ''}" id="dpa-send-btn" onclick="DPAManager.sendManual()" ${this._sending ? 'disabled' : ''}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                  ${this._sending ? 'Sender...' : 'Send DPA'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    } else {
+      html += `<div class="dpa-empty">
+        <p>Upload en DPA-PDF under <strong>Dokumenter</strong>-fanen f\u00f8r du kan sende underskriftslinks.</p>
+      </div>`;
+    }
 
     // Needs attention warning
     if (this._stats && this._stats.needs_attention_count > 0) {
       html += `<div class="dpa-alert dpa-alert-warning">
-        <strong>${this._stats.needs_attention_count} kunde(r)</strong> har ikke underskrevet efter 2 p\u00e5mindelser. Overv\u00e6j personlig opf\u00f8lgning.
+        <strong>${this._stats.needs_attention_count} modtager(e)</strong> har ikke underskrevet efter gentagne p\u00e5mindelser. Overv\u00e6j personlig opf\u00f8lgning.
       </div>`;
     }
 
-    // Customers needing DPA
-    if (unsent.length > 0 && hasDocs) {
+    // Pending signings
+    if (this._pending.length > 0) {
       html += `<div class="dpa-section">
-        <h3 class="dpa-section-title">Kunder der mangler DPA (${unsent.length})</h3>
-        <div class="dpa-customer-list">
-          ${unsent.map(c => `
-            <div class="dpa-customer-row">
-              <label class="dpa-checkbox">
-                <input type="checkbox" ${this._selectedIds.has(c.id) ? 'checked' : ''} onchange="DPAManager.toggleSelect('${c.id}')">
-              </label>
-              <div class="dpa-customer-info">
-                <span class="dpa-customer-name">${escapeHtml(c.name)}</span>
-                <span class="dpa-customer-email">${escapeHtml(c.contact_email || 'Ingen email')}</span>
-              </div>
-              <div class="dpa-customer-actions">
-                <select class="dpa-lang-select" id="dpa-lang-${c.id}">
-                  <option value="da">DK</option>
-                  <option value="en">EN</option>
-                </select>
-                <button class="btn btn-primary btn-sm" onclick="DPAManager.sendDPA('${c.id}')" ${!c.contact_email ? 'disabled title="Ingen email"' : ''}>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-                  Send
-                </button>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-        ${selectedCount > 0 ? `
-          <div class="dpa-bulk-bar">
-            <select class="dpa-lang-select" id="dpa-bulk-lang" onchange="DPAManager._bulkLanguage = this.value">
-              <option value="da">Dansk</option>
-              <option value="en">English</option>
-            </select>
-            <button class="btn btn-primary btn-sm" onclick="DPAManager.sendBulk()">
-              Send til alle valgte (${selectedCount})
-            </button>
-          </div>
-        ` : ''}
-      </div>`;
-    } else if (!hasDocs) {
-      html += `<div class="dpa-empty">
-        <p>Upload en DPA-PDF under <strong>Dokumenter</strong>-fanen f\u00f8r du kan sende underskriftslinks.</p>
-      </div>`;
-    } else if (unsent.length === 0 && this._pending.length === 0) {
-      html += `<div class="dpa-empty">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        <p>Alle kunder har underskrevet deres DPA!</p>
-      </div>`;
-    }
-
-    // Sent & awaiting
-    if (pendingSignings.length > 0) {
-      html += `<div class="dpa-section">
-        <h3 class="dpa-section-title">Sendt & afventer (${pendingSignings.length})</h3>
+        <h3 class="dpa-section-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Afventer underskrift (${this._pending.length})
+        </h3>
         <div class="dpa-signing-list">
-          ${pendingSignings.map(s => `
-            <div class="dpa-signing-row">
+          ${this._pending.map(s => `
+            <div class="dpa-signing-row ${s.cs_notified ? 'dpa-signing-attention' : ''}">
               <div class="dpa-signing-info">
-                <span class="dpa-signing-name">${escapeHtml(s.customer_name || '')}</span>
+                <span class="dpa-signing-name">${escapeHtml(s.display_name)}</span>
+                <span class="dpa-signing-email">${escapeHtml(s.display_email)}</span>
+                ${s.display_company ? `<span class="dpa-signing-company">${escapeHtml(s.display_company)}</span>` : ''}
                 <span class="dpa-signing-meta">
                   Sendt ${this._formatDate(s.sent_at)} \u00b7 v${s.document_version || '?'} ${s.language === 'da' ? 'DK' : 'EN'}
                   ${s.reminder_count > 0 ? ` \u00b7 ${s.reminder_count} p\u00e5mindelse(r)` : ''}
@@ -168,10 +157,23 @@ export const DPAManager = {
               </div>
               <div class="dpa-signing-actions">
                 ${s.cs_notified ? '<span class="dpa-badge dpa-badge-warning">Kr\u00e6ver opm.</span>' : '<span class="dpa-badge dpa-badge-pending">Afventer</span>'}
-                <button class="btn btn-sm" onclick="DPAManager.sendReminderDPA('${s.id}')">P\u00e5mind</button>
+                <button class="btn btn-sm" onclick="DPAManager.sendReminderDPA('${s.id}')">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                  P\u00e5mind
+                </button>
               </div>
             </div>
           `).join('')}
+        </div>
+      </div>`;
+    }
+
+    // No pending & no send form = empty state
+    if (this._pending.length === 0 && hasDocs) {
+      html += `<div class="dpa-section">
+        <div class="dpa-empty" style="padding: var(--space-4)">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <p>Ingen afventende underskrifter. Brug formularen ovenfor til at sende en DPA.</p>
         </div>
       </div>`;
     }
@@ -180,7 +182,10 @@ export const DPAManager = {
     if (signedSignings.length > 0) {
       const recent = signedSignings.slice(0, 10);
       html += `<div class="dpa-section">
-        <h3 class="dpa-section-title">Seneste underskrifter</h3>
+        <h3 class="dpa-section-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Seneste underskrifter
+        </h3>
         <div class="dpa-signing-list">
           ${recent.map(s => `
             <div class="dpa-signing-row">
@@ -210,7 +215,6 @@ export const DPAManager = {
       grouped[d.version].push(d);
     }
 
-    // Count signings per version
     const versionCounts: Record<number, number> = {};
     for (const s of this._history) {
       if (s.status === 'signed' && s.document_version) {
@@ -263,7 +267,7 @@ export const DPAManager = {
 
         html += `<div class="dpa-section">
           <h3 class="dpa-section-title">Version ${v} ${isCurrent ? '<span class="dpa-badge dpa-badge-signed">Aktuel</span>' : ''}</h3>
-          ${signedOnVersion > 0 ? `<p class="dpa-doc-meta">${signedOnVersion} kunde(r) har underskrevet denne version</p>` : ''}
+          ${signedOnVersion > 0 ? `<p class="dpa-doc-meta">${signedOnVersion} underskrift(er) p\u00e5 denne version</p>` : ''}
           <div class="dpa-doc-list">
             ${docs.map(d => `
               <div class="dpa-doc-row">
@@ -279,16 +283,6 @@ export const DPAManager = {
               </div>
             `).join('')}
           </div>
-        </div>`;
-      }
-
-      // Warning about old versions
-      const oldVersionCount = this._history.filter(s =>
-        s.status === 'signed' && s.document_version && s.document_version < currentVersion
-      ).length;
-      if (oldVersionCount > 0) {
-        html += `<div class="dpa-alert dpa-alert-info">
-          <strong>${oldVersionCount} kunde(r)</strong> har underskrevet en \u00e6ldre version af DPA'en. Overv\u00e6j at sende den nye version til dem.
         </div>`;
       }
     }
@@ -351,25 +345,32 @@ export const DPAManager = {
     (window as any).App.render();
   },
 
-  toggleSelect(customerId: string): void {
-    if (this._selectedIds.has(customerId)) {
-      this._selectedIds.delete(customerId);
-    } else {
-      this._selectedIds.add(customerId);
-    }
+  async sendManual(): Promise<void> {
+    const nameEl = document.getElementById('dpa-send-name') as HTMLInputElement | null;
+    const emailEl = document.getElementById('dpa-send-email') as HTMLInputElement | null;
+    const companyEl = document.getElementById('dpa-send-company') as HTMLInputElement | null;
+    const langEl = document.getElementById('dpa-send-lang') as HTMLSelectElement | null;
+
+    const name = nameEl?.value?.trim() || '';
+    const email = emailEl?.value?.trim() || '';
+    const company = companyEl?.value?.trim() || '';
+    const language = langEl?.value || 'da';
+
+    if (!name) { nameEl?.focus(); (window as any).App.toast('Indtast modtagerens navn', 'error'); return; }
+    if (!email) { emailEl?.focus(); (window as any).App.toast('Indtast modtagerens email', 'error'); return; }
+    if (!email.includes('@')) { emailEl?.focus(); (window as any).App.toast('Indtast en gyldig email', 'error'); return; }
+
+    this._sending = true;
     (window as any).App.render();
-  },
-
-  async sendDPA(customerId: string): Promise<void> {
-    const langEl = document.getElementById(`dpa-lang-${customerId}`) as HTMLSelectElement | null;
-    const lang = langEl?.value || 'da';
-
-    if (!confirm(`Send DPA til denne kunde?`)) return;
 
     try {
-      const result = await DPAAPI.send(customerId, lang);
+      const result = await DPAAPI.sendManual({ name, email, company, language });
       if (result.ok) {
-        (window as any).App.toast('DPA-link sendt!', 'success');
+        (window as any).App.toast(`DPA sendt til ${name}!`, 'success');
+        // Clear form & reload
+        this._stats = null;
+        this._pending = [];
+        this._history = [];
         (window as any).App.render();
       } else {
         (window as any).App.toast(result.error || 'Fejl ved afsendelse', 'error');
@@ -377,26 +378,11 @@ export const DPAManager = {
     } catch {
       (window as any).App.toast('Kunne ikke sende DPA', 'error');
     }
-  },
-
-  async sendBulk(): Promise<void> {
-    const ids = Array.from(this._selectedIds);
-    if (ids.length === 0) return;
-
-    if (!confirm(`Send DPA til ${ids.length} kunde(r)?`)) return;
-
-    try {
-      const result = await DPAAPI.sendBulk(ids, this._bulkLanguage);
-      (window as any).App.toast(`${result.sent} DPA(er) sendt. ${result.errors.length} fejl.`, result.errors.length > 0 ? 'warning' : 'success');
-      this._selectedIds.clear();
-      (window as any).App.render();
-    } catch {
-      (window as any).App.toast('Fejl ved bulk-afsendelse', 'error');
-    }
+    this._sending = false;
   },
 
   async sendReminderDPA(signingId: string): Promise<void> {
-    if (!confirm('Send p\u00e5mindelse til denne kunde?')) return;
+    if (!confirm('Send p\u00e5mindelse til denne modtager?')) return;
 
     try {
       const result = await DPAAPI.sendReminder(signingId);

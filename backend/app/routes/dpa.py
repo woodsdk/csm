@@ -21,6 +21,13 @@ class DPASendRequest(BaseModel):
     language: str = "da"  # "da" or "en"
 
 
+class DPAManualSendRequest(BaseModel):
+    name: str
+    email: str
+    company: str = ""
+    language: str = "da"
+
+
 class DPABulkSendRequest(BaseModel):
     customer_ids: list[str]
     language: str = "da"
@@ -132,31 +139,32 @@ def set_current_document(doc_id: str):
 
 @router.get("/pending")
 def list_pending_customers():
-    """List customers that haven't signed a DPA."""
-    customers = query("""
-        SELECT c.id, c.name, c.contact_name, c.contact_email, c.lifecycle, c.plan,
-               c.dpa_signed, c.dpa_signed_at,
-               ds.id as latest_signing_id, ds.status as latest_signing_status,
-               ds.sent_at as latest_sent_at, ds.language as latest_language
-        FROM customers c
-        LEFT JOIN LATERAL (
-            SELECT id, status, sent_at, language
-            FROM dpa_signings
-            WHERE customer_id = c.id
-            ORDER BY sent_at DESC
-            LIMIT 1
-        ) ds ON true
-        WHERE c.dpa_signed = false
-        ORDER BY c.name ASC
+    """List all pending DPA signings (both customer-linked and manual)."""
+    signings = query("""
+        SELECT s.id, s.customer_id, s.status, s.sent_at, s.language,
+               s.recipient_name, s.recipient_email, s.recipient_company,
+               s.reminder_count, s.cs_notified, s.token,
+               COALESCE(s.recipient_name, c.name) as display_name,
+               COALESCE(s.recipient_email, c.contact_email) as display_email,
+               COALESCE(s.recipient_company, '') as display_company,
+               d.version as document_version
+        FROM dpa_signings s
+        LEFT JOIN customers c ON s.customer_id = c.id
+        LEFT JOIN dpa_documents d ON s.document_id = d.id
+        WHERE s.status = 'pending'
+        ORDER BY s.sent_at DESC
     """)
-    return customers
+    return signings
 
 
 @router.get("/history")
 def list_signing_history():
     """List all DPA signings with full audit info."""
     history = query("""
-        SELECT s.*, c.name as customer_name, c.contact_email as customer_email,
+        SELECT s.*,
+               COALESCE(NULLIF(s.recipient_name, ''), c.name) as customer_name,
+               COALESCE(NULLIF(s.recipient_email, ''), c.contact_email) as customer_email,
+               COALESCE(NULLIF(s.recipient_company, ''), c.name) as customer_company,
                d.version as document_version, d.filename as document_filename
         FROM dpa_signings s
         LEFT JOIN customers c ON s.customer_id = c.id
@@ -171,11 +179,11 @@ def get_dpa_stats():
     """Dashboard stats for DPA overview."""
     stats = query("""
         SELECT
-            (SELECT COUNT(*) FROM customers WHERE dpa_signed = false) as unsigned_count,
             (SELECT COUNT(*) FROM dpa_signings WHERE status = 'pending') as pending_count,
-            (SELECT COUNT(*) FROM customers WHERE dpa_signed = true) as signed_count,
+            (SELECT COUNT(*) FROM dpa_signings WHERE status = 'signed') as signed_count,
             (SELECT COUNT(*) FROM dpa_signings WHERE status = 'expired') as expired_count,
-            (SELECT COUNT(*) FROM dpa_signings WHERE status = 'pending' AND cs_notified = true) as needs_attention_count
+            (SELECT COUNT(*) FROM dpa_signings WHERE status = 'pending' AND cs_notified = true) as needs_attention_count,
+            (SELECT COUNT(*) FROM dpa_signings) as total_sent
     """)
     return stats[0] if stats else {}
 
@@ -296,6 +304,91 @@ def send_dpa(data: DPASendRequest):
     result = send_email(
         to=customer['contact_email'],
         subject="Databehandleraftale \u2014 People's Clinic",
+        body_html=email_html,
+        use_template=True,
+    )
+
+    if result:
+        return {"ok": True, "signing_id": signing_id, "token": token}
+    else:
+        return {"error": "Kunne ikke sende email. Tjek Gmail-forbindelsen."}
+
+
+@router.post("/send-manual")
+def send_dpa_manual(data: DPAManualSendRequest):
+    """Send DPA signing link to any email — no customer record required."""
+    if not data.email or not data.name:
+        return {"error": "Navn og email er påkrævet"}
+
+    # Find current DPA document for the requested language
+    docs = query("""
+        SELECT id, version, filename FROM dpa_documents
+        WHERE language = %s AND is_current = true
+        LIMIT 1
+    """, (data.language,))
+
+    if not docs:
+        return {"error": f"Ingen aktuel DPA fundet for sprog: {data.language}"}
+
+    doc = docs[0]
+
+    # Check if there's already a pending signing for this email
+    existing = query("""
+        SELECT id FROM dpa_signings
+        WHERE recipient_email = %s AND status = 'pending'
+        LIMIT 1
+    """, (data.email,))
+    if existing:
+        return {"error": "Der er allerede en afventende DPA for denne email"}
+
+    # Generate secure token
+    token = secrets.token_urlsafe(32)
+    signing_id = gen_id("dps_")
+
+    # Create signing record (customer_id is NULL for manual sends)
+    execute("""
+        INSERT INTO dpa_signings (id, document_id, token, language, status, sent_by,
+                                  recipient_name, recipient_email, recipient_company,
+                                  expires_at)
+        VALUES (%s, %s, %s, %s, 'pending', '', %s, %s, %s, NOW() + INTERVAL '30 days')
+    """, (signing_id, doc['id'], token, data.language,
+          data.name, data.email, data.company or None))
+
+    # Send email
+    signing_url = f"{BASE_URL}/dpa/{token}"
+    lang_label = "dansk" if data.language == "da" else "engelsk"
+
+    email_html = f"""
+        <p>Hej {data.name},</p>
+
+        <p>Vi sender hermed vores databehandleraftale (DPA), som vi beder dig gennemlæse og underskrive digitalt.</p>
+
+        <p>Databehandleraftalen sikrer, at behandlingen af persondata mellem dig og People's Clinic sker i overensstemmelse med GDPR.</p>
+
+        <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
+            <tr>
+                <td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
+                    <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block;">
+                        Læs og underskriv DPA
+                    </a>
+                </td>
+            </tr>
+        </table>
+
+        <p style="font-size: 13px; color: #6b7280;">
+            Dokumentet er på {lang_label} (version {doc['version']}).<br>
+            Linket udløber om 30 dage.
+        </p>
+
+        <p>Har du spørgsmål, er du velkommen til at kontakte os.</p>
+
+        <p>Med venlig hilsen,<br>People's Clinic Teamet</p>
+    """
+
+    from ..gmail import send_email
+    result = send_email(
+        to=data.email,
+        subject="Databehandleraftale — People's Clinic",
         body_html=email_html,
         use_template=True,
     )

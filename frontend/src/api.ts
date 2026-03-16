@@ -815,6 +815,15 @@ export const DPAAPI = {
     return res.json();
   },
 
+  async sendManual(data: { name: string; email: string; company?: string; language?: string }): Promise<{ ok?: boolean; error?: string; signing_id?: string }> {
+    const res = await fetch(`${API_BASE}/dpa/send-manual`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    return res.json();
+  },
+
   async sendBulk(customerIds: string[], language: string = 'da'): Promise<{ sent: number; errors: string[]; total: number }> {
     const res = await fetch(`${API_BASE}/dpa/send-bulk`, {
       method: 'POST',

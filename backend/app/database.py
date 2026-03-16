@@ -672,7 +672,7 @@ def init():
     _safe_exec("""
         CREATE TABLE IF NOT EXISTS dpa_signings (
             id              TEXT PRIMARY KEY,
-            customer_id     TEXT NOT NULL,
+            customer_id     TEXT,
             document_id     TEXT REFERENCES dpa_documents(id),
             token           TEXT NOT NULL UNIQUE,
             language        TEXT NOT NULL DEFAULT 'da',
@@ -688,12 +688,21 @@ def init():
             sent_by         TEXT NOT NULL DEFAULT '',
             reminder_count  INTEGER NOT NULL DEFAULT 0,
             last_reminder_at TIMESTAMPTZ,
-            cs_notified     BOOLEAN NOT NULL DEFAULT false
+            cs_notified     BOOLEAN NOT NULL DEFAULT false,
+            recipient_name  TEXT NOT NULL DEFAULT '',
+            recipient_email TEXT NOT NULL DEFAULT '',
+            recipient_company TEXT NOT NULL DEFAULT ''
         );
     """, label="dpa_signings")
     _safe_exec("CREATE INDEX IF NOT EXISTS idx_dpa_signings_token ON dpa_signings(token)", label="idx_dpa_signings_token")
     _safe_exec("CREATE INDEX IF NOT EXISTS idx_dpa_signings_customer ON dpa_signings(customer_id)", label="idx_dpa_signings_customer")
     _safe_exec("CREATE INDEX IF NOT EXISTS idx_dpa_signings_status ON dpa_signings(status)", label="idx_dpa_signings_status")
+
+    # Migrations: add recipient fields + make customer_id nullable
+    _safe_exec("ALTER TABLE dpa_signings ADD COLUMN IF NOT EXISTS recipient_name TEXT NOT NULL DEFAULT ''", label="dpa_signings_recipient_name")
+    _safe_exec("ALTER TABLE dpa_signings ADD COLUMN IF NOT EXISTS recipient_email TEXT NOT NULL DEFAULT ''", label="dpa_signings_recipient_email")
+    _safe_exec("ALTER TABLE dpa_signings ADD COLUMN IF NOT EXISTS recipient_company TEXT NOT NULL DEFAULT ''", label="dpa_signings_recipient_company")
+    _safe_exec("ALTER TABLE dpa_signings ALTER COLUMN customer_id DROP NOT NULL", label="dpa_signings_customer_id_nullable")
 
     # Dismissed signals: track which CS signals have been dismissed
     _safe_exec("""
