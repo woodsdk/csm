@@ -9159,7 +9159,7 @@
 
 .dpa-pdf-viewer {
   width: 100%;
-  height: 600px;
+  height: min(450px, 50vh);
   border: none;
 }
 
@@ -9259,7 +9259,7 @@
   .dpa-signing-actions { width: 100%; justify-content: flex-end; margin-top: var(--space-2); }
 
   .dpa-public-content { padding: 24px 16px; }
-  .dpa-pdf-viewer { height: 400px; }
+  .dpa-pdf-viewer { height: min(350px, 45vh); }
   .dpa-public-actions { flex-direction: column; }
   .dpa-sign-actions { flex-direction: column-reverse; }
 }
