@@ -314,10 +314,16 @@ export const DPAManager = {
       <div class="dpa-section">
         <div class="dpa-audit-header">
           <h3 class="dpa-section-title">Fuld audit log (for Datatilsynet)</h3>
-          <a href="/api/dpa/audit-log/csv" target="_blank" class="btn btn-sm">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Eksporter CSV
-          </a>
+          <div style="display: flex; gap: 8px;">
+            <a href="/api/dpa/export-zip" class="btn btn-sm btn-primary" style="text-decoration:none;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download komplet pakke (ZIP)
+            </a>
+            <a href="/api/dpa/audit-log/csv" class="btn btn-sm" style="text-decoration:none;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Eksporter CSV
+            </a>
+          </div>
         </div>
     `;
 

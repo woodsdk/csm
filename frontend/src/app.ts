@@ -319,19 +319,18 @@ export const App = {
     `;
   },
 
-  _trainingTab: 'checklist' as 'checklist' | 'faq' | 'about',
+  _trainingTab: 'checklist' as 'checklist' | 'faq',
 
-  setTrainingTab(tab: 'checklist' | 'faq' | 'about'): void {
+  setTrainingTab(tab: 'checklist' | 'faq'): void {
     this._trainingTab = tab;
     this.render();
   },
 
   async _renderTrainingPage(container: HTMLElement): Promise<void> {
-    const tab = this._trainingTab;
+    const tab = this._trainingTab === 'checklist' || this._trainingTab === 'faq' ? this._trainingTab : 'checklist';
     let contentHTML = '';
     if (tab === 'checklist') contentHTML = await TrainingList.render();
-    else if (tab === 'faq') contentHTML = await FaqList.render();
-    else contentHTML = await TrainingSlideshow.render();
+    else contentHTML = await FaqList.render();
 
     container.innerHTML = `
       <div class="main-header">
@@ -344,13 +343,9 @@ export const App = {
       </div>
       <div class="main-content">
         <div class="training-tabs">
-          <button class="training-tab ${tab === 'about' ? 'training-tab-active' : ''}" onclick="App.setTrainingTab('about')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-            Om People's Clinic
-          </button>
           <button class="training-tab ${tab === 'checklist' ? 'training-tab-active' : ''}" onclick="App.setTrainingTab('checklist')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            Onboardere checkliste
+            Onboarding checkliste
           </button>
           <button class="training-tab ${tab === 'faq' ? 'training-tab-active' : ''}" onclick="App.setTrainingTab('faq')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>

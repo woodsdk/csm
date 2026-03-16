@@ -8890,7 +8890,7 @@
    DPA — Databehandleraftaler
    ════════════════════════════════════════════ */
 
-.dpa-container { max-width: 960px; }
+.dpa-container { max-width: 960px; margin: 0 auto; }
 
 .dpa-header { margin-bottom: var(--space-4); }
 .dpa-title { font-size: var(--text-xl); font-weight: var(--font-bold); color: var(--navy-800); margin: 0; }

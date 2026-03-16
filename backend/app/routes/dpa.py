@@ -2,6 +2,9 @@
 
 import secrets
 import base64
+import io
+import csv
+import zipfile
 from datetime import datetime, timedelta
 from fastapi import APIRouter, UploadFile, File, Form, Request
 from fastapi.responses import Response
@@ -242,6 +245,50 @@ def export_audit_csv():
         content=output.getvalue(),
         media_type="text/csv",
         headers={"Content-Disposition": "attachment; filename=\"dpa_audit_log.csv\""}
+    )
+
+
+@router.get("/export-zip")
+def export_compliance_zip():
+    """Export all signed DBAs + certificates + audit CSV as ZIP for Datatilsynet."""
+    signings = query("""
+        SELECT s.id, s.token, s.status, s.signer_name, s.signer_email, s.signer_title,
+               s.ip_address, s.user_agent, s.sent_at, s.signed_at, s.sent_by,
+               s.language, s.reminder_count,
+               COALESCE(c.name, s.recipient_company, s.recipient_name) as customer_name,
+               d.version as document_version, d.filename as document_filename, d.pdf_data
+        FROM dpa_signings s
+        LEFT JOIN customers c ON s.customer_id = c.id
+        LEFT JOIN dpa_documents d ON s.document_id = d.id
+        WHERE s.is_archived = false
+        ORDER BY s.signed_at DESC NULLS LAST
+    """)
+
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
+        # Add each signed DBA's PDF
+        for s in signings:
+            if s.get("pdf_data") and s["status"] == "signed":
+                safe_name = (s.get("customer_name") or "unknown").replace("/", "-").replace("\\", "-")
+                pdf_bytes = bytes(s["pdf_data"]) if isinstance(s["pdf_data"], memoryview) else s["pdf_data"]
+                zf.writestr(f"pdf/{safe_name}_v{s.get('document_version', '?')}.pdf", pdf_bytes)
+
+        # Add audit CSV
+        csv_buf = io.StringIO()
+        fieldnames = ["id", "customer_name", "signer_name", "signer_email", "signer_title",
+                       "status", "language", "document_version", "document_filename",
+                       "ip_address", "user_agent", "sent_at", "signed_at", "sent_by"]
+        writer = csv.DictWriter(csv_buf, fieldnames=fieldnames)
+        writer.writeheader()
+        for s in signings:
+            writer.writerow({k: s.get(k, "") for k in fieldnames})
+        zf.writestr("audit_log.csv", csv_buf.getvalue())
+
+    today = datetime.now().strftime("%Y-%m-%d")
+    return Response(
+        content=buf.getvalue(),
+        media_type="application/zip",
+        headers={"Content-Disposition": f"attachment; filename=\"DBA_compliance_{today}.zip\""}
     )
 
 
