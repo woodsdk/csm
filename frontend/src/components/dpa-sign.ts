@@ -138,10 +138,10 @@ export const DPASign = {
         </p>
 
         <div class="dpa-pdf-container">
-          <object data="${pdfUrl}" type="application/pdf" class="dpa-pdf-viewer">
-            <p>Din browser kan ikke vise PDF-filer.
-              <a href="${pdfUrl}" target="_blank">Download PDF her</a>.</p>
-          </object>
+          <iframe src="${pdfUrl}" class="dpa-pdf-viewer" title="Databehandleraftale PDF"></iframe>
+          <p class="dpa-pdf-fallback" style="text-align:center; margin-top:8px; font-size:13px; color:#6b7280;">
+            Kan du ikke se dokumentet? <a href="${pdfUrl}" target="_blank">Download PDF her</a>.
+          </p>
         </div>
 
         <div class="dpa-public-actions">

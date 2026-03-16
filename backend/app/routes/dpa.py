@@ -503,7 +503,8 @@ def get_signing_info(token: str):
     signings = query("""
         SELECT s.id, s.status, s.language, s.signer_name, s.signer_email, s.signer_title,
                s.signed_at, s.expires_at,
-               c.name as customer_name, c.contact_name,
+               COALESCE(NULLIF(s.recipient_name, ''), c.contact_name, c.name) as contact_name,
+               COALESCE(c.name, NULLIF(s.recipient_company, ''), NULLIF(s.recipient_name, '')) as customer_name,
                d.id as document_id, d.version as document_version, d.filename
         FROM dpa_signings s
         LEFT JOIN customers c ON s.customer_id = c.id
