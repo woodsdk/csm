@@ -8989,6 +8989,26 @@
 
 .dpa-signing-actions { display: flex; align-items: center; gap: var(--space-2); }
 
+.dpa-archive-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  cursor: pointer;
+  opacity: 0.5;
+  transition: all var(--transition-fast);
+}
+.dpa-archive-btn:hover {
+  opacity: 1;
+  border-color: var(--danger);
+  background: var(--error-bg);
+}
+
 /* Badges */
 .dpa-badge {
   display: inline-block;
