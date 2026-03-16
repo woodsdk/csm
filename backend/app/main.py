@@ -1,11 +1,14 @@
 """SynergyHub — FastAPI Application."""
 
 import os
+import hashlib
+import hmac
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from .config import settings
 from .database import init as db_init, query
 from .routes import tasks, customers, team, activities, shifts, bookings, demos, training, faq, helpdesk, onboarding, ask, google_auth, gmail, marketing, dpa, comms, platform_api
@@ -56,6 +59,19 @@ app.include_router(marketing.router, prefix="/api/marketing", tags=["marketing"]
 app.include_router(dpa.router, prefix="/api/dpa", tags=["dpa"])
 app.include_router(comms.router, prefix="/api/comms", tags=["comms"])
 app.include_router(platform_api.router, prefix="/api/platform", tags=["platform"])
+
+# ── Auth ──
+
+APP_PASSWORD = os.environ.get("APP_PASSWORD", "PD1234")
+
+class AuthRequest(BaseModel):
+    password: str
+
+@app.post("/api/auth/verify")
+def verify_password(req: AuthRequest):
+    if hmac.compare_digest(req.password, APP_PASSWORD):
+        return {"ok": True}
+    return {"ok": False, "error": "Forkert adgangskode"}
 
 # ── Diagnostics ──
 

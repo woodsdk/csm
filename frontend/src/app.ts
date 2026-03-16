@@ -95,6 +95,12 @@ export const App = {
       return;
     }
 
+    // Auth gate — check if logged in
+    if (!localStorage.getItem('synergyhub_auth')) {
+      this._renderLogin();
+      return;
+    }
+
     // Handle URL params (e.g., ?page=settings after OAuth callback)
     const urlParams = new URLSearchParams(window.location.search);
     const pageParam = urlParams.get('page');
@@ -588,6 +594,54 @@ export const App = {
     toast.textContent = message;
     container.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
+  },
+
+  _renderLogin(): void {
+    document.body.innerHTML = `
+      <div class="login-page">
+        <div class="login-card">
+          <img src="/assets/peoples-clinic.svg" alt="People's Doctor" class="login-logo" onerror="this.style.display='none'">
+          <h1 class="login-title">SynergyHub</h1>
+          <p class="login-subtitle">Indtast adgangskode for at forts\u00e6tte</p>
+          <div class="login-form">
+            <input class="input login-input" type="password" id="login-password" placeholder="Adgangskode" autofocus
+              onkeydown="if(event.key==='Enter')App.login()">
+            <button class="btn btn-primary login-btn" onclick="App.login()">Log ind</button>
+          </div>
+          <p class="login-error" id="login-error" style="display:none;"></p>
+        </div>
+      </div>
+    `;
+  },
+
+  async login(): Promise<void> {
+    const input = document.getElementById('login-password') as HTMLInputElement | null;
+    const errorEl = document.getElementById('login-error') as HTMLElement | null;
+    const password = input?.value.trim() || '';
+    if (!password) { if (input) input.focus(); return; }
+
+    try {
+      const res = await fetch('/api/auth/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        localStorage.setItem('synergyhub_auth', 'true');
+        window.location.reload();
+      } else {
+        if (errorEl) { errorEl.textContent = data.error || 'Forkert adgangskode'; errorEl.style.display = 'block'; }
+        if (input) { input.value = ''; input.focus(); }
+      }
+    } catch {
+      if (errorEl) { errorEl.textContent = 'Kunne ikke forbinde til serveren'; errorEl.style.display = 'block'; }
+    }
+  },
+
+  logout(): void {
+    localStorage.removeItem('synergyhub_auth');
+    window.location.reload();
   },
 };
 

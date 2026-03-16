@@ -2,6 +2,32 @@
    SynergyHub — Component Styles
    ═══════════════════════════════════════════ */
 
+/* ── Login ── */
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--bg-body);
+}
+.login-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 48px 40px;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+.login-logo { height: 36px; margin-bottom: 20px; }
+.login-title { font-size: 22px; font-weight: 700; color: var(--navy-800); margin-bottom: 4px; }
+.login-subtitle { font-size: 14px; color: var(--text-tertiary); margin-bottom: 28px; }
+.login-form { display: flex; flex-direction: column; gap: 12px; }
+.login-input { text-align: center; font-size: 16px; padding: 12px; }
+.login-btn { width: 100%; padding: 12px; font-size: 15px; }
+.login-error { color: var(--error); font-size: 13px; margin-top: 12px; }
+
 /* ── Layout ── */
 .app-shell {
   display: flex;
@@ -213,6 +239,25 @@
 .sidebar-demo-link:hover {
   background: var(--bg-surface-hover);
   color: var(--text-primary);
+}
+
+.sidebar-logout {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 8px var(--space-4);
+  border: none;
+  background: transparent;
+  color: var(--text-tertiary);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  width: 100%;
+}
+.sidebar-logout:hover {
+  background: var(--error-bg);
+  color: var(--error);
 }
 
 .sidebar-footer .text-xs {
