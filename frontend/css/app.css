@@ -9173,6 +9173,24 @@
 
 /* ═══════ DPA Public Signing Page ═══════ */
 
+.dpa-public a.btn {
+  text-decoration: none;
+  color: var(--text-primary);
+}
+.dpa-public a.btn:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-sm);
+}
+.dpa-public a.btn-primary {
+  color: var(--text-inverse);
+}
+.dpa-public a.btn-primary:hover {
+  background: linear-gradient(135deg, var(--navy-800), var(--navy-600));
+  box-shadow: var(--shadow-btn-hover);
+  transform: translateY(-1px);
+}
+
 .dpa-public {
   min-height: 100vh;
   background: #f8f9fc;

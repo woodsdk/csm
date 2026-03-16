@@ -273,6 +273,40 @@ def export_compliance_zip():
                 pdf_bytes = bytes(s["pdf_data"]) if isinstance(s["pdf_data"], memoryview) else s["pdf_data"]
                 zf.writestr(f"pdf/{safe_name}_v{s.get('document_version', '?')}.pdf", pdf_bytes)
 
+        # Add signing certificate PDFs for each signed DBA
+        for s in signings:
+            if s["status"] == "signed":
+                try:
+                    is_en = s.get('language') == 'en'
+                    safe_name = (s.get("customer_name") or "unknown").replace("/", "-").replace("\\", "-")
+                    # Build certificate PDF inline
+                    lang_label = "English" if is_en else "Dansk"
+                    display_name = s.get('customer_name', '')
+                    company_label = s.get('customer_name', '')
+                    signed_at = s.get('signed_at', '')
+                    if isinstance(signed_at, str) and signed_at:
+                        try:
+                            dt = datetime.fromisoformat(signed_at)
+                            signed_at_fmt = dt.strftime("%d %B %Y, %H:%M:%S") if is_en else dt.strftime("%d. %B %Y, kl. %H:%M:%S")
+                        except Exception:
+                            signed_at_fmt = str(signed_at)
+                    else:
+                        signed_at_fmt = str(signed_at)
+
+                    if is_en:
+                        labels = ("Data Processing Agreement", "Document", "Company", "Language", "Signature", "Signer", "Title / Role", "Signed", "Not specified", "Audit Information", "IP Address", "Browser",
+                                  f"This certificate confirms that the above person has digitally signed the data processing agreement on behalf of {display_name}.")
+                    else:
+                        labels = ("Databehandleraftale", "Dokument", "Virksomhed", "Sprog", "Underskrift", "Underskriver", "Titel / Rolle", "Underskrevet", "Ikke angivet", "Audit Information", "IP-adresse", "Browser",
+                                  f"Dette certifikat bekræfter at ovenstående person digitalt har underskrevet databehandleraftalen på vegne af {display_name}.")
+
+                    cert_resp = _build_certificate_pdf(s, is_en, labels[0], company_label, lang_label, signed_at_fmt,
+                                                        labels[1], labels[2], labels[3], labels[4], labels[5], labels[6],
+                                                        labels[7], labels[8], labels[9], labels[10], labels[11], labels[12], display_name)
+                    zf.writestr(f"certificates/{safe_name}_certificate.pdf", cert_resp.body)
+                except Exception:
+                    pass  # Skip certificate if generation fails
+
         # Add audit CSV
         csv_buf = io.StringIO()
         fieldnames = ["id", "customer_name", "signer_name", "signer_email", "signer_title",
@@ -680,7 +714,7 @@ def sign_dpa(token: str, data: DPASignRequest, request: Request):
 
 
 @router.get("/{token}/certificate")
-def get_signing_certificate(token: str):
+def get_signing_certificate(token: str, request: Request):
     """Public: Get signing certificate (audit receipt) as HTML."""
     signings = query("""
         SELECT s.*, c.name as customer_name,
@@ -695,9 +729,8 @@ def get_signing_certificate(token: str):
         return {"error": "Ingen underskrevet databehandleraftale fundet"}
 
     s = signings[0]
-    lang_label = "Dansk" if s.get('language') == 'da' else "English"
-
-    # Resolve display name: customer name OR recipient company/name for manual sends
+    is_en = s.get('language') == 'en'
+    lang_label = "English" if is_en else "Dansk"
     display_name = s.get('customer_name') or s.get('recipient_company') or s.get('recipient_name') or ''
     company_label = s.get('recipient_company') or s.get('customer_name') or ''
 
@@ -705,17 +738,47 @@ def get_signing_certificate(token: str):
     if isinstance(signed_at, str) and signed_at:
         try:
             dt = datetime.fromisoformat(signed_at)
-            signed_at_formatted = dt.strftime("%d. %B %Y, kl. %H:%M:%S")
+            signed_at_formatted = dt.strftime("%d %B %Y, %H:%M:%S") if is_en else dt.strftime("%d. %B %Y, kl. %H:%M:%S")
         except Exception:
             signed_at_formatted = signed_at
     else:
         signed_at_formatted = str(signed_at)
 
+    # i18n labels
+    if is_en:
+        doc_title = "Data Processing Agreement"
+        lbl_doc = "Document"
+        lbl_company = "Company"
+        lbl_language = "Language"
+        lbl_sig = "Signature"
+        lbl_signer = "Signer"
+        lbl_title = "Title / Role"
+        lbl_signed = "Signed"
+        lbl_not_specified = "Not specified"
+        lbl_audit = "Audit Information"
+        lbl_ip = "IP Address"
+        lbl_browser = "Browser"
+        footer_text = f"This certificate confirms that the above person has digitally signed the data processing agreement on behalf of {display_name}."
+    else:
+        doc_title = "Databehandleraftale"
+        lbl_doc = "Dokument"
+        lbl_company = "Virksomhed"
+        lbl_language = "Sprog"
+        lbl_sig = "Underskrift"
+        lbl_signer = "Underskriver"
+        lbl_title = "Titel / Rolle"
+        lbl_signed = "Underskrevet"
+        lbl_not_specified = "Ikke angivet"
+        lbl_audit = "Audit Information"
+        lbl_ip = "IP-adresse"
+        lbl_browser = "Browser"
+        footer_text = f"Dette certifikat bekr\u00e6fter at ovenst\u00e5ende person digitalt har underskrevet databehandleraftalen p\u00e5 vegne af {display_name}."
+
     html = f"""<!DOCTYPE html>
-<html lang="da">
+<html lang="{'en' if is_en else 'da'}">
 <head>
     <meta charset="UTF-8">
-    <title>Signing Certificate — Databehandleraftale</title>
+    <title>Signing Certificate — {doc_title}</title>
     <style>
         body {{ font-family: 'Inter', -apple-system, sans-serif; max-width: 700px; margin: 40px auto; padding: 20px; color: #26304f; }}
         .cert-header {{ text-align: center; border-bottom: 2px solid #4f5fa3; padding-bottom: 20px; margin-bottom: 30px; }}
@@ -732,39 +795,140 @@ def get_signing_certificate(token: str):
 <body>
     <div class="cert-header">
         <h1>Signing Certificate</h1>
-        <p>Databehandleraftale &mdash; People's Doctor</p>
+        <p>{doc_title} &mdash; People's Doctor</p>
     </div>
 
     <div class="cert-section">
-        <h3>Dokument</h3>
-        <div class="cert-row"><span class="cert-label">Virksomhed</span><span class="cert-value">{company_label}</span></div>
-        <div class="cert-row"><span class="cert-label">Dokument</span><span class="cert-value">{s.get('document_filename', '')} (v{s.get('document_version', '')})</span></div>
-        <div class="cert-row"><span class="cert-label">Sprog</span><span class="cert-value">{lang_label}</span></div>
+        <h3>{lbl_doc}</h3>
+        <div class="cert-row"><span class="cert-label">{lbl_company}</span><span class="cert-value">{company_label}</span></div>
+        <div class="cert-row"><span class="cert-label">{lbl_doc}</span><span class="cert-value">{s.get('document_filename', '')} (v{s.get('document_version', '')})</span></div>
+        <div class="cert-row"><span class="cert-label">{lbl_language}</span><span class="cert-value">{lang_label}</span></div>
     </div>
 
     <div class="cert-section">
-        <h3>Underskrift</h3>
-        <div class="cert-row"><span class="cert-label">Underskriver</span><span class="cert-value">{s.get('signer_name', '')}</span></div>
+        <h3>{lbl_sig}</h3>
+        <div class="cert-row"><span class="cert-label">{lbl_signer}</span><span class="cert-value">{s.get('signer_name', '')}</span></div>
         <div class="cert-row"><span class="cert-label">Email</span><span class="cert-value">{s.get('signer_email', '')}</span></div>
-        <div class="cert-row"><span class="cert-label">Titel / Rolle</span><span class="cert-value">{s.get('signer_title', '') or 'Ikke angivet'}</span></div>
-        <div class="cert-row"><span class="cert-label">Underskrevet</span><span class="cert-value">{signed_at_formatted}</span></div>
+        <div class="cert-row"><span class="cert-label">{lbl_title}</span><span class="cert-value">{s.get('signer_title', '') or lbl_not_specified}</span></div>
+        <div class="cert-row"><span class="cert-label">{lbl_signed}</span><span class="cert-value">{signed_at_formatted}</span></div>
     </div>
 
     <div class="cert-section">
-        <h3>Audit Information</h3>
-        <div class="cert-row"><span class="cert-label">IP-adresse</span><span class="cert-value">{s.get('ip_address', '')}</span></div>
-        <div class="cert-row"><span class="cert-label">Browser</span><span class="cert-value">{s.get('user_agent', '')[:100]}</span></div>
+        <h3>{lbl_audit}</h3>
+        <div class="cert-row"><span class="cert-label">{lbl_ip}</span><span class="cert-value">{s.get('ip_address', '')}</span></div>
+        <div class="cert-row"><span class="cert-label">{lbl_browser}</span><span class="cert-value">{s.get('user_agent', '')[:100]}</span></div>
         <div class="cert-row"><span class="cert-label">Signing ID</span><span class="cert-value">{s.get('id', '')}</span></div>
     </div>
 
     <div class="cert-footer">
-        <p>Dette certifikat bekr\u00e6fter at ovenst\u00e5ende person digitalt har underskrevet databehandleraftalen p\u00e5 vegne af {display_name}.</p>
-        <p>Genereret af People's Doctor &mdash; SynergyHub</p>
+        <p>{footer_text}</p>
+        <p>Generated by People's Doctor &mdash; SynergyHub</p>
     </div>
 </body>
 </html>"""
 
+    fmt = request.query_params.get('format', 'html')
+    if fmt == 'pdf':
+        return _build_certificate_pdf(s, is_en, doc_title, company_label, lang_label, signed_at_formatted, lbl_doc, lbl_company, lbl_language, lbl_sig, lbl_signer, lbl_title, lbl_signed, lbl_not_specified, lbl_audit, lbl_ip, lbl_browser, footer_text, display_name)
     return Response(content=html, media_type="text/html")
+
+
+def _build_certificate_pdf(s, is_en, doc_title, company_label, lang_label, signed_at_formatted,
+                            lbl_doc, lbl_company, lbl_language, lbl_sig, lbl_signer, lbl_title,
+                            lbl_signed, lbl_not_specified, lbl_audit, lbl_ip, lbl_browser,
+                            footer_text, display_name):
+    """Generate a professional PDF signing certificate."""
+    from fpdf import FPDF
+
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_auto_page_break(auto=True, margin=20)
+
+    # Colors
+    navy = (79, 95, 163)
+    dark = (55, 65, 81)
+    gray = (75, 85, 99)
+    light_gray = (156, 163, 175)
+    line_color = (229, 231, 235)
+
+    # Header
+    pdf.set_font("Helvetica", "B", 22)
+    pdf.set_text_color(*navy)
+    pdf.cell(0, 12, "Signing Certificate", ln=True, align="C")
+    pdf.set_font("Helvetica", "", 11)
+    pdf.set_text_color(*gray)
+    pdf.cell(0, 8, f"{doc_title} - People's Doctor", ln=True, align="C")
+
+    # Header line
+    pdf.ln(4)
+    pdf.set_draw_color(*navy)
+    pdf.set_line_width(0.6)
+    pdf.line(20, pdf.get_y(), 190, pdf.get_y())
+    pdf.ln(10)
+
+    def section_header(title):
+        pdf.set_font("Helvetica", "B", 10)
+        pdf.set_text_color(*navy)
+        pdf.cell(0, 8, title.upper(), ln=True)
+        pdf.ln(2)
+
+    def row(label, value):
+        y = pdf.get_y()
+        pdf.set_font("Helvetica", "B", 10)
+        pdf.set_text_color(*dark)
+        pdf.cell(55, 7, label)
+        pdf.set_font("Helvetica", "", 10)
+        pdf.set_text_color(*gray)
+        pdf.cell(0, 7, str(value or ''), ln=True)
+        pdf.set_draw_color(*line_color)
+        pdf.set_line_width(0.2)
+        pdf.line(20, pdf.get_y() + 1, 190, pdf.get_y() + 1)
+        pdf.ln(3)
+
+    # Document section
+    section_header(lbl_doc)
+    row(lbl_company, company_label)
+    row(lbl_doc, f"{s.get('document_filename', '')} (v{s.get('document_version', '')})")
+    row(lbl_language, lang_label)
+    pdf.ln(4)
+
+    # Signature section
+    section_header(lbl_sig)
+    row(lbl_signer, s.get('signer_name', ''))
+    row("Email", s.get('signer_email', ''))
+    row(lbl_title, s.get('signer_title', '') or lbl_not_specified)
+    row(lbl_signed, signed_at_formatted)
+    pdf.ln(4)
+
+    # Audit section
+    section_header(lbl_audit)
+    row(lbl_ip, s.get('ip_address', ''))
+    row(lbl_browser, (s.get('user_agent', '') or '')[:80])
+    row("Signing ID", s.get('id', ''))
+    pdf.ln(8)
+
+    # Footer line
+    pdf.set_draw_color(*navy)
+    pdf.set_line_width(0.6)
+    pdf.line(20, pdf.get_y(), 190, pdf.get_y())
+    pdf.ln(6)
+
+    # Footer text
+    pdf.set_font("Helvetica", "", 9)
+    pdf.set_text_color(*light_gray)
+    pdf.multi_cell(0, 5, footer_text, align="C")
+    pdf.ln(2)
+    pdf.cell(0, 5, "Generated by People's Doctor - SynergyHub", ln=True, align="C")
+
+    pdf_bytes = pdf.output()
+    safe_name = (s.get('recipient_company') or s.get('customer_name') or 'certificate').replace(' ', '_')
+    filename = f"signing_certificate_{safe_name}.pdf"
+
+    return Response(
+        content=bytes(pdf_bytes),
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'}
+    )
 
 
 # ── Helpers ──
@@ -777,30 +941,55 @@ def _send_confirmation_email(signing: dict, data: DPASignRequest):
 
     cert_url = f"{BASE_URL}/api/dpa/{signing['token']}/certificate"
     company_name = signing.get('customer_name') or signing.get('recipient_company') or signing.get('recipient_name') or ''
+    lang = signing.get('language', 'da')
+    is_en = lang == 'en'
+
+    if is_en:
+        greeting = f"Hi {data.signer_name},"
+        intro = "Thank you for signing the data processing agreement with People's Doctor."
+        receipt_label = "Receipt:"
+        lbl_company = "Company:"
+        lbl_doc = f"Document: Data Processing Agreement v{signing.get('document_version', '')} (EN)"
+        lbl_signer = f"Signed by: {data.signer_name}"
+        lbl_date = f"Date: {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+        cert_text = "You can view your signing certificate at any time here:"
+        closing = "Best regards,<br>The People's Doctor Team"
+        subject = "Data processing agreement signed \u2014 confirmation"
+    else:
+        greeting = f"Hej {data.signer_name},"
+        intro = "Tak for at du har underskrevet databehandleraftalen med People's Doctor."
+        receipt_label = "Kvittering:"
+        lbl_company = "Virksomhed:"
+        lbl_doc = f"Dokument: Databehandleraftale v{signing.get('document_version', '')} ({lang.upper()})"
+        lbl_signer = f"Underskrevet af: {data.signer_name}"
+        lbl_date = f"Dato: {datetime.now().strftime('%d/%m/%Y kl. %H:%M')}"
+        cert_text = "Du kan til enhver tid se dit signing certificate her:"
+        closing = "Med venlig hilsen,<br>People's Doctor Teamet"
+        subject = "Databehandleraftale underskrevet \u2014 bekr\u00e6ftelse"
 
     email_html = f"""
-<p>Hej {data.signer_name},</p>
+<p>{greeting}</p>
 
-<p>Tak for at du har underskrevet databehandleraftalen med People's Doctor.</p>
+<p>{intro}</p>
 
-<p><strong>Kvittering:</strong></p>
+<p><strong>{receipt_label}</strong></p>
 <table cellpadding="0" cellspacing="0" border="0" style="margin: 8px 0 16px 0; font-size: 15px; color: #4b5563;">
-  <tr><td style="padding: 4px 0;">Virksomhed:</td><td style="padding: 4px 0 4px 12px;">{company_name}</td></tr>
-  <tr><td style="padding: 4px 0;">Dokument:</td><td style="padding: 4px 0 4px 12px;">Databehandleraftale v{signing.get('document_version', '')} ({signing.get('language', 'da').upper()})</td></tr>
-  <tr><td style="padding: 4px 0;">Underskrevet af:</td><td style="padding: 4px 0 4px 12px;">{data.signer_name}</td></tr>
-  <tr><td style="padding: 4px 0;">Dato:</td><td style="padding: 4px 0 4px 12px;">{datetime.now().strftime('%d/%m/%Y kl. %H:%M')}</td></tr>
+  <tr><td style="padding: 4px 0;">{lbl_company}</td><td style="padding: 4px 0 4px 12px;">{company_name}</td></tr>
+  <tr><td style="padding: 4px 0;">{lbl_doc.split(': ')[0]}:</td><td style="padding: 4px 0 4px 12px;">{lbl_doc.split(': ', 1)[1]}</td></tr>
+  <tr><td style="padding: 4px 0;">{lbl_signer.split(': ')[0]}:</td><td style="padding: 4px 0 4px 12px;">{lbl_signer.split(': ', 1)[1]}</td></tr>
+  <tr><td style="padding: 4px 0;">{lbl_date.split(': ')[0]}:</td><td style="padding: 4px 0 4px 12px;">{lbl_date.split(': ', 1)[1]}</td></tr>
 </table>
 
-<p>Du kan til enhver tid se dit signing certificate her:<br>
+<p>{cert_text}<br>
 <a href="{cert_url}" style="color: #4f5fa3;">{cert_url}</a></p>
 
-<p>Med venlig hilsen,<br>People's Doctor Teamet</p>
+<p>{closing}</p>
     """
 
     from ..gmail import send_email
     send_email(
         to=email,
-        subject="Databehandleraftale underskrevet \u2014 bekr\u00e6ftelse",
+        subject=subject,
         body_html=email_html,
         use_template=True,
     )
@@ -842,17 +1031,32 @@ def process_dpa_reminders():
         if not email:
             continue
         signing_url = f"{BASE_URL}/dpa/{signing['token']}"
-        html = f"""
-            <p>Hej {name},</p>
-            <p>Vi minder venligt om, at din databehandleraftale med People's Doctor afventer din underskrift.</p>
-            <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
-                <tr><td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
-                    <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px;">L\u00e6s og underskriv databehandleraftale</a>
-                </td></tr>
-            </table>
-            <p>Med venlig hilsen,<br>People's Doctor Teamet</p>
-        """
-        result = send_email(to=email, subject="P\u00e5mindelse: Databehandleraftale afventer", body_html=html, use_template=True)
+        is_en = signing.get('language', 'da') == 'en'
+        if is_en:
+            html = f"""
+                <p>Hi {name},</p>
+                <p>This is a friendly reminder that your data processing agreement with People's Doctor is awaiting your signature.</p>
+                <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
+                    <tr><td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
+                        <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px;">Read and sign data processing agreement</a>
+                    </td></tr>
+                </table>
+                <p>Best regards,<br>The People's Doctor Team</p>
+            """
+            subj = "Reminder: Data processing agreement awaiting signature"
+        else:
+            html = f"""
+                <p>Hej {name},</p>
+                <p>Vi minder venligt om, at din databehandleraftale med People's Doctor afventer din underskrift.</p>
+                <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
+                    <tr><td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
+                        <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px;">Læs og underskriv databehandleraftale</a>
+                    </td></tr>
+                </table>
+                <p>Med venlig hilsen,<br>People's Doctor Teamet</p>
+            """
+            subj = "Påmindelse: Databehandleraftale afventer"
+        result = send_email(to=email, subject=subj, body_html=html, use_template=True)
         if result:
             execute("UPDATE dpa_signings SET reminder_count = 1, last_reminder_at = NOW() WHERE id = %s", (signing['id'],))
 
@@ -875,17 +1079,33 @@ def process_dpa_reminders():
         if not email:
             continue
         signing_url = f"{BASE_URL}/dpa/{signing['token']}"
-        html = f"""
-            <p>Hej {name},</p>
-            <p>Dette er en venlig p\u00e5mindelse om at din databehandleraftale med People's Doctor stadig afventer din underskrift.</p>
-            <p>For at vi kan forts\u00e6tte samarbejdet i overensstemmelse med GDPR, beder vi dig venligst underskrive aftalen.</p>
-            <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
-                <tr><td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
-                    <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px;">Underskriv databehandleraftale nu</a>
-                </td></tr>
-            </table>
-            <p>Med venlig hilsen,<br>People's Doctor Teamet</p>
-        """
-        result = send_email(to=email, subject="Sidste p\u00e5mindelse: Databehandleraftale afventer underskrift", body_html=html, use_template=True)
+        is_en = signing.get('language', 'da') == 'en'
+        if is_en:
+            html = f"""
+                <p>Hi {name},</p>
+                <p>This is a friendly reminder that your data processing agreement with People's Doctor is still awaiting your signature.</p>
+                <p>To continue our collaboration in accordance with GDPR, we kindly ask you to sign the agreement.</p>
+                <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
+                    <tr><td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
+                        <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px;">Sign data processing agreement now</a>
+                    </td></tr>
+                </table>
+                <p>Best regards,<br>The People's Doctor Team</p>
+            """
+            subj = "Final reminder: Data processing agreement awaiting signature"
+        else:
+            html = f"""
+                <p>Hej {name},</p>
+                <p>Dette er en venlig påmindelse om at din databehandleraftale med People's Doctor stadig afventer din underskrift.</p>
+                <p>For at vi kan fortsætte samarbejdet i overensstemmelse med GDPR, beder vi dig venligst underskrive aftalen.</p>
+                <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
+                    <tr><td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
+                        <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px;">Underskriv databehandleraftale nu</a>
+                    </td></tr>
+                </table>
+                <p>Med venlig hilsen,<br>People's Doctor Teamet</p>
+            """
+            subj = "Sidste påmindelse: Databehandleraftale afventer underskrift"
+        result = send_email(to=email, subject=subj, body_html=html, use_template=True)
         if result:
             execute("UPDATE dpa_signings SET reminder_count = 2, last_reminder_at = NOW(), cs_notified = true WHERE id = %s", (signing['id'],))
