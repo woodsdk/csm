@@ -115,7 +115,7 @@ export const DPASign = {
         <h2>Allerede underskrevet</h2>
         <p>Denne databehandleraftale blev underskrevet af <strong>${escapeHtml(info?.signer_name || '')}</strong>
         ${info?.signed_at ? ` den ${new Date(info.signed_at).toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' })}` : ''}.</p>
-        <a href="/api/dpa/${this._token}/certificate" target="_blank" class="btn btn-primary" style="margin-top: 16px;">
+        <a href="/api/dpa/${this._token}/certificate" target="_blank" class="btn btn-primary" style="margin-top: 16px; text-decoration: none;">
           Se signing certificate
         </a>
       </div>
@@ -232,10 +232,16 @@ export const DPASign = {
 
         <p style="color: #6b7280; margin-top: 16px;">En bekr\u00e6ftelse er sendt til din email.</p>
 
-        <a href="/api/dpa/${this._token}/certificate" target="_blank" class="btn btn-primary" style="margin-top: 16px;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          Download signing certificate
-        </a>
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px; align-items: center;">
+          <a href="/api/dpa/${this._token}/certificate" target="_blank" class="btn btn-primary" style="text-decoration: none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Download signing certificate
+          </a>
+          <a href="/api/dpa/${this._token}/pdf" target="_blank" class="btn" style="text-decoration: none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download databehandleraftale
+          </a>
+        </div>
       </div>
     `;
   },
