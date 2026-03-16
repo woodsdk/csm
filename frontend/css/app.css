@@ -558,13 +558,10 @@
   transition: all var(--transition-fast);
   box-shadow: var(--shadow-btn);
   flex-shrink: 0;
-  opacity: 0.4;
-  pointer-events: none;
 }
 
 .quick-add-bar-inner:focus-within .quick-add-bar-btn {
-  opacity: 1;
-  pointer-events: auto;
+  box-shadow: var(--shadow-btn-hover);
 }
 
 .quick-add-bar-btn:hover {

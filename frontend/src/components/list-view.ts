@@ -34,7 +34,7 @@ export const ListView = {
           <input class="quick-add-bar-input" type="text" placeholder="Ny opgave — skriv titel og tryk Enter..."
                  onkeydown="if(event.key==='Enter')ListView.quickAdd(this.value)"
                  id="quick-add-input" autocomplete="off">
-          <button class="quick-add-bar-btn" onclick="ListView.quickAdd(document.getElementById('quick-add-input').value)">
+          <button class="quick-add-bar-btn" onclick="var v=document.getElementById('quick-add-input').value.trim(); if(v){ListView.quickAdd(v)}else{TaskModal.open()}">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Opret opgave
           </button>
