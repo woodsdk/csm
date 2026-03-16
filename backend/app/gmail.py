@@ -299,7 +299,6 @@ def sync_inbox(max_results: int = 20) -> dict:
                     "your demo is confirmed",
                     "booking bekræftelse",
                     "booking confirmation",
-                    "databehandleraftale",
                 ]):
                     mark_as_read(msg_id)
                     logger.info(f"Skipped system email: {subject}")
