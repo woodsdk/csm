@@ -98,7 +98,7 @@ export const TeamList = {
       return `<img class="${sizeClass} tl-avatar-photo" src="${m.photo_data}" alt="${escapeHtml(m.name)}">`;
     }
     const initials = getInitials(m.name);
-    return `<div class="${sizeClass}" style="background: var(--navy-600)">${initials}</div>`;
+    return `<div class="${sizeClass}" style="background: #94a3b8">${initials}</div>`;
   },
 
   /* ── Table row ── */

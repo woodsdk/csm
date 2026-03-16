@@ -84,7 +84,8 @@ export const ShiftSchedule = {
     }
 
     const colorMap = new Map<string, string>();
-    this._teamMembers.forEach(m => colorMap.set(m.name, m.avatar_color));
+    // Subtle light blue for all avatars
+    this._teamMembers.forEach(m => colorMap.set(m.name, '#94a3b8'));
 
     const today = new Date().toISOString().split('T')[0];
 
@@ -170,7 +171,7 @@ export const ShiftSchedule = {
         html += `<div class="vp-cell ${isPast ? 'vp-past' : ''} ${isToday ? 'vp-today-col' : ''}">`;
         if (shift) {
           const initials = getInitials(shift.staff_name);
-          const avatarColor = colorMap.get(shift.staff_name) || '#38456D';
+          const avatarColor = colorMap.get(shift.staff_name) || '#94a3b8';
           const listeners = shift.listeners || [];
 
           html += `<div class="vp-booked">
@@ -185,7 +186,7 @@ export const ShiftSchedule = {
             html += '<div class="vp-listeners">';
             listeners.forEach(lis => {
               const lisInitials = getInitials(lis.listener_name);
-              const lisColor = colorMap.get(lis.listener_name) || '#5669A4';
+              const lisColor = colorMap.get(lis.listener_name) || '#94a3b8';
               html += `<span class="vp-listener-chip" style="background: ${lisColor}" title="${escapeHtml(lis.listener_name)} (lytter)" onclick="event.stopPropagation(); ShiftSchedule.removeListener('${shift.id}', '${lis.id}', '${escapeHtml(lis.listener_name)}')">${lisInitials}</span>`;
             });
             html += '</div>';
@@ -238,7 +239,7 @@ export const ShiftSchedule = {
         const shift = dayShifts.find(s => s.start_time === slot.start);
         if (shift) {
           const initials = getInitials(shift.staff_name);
-          const avatarColor = colorMap.get(shift.staff_name) || '#38456D';
+          const avatarColor = colorMap.get(shift.staff_name) || '#94a3b8';
           const listeners = shift.listeners || [];
 
           html += `<div class="vp-card-slot vp-card-slot-filled">
