@@ -364,39 +364,45 @@ def send_dpa(data: DPASendRequest):
 
     # Send email
     signing_url = f"{BASE_URL}/dpa/{token}"
-    lang_label = "dansk" if data.language == "da" else "engelsk"
+    is_en = data.language == "en"
+    contact_name = customer.get('contact_name') or customer.get('name', '')
 
-    email_html = f"""
-        <p>Hej {customer.get('contact_name') or customer.get('name', '')},</p>
-
-        <p>Vi sender hermed vores databehandleraftale, som vi beder dig genneml\u00e6se og underskrive digitalt.</p>
-
-        <p>Databehandleraftalen sikrer, at behandlingen af persondata mellem dig og People's Doctor sker i overensstemmelse med GDPR.</p>
-
-        <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
-            <tr>
-                <td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
-                    <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block;">
-                        L\u00e6s og underskriv databehandleraftale
-                    </a>
-                </td>
-            </tr>
-        </table>
-
-        <p style="font-size: 13px; color: #6b7280;">
-            Dokumentet er p\u00e5 {lang_label} (version {doc['version']}).<br>
-            Linket udl\u00f8ber om 30 dage.
-        </p>
-
-        <p>Har du sp\u00f8rgsm\u00e5l, er du velkommen til at kontakte os.</p>
-
-        <p>Med venlig hilsen,<br>People's Doctor Teamet</p>
-    """
+    if is_en:
+        email_html = f"""
+            <p>Hi {contact_name},</p>
+            <p>Please find our data processing agreement, which we kindly ask you to review and sign digitally.</p>
+            <p>The data processing agreement ensures that the processing of personal data between you and People's Doctor is in accordance with GDPR.</p>
+            <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
+                <tr><td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
+                    <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block;">Read and sign data processing agreement</a>
+                </td></tr>
+            </table>
+            <p style="font-size: 13px; color: #6b7280;">The document is in English (version {doc['version']}).<br>The link expires in 30 days.</p>
+            <p>If you have any questions, please don't hesitate to contact us.</p>
+            <p>Best regards,<br>The People's Doctor Team</p>
+        """
+        email_subject = "Data Processing Agreement \u2014 People's Doctor"
+    else:
+        lang_label = "dansk"
+        email_html = f"""
+            <p>Hej {contact_name},</p>
+            <p>Vi sender hermed vores databehandleraftale, som vi beder dig gennemlæse og underskrive digitalt.</p>
+            <p>Databehandleraftalen sikrer, at behandlingen af persondata mellem dig og People's Doctor sker i overensstemmelse med GDPR.</p>
+            <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
+                <tr><td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
+                    <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block;">Læs og underskriv databehandleraftale</a>
+                </td></tr>
+            </table>
+            <p style="font-size: 13px; color: #6b7280;">Dokumentet er på {lang_label} (version {doc['version']}).<br>Linket udløber om 30 dage.</p>
+            <p>Har du spørgsmål, er du velkommen til at kontakte os.</p>
+            <p>Med venlig hilsen,<br>People's Doctor Teamet</p>
+        """
+        email_subject = "Databehandleraftale \u2014 People's Doctor"
 
     from ..gmail import send_email
     result = send_email(
         to=customer['contact_email'],
-        subject="Databehandleraftale \u2014 People's Doctor",
+        subject=email_subject,
         body_html=email_html,
         use_template=True,
     )
@@ -449,39 +455,43 @@ def send_dpa_manual(data: DPAManualSendRequest):
 
     # Send email
     signing_url = f"{BASE_URL}/dpa/{token}"
-    lang_label = "dansk" if data.language == "da" else "engelsk"
+    is_en = data.language == "en"
 
-    email_html = f"""
-        <p>Hej {data.name},</p>
-
-        <p>Vi sender hermed vores databehandleraftale, som vi beder dig genneml\u00e6se og underskrive digitalt.</p>
-
-        <p>Databehandleraftalen sikrer, at behandlingen af persondata mellem dig og People's Doctor sker i overensstemmelse med GDPR.</p>
-
-        <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
-            <tr>
-                <td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
-                    <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block;">
-                        L\u00e6s og underskriv databehandleraftale
-                    </a>
-                </td>
-            </tr>
-        </table>
-
-        <p style="font-size: 13px; color: #6b7280;">
-            Dokumentet er p\u00e5 {lang_label} (version {doc['version']}).<br>
-            Linket udl\u00f8ber om 30 dage.
-        </p>
-
-        <p>Har du sp\u00f8rgsm\u00e5l, er du velkommen til at kontakte os.</p>
-
-        <p>Med venlig hilsen,<br>People's Doctor Teamet</p>
-    """
+    if is_en:
+        email_html = f"""
+            <p>Hi {data.name},</p>
+            <p>Please find our data processing agreement, which we kindly ask you to review and sign digitally.</p>
+            <p>The data processing agreement ensures that the processing of personal data between you and People's Doctor is in accordance with GDPR.</p>
+            <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
+                <tr><td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
+                    <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block;">Read and sign data processing agreement</a>
+                </td></tr>
+            </table>
+            <p style="font-size: 13px; color: #6b7280;">The document is in English (version {doc['version']}).<br>The link expires in 30 days.</p>
+            <p>If you have any questions, please don't hesitate to contact us.</p>
+            <p>Best regards,<br>The People's Doctor Team</p>
+        """
+        email_subject = "Data Processing Agreement \u2014 People's Doctor"
+    else:
+        email_html = f"""
+            <p>Hej {data.name},</p>
+            <p>Vi sender hermed vores databehandleraftale, som vi beder dig gennemlæse og underskrive digitalt.</p>
+            <p>Databehandleraftalen sikrer, at behandlingen af persondata mellem dig og People's Doctor sker i overensstemmelse med GDPR.</p>
+            <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
+                <tr><td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
+                    <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block;">Læs og underskriv databehandleraftale</a>
+                </td></tr>
+            </table>
+            <p style="font-size: 13px; color: #6b7280;">Dokumentet er på dansk (version {doc['version']}).<br>Linket udløber om 30 dage.</p>
+            <p>Har du spørgsmål, er du velkommen til at kontakte os.</p>
+            <p>Med venlig hilsen,<br>People's Doctor Teamet</p>
+        """
+        email_subject = "Databehandleraftale \u2014 People's Doctor"
 
     from ..gmail import send_email
     result = send_email(
         to=data.email,
-        subject="Databehandleraftale \u2014 People's Doctor",
+        subject=email_subject,
         body_html=email_html,
         use_template=True,
     )
@@ -537,30 +547,38 @@ def send_reminder(signing_id: str):
     if not recipient_email:
         return {"error": "Ingen email-adresse fundet for denne databehandleraftale"}
 
-    email_html = f"""
-        <p>Hej {recipient_name},</p>
-
-        <p>Vi minder venligt om, at din databehandleraftale med People's Doctor stadig afventer din underskrift.</p>
-
-        <p>For at vi kan forts\u00e6tte samarbejdet i overensstemmelse med GDPR, beder vi dig venligst underskrive aftalen hurtigst muligt.</p>
-
-        <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
-            <tr>
-                <td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
-                    <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block;">
-                        L\u00e6s og underskriv databehandleraftale
-                    </a>
-                </td>
-            </tr>
-        </table>
-
-        <p>Med venlig hilsen,<br>People's Doctor Teamet</p>
-    """
+    is_en = signing.get('language', 'da') == 'en'
+    if is_en:
+        email_html = f"""
+            <p>Hi {recipient_name},</p>
+            <p>This is a friendly reminder that your data processing agreement with People's Doctor is still awaiting your signature.</p>
+            <p>To continue our collaboration in accordance with GDPR, we kindly ask you to sign the agreement as soon as possible.</p>
+            <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
+                <tr><td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
+                    <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block;">Read and sign data processing agreement</a>
+                </td></tr>
+            </table>
+            <p>Best regards,<br>The People's Doctor Team</p>
+        """
+        email_subject = "Reminder: Data processing agreement awaiting signature"
+    else:
+        email_html = f"""
+            <p>Hej {recipient_name},</p>
+            <p>Vi minder venligt om, at din databehandleraftale med People's Doctor stadig afventer din underskrift.</p>
+            <p>For at vi kan fortsætte samarbejdet i overensstemmelse med GDPR, beder vi dig venligst underskrive aftalen hurtigst muligt.</p>
+            <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; width: 100%;">
+                <tr><td style="background: #4f5fa3; border-radius: 8px; text-align: center; padding: 16px 32px;">
+                    <a href="{signing_url}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block;">Læs og underskriv databehandleraftale</a>
+                </td></tr>
+            </table>
+            <p>Med venlig hilsen,<br>People's Doctor Teamet</p>
+        """
+        email_subject = "Påmindelse: Databehandleraftale afventer underskrift"
 
     from ..gmail import send_email
     result = send_email(
         to=recipient_email,
-        subject="P\u00e5mindelse: Databehandleraftale afventer underskrift",
+        subject=email_subject,
         body_html=email_html,
         use_template=True,
     )
