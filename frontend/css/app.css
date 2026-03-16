@@ -2121,7 +2121,7 @@
   padding: var(--space-2);
   border-bottom: 1px solid var(--border);
   border-right: 1px solid var(--border);
-  background: var(--bg-surface);
+  background: #f0f1f5;
 }
 
 .vp-corner-label {
@@ -2141,7 +2141,7 @@
   padding: var(--space-2) var(--space-2);
   border-bottom: 1px solid var(--border);
   border-right: 1px solid var(--border);
-  background: var(--bg-surface);
+  background: #f0f1f5;
 }
 
 .vp-day-header:last-child { border-right: none; }
@@ -2171,7 +2171,7 @@
 }
 
 .vp-today-badge {
-  background: var(--navy-600);
+  background: #ef4444;
   color: white !important;
   font-weight: var(--font-bold);
 }
@@ -2186,7 +2186,7 @@
   font-size: 11px;
   font-weight: var(--font-medium);
   color: var(--text-tertiary);
-  background: var(--bg-surface);
+  background: #f0f1f5;
 }
 
 .vp-cell {
@@ -8993,18 +8993,21 @@
   width: 28px;
   height: 28px;
   padding: 0;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background: var(--bg-surface);
+  color: var(--text-tertiary);
   cursor: pointer;
   opacity: 0.5;
   transition: all var(--transition-fast);
+  flex-shrink: 0;
 }
 .dpa-archive-btn:hover {
   opacity: 1;
+  color: var(--danger);
   border-color: var(--danger);
   background: var(--error-bg);
 }

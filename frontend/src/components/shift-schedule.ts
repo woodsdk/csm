@@ -178,7 +178,6 @@ export const ShiftSchedule = {
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>` : ''}
           <div class="vp-booked">
-            <div class="vp-booked-avatar" style="background: ${avatarColor}">${initials}</div>
             <div class="vp-booked-name">${escapeHtml(shift.staff_name)}</div>`;
 
           // Listeners
