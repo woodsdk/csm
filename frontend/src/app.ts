@@ -3,6 +3,7 @@
    ═══════════════════════════════════════════ */
 
 import { TaskAPI } from './api';
+import { t, setLang as setLangFn } from './i18n';
 import { Sidebar } from './components/sidebar';
 import { Filters } from './components/filters';
 import { ListView } from './components/list-view';

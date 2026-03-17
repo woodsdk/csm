@@ -174,11 +174,10 @@ export const ShiftSchedule = {
           const avatarColor = colorMap.get(shift.staff_name) || '#94a3b8';
           const listeners = shift.listeners || [];
 
-          html += `${!isPast ? `<button class="vp-cancel-btn" onclick="event.stopPropagation(); ShiftSchedule.cancelShift('${shift.id}')" title="Afmeld">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>` : ''}
-          <div class="vp-booked">
+          html += `<div class="vp-booked">
             <div class="vp-booked-name">${escapeHtml(shift.staff_name)}</div>`;
+
+          // Cancel button rendered after booked content (so it's on top in stacking order)
 
           // Listeners
           if (listeners.length > 0) {
@@ -200,6 +199,11 @@ export const ShiftSchedule = {
           }
 
           html += '</div>';
+          if (!isPast) {
+            html += `<button class="vp-cancel-btn" onclick="event.stopPropagation(); ShiftSchedule.cancelShift('${shift.id}')" title="Afmeld">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>`;
+          }
         } else if (!isPast) {
           html += `<button class="vp-open" onclick="ShiftSchedule.openSignup('${date}', '${slot.start}', '${slot.end}')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>

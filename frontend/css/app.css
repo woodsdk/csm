@@ -61,6 +61,12 @@
   width: auto;
 }
 
+/* Language toggle */
+.lang-toggle { display: flex; gap: 2px; }
+.lang-btn { background: none; border: 1px solid transparent; border-radius: 4px; padding: 2px 4px; cursor: pointer; font-size: 16px; opacity: 0.4; transition: opacity 0.15s; }
+.lang-btn:hover { opacity: 0.7; }
+.lang-btn-active { opacity: 1; border-color: var(--border); background: var(--bg-surface-hover); }
+
 .sidebar-logo {
   display: flex;
   gap: 4px;
@@ -2335,8 +2341,9 @@
   align-items: center;
   justify-content: center;
   opacity: 0;
-  z-index: 5;
+  z-index: 20;
   transition: all var(--transition-fast);
+  pointer-events: auto;
 }
 
 .vp-cell:hover .vp-cancel-btn {
