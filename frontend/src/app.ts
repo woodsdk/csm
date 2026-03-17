@@ -59,6 +59,7 @@ export const App = {
       this.state.tab = tab;
       this.state.filters = { search: '', status: '', priority: '', type: '', assignee_id: '' };
     }
+    this._pushState();
     this.closeMobileMenu();
     this.render();
   },
@@ -67,8 +68,30 @@ export const App = {
     this.state.page = 'tasks';
     this.state.tab = tab;
     this.state.filters = { search: '', status: '', priority: '', type: '', assignee_id: '' };
+    this._pushState();
     this.closeMobileMenu();
     this.render();
+  },
+
+  _pushState(): void {
+    const page = this.state.page;
+    const tab = this.state.tab;
+    let hash: string = page;
+    if (page === 'tasks' && tab) hash = 'tasks/' + tab;
+    if (window.location.hash !== `#${hash}`) {
+      history.pushState(null, '', `#${hash}`);
+    }
+  },
+
+  _restoreFromHash(): boolean {
+    const hash = window.location.hash.replace(/^#\/?/, '');
+    if (!hash) return false;
+    const parts = hash.split('/');
+    this.state.page = parts[0] as AppState['page'];
+    if (parts[0] === 'tasks' && parts[1]) {
+      this.state.tab = parts[1];
+    }
+    return true;
   },
 
   async init(): Promise<void> {
@@ -107,6 +130,15 @@ export const App = {
     if (pageParam) {
       this.state.page = pageParam as AppState['page'];
     }
+
+    // Restore page from URL hash (e.g., #helpdesk, #tasks/csm)
+    this._restoreFromHash();
+
+    // Listen for browser back/forward
+    window.addEventListener('popstate', () => {
+      this._restoreFromHash();
+      this.render();
+    });
 
     TaskModal.init();
     EventModal.init();
