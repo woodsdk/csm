@@ -3,7 +3,7 @@
    ═══════════════════════════════════════════ */
 
 import { TaskAPI } from './api';
-import { t, setLang as setLangFn } from './i18n';
+import { t, getLang, setLang as setLangFn } from './i18n';
 import { Sidebar } from './components/sidebar';
 import { Filters } from './components/filters';
 import { ListView } from './components/list-view';
@@ -225,6 +225,19 @@ export const App = {
       await this._renderCalendarPage(mainEl);
     } else {
       await this._renderTasksPage(mainEl);
+    }
+
+    // Inject lang toggle into top-right of header
+    const header = mainEl.querySelector('.main-header');
+    if (header) {
+      const lang = getLang();
+      const toggle = document.createElement('div');
+      toggle.className = 'lang-toggle lang-toggle-header';
+      toggle.innerHTML = `
+        <button class="lang-btn ${lang === 'da' ? 'lang-btn-active' : ''}" onclick="App.setLang('da')" title="Dansk">🇩🇰</button>
+        <button class="lang-btn ${lang === 'en' ? 'lang-btn-active' : ''}" onclick="App.setLang('en')" title="English">🇬🇧</button>
+      `;
+      header.appendChild(toggle);
     }
   },
 

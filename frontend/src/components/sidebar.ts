@@ -2,7 +2,7 @@
    Sidebar — Navigation
    ═══════════════════════════════════════════ */
 
-import { t, getLang, setLang } from '../i18n';
+import { t } from '../i18n';
 
 export const Sidebar = {
   async render(): Promise<string> {
@@ -16,16 +16,10 @@ export const Sidebar = {
     const isTeamPage = app.state.page === 'team';
     const isTrainingPage = app.state.page === 'training';
     const isSettingsPage = app.state.page === 'settings';
-    const lang = getLang();
-
     return `
       <aside class="sidebar">
         <div class="sidebar-brand">
           <img src="/assets/peoples-clinic.svg" alt="People's Clinic" class="sidebar-logo-img">
-          <div class="lang-toggle">
-            <button class="lang-btn ${lang === 'da' ? 'lang-btn-active' : ''}" onclick="App.setLang('da')" title="Dansk">🇩🇰</button>
-            <button class="lang-btn ${lang === 'en' ? 'lang-btn-active' : ''}" onclick="App.setLang('en')" title="English">🇬🇧</button>
-          </div>
         </div>
 
         <nav class="sidebar-nav">
