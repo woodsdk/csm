@@ -5,6 +5,7 @@
 
 import { TrainingAPI } from '../api';
 import { escapeHtml } from '../utils';
+import { t } from '../i18n';
 import type { TrainingItem } from '../types';
 
 export const TrainingList = {
@@ -30,7 +31,7 @@ export const TrainingList = {
             <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
             <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
           </svg>
-          <p>Ingen emner endnu. Tilf\u00f8j det f\u00f8rste emne.</p>
+          <p>${t('tr.noItems')}</p>
         </div>`;
     } else {
       const rows = this._items.map((item, index) => this._renderItem(item, index)).join('');
@@ -40,10 +41,10 @@ export const TrainingList = {
     return `
       <div class="tr-container">
         <div class="tr-header">
-          <span class="tr-stat"><strong>${count}</strong> emne${count !== 1 ? 'r' : ''}</span>
+          <span class="tr-stat"><strong>${count}</strong> ${count !== 1 ? t('tr.topics') : t('tr.topic')}</span>
           <button class="btn btn-primary btn-sm" onclick="TrainingList.openModal()">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Tilf\u00f8j
+            ${t('tr.add')}
           </button>
         </div>
         ${listHTML}
@@ -59,7 +60,7 @@ export const TrainingList = {
            ondragover="TrainingList.onDragOver(event)"
            ondrop="TrainingList.onDrop(event, '${item.id}')"
            ondragend="TrainingList.onDragEnd(event)">
-        <div class="tr-grip" title="Tr\u00e6k for at sortere">
+        <div class="tr-grip" title="${t('tr.dragToSort')}">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
         </div>
         <div class="tr-num">${index + 1}</div>
@@ -68,10 +69,10 @@ export const TrainingList = {
           ${item.description ? `<span class="tr-desc">${escapeHtml(item.description)}</span>` : ''}
         </div>
         <div class="tr-actions">
-          <button class="tr-btn" onclick="event.stopPropagation(); TrainingList.openModal('${item.id}')" title="Rediger">
+          <button class="tr-btn" onclick="event.stopPropagation(); TrainingList.openModal('${item.id}')" title="${t('tr.edit')}">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           </button>
-          <button class="tr-btn tr-btn-danger" onclick="event.stopPropagation(); TrainingList.deleteItem('${item.id}')" title="Slet">
+          <button class="tr-btn tr-btn-danger" onclick="event.stopPropagation(); TrainingList.deleteItem('${item.id}')" title="${t('tr.deleteBtn')}">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
           </button>
         </div>
@@ -147,7 +148,7 @@ export const TrainingList = {
     TrainingAPI.reorder(ids).then(() => {
       (window as any).App.render();
     }).catch(() => {
-      (window as any).App.toast('Kunne ikke \u00e6ndre r\u00e6kkef\u00f8lge', 'error');
+      (window as any).App.toast(t('tr.reorderFailed'), 'error');
     });
   },
 
@@ -177,26 +178,26 @@ export const TrainingList = {
     modal.innerHTML = `
       <div class="tl-modal" onclick="event.stopPropagation()">
         <div class="tl-modal-header">
-          <h3>${isEdit ? 'Rediger emne' : 'Tilf\u00f8j emne'}</h3>
+          <h3>${isEdit ? t('tr.editTopic') : t('tr.addTopic')}</h3>
           <button class="btn-icon" onclick="TrainingList.closeModal()">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
         <div class="tl-modal-body">
           <div class="form-group">
-            <label class="form-label">Emne <span style="color: var(--error)">*</span></label>
-            <input class="input" type="text" id="tr-title" value="${escapeHtml(title)}" placeholder="Emnetitel...">
+            <label class="form-label">${t('tr.topicLabel')} <span style="color: var(--error)">*</span></label>
+            <input class="input" type="text" id="tr-title" value="${escapeHtml(title)}" placeholder="${t('tr.topicTitlePlaceholder')}">
           </div>
           <div class="form-group">
-            <label class="form-label">Beskrivelse</label>
-            <textarea class="input" id="tr-desc" rows="3" placeholder="Kort beskrivelse af emnet...">${escapeHtml(description)}</textarea>
+            <label class="form-label">${t('tr.description')}</label>
+            <textarea class="input" id="tr-desc" rows="3" placeholder="${t('tr.descPlaceholder')}">${escapeHtml(description)}</textarea>
           </div>
         </div>
         <div class="tl-modal-footer">
-          <button class="btn" onclick="TrainingList.closeModal()">Annuller</button>
+          <button class="btn" onclick="TrainingList.closeModal()">${t('tr.cancel')}</button>
           <button class="btn btn-primary" id="tr-save-btn" onclick="TrainingList.save()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-            ${isEdit ? 'Gem \u00e6ndringer' : 'Tilf\u00f8j emne'}
+            ${isEdit ? t('tr.saveChanges') : t('tr.addTopic')}
           </button>
         </div>
       </div>
@@ -240,37 +241,37 @@ export const TrainingList = {
     const description = descEl?.value.trim() || '';
 
     if (btn) {
-      btn.innerHTML = '<span class="vp-spinner"></span> Gemmer...';
+      btn.innerHTML = `<span class="vp-spinner"></span> ${t('tr.saving')}`;
       btn.disabled = true;
     }
 
     try {
       if (this._editingId) {
         await TrainingAPI.update(this._editingId, { title, description });
-        (window as any).App.toast('Emne opdateret', 'success');
+        (window as any).App.toast(t('tr.topicUpdated'), 'success');
       } else {
         await TrainingAPI.create({ title, description });
-        (window as any).App.toast('Emne tilf\u00f8jet', 'success');
+        (window as any).App.toast(t('tr.topicAdded'), 'success');
       }
       this.closeModal();
       (window as any).App.render();
     } catch (err: any) {
       if (btn) {
-        btn.innerHTML = this._editingId ? 'Gem \u00e6ndringer' : 'Tilf\u00f8j emne';
+        btn.innerHTML = this._editingId ? t('tr.saveChanges') : t('tr.addTopic');
         btn.disabled = false;
       }
-      (window as any).App.toast(err.message || 'Noget gik galt', 'error');
+      (window as any).App.toast(err.message || t('tr.somethingWrong'), 'error');
     }
   },
 
   async deleteItem(id: string): Promise<void> {
-    if (!confirm('Er du sikker p\u00e5 du vil slette dette emne?')) return;
+    if (!confirm(t('tr.confirmDelete'))) return;
     try {
       await TrainingAPI.delete(id);
-      (window as any).App.toast('Emne slettet', 'success');
+      (window as any).App.toast(t('tr.topicDeleted'), 'success');
       (window as any).App.render();
     } catch {
-      (window as any).App.toast('Kunne ikke slette emnet', 'error');
+      (window as any).App.toast(t('tr.topicDeleteFailed'), 'error');
     }
   },
 };

@@ -348,6 +348,7 @@ const T: Record<string, Record<Lang, string>> = {
   'dpa.confirmArchive4': { da: 'fra DBA-listen?', en: 'from the DPA list?' },
   'dpa.removed': { da: 'Fjernet fra listen', en: 'Removed from list' },
   'dpa.removeFailed': { da: 'Kunne ikke fjerne', en: 'Could not remove' },
+  'dpa.removeFromList': { da: 'Fjern fra listen', en: 'Remove from list' },
   'dpa.docSetCurrent': { da: 'Dokument sat som aktuel version', en: 'Document set as current version' },
   'dpa.attentionWarning': { da: 'har ikke underskrevet efter gentagne påmindelser. Overvej personlig opfølgning.', en: 'have not signed after repeated reminders. Consider personal follow-up.' },
   'dpa.modtager': { da: 'modtager(e)', en: 'recipient(s)' },

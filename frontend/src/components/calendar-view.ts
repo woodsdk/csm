@@ -5,6 +5,7 @@
 import { TeamAPI } from '../api';
 import { GoogleCal } from '../google-calendar';
 import { escapeHtml } from '../utils';
+import { t, getLocale, getMonths } from '../i18n';
 import type { Task, TeamMember, GoogleCalendarEvent } from '../types';
 
 export const CalendarView = {
@@ -15,7 +16,8 @@ export const CalendarView = {
   async render(tasks: Task[]): Promise<string> {
     const year = this._currentDate.getFullYear();
     const month = this._currentDate.getMonth();
-    const monthName = this._currentDate.toLocaleDateString('da-DK', { month: 'long', year: 'numeric' });
+    const months = getMonths();
+    const monthName = months[month] + ' ' + year;
     const today = new Date().toISOString().split('T')[0];
 
     // Fetch Google Calendar events for this month
@@ -44,19 +46,13 @@ export const CalendarView = {
           <button class="btn btn-ghost btn-sm" onclick="CalendarView.nextMonth()">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
           </button>
-          <button class="btn btn-ghost btn-sm" onclick="CalendarView.goToday()" style="margin-left: var(--space-2)">I dag</button>
+          <button class="btn btn-ghost btn-sm" onclick="CalendarView.goToday()" style="margin-left: var(--space-2)">${t('cal.today')}</button>
           <div style="flex:1"></div>
           ${this._renderConnectionStatus()}
         </div>
 
         <div class="calendar-weekdays">
-          <div class="calendar-weekday">Man</div>
-          <div class="calendar-weekday">Tir</div>
-          <div class="calendar-weekday">Ons</div>
-          <div class="calendar-weekday">Tor</div>
-          <div class="calendar-weekday">Fre</div>
-          <div class="calendar-weekday">L\u00f8r</div>
-          <div class="calendar-weekday">S\u00f8n</div>
+          ${t('cal.weekdays').split(',').map(d => `<div class="calendar-weekday">${d}</div>`).join('')}
         </div>
 
         <div class="calendar-grid">
@@ -70,18 +66,18 @@ export const CalendarView = {
     if (!GoogleCal.isConfigured()) {
       return `<button class="btn btn-sm" onclick="CalendarView.openSettings()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        Forbind kalender
+        ${t('cal.connectCalendar')}
       </button>`;
     }
     if (!GoogleCal.isConnected()) {
       return `<button class="btn btn-sm" onclick="CalendarView.connectCalendar()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        Log ind p\u00e5 kalender
+        ${t('cal.loginCalendar')}
       </button>`;
     }
     return `<span class="calendar-connected">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-      <span class="text-xs text-secondary">Kalender forbundet</span>
+      <span class="text-xs text-secondary">${t('cal.calendarConnected')}</span>
     </span>`;
   },
 
@@ -130,7 +126,7 @@ export const CalendarView = {
           ${dayEvents.slice(0, maxVisible).map(e => `
             <div class="calendar-event calendar-event-gcal" onclick="event.stopPropagation(); EventModal.open('${e.id}')" title="${escapeHtml(e.title)}">
               <svg width="8" height="8" viewBox="0 0 24 24" fill="var(--navy-500)" stroke="none"><circle cx="12" cy="12" r="10"/></svg>
-              <span class="calendar-event-time">${e.isAllDay ? 'Heldag' : this._formatTime(e.start)}</span>
+              <span class="calendar-event-time">${e.isAllDay ? t('cal.allDay') : this._formatTime(e.start)}</span>
               <span class="calendar-event-title">${escapeHtml(e.title)}</span>
             </div>
           `).join('')}
@@ -144,7 +140,7 @@ export const CalendarView = {
               </div>
             `;
           }).join('')}
-          ${totalItems > maxVisible ? `<div class="calendar-event-more">+${totalItems - maxVisible} mere</div>` : ''}
+          ${totalItems > maxVisible ? `<div class="calendar-event-more">+${totalItems - maxVisible} ${t('cal.more')}</div>` : ''}
         </div>
       </div>
     `;
@@ -190,7 +186,7 @@ export const CalendarView = {
   _formatTime(isoStr: string): string {
     if (!isoStr) return '';
     const d = new Date(isoStr);
-    return d.toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleTimeString(getLocale(), { hour: '2-digit', minute: '2-digit' });
   }
 };
 

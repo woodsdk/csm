@@ -95,6 +95,11 @@ export const App = {
     return true;
   },
 
+  setLang(lang: string): void {
+    setLangFn(lang as any);
+    this.render();
+  },
+
   async init(): Promise<void> {
     // Public booking page — skip all internal init
     if (window.location.pathname === '/book-demo') {
@@ -259,7 +264,7 @@ export const App = {
           <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
-          <h2>Vagtplan</h2>
+          <h2>${t('app.vagtplan')}</h2>
         </div>
       </div>
       <div class="main-content vagtplan-content">
@@ -325,7 +330,7 @@ export const App = {
           <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
-          <h2>DPA</h2>
+          <h2>${t('app.dpa')}</h2>
         </div>
       </div>
       <div class="main-content">
@@ -343,7 +348,7 @@ export const App = {
           <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
-          <h2>Medarbejdere</h2>
+          <h2>${t('app.team')}</h2>
         </div>
       </div>
       <div class="main-content">
@@ -371,14 +376,14 @@ export const App = {
           <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
-          <h2>Opl\u00e6ring</h2>
+          <h2>${t('app.training')}</h2>
         </div>
       </div>
       <div class="main-content">
         <div class="training-tabs">
           <button class="training-tab ${tab === 'checklist' ? 'training-tab-active' : ''}" onclick="App.setTrainingTab('checklist')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            Onboarding checkliste
+            ${t('app.onboardingChecklist')}
           </button>
           <button class="training-tab ${tab === 'faq' ? 'training-tab-active' : ''}" onclick="App.setTrainingTab('faq')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
@@ -439,7 +444,7 @@ export const App = {
           <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
-          <h2>${isStandalone ? 'Kalender' : this.tabs[this.state.tab]?.label || 'Kalender'}</h2>
+          <h2>${isStandalone ? t('app.calendar') : this.tabs[this.state.tab]?.label || t('app.calendar')}</h2>
         </div>
       </div>
       <div class="main-content">
@@ -474,7 +479,7 @@ export const App = {
           <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
-          <h2>Brugerprofil</h2>
+          <h2>${t('app.userProfile')}</h2>
         </div>
       </div>
       <div class="main-content">
@@ -526,7 +531,7 @@ export const App = {
           <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
-          <h2>Platform Kommunikation</h2>
+          <h2>${t('app.comms')}</h2>
         </div>
       </div>
       <div class="main-content">
@@ -543,7 +548,7 @@ export const App = {
           <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
-          <h2>Indstillinger</h2>
+          <h2>${t('app.settings')}</h2>
         </div>
       </div>
       <div class="main-content">
@@ -606,10 +611,10 @@ export const App = {
 
     return `
       <div class="header-stats">
-        <span class="header-stat"><strong>${open}</strong> \u00c5bne</span>
-        ${critical > 0 ? `<span class="header-stat header-stat-critical"><strong>${critical}</strong> Kritiske</span>` : ''}
-        ${overdue > 0 ? `<span class="header-stat header-stat-overdue"><strong>${overdue}</strong> Forfaldne</span>` : ''}
-        ${dueThisWeek > 0 ? `<span class="header-stat"><strong>${dueThisWeek}</strong> Denne uge</span>` : ''}
+        <span class="header-stat"><strong>${open}</strong> ${t('app.open')}</span>
+        ${critical > 0 ? `<span class="header-stat header-stat-critical"><strong>${critical}</strong> ${t('app.critical')}</span>` : ''}
+        ${overdue > 0 ? `<span class="header-stat header-stat-overdue"><strong>${overdue}</strong> ${t('app.overdue')}</span>` : ''}
+        ${dueThisWeek > 0 ? `<span class="header-stat"><strong>${dueThisWeek}</strong> ${t('app.thisWeek')}</span>` : ''}
       </div>
     `;
   },
@@ -630,11 +635,11 @@ export const App = {
         <div class="login-card">
           <img src="/assets/peoples-clinic.svg" alt="People's Doctor" class="login-logo" onerror="this.style.display='none'">
           <h1 class="login-title">SynergyHub</h1>
-          <p class="login-subtitle">Indtast adgangskode for at forts\u00e6tte</p>
+          <p class="login-subtitle">${t('app.loginSubtitle')}</p>
           <div class="login-form">
-            <input class="input login-input" type="password" id="login-password" placeholder="Adgangskode" autofocus
+            <input class="input login-input" type="password" id="login-password" placeholder="${t('app.password')}" autofocus
               onkeydown="if(event.key==='Enter')App.login()">
-            <button class="btn btn-primary login-btn" onclick="App.login()">Log ind</button>
+            <button class="btn btn-primary login-btn" onclick="App.login()">${t('app.login')}</button>
           </div>
           <p class="login-error" id="login-error" style="display:none;"></p>
         </div>
@@ -659,11 +664,11 @@ export const App = {
         localStorage.setItem('synergyhub_auth', 'true');
         window.location.reload();
       } else {
-        if (errorEl) { errorEl.textContent = data.error || 'Forkert adgangskode'; errorEl.style.display = 'block'; }
+        if (errorEl) { errorEl.textContent = data.error || t('app.wrongPassword'); errorEl.style.display = 'block'; }
         if (input) { input.value = ''; input.focus(); }
       }
     } catch {
-      if (errorEl) { errorEl.textContent = 'Kunne ikke forbinde til serveren'; errorEl.style.display = 'block'; }
+      if (errorEl) { errorEl.textContent = t('app.connectionError'); errorEl.style.display = 'block'; }
     }
   },
 

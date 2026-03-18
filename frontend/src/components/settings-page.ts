@@ -3,6 +3,7 @@
    ═══════════════════════════════════════════ */
 
 import { GoogleAuthAPI } from '../api';
+import { t, getLocale } from '../i18n';
 import type { GoogleOAuthStatus } from '../types';
 
 export const SettingsPage = {
@@ -22,23 +23,23 @@ export const SettingsPage = {
     const googleResult = urlParams.get('google');
     let toastHTML = '';
     if (googleResult === 'connected') {
-      toastHTML = '<div class="set-toast set-toast-success">Google-konto forbundet!</div>';
+      toastHTML = `<div class="set-toast set-toast-success">${t('set.googleConnected')}</div>`;
       // Clean URL
       window.history.replaceState({}, '', '/?page=settings');
     } else if (googleResult === 'error') {
       const reason = urlParams.get('reason') || '';
-      toastHTML = `<div class="set-toast set-toast-error">Kunne ikke forbinde Google-konto. ${reason ? `Årsag: ${reason.replace(/_/g, ' ')}` : 'Prøv igen.'}</div>`;
+      toastHTML = `<div class="set-toast set-toast-error">${t('set.googleConnectFailed')} ${reason ? `${t('set.reason')} ${reason.replace(/_/g, ' ')}` : t('set.tryAgain')}</div>`;
       window.history.replaceState({}, '', '/?page=settings');
     }
 
     const connectedAt = s.connected && s.connected_at
-      ? new Date(s.connected_at).toLocaleDateString('da-DK', { day: 'numeric', month: 'short', year: 'numeric' })
+      ? new Date(s.connected_at).toLocaleDateString(getLocale(), { day: 'numeric', month: 'short', year: 'numeric' })
       : '';
 
     return `
       <div class="set-container">
         ${toastHTML}
-        <h2 class="set-title">Indstillinger</h2>
+        <h2 class="set-title">${t('set.title')}</h2>
 
         <div class="set-section">
           <h3 class="set-section-title">
@@ -48,39 +49,39 @@ export const SettingsPage = {
               <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            Google Integration
+            ${t('set.googleIntegration')}
           </h3>
 
           ${s.connected ? `
             <div class="set-card set-card-connected">
               <div class="set-card-header">
                 <span class="set-status-dot set-status-connected"></span>
-                <span class="set-status-label">Forbundet</span>
+                <span class="set-status-label">${t('set.connected')}</span>
               </div>
               <div class="set-card-email">${s.email || ''}</div>
               <div class="set-card-scopes">Gmail · Kalender</div>
-              <div class="set-card-date">Forbundet: ${connectedAt}</div>
+              <div class="set-card-date">${t('set.connectedAt')} ${connectedAt}</div>
               <button class="btn btn-sm set-disconnect-btn" onclick="SettingsPage.disconnect()">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M18.36 6.64a9 9 0 1 1-12.73 0"/>
                   <line x1="12" y1="2" x2="12" y2="12"/>
                 </svg>
-                Afbryd forbindelse
+                ${t('set.disconnect')}
               </button>
             </div>
           ` : `
             <div class="set-card set-card-disconnected">
               <div class="set-card-header">
                 <span class="set-status-dot set-status-disconnected"></span>
-                <span class="set-status-label">Ikke forbundet</span>
+                <span class="set-status-label">${t('set.notConnected')}</span>
               </div>
-              <p class="set-card-desc">Forbind din Google-konto for at sende emails fra helpdesk og bruge kalenderen direkte i platformen.</p>
+              <p class="set-card-desc">${t('set.connectDesc')}</p>
               <button class="btn btn-primary btn-sm" onclick="SettingsPage.connect()">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
                   <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
                 </svg>
-                Forbind Google-konto
+                ${t('set.connectGoogle')}
               </button>
             </div>
           `}
@@ -95,20 +96,20 @@ export const SettingsPage = {
       if (result.auth_url) {
         window.location.href = result.auth_url;
       } else {
-        (window as any).App.toast((result as any).error || 'Kunne ikke oprette forbindelse', 'error');
+        (window as any).App.toast((result as any).error || t('set.couldNotConnect'), 'error');
       }
     } catch {
-      (window as any).App.toast('Fejl ved oprettelse af Google-forbindelse', 'error');
+      (window as any).App.toast(t('set.connectError'), 'error');
     }
   },
 
   async disconnect(): Promise<void> {
     try {
       await GoogleAuthAPI.disconnect();
-      (window as any).App.toast('Google-konto afbrudt', 'success');
+      (window as any).App.toast(t('set.googleDisconnected'), 'success');
       (window as any).App.render();
     } catch {
-      (window as any).App.toast('Kunne ikke afbryde forbindelsen', 'error');
+      (window as any).App.toast(t('set.disconnectFailed'), 'error');
     }
   },
 };

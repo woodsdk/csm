@@ -4,6 +4,7 @@
 
 import { AskAPI } from '../api';
 import { escapeHtml } from '../utils';
+import { t } from '../i18n';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -27,45 +28,45 @@ export const AskSynergyHub = {
           </svg>
         </div>
         <h3 class="ask-welcome-title">Ask SynergyHub</h3>
-        <p class="ask-welcome-desc">Din interne vidensassistent for People's Clinic.<br>Stil spørgsmål om platformen — jeg kender det hele.</p>
+        <p class="ask-welcome-desc">${t('ask.desc')}<br>${t('ask.subtitle')}</p>
         <ul class="ask-welcome-features">
           <li>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-            Platform & funktioner
+            ${t('ask.feature1')}
           </li>
           <li>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Compliance & sikkerhed
+            ${t('ask.feature2')}
           </li>
           <li>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            FAQ & kundesvar
+            ${t('ask.feature3')}
           </li>
           <li>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-            Kundedata & statistik
+            ${t('ask.feature4')}
           </li>
           <li>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            Udviklingsstatus & roadmap
+            ${t('ask.feature5')}
           </li>
         </ul>
         <div class="ask-quick-btns">
-          <button class="ask-quick-btn" onclick="AskSynergyHub.askQuick('Hvad er vores nuværende NPS-score og churn rate?')">
+          <button class="ask-quick-btn" onclick="AskSynergyHub.askQuick('${t('ask.q1').replace(/'/g, "\\'")}')">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-            Hvad er vores NPS?
+            ${t('ask.q1short')}
           </button>
-          <button class="ask-quick-btn" onclick="AskSynergyHub.askQuick('Er vi GDPR-compliant? Forklar vores vigtigste compliance-regler.')">
+          <button class="ask-quick-btn" onclick="AskSynergyHub.askQuick('${t('ask.q2').replace(/'/g, "\\'")}')">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Er vi GDPR-compliant?
+            ${t('ask.q2short')}
           </button>
-          <button class="ask-quick-btn" onclick="AskSynergyHub.askQuick('Hvad kan People\\'s Clinic platformen? Giv et overblik over kernefunktionaliteten.')">
+          <button class="ask-quick-btn" onclick="AskSynergyHub.askQuick('${t('ask.q3').replace(/'/g, "\\'")}')">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-            Hvad kan platformen?
+            ${t('ask.q3short')}
           </button>
-          <button class="ask-quick-btn" onclick="AskSynergyHub.askQuick('Hvad er status på PLO-udbuddet og hvad kræver det?')">
+          <button class="ask-quick-btn" onclick="AskSynergyHub.askQuick('${t('ask.q4').replace(/'/g, "\\'")}')">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            PLO-udbud status
+            ${t('ask.q4short')}
           </button>
         </div>
       </div>
@@ -108,7 +109,7 @@ export const AskSynergyHub = {
         </div>
         <div class="ask-input-bar">
           <div class="ask-input-wrapper">
-            <textarea class="ask-input" id="ask-input" rows="1" placeholder="Stil et sp\u00f8rgsm\u00e5l om platformen..." onkeydown="AskSynergyHub.handleKey(event)"></textarea>
+            <textarea class="ask-input" id="ask-input" rows="1" placeholder="${t('ask.placeholder')}" onkeydown="AskSynergyHub.handleKey(event)"></textarea>
             <button class="ask-send-btn" id="ask-send-btn" onclick="AskSynergyHub.sendMessage()" ${this._isLoading ? 'disabled' : ''}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="22" y1="2" x2="11" y2="13"/>
@@ -116,7 +117,7 @@ export const AskSynergyHub = {
               </svg>
             </button>
           </div>
-          <div class="ask-input-hint">SynergyHub kan lave fejl. Verificer vigtige oplysninger.</div>
+          <div class="ask-input-hint">${t('ask.disclaimer')}</div>
         </div>
       </div>
     `;
@@ -201,10 +202,10 @@ export const AskSynergyHub = {
       if (result.response) {
         this._messages.push({ role: 'assistant', content: result.response });
       } else {
-        this._messages.push({ role: 'assistant', content: result.error || 'Beklager, jeg kunne ikke generere et svar. Pr\u00f8v igen.' });
+        this._messages.push({ role: 'assistant', content: result.error || t('ask.errorResponse') });
       }
     } catch {
-      this._messages.push({ role: 'assistant', content: 'Der opstod en fejl. Tjek at serveren k\u00f8rer og pr\u00f8v igen.' });
+      this._messages.push({ role: 'assistant', content: t('ask.errorConnection') });
     } finally {
       this._isLoading = false;
       await this._rerender();
