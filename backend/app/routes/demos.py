@@ -525,9 +525,103 @@ def list_demo_bookings(status: Optional[str] = None, date: Optional[str] = None)
     return query(sql, tuple(params))
 
 
+def _send_cancellation_email(booking: dict) -> None:
+    """Send a cancellation email via Gmail API when a demo is cancelled."""
+    try:
+        from ..google_oauth import is_connected as gmail_connected
+        from ..gmail import send_email
+
+        if not gmail_connected():
+            logger.debug("Gmail not connected — skipping cancellation email")
+            return
+
+        client_email = booking.get("client_email")
+        client_name = booking.get("client_name", "")
+        date_str = str(booking.get("date", ""))
+        start_time = booking.get("start_time", "")
+        end_time = booking.get("end_time", "")
+
+        # Format date nicely in Danish
+        d = datetime.strptime(date_str, "%Y-%m-%d")
+        weekdays = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"]
+        months = ["januar", "februar", "marts", "april", "maj", "juni",
+                  "juli", "august", "september", "oktober", "november", "december"]
+        formatted_date = f"{weekdays[d.weekday()]} d. {d.day}. {months[d.month - 1]} {d.year}"
+
+        body_html = f"""
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 560px; margin: 0 auto; color: #1e293b;">
+            <div style="text-align: center; padding: 24px 0 16px;">
+                <img src="https://csm-production.up.railway.app/assets/peoplesclinic.png" alt="People's Clinic" width="180" style="display: inline-block; max-width: 180px; height: auto;">
+            </div>
+
+            <div style="background: #fef2f2; border-radius: 12px; padding: 32px; text-align: center; margin-bottom: 24px;">
+                <div style="font-size: 36px; margin-bottom: 8px;">❌</div>
+                <h2 style="margin: 0 0 8px; font-size: 22px; color: #1e293b;">Din demo er blevet aflyst</h2>
+                <p style="margin: 0; color: #64748b; font-size: 14px;">Hej {client_name} — vi er desværre nødt til at aflyse din planlagte demo.</p>
+            </div>
+
+            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                <p style="font-size: 14px; color: #64748b; margin: 0 0 16px;">Følgende demo er aflyst:</p>
+                <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                    <tr>
+                        <td style="padding: 8px 0; color: #64748b; width: 40px; vertical-align: top;">📅</td>
+                        <td style="padding: 8px 0; color: #1e293b; font-weight: 500; text-decoration: line-through;">{formatted_date}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; color: #64748b; vertical-align: top;">🕐</td>
+                        <td style="padding: 8px 0; color: #1e293b; font-weight: 500; text-decoration: line-through;">Kl. {start_time} – {end_time}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 24px;">
+                <p style="font-size: 14px; color: #475569; margin: 0 0 16px;">
+                    Du er velkommen til at booke en ny demo — vi vil gerne finde et tidspunkt der passer dig.
+                </p>
+                <a href="https://csm-production.up.railway.app/book-demo" style="display: inline-block; background: #3b82f6; color: #fff; text-decoration: none; padding: 12px 32px; border-radius: 8px; font-weight: 600; font-size: 14px;">
+                    Book ny demo
+                </a>
+            </div>
+
+            <div style="text-align: center; padding: 24px 0 8px;">
+                <p style="font-size: 12px; color: #94a3b8; margin: 0;">
+                    People's Clinic — Digital sundhedsplatform
+                </p>
+            </div>
+        </div>
+        """
+
+        # Send to primary client
+        send_email(
+            to=client_email,
+            subject=f"Din demo er aflyst — {formatted_date}",
+            body_html=body_html,
+        )
+        logger.info(f"Cancellation email sent to {client_email}")
+
+        # Also notify any additional participants
+        participants = query(
+            "SELECT email, name FROM demo_participants WHERE booking_id = %s AND is_primary = false",
+            (booking.get("id"),),
+        )
+        for p in participants:
+            try:
+                send_email(
+                    to=p["email"],
+                    subject=f"Demo aflyst — {formatted_date}",
+                    body_html=body_html.replace(f"Hej {client_name}", f"Hej {p['name']}"),
+                )
+                logger.info(f"Cancellation email sent to participant {p['email']}")
+            except Exception as pe:
+                logger.warning(f"Failed to send cancellation to participant {p['email']}: {pe}")
+
+    except Exception as e:
+        logger.warning(f"Failed to send cancellation email: {e}")
+
+
 @router.post("/{booking_id}/cancel")
 def cancel_demo_booking(booking_id: str):
-    """Cancel a demo booking and remove calendar event."""
+    """Cancel a demo booking, remove calendar event, and send cancellation email."""
     rows = query(
         "UPDATE demo_bookings SET status = 'cancelled' WHERE id = %s RETURNING *",
         (booking_id,),
@@ -540,5 +634,8 @@ def cancel_demo_booking(booking_id: str):
     # Delete calendar event if it exists (sends cancellation to attendees)
     if booking.get("calendar_event_id"):
         gcal_delete_event(booking["calendar_event_id"])
+
+    # Send cancellation email to client and participants
+    _send_cancellation_email(booking)
 
     return booking
