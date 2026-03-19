@@ -75,17 +75,31 @@ export const App = {
   _pushState(): void {
     const page = this.state.page;
     const tab = this.state.tab;
-    let hash: string = page;
-    if (page === 'tasks' && tab) hash = 'tasks/' + tab;
-    if (window.location.hash !== `#${hash}`) {
-      history.pushState(null, '', `#${hash}`);
+    let path: string = '/' + page;
+    if (page === 'tasks' && tab) path = '/tasks/' + tab;
+    if (window.location.pathname !== path) {
+      history.pushState(null, '', path);
     }
   },
 
-  _restoreFromHash(): boolean {
+  _restoreFromUrl(): boolean {
+    // Support both hash and path routing (hash for backwards compat)
     const hash = window.location.hash.replace(/^#\/?/, '');
-    if (!hash) return false;
-    const parts = hash.split('/');
+    if (hash) {
+      // Redirect old hash URLs to clean paths
+      const parts = hash.split('/');
+      this.state.page = parts[0] as AppState['page'];
+      if (parts[0] === 'tasks' && parts[1]) {
+        this.state.tab = parts[1];
+      }
+      // Replace hash URL with clean path
+      const path = parts[0] === 'tasks' && parts[1] ? `/tasks/${parts[1]}` : `/${parts[0]}`;
+      history.replaceState(null, '', path);
+      return true;
+    }
+    const path = window.location.pathname.replace(/^\//, '');
+    if (!path) return false;
+    const parts = path.split('/');
     this.state.page = parts[0] as AppState['page'];
     if (parts[0] === 'tasks' && parts[1]) {
       this.state.tab = parts[1];
@@ -127,12 +141,12 @@ export const App = {
       this.state.page = pageParam as AppState['page'];
     }
 
-    // Restore page from URL hash (e.g., #helpdesk, #tasks/csm)
-    this._restoreFromHash();
+    // Restore page from URL path (e.g., /helpdesk, /tasks/csm)
+    this._restoreFromUrl();
 
     // Listen for browser back/forward
     window.addEventListener('popstate', () => {
-      this._restoreFromHash();
+      this._restoreFromUrl();
       this.render();
     });
 
