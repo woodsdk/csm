@@ -81,13 +81,6 @@ def list_db_tables():
     return {"tables": [t["tablename"] for t in tables]}
 
 
-@app.post("/api/shifts-reset-cancelled")
-def reset_cancelled_shifts():
-    """Delete all cancelled shifts so auto-seed can refill them."""
-    from .database import execute as db_execute
-    db_execute("DELETE FROM shifts WHERE status = 'cancelled'")
-    return {"ok": True}
-
 @app.post("/api/db-migrate")
 def run_migration():
     """Re-run database init to create missing tables."""
