@@ -66,7 +66,7 @@ export const DemoBooking = {
             <div class="db-landing-card">
               <h2 class="db-landing-title">Pr\u00f8v platformen selv</h2>
               <ul class="db-landing-features">
-                <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38456D" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Gratis for alle</li>
+                <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38456D" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Gratis for hele klinikken</li>
                 <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38456D" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> AI Act Compliant</li>
                 <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38456D" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> GDPR Compliant</li>
                 <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38456D" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Kom i gang p\u00e5 5 minutter</li>
