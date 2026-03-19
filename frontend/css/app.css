@@ -3322,13 +3322,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 36px;
+  gap: 40px;
   width: 100%;
   max-width: 960px;
+  padding-top: 40px;
 }
 
 .db-landing-logo-img {
-  height: 56px;
+  height: 80px;
+  margin-bottom: 12px;
 }
 
 .db-landing-cards {
@@ -3353,18 +3355,18 @@
 }
 
 .db-landing-title {
-  font-size: 20px;
-  font-weight: 500;
+  font-size: 26px;
+  font-weight: 600;
   font-family: 'Inter', sans-serif;
   color: #13102C;
   margin: 0 0 12px 0;
 }
 
 .db-landing-subtitle {
-  font-size: 13px;
+  font-size: 14px;
   color: #5669A4;
-  line-height: 1.5;
-  margin: 0 0 20px 0;
+  line-height: 1.6;
+  margin: 0 0 24px 0;
 }
 
 .db-landing-features {
@@ -3373,14 +3375,14 @@
   margin: 0 0 auto 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 18px;
 }
 
 .db-landing-features li {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 14px;
+  gap: 14px;
+  font-size: 16px;
   font-weight: 500;
   color: #13102C;
   font-family: 'Inter', sans-serif;
@@ -3389,24 +3391,27 @@
 .db-landing-features li svg {
   stroke: #5669A4;
   flex-shrink: 0;
+  width: 22px;
+  height: 22px;
 }
 
 .db-landing-cta {
   width: 100%;
   text-align: center;
   justify-content: center;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.3px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
   padding: 0 24px;
-  height: 44px;
+  height: 50px;
   border-radius: 9999px;
-  margin-top: 28px;
+  margin-top: 32px;
   background: linear-gradient(135deg, #38456D 0%, #5669A4 100%);
   color: #FFFFFF;
   border: none;
   box-shadow: 0 4px 15px rgba(56, 69, 109, 0.2);
   transition: box-shadow 0.3s ease, background 0.2s ease;
+  cursor: pointer;
 }
 
 .db-landing-cta:hover {
@@ -3416,8 +3421,8 @@
 
 .db-landing-login {
   text-align: center;
-  margin-top: 14px;
-  font-size: 12px;
+  margin-top: 16px;
+  font-size: 13px;
   color: #A3B0D9;
   font-family: 'Inter', sans-serif;
 }
@@ -3561,10 +3566,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px 32px;
+  padding: 16px 16px;
   gap: 0;
   background: #FAFBFE;
   border-bottom: 1px solid #EDF0F7;
+  overflow-x: auto;
 }
 
 .db-step {
@@ -3619,10 +3625,10 @@
 }
 
 .db-step-line {
-  width: 36px;
+  width: 24px;
   height: 2px;
   background: #D8DEEE;
-  margin: 0 8px;
+  margin: 0 6px;
   flex-shrink: 0;
   border-radius: 1px;
 }
@@ -4064,11 +4070,16 @@
   }
 
   .db-steps {
-    padding: 14px 20px;
+    padding: 12px 12px;
   }
 
   .db-step-label {
     display: none;
+  }
+
+  .db-step-line {
+    width: 16px;
+    margin: 0 4px;
   }
 
   .db-body {
