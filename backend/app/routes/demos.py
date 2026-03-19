@@ -6,7 +6,13 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import Optional
 from ..database import query, execute, gen_id
-from ..google_calendar import create_event as gcal_create_event, add_attendee as gcal_add_attendee, delete_event as gcal_delete_event
+from ..google_calendar import (
+    create_event as gcal_create_event,
+    add_attendee as gcal_add_attendee,
+    delete_event as gcal_delete_event,
+    get_attendee_status as gcal_get_attendee_status,
+    event_exists as gcal_event_exists,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -325,8 +331,10 @@ def create_demo_booking(data: DemoBookingCreate):
     if not slot:
         return {"error": "Tidspunktet er ikke længere ledigt"}
 
-    # Assign staff member (round-robin)
+    # Assign staff member (round-robin) — block if nobody available
     assigned = _assign_staff(data.date, data.start_time)
+    if not assigned:
+        return {"error": "Der er ingen ledige demo-givere på dette tidspunkt. Prøv et andet tidspunkt."}
 
     # Build task description
     clinic_suffix = f" ({data.client_clinic})" if data.client_clinic else ""
@@ -363,7 +371,7 @@ def create_demo_booking(data: DemoBookingCreate):
         (task_id, task_title, task_desc, data.date, calendar_event_id, assigned_id),
     )
 
-    # Create demo booking
+    # Create demo booking — then verify no double-booking occurred (race condition guard)
     rows = query(
         """INSERT INTO demo_bookings (id, date, start_time, end_time, client_name, client_email,
            client_phone, client_clinic, staff_id, meet_link, status, task_id, notes, calendar_event_id)
@@ -372,10 +380,22 @@ def create_demo_booking(data: DemoBookingCreate):
         (
             booking_id, data.date, data.start_time, slot["end_time"],
             data.client_name, data.client_email, data.client_phone,
-            data.client_clinic, assigned["id"] if assigned else None,
+            data.client_clinic, assigned["id"],
             meet_link, task_id, data.notes, calendar_event_id,
         ),
     )
+
+    # Race condition guard: check if another booking grabbed same staff+slot
+    duplicates = query(
+        """SELECT id FROM demo_bookings
+           WHERE date = %s AND start_time = %s AND staff_id = %s AND status != 'cancelled' AND id != %s""",
+        (data.date, data.start_time, assigned["id"], booking_id),
+    )
+    if duplicates:
+        # Another booking won the race — rollback ours
+        execute("DELETE FROM demo_bookings WHERE id = %s", (booking_id,))
+        execute("DELETE FROM tasks WHERE id = %s", (task_id,))
+        return {"error": "Tidspunktet blev lige booket af en anden. Prøv et andet tidspunkt."}
 
     # Create primary participant record
     participant_id = gen_id("dp_")
@@ -402,7 +422,12 @@ def confirm_demo_booking(booking_id: str):
 
     booking = rows[0]
     if booking["status"] == "confirmed":
-        return {"ok": True, "already_confirmed": True}
+        return {
+            "ok": True,
+            "already_confirmed": True,
+            "meet_link": booking.get("meet_link", ""),
+            "calendar_event_id": booking.get("calendar_event_id"),
+        }
 
     # Gather all participant emails (primary + colleagues)
     participants = query(
@@ -596,6 +621,41 @@ def list_demo_bookings(status: Optional[str] = None, date: Optional[str] = None)
 
     sql += " ORDER BY db.date ASC, db.start_time ASC"
     return query(sql, tuple(params))
+
+
+@router.get("/{booking_id}/rsvp")
+def get_rsvp_status(booking_id: str):
+    """Get calendar invitation RSVP status for all attendees."""
+    rows = query("SELECT calendar_event_id, status FROM demo_bookings WHERE id = %s", (booking_id,))
+    if not rows:
+        return {"error": "Booking ikke fundet"}
+
+    booking = rows[0]
+    if not booking.get("calendar_event_id"):
+        return {"rsvp": [], "has_calendar": False}
+
+    attendees = gcal_get_attendee_status(booking["calendar_event_id"])
+    return {
+        "rsvp": attendees,
+        "has_calendar": True,
+        "booking_status": booking["status"],
+    }
+
+
+@router.post("/sync-calendar")
+def sync_calendar_status():
+    """Sync DB with Google Calendar — cancel bookings whose events were deleted externally."""
+    confirmed = query(
+        "SELECT id, calendar_event_id FROM demo_bookings WHERE status = 'confirmed' AND calendar_event_id IS NOT NULL"
+    )
+    cancelled_ids = []
+    for b in confirmed:
+        if not gcal_event_exists(b["calendar_event_id"]):
+            execute("UPDATE demo_bookings SET status = 'cancelled' WHERE id = %s", (b["id"],))
+            cancelled_ids.append(b["id"])
+            logger.info(f"Auto-cancelled booking {b['id']} — calendar event deleted externally")
+
+    return {"synced": len(confirmed), "cancelled": cancelled_ids}
 
 
 def _send_cancellation_email(booking: dict) -> None:

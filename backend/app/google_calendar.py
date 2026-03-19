@@ -200,6 +200,56 @@ def add_attendee(event_id: str, email: str, name: str = "") -> bool:
         return False
 
 
+def get_attendee_status(event_id: str) -> list[dict]:
+    """
+    Get RSVP status for all attendees of a calendar event.
+
+    Returns list of {email, displayName, responseStatus} where responseStatus is:
+    - 'accepted': Attendee accepted the invitation
+    - 'declined': Attendee declined
+    - 'tentative': Attendee tentatively accepted
+    - 'needsAction': Attendee hasn't responded yet
+    """
+    service = _get_service()
+    if not service:
+        return []
+
+    try:
+        event = (
+            service.events()
+            .get(calendarId=_get_calendar_id(), eventId=event_id)
+            .execute()
+        )
+        return [
+            {
+                "email": a.get("email", ""),
+                "name": a.get("displayName", ""),
+                "status": a.get("responseStatus", "needsAction"),
+            }
+            for a in event.get("attendees", [])
+        ]
+    except Exception as e:
+        logger.error(f"Failed to get attendee status for {event_id}: {e}")
+        return []
+
+
+def event_exists(event_id: str) -> bool:
+    """Check if a calendar event still exists (not deleted)."""
+    service = _get_service()
+    if not service:
+        return True  # Assume exists if we can't check
+
+    try:
+        event = (
+            service.events()
+            .get(calendarId=_get_calendar_id(), eventId=event_id)
+            .execute()
+        )
+        return event.get("status") != "cancelled"
+    except Exception:
+        return False
+
+
 def delete_event(event_id: str) -> bool:
     """Cancel/delete a calendar event. Sends cancellation to attendees."""
     service = _get_service()
