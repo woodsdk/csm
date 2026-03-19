@@ -11,11 +11,12 @@ const MONTH_NAMES = ['januar', 'februar', 'marts', 'april', 'maj', 'juni', 'juli
 
 export const DemoBooking = {
   _state: {
-    step: 1 as 1 | 2 | 3 | 4,
+    step: 0 as 0 | 1 | 2 | 3 | 4,
     availableDates: [] as string[],
     availableSlots: [] as DemoSlot[],
     selectedDate: null as string | null,
     selectedSlot: null as string | null,
+    currentWeekIdx: 0,
     form: { name: '', email: '', phone: '', clinic: '', notes: '' },
     booking: null as DemoBookingType | null,
     loading: false,
@@ -23,7 +24,12 @@ export const DemoBooking = {
   },
 
   async render(): Promise<string> {
-    // Fetch available dates on first render
+    // Landing page — no data needed
+    if (this._state.step === 0) {
+      return this._renderLanding();
+    }
+
+    // Fetch available dates on first render of step 1
     if (this._state.availableDates.length === 0 && this._state.step === 1) {
       try {
         this._state.availableDates = await DemoAPI.getAvailableDates();
@@ -46,6 +52,63 @@ export const DemoBooking = {
       </div>
     `;
   },
+
+  // ─── Landing Page ─────────────────────────────
+
+  _renderLanding(): string {
+    return `
+      <div class="db-page">
+        <div class="db-landing-wrapper">
+          <div class="db-landing-cards">
+            <div class="db-landing-card">
+              <h2 class="db-landing-title">Pr\u00f8v platformen selv</h2>
+              <ul class="db-landing-features">
+                <li>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38456D" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Gratis for alle
+                </li>
+                <li>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38456D" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  AI Act Compliant
+                </li>
+                <li>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38456D" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  GDPR Compliant
+                </li>
+                <li>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38456D" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Kom i gang p\u00e5 5 minutter
+                </li>
+              </ul>
+              <a href="https://clinic.peoplesdoctor.ai/onboarding/start" class="db-btn db-btn-primary db-landing-btn">LAD MIG PR\u00d8VE SELV</a>
+              <div class="db-landing-login">
+                <span>Har du allerede en bruger?</span>
+                <a href="https://clinic.peoplesdoctor.ai/onboarding/start"><strong>Log ind her</strong></a>
+              </div>
+            </div>
+
+            <div class="db-landing-card">
+              <h2 class="db-landing-title">Book personlig demo</h2>
+              <p class="db-landing-desc">Vi gennemg\u00e5r platformen med dig p\u00e5 video. Det tager ca. 30 minutter og er helt gratis.</p>
+              <button class="db-btn db-btn-primary db-landing-btn" onclick="DemoBooking.startBooking()">BOOK DEMO</button>
+            </div>
+          </div>
+          <div class="db-landing-logo">
+            <img src="/assets/peoples-clinic.svg" alt="People's Clinic" style="height: 28px; opacity: 0.6;">
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  startBooking(): void {
+    this._state.step = 1;
+    this._state.currentWeekIdx = 0;
+    this._state.error = null;
+    this._rerender();
+  },
+
+  // ─── Booking Wizard ───────────────────────────
 
   _renderHeader(): string {
     return `
@@ -98,42 +161,83 @@ export const DemoBooking = {
     }
 
     // Group dates by week
-    const weeks: Map<string, string[]> = new Map();
+    const weeks: { weekKey: string; weekNum: number; weekStart: Date; weekEnd: Date; dates: string[] }[] = [];
+    const weekMap = new Map<string, number>();
+
     for (const dateStr of this._state.availableDates) {
       const d = new Date(dateStr + 'T00:00:00');
       const weekStart = new Date(d);
       weekStart.setDate(d.getDate() - ((d.getDay() + 6) % 7)); // Monday
       const weekKey = weekStart.toISOString().split('T')[0];
-      if (!weeks.has(weekKey)) weeks.set(weekKey, []);
-      weeks.get(weekKey)!.push(dateStr);
+
+      if (!weekMap.has(weekKey)) {
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekStart.getDate() + 4); // Friday
+        weekMap.set(weekKey, weeks.length);
+        weeks.push({
+          weekKey,
+          weekNum: this._getWeekNumber(weekStart),
+          weekStart: new Date(weekStart),
+          weekEnd,
+          dates: [],
+        });
+      }
+      weeks[weekMap.get(weekKey)!].dates.push(dateStr);
     }
+
+    // Clamp week index
+    if (this._state.currentWeekIdx >= weeks.length) this._state.currentWeekIdx = weeks.length - 1;
+    if (this._state.currentWeekIdx < 0) this._state.currentWeekIdx = 0;
+
+    const week = weeks[this._state.currentWeekIdx];
+    const availableSet = new Set(week.dates);
+    const isFirst = this._state.currentWeekIdx === 0;
+    const isLast = this._state.currentWeekIdx === weeks.length - 1;
+
+    // Build all 5 weekdays (Mon-Fri) for display
+    const weekDays: { dateStr: string; d: Date; available: boolean }[] = [];
+    for (let i = 0; i < 5; i++) {
+      const day = new Date(week.weekStart);
+      day.setDate(week.weekStart.getDate() + i);
+      const ds = day.toISOString().split('T')[0];
+      weekDays.push({ dateStr: ds, d: day, available: availableSet.has(ds) });
+    }
+
+    const wsLabel = `${week.weekStart.getDate()}. ${MONTH_NAMES[week.weekStart.getMonth()].slice(0, 3)}`;
+    const weLabel = `${week.weekEnd.getDate()}. ${MONTH_NAMES[week.weekEnd.getMonth()].slice(0, 3)}`;
 
     return `
       <div class="db-section">
         <h2 class="db-section-title">V\u00e6lg en dato</h2>
-        <div class="db-dates-scroll">
-          ${Array.from(weeks.entries()).map(([weekKey, dates]) => {
-            const ws = new Date(weekKey + 'T00:00:00');
-            const we = new Date(ws);
-            we.setDate(ws.getDate() + 4);
-            const weekNum = this._getWeekNumber(ws);
-            return `
-              <div class="db-week-group">
-                <div class="db-week-label">Uge ${weekNum}</div>
-                <div class="db-dates-row">
-                  ${dates.map(dateStr => {
-                    const d = new Date(dateStr + 'T00:00:00');
-                    const isSelected = this._state.selectedDate === dateStr;
-                    return `
-                      <button class="db-date-card ${isSelected ? 'selected' : ''}" onclick="DemoBooking.selectDate('${dateStr}')">
-                        <span class="db-date-day">${DAY_SHORT[d.getDay()]}</span>
-                        <span class="db-date-num">${d.getDate()}</span>
-                        <span class="db-date-month">${MONTH_NAMES[d.getMonth()].slice(0, 3)}</span>
-                      </button>
-                    `;
-                  }).join('')}
+
+        <div class="db-week-nav">
+          <button class="db-week-arrow ${isFirst ? 'disabled' : ''}" onclick="DemoBooking.prevWeek()" ${isFirst ? 'disabled' : ''}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <span class="db-week-label-nav">Uge ${week.weekNum} &mdash; ${wsLabel} \u2013 ${weLabel}</span>
+          <button class="db-week-arrow ${isLast ? 'disabled' : ''}" onclick="DemoBooking.nextWeek()" ${isLast ? 'disabled' : ''}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+
+        <div class="db-dates-row db-dates-row-compact">
+          ${weekDays.map(wd => {
+            const isSelected = this._state.selectedDate === wd.dateStr;
+            if (!wd.available) {
+              return `
+                <div class="db-date-card disabled">
+                  <span class="db-date-day">${DAY_SHORT[wd.d.getDay()]}</span>
+                  <span class="db-date-num">${wd.d.getDate()}</span>
+                  <span class="db-date-month">${MONTH_NAMES[wd.d.getMonth()].slice(0, 3)}</span>
                 </div>
-              </div>
+              `;
+            }
+            return `
+              <button class="db-date-card ${isSelected ? 'selected' : ''}" onclick="DemoBooking.selectDate('${wd.dateStr}')">
+                <span class="db-date-day">${DAY_SHORT[wd.d.getDay()]}</span>
+                <span class="db-date-num">${wd.d.getDate()}</span>
+                <span class="db-date-month">${MONTH_NAMES[wd.d.getMonth()].slice(0, 3)}</span>
+              </button>
             `;
           }).join('')}
         </div>
@@ -262,7 +366,6 @@ export const DemoBooking = {
 
     const d = new Date(b.date + 'T00:00:00');
     const dateLabel = `${DAY_NAMES[d.getDay()]} d. ${d.getDate()}. ${MONTH_NAMES[d.getMonth()]}`;
-    const joinLink = `${window.location.origin}/demo/${b.id}/join`;
     const hasCalendar = !!b.calendar_event_id;
 
     return `
@@ -352,6 +455,18 @@ export const DemoBooking = {
 
   // ─── Actions ────────────────────────────────
 
+  prevWeek(): void {
+    if (this._state.currentWeekIdx > 0) {
+      this._state.currentWeekIdx--;
+      this._rerender();
+    }
+  },
+
+  nextWeek(): void {
+    this._state.currentWeekIdx++;
+    this._rerender();
+  },
+
   async selectDate(date: string): Promise<void> {
     this._state.selectedDate = date;
     this._state.selectedSlot = null;
@@ -378,7 +493,7 @@ export const DemoBooking = {
 
   goBack(): void {
     if (this._state.step > 1) {
-      this._state.step = (this._state.step - 1) as 1 | 2 | 3;
+      this._state.step = (this._state.step - 1) as 0 | 1 | 2 | 3;
       this._state.error = null;
       if (this._state.step === 1) {
         this._state.selectedSlot = null;
@@ -443,7 +558,7 @@ export const DemoBooking = {
         setTimeout(() => { btn.innerHTML = original; }, 2000);
       }
     } catch {
-      // Fallback — select text
+      // Fallback
     }
   },
 

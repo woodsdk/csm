@@ -3311,6 +3311,162 @@
   overflow-y: auto;
 }
 
+/* Landing — two-card choice */
+.db-landing-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding-top: 60px;
+}
+
+.db-landing-cards {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+}
+
+.db-landing-card {
+  flex: 1;
+  background: #FFFFFF;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(19, 16, 44, 0.06), 0 8px 32px rgba(19, 16, 44, 0.08);
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+}
+
+.db-landing-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #26304F;
+  margin: 0 0 20px 0;
+}
+
+.db-landing-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.db-landing-features li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #26304F;
+}
+
+.db-landing-desc {
+  font-size: 15px;
+  color: #5669A4;
+  line-height: 1.6;
+  margin: 0 0 28px 0;
+  flex: 1;
+}
+
+.db-landing-btn {
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  padding: 14px 24px;
+}
+
+.db-landing-login {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 13px;
+  color: #5669A4;
+}
+
+.db-landing-login a {
+  color: #26304F;
+  text-decoration: none;
+  margin-left: 4px;
+}
+
+.db-landing-login a:hover {
+  text-decoration: underline;
+}
+
+.db-landing-logo {
+  opacity: 0.6;
+}
+
+/* Week navigation arrows */
+.db-week-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.db-week-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #EDF0F7;
+  background: #FFFFFF;
+  cursor: pointer;
+  color: #38456D;
+  transition: all 0.15s;
+}
+
+.db-week-arrow:hover:not(.disabled) {
+  background: #38456D;
+  color: white;
+  border-color: #38456D;
+}
+
+.db-week-arrow:hover:not(.disabled) svg {
+  stroke: white;
+}
+
+.db-week-arrow.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.db-week-label-nav {
+  font-size: 15px;
+  font-weight: 600;
+  color: #26304F;
+  min-width: 200px;
+  text-align: center;
+}
+
+.db-dates-row-compact {
+  justify-content: center;
+  gap: 10px;
+}
+
+.db-date-card.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+@media (max-width: 700px) {
+  .db-landing-cards {
+    flex-direction: column;
+  }
+  .db-landing-wrapper {
+    padding-top: 20px;
+  }
+}
+
 .db-container {
   background: #FFFFFF;
   border-radius: 16px;
