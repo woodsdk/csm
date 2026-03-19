@@ -224,17 +224,23 @@ export const App = {
       await this._renderTasksPage(mainEl);
     }
 
-    // Inject lang toggle into top-right of header
+    // Inject lang toggle into header-right (or create one)
     const header = mainEl.querySelector('.main-header');
     if (header) {
       const lang = getLang();
+      let right = header.querySelector('.main-header-right') as HTMLElement;
+      if (!right) {
+        right = document.createElement('div');
+        right.className = 'main-header-right';
+        header.appendChild(right);
+      }
       const toggle = document.createElement('div');
-      toggle.className = 'lang-toggle lang-toggle-header';
+      toggle.className = 'lang-toggle';
       toggle.innerHTML = `
         <button class="lang-btn ${lang === 'da' ? 'lang-btn-active' : ''}" onclick="App.setLang('da')" title="Dansk">🇩🇰</button>
         <button class="lang-btn ${lang === 'en' ? 'lang-btn-active' : ''}" onclick="App.setLang('en')" title="English">🇬🇧</button>
       `;
-      header.appendChild(toggle);
+      right.appendChild(toggle);
     }
   },
 

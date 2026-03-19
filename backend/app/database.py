@@ -366,13 +366,7 @@ def init():
             ('josef',   'Josef Abuna',               'member',  'Studentermedhjælper',        '#8B5CF6', true, 'jab@peoplesdoctor.com',    '52242880',      true),
             ('rasmus',  'Rasmus Kvist Bonde',        'member',  'CTO & Co-Founder',           '#EC4899', true, 'rkb@peoplesdoctor.com',    '',              true),
             ('lars',    'Lars Kensmark',             'member',  'Studentermedhjælper',        '#14B8A6', true, 'lke@peoplesdoctor.com',    '31170644',      true)
-        ON CONFLICT (id) DO UPDATE SET
-            name = EXCLUDED.name,
-            email = EXCLUDED.email,
-            phone = EXCLUDED.phone,
-            avatar_color = EXCLUDED.avatar_color,
-            can_give_demos = EXCLUDED.can_give_demos,
-            title = EXCLUDED.title
+        ON CONFLICT (id) DO NOTHING
     """, label="seed_team_members")
 
     # Migration: create faq_items table
