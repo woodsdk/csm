@@ -1688,6 +1688,13 @@
   background: transparent;
 }
 
+.calendar-event-cancelled {
+  opacity: 0.4;
+}
+.calendar-event-cancelled .calendar-event-title {
+  text-decoration: line-through;
+}
+
 .calendar-event-time {
   font-size: 9px;
   font-weight: var(--font-semibold);

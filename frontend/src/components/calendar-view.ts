@@ -132,9 +132,12 @@ export const CalendarView = {
           `).join('')}
           ${dayTasks.slice(0, Math.max(0, maxVisible - dayEvents.length)).map(tk => {
             const member = members.find(m => m.id === tk.assignee_id);
+            const isCancelled = tk.status === 'cancelled';
             return `
-              <div class="calendar-event calendar-event-task" onclick="event.stopPropagation(); TaskModal.open('${tk.id}')" title="${escapeHtml(tk.title)}">
-                <span class="priority-dot priority-dot-${tk.priority}" style="width:6px;height:6px"></span>
+              <div class="calendar-event calendar-event-task ${isCancelled ? 'calendar-event-cancelled' : ''}" onclick="event.stopPropagation(); TaskModal.open('${tk.id}')" title="${escapeHtml(tk.title)}${isCancelled ? ' (Cancelled)' : ''}">
+                ${isCancelled
+                  ? `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0;opacity:0.5"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>`
+                  : `<span class="priority-dot priority-dot-${tk.priority}" style="width:6px;height:6px"></span>`}
                 <span class="calendar-event-title">${escapeHtml(tk.title)}</span>
                 ${member ? `<span class="avatar" style="background:${member.avatar_color};width:16px;height:16px;font-size:8px">${member.name[0]}</span>` : ''}
               </div>
