@@ -550,6 +550,39 @@ Generér et JSON-objekt med "subject" og "body_html":"""
         return None
 
 
+# ── Ticket Summary Generation ─────────────────────────────────────────
+
+def generate_ticket_summary(subject: str, body: str = "") -> str:
+    """Generate a short 1-line summary of a helpdesk ticket.
+
+    Returns a concise Danish summary (max ~80 chars), or empty string if AI unavailable.
+    """
+    client = _get_client()
+    if not client:
+        return ""
+
+    text = f"{subject}\n{body[:800]}" if body else subject
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "Du laver ultra-korte resuméer af support-tickets på dansk. Max 80 tegn. Kun én sætning. Ingen punktum til sidst. Eksempler: 'Spørger om databehandleraftale', 'Login fejler efter opdatering', 'Vil opgradere til premium-plan'"},
+                {"role": "user", "content": f"Resumér denne ticket:\n\n{text}"},
+            ],
+            max_tokens=60,
+            temperature=0.2,
+        )
+        summary = response.choices[0].message.content.strip()
+        # Remove trailing period if present
+        if summary.endswith('.'):
+            summary = summary[:-1]
+        return summary[:100]  # Safety cap
+    except Exception as e:
+        logger.error(f"OpenAI API error (ticket summary): {e}")
+        return ""
+
+
 # ── Ticket Priority Classification ─────────────────────────────────────
 
 def classify_ticket_priority(

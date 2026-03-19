@@ -405,6 +405,11 @@ def init():
         CREATE INDEX IF NOT EXISTS idx_tickets_assignee ON tickets(assignee_id);
     """, label="tickets")
 
+    # Migration: add summary column to tickets
+    _safe_exec("""
+        ALTER TABLE tickets ADD COLUMN IF NOT EXISTS ai_summary TEXT NOT NULL DEFAULT '';
+    """, label="tickets_summary")
+
     # Migration: create ticket_messages table
     _safe_exec("""
         CREATE TABLE IF NOT EXISTS ticket_messages (

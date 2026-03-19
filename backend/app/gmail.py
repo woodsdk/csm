@@ -363,22 +363,23 @@ def sync_inbox(max_results: int = 20) -> dict:
                     # Clean subject (remove Re:/Fwd: prefixes for ticket subject)
                     clean_subject = re.sub(r"^(Re|Fwd|Sv|Vs):\s*", "", subject, flags=re.IGNORECASE).strip()
 
-                    # AI-classify priority and category
-                    from .openai_helper import classify_ticket_priority
+                    # AI-classify priority and category + generate summary
+                    from .openai_helper import classify_ticket_priority, generate_ticket_summary
                     classification = classify_ticket_priority(
                         subject=clean_subject or subject,
                         body=body[:500] if body else "",
                     )
                     ai_priority = classification["priority"]
                     ai_category = classification["category"]
+                    ai_summary = generate_ticket_summary(clean_subject or subject, body[:800] if body else "")
 
                     query(
                         """INSERT INTO tickets
                            (id, subject, description, status, priority, category, source,
-                            requester_name, requester_email, gmail_thread_id, priority_source)
-                           VALUES (%s, %s, '', 'open', %s, %s, 'email', %s, %s, %s, 'ai')
+                            requester_name, requester_email, gmail_thread_id, priority_source, ai_summary)
+                           VALUES (%s, %s, '', 'open', %s, %s, 'email', %s, %s, %s, 'ai', %s)
                            RETURNING id""",
-                        (ticket_id, clean_subject or subject, ai_priority, ai_category, from_name, from_email, thread_id),
+                        (ticket_id, clean_subject or subject, ai_priority, ai_category, from_name, from_email, thread_id, ai_summary),
                     )
 
                     # Add the email body as first message

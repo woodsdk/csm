@@ -5,7 +5,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import Optional
 from ..database import query, execute, gen_id
-from ..openai_helper import generate_reply_suggestion, classify_ticket_priority, is_configured as openai_configured
+from ..openai_helper import generate_reply_suggestion, classify_ticket_priority, generate_ticket_summary, is_configured as openai_configured
 
 router = APIRouter()
 
@@ -158,16 +158,19 @@ def create_ticket(data: TicketCreate):
         if not data.category:
             category = classification["category"]
 
+    # Generate AI summary
+    ai_summary = generate_ticket_summary(data.subject, data.description)
+
     rows = query(
         """INSERT INTO tickets (id, subject, description, status, priority, category,
-           source, requester_name, requester_email, assignee_id, platform_user_id, priority_source)
-           VALUES (%s, %s, %s, 'open', %s, %s, %s, %s, %s, %s, %s, %s)
+           source, requester_name, requester_email, assignee_id, platform_user_id, priority_source, ai_summary)
+           VALUES (%s, %s, %s, 'open', %s, %s, %s, %s, %s, %s, %s, %s, %s)
            RETURNING *""",
         (
             ticket_id, data.subject, data.description, priority,
             category, data.source, data.requester_name,
             data.requester_email, data.assignee_id, data.platform_user_id,
-            priority_source,
+            priority_source, ai_summary,
         ),
     )
     return rows[0]

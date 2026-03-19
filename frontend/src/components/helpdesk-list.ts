@@ -239,6 +239,7 @@ export const HelpdeskList = {
       <div class="hd-ticket-row" onclick="App.navigateTo('helpdesk-detail', '${tk.id}')">
         <div class="hd-ticket-main">
           <div class="hd-ticket-subject">${escapeHtml(tk.subject)}</div>
+          ${(tk as any).ai_summary ? `<div class="hd-ticket-summary">${escapeHtml((tk as any).ai_summary)}</div>` : ''}
           <div class="hd-ticket-meta">
             ${tk.requester_email ? `<span class="hd-ticket-email">${escapeHtml(tk.requester_email)}</span>` : ''}
             ${tk.requester_name && tk.requester_name !== tk.requester_email ? `<span class="hd-ticket-requester">${escapeHtml(tk.requester_name)}</span>` : ''}
