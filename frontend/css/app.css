@@ -3342,21 +3342,22 @@
 
 .db-landing-card {
   flex: 1;
-  background: #FFFFFF;
+  background: linear-gradient(180deg, #DADAEC 0%, #EBEBF3 100%);
   border-radius: 20px;
   box-shadow: 0 2px 30px rgba(38, 48, 79, 0.10);
-  padding: 40px 36px;
+  padding: 44px 40px;
   display: flex;
   flex-direction: column;
 }
 
 .db-landing-card-book {
   flex: 1.2;
+  background: #FFFFFF;
 }
 
 .db-landing-title {
-  font-size: 26px;
-  font-weight: 500;
+  font-size: 32px;
+  font-weight: 600;
   font-family: 'Inter', sans-serif;
   color: #13102C;
   margin: 0 0 12px 0;
@@ -3372,40 +3373,41 @@
 
 .db-landing-features {
   list-style: none;
-  padding: 0 0 0 8px;
+  padding: 0 0 0 4px;
   margin: auto 0;
   margin-top: 10px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .db-landing-features li {
   display: flex;
   align-items: center;
   gap: 14px;
-  font-size: 18px;
-  font-weight: 400;
+  font-size: 22px;
+  font-weight: 500;
   color: #13102C;
   font-family: 'Inter', sans-serif;
 }
 
 .db-landing-features li svg {
-  stroke: #5669A4;
+  stroke: #38456D;
   flex-shrink: 0;
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
 }
 
 .db-landing-cta {
   width: 100%;
   text-align: center;
   justify-content: center;
-  font-size: 21px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
   padding: 0 24px;
-  height: 52px;
+  height: 56px;
   border-radius: 9999px;
   margin-top: 32px;
   background: linear-gradient(135deg, #38456D 0%, #5669A4 100%);
@@ -3424,15 +3426,19 @@
 .db-landing-login {
   text-align: center;
   margin-top: 16px;
-  font-size: 13px;
-  color: #A3B0D9;
+  font-size: 14px;
+  color: #5669A4;
   font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
 }
 
 .db-landing-login a {
-  color: #5669A4;
+  color: #13102C;
   text-decoration: none;
-  margin-left: 4px;
+  font-weight: 700;
 }
 
 .db-landing-login a:hover {
@@ -3566,18 +3572,22 @@
     border-radius: 16px;
   }
   .db-landing-title {
-    font-size: 22px;
+    font-size: 26px;
     margin-bottom: 8px;
   }
   .db-landing-features {
     gap: 12px;
   }
   .db-landing-features li {
-    font-size: 16px;
+    font-size: 18px;
+  }
+  .db-landing-features li svg {
+    width: 22px;
+    height: 22px;
   }
   .db-landing-cta {
-    font-size: 17px;
-    height: 46px;
+    font-size: 16px;
+    height: 50px;
     margin-top: 24px;
   }
 }
@@ -3609,7 +3619,7 @@
     flex: 1;
   }
   .db-landing-title {
-    font-size: 19px;
+    font-size: 22px;
     margin-bottom: 6px;
   }
   .db-landing-subtitle {
@@ -3617,16 +3627,16 @@
     margin-bottom: 12px;
   }
   .db-landing-features {
-    gap: 8px;
+    gap: 10px;
     padding-left: 4px;
   }
   .db-landing-features li {
-    font-size: 15px;
+    font-size: 17px;
     gap: 10px;
   }
   .db-landing-features li svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
   }
   .db-landing-cta {
     font-size: 16px;
