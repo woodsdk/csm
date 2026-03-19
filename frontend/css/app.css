@@ -3363,10 +3363,11 @@
 }
 
 .db-landing-subtitle {
-  font-size: 14px;
+  font-size: 15px;
   color: #5669A4;
-  line-height: 1.6;
-  margin: 0 0 24px 0;
+  line-height: 1.5;
+  margin: 0 0 20px 0;
+  font-weight: 400;
 }
 
 .db-landing-features {
@@ -3515,12 +3516,118 @@
   pointer-events: none;
 }
 
-@media (max-width: 700px) {
+/* ── Tablet (700–1024px) ── */
+@media (max-width: 1024px) {
+  .db-landing-wrapper {
+    gap: 28px;
+    padding-top: 28px;
+  }
+  .db-landing-logo-img {
+    height: 56px;
+    margin-bottom: 4px;
+  }
   .db-landing-cards {
-    flex-direction: column;
+    gap: 16px;
   }
   .db-landing-card {
     padding: 28px 24px;
+    border-radius: 16px;
+  }
+  .db-landing-title {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+  .db-landing-features {
+    gap: 12px;
+  }
+  .db-landing-features li {
+    font-size: 16px;
+  }
+  .db-landing-cta {
+    font-size: 17px;
+    height: 46px;
+    margin-top: 24px;
+  }
+}
+
+/* ── Mobile (<700px) — single column, compressed ── */
+@media (max-width: 700px) {
+  .db-page-landing {
+    padding: 0 16px;
+    align-items: flex-start;
+  }
+  .db-landing-wrapper {
+    gap: 16px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  .db-landing-logo-img {
+    height: 36px;
+    margin-bottom: 0;
+  }
+  .db-landing-cards {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .db-landing-card {
+    padding: 20px 20px;
+    border-radius: 14px;
+  }
+  .db-landing-card-book {
+    flex: 1;
+  }
+  .db-landing-title {
+    font-size: 19px;
+    margin-bottom: 6px;
+  }
+  .db-landing-subtitle {
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+  .db-landing-features {
+    gap: 8px;
+    padding-left: 4px;
+  }
+  .db-landing-features li {
+    font-size: 15px;
+    gap: 10px;
+  }
+  .db-landing-features li svg {
+    width: 18px;
+    height: 18px;
+  }
+  .db-landing-cta {
+    font-size: 16px;
+    height: 44px;
+    margin-top: 16px;
+  }
+  .db-landing-login {
+    margin-top: 10px;
+    font-size: 12px;
+  }
+  .db-week-nav {
+    margin-bottom: 10px;
+  }
+  .db-week-label-nav {
+    font-size: 12px;
+    min-width: 80px;
+  }
+  .db-dates-row-compact {
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+  .db-date-card {
+    min-width: 56px;
+    padding: 8px 10px;
+  }
+  .db-date-num {
+    font-size: 17px;
+  }
+  .db-date-day {
+    font-size: 10px;
+  }
+  .db-date-month {
+    font-size: 9px;
   }
 }
 
