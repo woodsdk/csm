@@ -246,10 +246,23 @@ export const HelpdeskList = {
             <span class="hd-ticket-time">${timeAgo}</span>
           </div>
         </div>
-        <div class="hd-ticket-badges">
-          <span class="hd-badge ${prioClass}">${prioLabel}${isAiPriority ? '<span class="hd-ai-tag" title="Prioritet sat af AI">AI</span>' : ''}</span>
-          <span class="hd-badge ${statusClass}">${statusLabel}</span>
-          <span class="hd-ticket-assignee">${escapeHtml(assigneeName)}</span>
+        <div class="hd-ticket-badges" onclick="event.stopPropagation()">
+          <select class="hd-inline-select hd-inline-prio ${prioClass}" onchange="HelpdeskList.inlineUpdate('${tk.id}', 'priority', this.value)">
+            <option value="low" ${tk.priority === 'low' ? 'selected' : ''}>${t('hd.prioLow')}</option>
+            <option value="medium" ${tk.priority === 'medium' ? 'selected' : ''}>${t('hd.prioMedium')}</option>
+            <option value="high" ${tk.priority === 'high' ? 'selected' : ''}>${t('hd.prioHigh')}</option>
+            <option value="urgent" ${tk.priority === 'urgent' ? 'selected' : ''}>${t('hd.prioUrgent')}</option>
+          </select>${isAiPriority ? '<span class="hd-ai-tag" title="Prioritet sat af AI">AI</span>' : ''}
+          <select class="hd-inline-select hd-inline-status ${statusClass}" onchange="HelpdeskList.inlineUpdate('${tk.id}', 'status', this.value)">
+            <option value="open" ${tk.status === 'open' ? 'selected' : ''}>${t('hd.statusOpen')}</option>
+            <option value="in_progress" ${tk.status === 'in_progress' ? 'selected' : ''}>${t('hd.statusInProgress')}</option>
+            <option value="resolved" ${tk.status === 'resolved' ? 'selected' : ''}>${t('hd.statusResolved')}</option>
+            <option value="closed" ${tk.status === 'closed' ? 'selected' : ''}>${t('hd.statusClosed')}</option>
+          </select>
+          <select class="hd-inline-select hd-inline-assignee" onchange="HelpdeskList.inlineUpdate('${tk.id}', 'assignee_id', this.value)">
+            <option value="" ${!tk.assignee_id ? 'selected' : ''}>${t('hd.notAssigned')}</option>
+            ${this._teamMembers.map(m => `<option value="${m.id}" ${tk.assignee_id === m.id ? 'selected' : ''}>${escapeHtml(m.name)}</option>`).join('')}
+          </select>
         </div>
       </div>
     `;
@@ -285,6 +298,24 @@ export const HelpdeskList = {
       /* silent fail on auto-sync */
     } finally {
       this._syncing = false;
+    }
+  },
+
+  async inlineUpdate(ticketId: string, field: string, value: string): Promise<void> {
+    try {
+      await HelpdeskAPI.update(ticketId, { [field]: value || null });
+      // Update local state
+      const tk = this._tickets.find(t2 => t2.id === ticketId);
+      if (tk) {
+        (tk as any)[field] = value || null;
+        if (field === 'assignee_id') {
+          const member = this._teamMembers.find(m => m.id === value);
+          (tk as any).assignee_name = member ? member.name : null;
+        }
+      }
+      (window as any).App.render();
+    } catch {
+      (window as any).App.toast(t('common.somethingWrong'), 'error');
     }
   },
 
