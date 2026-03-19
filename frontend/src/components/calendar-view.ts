@@ -114,7 +114,7 @@ export const CalendarView = {
 
   _renderDay(day: { date: string; day: number; isCurrentMonth: boolean }, tasks: Task[], members: TeamMember[], today: string): string {
     const isToday = day.date === today;
-    const dayTasks = tasks.filter(t => t.deadline === day.date && t.status !== 'done');
+    const dayTasks = tasks.filter(tk => tk.deadline === day.date && tk.status !== 'done');
     const dayEvents = this._events.filter(e => e.date === day.date);
     const totalItems = dayTasks.length + dayEvents.length;
     const maxVisible = 3;
@@ -130,12 +130,12 @@ export const CalendarView = {
               <span class="calendar-event-title">${escapeHtml(e.title)}</span>
             </div>
           `).join('')}
-          ${dayTasks.slice(0, Math.max(0, maxVisible - dayEvents.length)).map(t => {
-            const member = members.find(m => m.id === t.assignee_id);
+          ${dayTasks.slice(0, Math.max(0, maxVisible - dayEvents.length)).map(tk => {
+            const member = members.find(m => m.id === tk.assignee_id);
             return `
-              <div class="calendar-event calendar-event-task" onclick="event.stopPropagation(); TaskModal.open('${t.id}')" title="${escapeHtml(t.title)}">
-                <span class="priority-dot priority-dot-${t.priority}" style="width:6px;height:6px"></span>
-                <span class="calendar-event-title">${escapeHtml(t.title)}</span>
+              <div class="calendar-event calendar-event-task" onclick="event.stopPropagation(); TaskModal.open('${tk.id}')" title="${escapeHtml(tk.title)}">
+                <span class="priority-dot priority-dot-${tk.priority}" style="width:6px;height:6px"></span>
+                <span class="calendar-event-title">${escapeHtml(tk.title)}</span>
                 ${member ? `<span class="avatar" style="background:${member.avatar_color};width:16px;height:16px;font-size:8px">${member.name[0]}</span>` : ''}
               </div>
             `;
