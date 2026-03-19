@@ -75,6 +75,23 @@ def verify_password(req: AuthRequest):
 
 # ── Diagnostics ──
 
+@app.get("/api/db-debug")
+def db_debug():
+    """Show database connection info (masked)."""
+    import os
+    raw_env = os.environ.get("DATABASE_URL", "<not set>")
+    from_settings = settings.database_url
+    # Mask password
+    def mask(url: str) -> str:
+        if ":" in url and "@" in url:
+            pre = url.split("://")[0] + "://" if "://" in url else ""
+            rest = url.split("://")[1] if "://" in url else url
+            user_pass, host = rest.split("@", 1) if "@" in rest else (rest, "")
+            user = user_pass.split(":")[0] if ":" in user_pass else user_pass
+            return f"{pre}{user}:***@{host}"
+        return url
+    return {"env_DATABASE_URL": mask(raw_env), "settings_database_url": mask(from_settings)}
+
 @app.get("/api/db-tables")
 def list_db_tables():
     """List all database tables (diagnostic)."""
