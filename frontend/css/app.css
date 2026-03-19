@@ -3624,6 +3624,19 @@
   color: #8BC6A0;
 }
 
+.db-step-clickable {
+  cursor: pointer;
+}
+
+.db-step-clickable:hover .db-step-num {
+  transform: scale(1.15);
+  box-shadow: 0 1px 6px rgba(34, 197, 94, 0.3);
+}
+
+.db-step-clickable:hover .db-step-label {
+  color: #22C55E;
+}
+
 .db-step-line {
   width: 20px;
   height: 1px;

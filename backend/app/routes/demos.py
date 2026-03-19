@@ -347,32 +347,9 @@ def create_demo_booking(data: DemoBookingCreate):
     if data.notes:
         desc_parts.append(f"Note: {data.notes}")
 
-    # Try Google Calendar + Meet
+    # Generate a fallback meet link (calendar event created on confirm)
+    meet_link = f"https://meet.jit.si/peoples-demo-{booking_id}"
     calendar_event_id = None
-    meet_link = None
-
-    attendee_emails = [data.client_email]
-    if assigned:
-        attendee_emails.append(assigned["email"])
-
-    gcal_result = gcal_create_event(
-        date=data.date,
-        start_time=data.start_time,
-        end_time=slot["end_time"],
-        summary=f"People's Clinic Demo \u2014 {data.client_name}{clinic_suffix}",
-        description="\n".join(desc_parts),
-        attendee_emails=attendee_emails,
-    )
-
-    if gcal_result:
-        meet_link = gcal_result["meet_link"]
-        calendar_event_id = gcal_result["event_id"]
-    else:
-        # Fallback to Jitsi
-        meet_link = f"https://meet.jit.si/peoples-demo-{booking_id}"
-
-    # Add meet link to task description
-    desc_parts.append(f"Meet: {meet_link}")
     task_desc = "\n".join(desc_parts)
 
     # Auto-create internal task (with assigned demo-giver as assignee)
@@ -390,7 +367,7 @@ def create_demo_booking(data: DemoBookingCreate):
     rows = query(
         """INSERT INTO demo_bookings (id, date, start_time, end_time, client_name, client_email,
            client_phone, client_clinic, staff_id, meet_link, status, task_id, notes, calendar_event_id)
-           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'confirmed', %s, %s, %s)
+           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'pending', %s, %s, %s)
            RETURNING *""",
         (
             booking_id, data.date, data.start_time, slot["end_time"],
@@ -408,23 +385,118 @@ def create_demo_booking(data: DemoBookingCreate):
         (participant_id, booking_id, data.client_name, data.client_email),
     )
 
-    # Send confirmation email via Gmail
-    _send_booking_confirmation(
-        client_email=data.client_email,
-        client_name=data.client_name,
-        date_str=data.date,
-        start_time=data.start_time,
-        end_time=slot["end_time"],
-        staff_name=assigned["name"] if assigned else "People's Clinic",
-        meet_link=meet_link,
-        booking_id=booking_id,
-        has_calendar_event=calendar_event_id is not None,
-    )
+    # Email and calendar invitation sent on confirm (step 5)
 
     result = rows[0]
     if assigned:
         result["staff_name"] = assigned["name"]
     return result
+
+
+@router.post("/{booking_id}/confirm")
+def confirm_demo_booking(booking_id: str):
+    """Confirm a pending booking — creates calendar event (with all participants) and sends emails."""
+    rows = query("SELECT * FROM demo_bookings WHERE id = %s", (booking_id,))
+    if not rows:
+        return {"error": "Booking ikke fundet"}
+
+    booking = rows[0]
+    if booking["status"] == "confirmed":
+        return {"ok": True, "already_confirmed": True}
+
+    # Gather all participant emails (primary + colleagues)
+    participants = query(
+        "SELECT name, email, role, is_primary FROM demo_participants WHERE booking_id = %s ORDER BY created_at",
+        (booking_id,),
+    )
+    attendee_emails = [p["email"] for p in participants if p["email"]]
+
+    # Add staff email
+    if booking["staff_id"]:
+        staff = query("SELECT name, email FROM team_members WHERE id = %s", (booking["staff_id"],))
+        if staff:
+            attendee_emails.append(staff[0]["email"])
+            staff_name = staff[0]["name"]
+        else:
+            staff_name = "People's Clinic"
+    else:
+        staff_name = "People's Clinic"
+
+    # Build description
+    desc_parts = [f"Demo med {booking['client_name']}"]
+    if booking.get("client_clinic"):
+        desc_parts.append(f"Klinik: {booking['client_clinic']}")
+    if booking.get("client_phone"):
+        desc_parts.append(f"Tlf: {booking['client_phone']}")
+    desc_parts.append(f"Demo-giver: {staff_name}")
+    colleague_names = [p["name"] for p in participants if not p["is_primary"]]
+    if colleague_names:
+        desc_parts.append(f"Kollegaer: {', '.join(colleague_names)}")
+    if booking.get("notes"):
+        desc_parts.append(f"Note: {booking['notes']}")
+
+    clinic_suffix = f" ({booking['client_clinic']})" if booking.get("client_clinic") else ""
+
+    # Create Google Calendar event with ALL attendees
+    gcal_result = gcal_create_event(
+        date=booking["date"],
+        start_time=booking["start_time"],
+        end_time=booking["end_time"],
+        summary=f"People's Clinic Demo — {booking['client_name']}{clinic_suffix}",
+        description="\n".join(desc_parts),
+        attendee_emails=list(set(attendee_emails)),
+    )
+
+    calendar_event_id = None
+    meet_link = booking["meet_link"]
+    if gcal_result:
+        meet_link = gcal_result["meet_link"]
+        calendar_event_id = gcal_result["event_id"]
+
+    # Update booking to confirmed
+    execute(
+        """UPDATE demo_bookings SET status = 'confirmed', meet_link = %s, calendar_event_id = %s
+           WHERE id = %s""",
+        (meet_link, calendar_event_id, booking_id),
+    )
+
+    # Update task description with meet link
+    if booking.get("task_id"):
+        desc_parts.append(f"Meet: {meet_link}")
+        execute(
+            "UPDATE tasks SET description = %s, calendar_event_id = %s WHERE id = %s",
+            ("\n".join(desc_parts), calendar_event_id, booking["task_id"]),
+        )
+
+    # Send confirmation email to primary booker
+    _send_booking_confirmation(
+        client_email=booking["client_email"],
+        client_name=booking["client_name"],
+        date_str=booking["date"],
+        start_time=booking["start_time"],
+        end_time=booking["end_time"],
+        staff_name=staff_name,
+        meet_link=meet_link,
+        booking_id=booking_id,
+        has_calendar_event=calendar_event_id is not None,
+    )
+
+    # Send confirmation to each colleague too
+    for p in participants:
+        if not p["is_primary"] and p["email"]:
+            _send_booking_confirmation(
+                client_email=p["email"],
+                client_name=p["name"],
+                date_str=booking["date"],
+                start_time=booking["start_time"],
+                end_time=booking["end_time"],
+                staff_name=staff_name,
+                meet_link=meet_link,
+                booking_id=booking_id,
+                has_calendar_event=calendar_event_id is not None,
+            )
+
+    return {"ok": True, "meet_link": meet_link, "calendar_event_id": calendar_event_id}
 
 
 @router.get("/{booking_id}/info")

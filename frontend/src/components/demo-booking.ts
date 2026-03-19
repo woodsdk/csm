@@ -220,13 +220,18 @@ export const DemoBooking = {
 
     return `
       <div class="db-steps">
-        ${steps.map(s => `
-          <div class="db-step ${this._state.step === s.num ? 'db-step-active' : ''} ${this._state.step > s.num ? 'db-step-done' : ''}">
-            <div class="db-step-num">${this._state.step > s.num ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : s.num}</div>
+        ${steps.map(s => {
+          const isDone = this._state.step > s.num;
+          const isActive = this._state.step === s.num;
+          const clickable = isDone && this._state.step < 5;
+          return `
+          <div class="db-step ${isActive ? 'db-step-active' : ''} ${isDone ? 'db-step-done' : ''} ${clickable ? 'db-step-clickable' : ''}"
+               ${clickable ? `onclick="DemoBooking.goToStep(${s.num})"` : ''}>
+            <div class="db-step-num">${isDone ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : s.num}</div>
             <span class="db-step-label">${s.label}</span>
           </div>
           ${s.num < 5 ? '<div class="db-step-line"></div>' : ''}
-        `).join('')}
+        `}).join('')}
       </div>
     `;
   },
@@ -513,14 +518,38 @@ export const DemoBooking = {
     this._rerender();
   },
 
-  skipColleagues(): void {
+  async skipColleagues(): Promise<void> {
+    await this._confirmBooking();
+  },
+
+  async confirmWithColleagues(): Promise<void> {
+    await this._confirmBooking();
+  },
+
+  async _confirmBooking(): Promise<void> {
+    if (!this._state.booking) return;
+    try {
+      const res = await fetch(`/api/demos/${this._state.booking.id}/confirm`, { method: 'POST' });
+      const data = await res.json();
+      if (data.meet_link) {
+        this._state.booking.meet_link = data.meet_link;
+      }
+      if (data.calendar_event_id) {
+        this._state.booking.calendar_event_id = data.calendar_event_id;
+      }
+    } catch {
+      // Still proceed to confirmation even if confirm call fails
+    }
     this._state.step = 5;
     this._rerender();
   },
 
-  async confirmWithColleagues(): Promise<void> {
-    this._state.step = 5;
-    this._rerender();
+  goToStep(step: number): void {
+    // Only allow going back to completed steps (not forward)
+    if (step < this._state.step && step >= 1) {
+      this._state.step = step as any;
+      this._rerender();
+    }
   },
 
   _renderConfirmation(): string {
