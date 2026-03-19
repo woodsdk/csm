@@ -2,7 +2,7 @@
    SynergyHub API Facade — Typed fetch wrappers
    ═══════════════════════════════════════════ */
 
-import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot, DemoInfo, DemoJoinCreate, DemoJoinResult, TrainingItem, FaqItem, Ticket, TicketMessage, OverviewData, OnboardingUser, FeedbackData, ChurnData, ContactPayload, UserDetailData, Signal, GoogleOAuthStatus, MarketingFlow, MarketingFlowStep, MarketingSegment, MarketingSentEmail, MarketingStats, MarketingPreview, MarketingEnrollment, DPADocument, DPASigning, DPAStats, DPAPendingCustomer, Announcement, CommsStats } from './types';
+import type { Task, TaskFilters, Customer, TeamMember, Shift, ShiftCreate, ShiftListener, DemoBooking, DemoBookingCreate, DemoSlot, DemoInfo, DemoJoinCreate, DemoJoinResult, TrainingItem, FaqItem, Ticket, TicketMessage, OverviewData, OnboardingUser, FeedbackData, ChurnData, ContactPayload, UserDetailData, Signal, GoogleOAuthStatus, MarketingFlow, MarketingFlowStep, MarketingSegment, MarketingSentEmail, MarketingStats, MarketingPreview, MarketingEnrollment, Announcement, CommsStats } from './types';
 
 const API_BASE = '/api';
 
@@ -751,114 +751,6 @@ export const MarketingAPI = {
 (window as any).GoogleAuthAPI = GoogleAuthAPI;
 (window as any).MarketingAPI = MarketingAPI;
 
-/* ═══════════════════════════════════════════
-   DPA API — Databehandleraftale
-   ═══════════════════════════════════════════ */
-
-export const DPAAPI = {
-  // ── Documents ──
-  async getDocuments(): Promise<DPADocument[]> {
-    const res = await fetch(`${API_BASE}/dpa/documents`);
-    if (!res.ok) throw new Error('Failed to fetch DPA documents');
-    return res.json();
-  },
-
-  async uploadDocument(file: File, version: number, language: string, uploadedBy: string): Promise<any> {
-    const form = new FormData();
-    form.append('file', file);
-    form.append('version', String(version));
-    form.append('language', language);
-    form.append('uploaded_by', uploadedBy);
-    const res = await fetch(`${API_BASE}/dpa/documents/upload`, { method: 'POST', body: form });
-    if (!res.ok) throw new Error('Failed to upload document');
-    return res.json();
-  },
-
-  async setCurrentDocument(docId: string): Promise<{ ok: boolean }> {
-    const res = await fetch(`${API_BASE}/dpa/documents/${docId}/set-current`, { method: 'POST' });
-    if (!res.ok) throw new Error('Failed to set current document');
-    return res.json();
-  },
-
-  // ── Pending & History ──
-  async getPending(): Promise<DPAPendingCustomer[]> {
-    const res = await fetch(`${API_BASE}/dpa/pending`);
-    if (!res.ok) throw new Error('Failed to fetch pending customers');
-    return res.json();
-  },
-
-  async getHistory(): Promise<DPASigning[]> {
-    const res = await fetch(`${API_BASE}/dpa/history`);
-    if (!res.ok) throw new Error('Failed to fetch DPA history');
-    return res.json();
-  },
-
-  async getStats(): Promise<DPAStats> {
-    const res = await fetch(`${API_BASE}/dpa/stats`);
-    if (!res.ok) throw new Error('Failed to fetch DPA stats');
-    return res.json();
-  },
-
-  async getAuditLog(): Promise<DPASigning[]> {
-    const res = await fetch(`${API_BASE}/dpa/audit-log`);
-    if (!res.ok) throw new Error('Failed to fetch audit log');
-    return res.json();
-  },
-
-  // ── Send ──
-  async send(customerId: string, language: string = 'da'): Promise<{ ok?: boolean; error?: string; signing_id?: string; token?: string }> {
-    const res = await fetch(`${API_BASE}/dpa/send`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ customer_id: customerId, language }),
-    });
-    return res.json();
-  },
-
-  async sendManual(data: { name: string; email: string; company?: string; language?: string }): Promise<{ ok?: boolean; error?: string; signing_id?: string }> {
-    const res = await fetch(`${API_BASE}/dpa/send-manual`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    return res.json();
-  },
-
-  async sendBulk(customerIds: string[], language: string = 'da'): Promise<{ sent: number; errors: string[]; total: number }> {
-    const res = await fetch(`${API_BASE}/dpa/send-bulk`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ customer_ids: customerIds, language }),
-    });
-    return res.json();
-  },
-
-  async sendReminder(signingId: string): Promise<{ ok?: boolean; error?: string }> {
-    const res = await fetch(`${API_BASE}/dpa/send-reminder/${signingId}`, { method: 'POST' });
-    return res.json();
-  },
-
-  // ── Public endpoints ──
-  async getSigningInfo(token: string): Promise<any> {
-    const res = await fetch(`${API_BASE}/dpa/${token}`);
-    return res.json();
-  },
-
-  async sign(token: string, data: { signer_name: string; signer_email: string; signer_title?: string }): Promise<any> {
-    const res = await fetch(`${API_BASE}/dpa/${token}/sign`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    return res.json();
-  },
-
-  async archiveSigning(signingId: string): Promise<{ ok?: boolean; error?: string }> {
-    const res = await fetch(`${API_BASE}/dpa/signings/${signingId}`, { method: 'DELETE' });
-    return res.json();
-  },
-};
-(window as any).DPAAPI = DPAAPI;
 
 
 /* ── Platform Communication ── */

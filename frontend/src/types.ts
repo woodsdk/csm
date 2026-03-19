@@ -56,8 +56,6 @@ export interface Customer {
   licenses_total: number;
   licenses_used: number;
   mrr: number;
-  dpa_signed: boolean;
-  dpa_signed_at: string | null;
   onboarding_started_at: string | null;
   go_live_at: string | null;
   last_active_at: string | null;
@@ -262,7 +260,7 @@ export interface TicketMessage {
 }
 
 export interface AppState {
-  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training' | 'helpdesk' | 'helpdesk-detail' | 'calendar' | 'onboarding' | 'user-detail' | 'ask-synergyhub' | 'settings' | 'marketing' | 'dpa' | 'comms';
+  page: 'tasks' | 'vagtplan' | 'team' | 'book-demo' | 'training' | 'helpdesk' | 'helpdesk-detail' | 'calendar' | 'onboarding' | 'user-detail' | 'ask-synergyhub' | 'settings' | 'marketing' | 'comms';
   tab: string;
   view: 'list' | 'kanban' | 'calendar';
   filters: TaskFilters;
@@ -467,70 +465,6 @@ export interface MarketingPreview {
   subject: string;
   body_html: string;
   preview_user: { name: string; clinic_name: string };
-}
-
-/* ── DPA (Databehandleraftale) ── */
-
-export interface DPADocument {
-  id: string;
-  version: number;
-  language: string;
-  filename: string;
-  uploaded_by: string;
-  is_current: boolean;
-  created_at: string;
-  file_size?: number;
-}
-
-export interface DPASigning {
-  id: string;
-  customer_id: string;
-  document_id: string;
-  token: string;
-  language: string;
-  status: 'pending' | 'signed' | 'expired';
-  signer_name: string;
-  signer_email: string;
-  signer_title: string;
-  ip_address: string;
-  user_agent: string;
-  sent_at: string;
-  signed_at: string | null;
-  expires_at: string;
-  sent_by: string;
-  reminder_count: number;
-  last_reminder_at: string | null;
-  cs_notified: boolean;
-  customer_name?: string;
-  customer_email?: string;
-  recipient_name?: string;
-  recipient_email?: string;
-  recipient_company?: string;
-  document_version?: number;
-  document_filename?: string;
-}
-
-export interface DPAStats {
-  pending_count: number;
-  signed_count: number;
-  expired_count: number;
-  needs_attention_count: number;
-  total_sent: number;
-}
-
-export interface DPAPendingCustomer {
-  id: string;
-  customer_id: string | null;
-  status: string;
-  sent_at: string;
-  language: string;
-  display_name: string;
-  display_email: string;
-  display_company: string;
-  document_version: number;
-  reminder_count: number;
-  cs_notified: boolean;
-  token: string;
 }
 
 /* ── Platform Communication ── */
