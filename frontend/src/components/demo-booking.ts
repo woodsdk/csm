@@ -71,7 +71,7 @@ export const DemoBooking = {
                 <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38456D" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> GDPR Compliant</li>
                 <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38456D" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Kom i gang p\u00e5 5 minutter</li>
               </ul>
-              <a href="https://clinic.peoplesdoctor.ai/onboarding/start" class="db-btn db-btn-primary db-landing-cta">LAD MIG PR\u00d8VE SELV</a>
+              <a href="https://clinic.peoplesdoctor.ai/onboarding/start" class="db-btn db-btn-primary db-landing-cta">Lad mig pr\u00f8ve selv</a>
               <div class="db-landing-login">
                 <span>Har du allerede en bruger?</span>
                 <a href="https://clinic.peoplesdoctor.ai/onboarding/start"><strong>Log ind her</strong></a>
