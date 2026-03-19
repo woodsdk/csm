@@ -9,6 +9,10 @@ const DAY_NAMES = ['S\u00f8ndag', 'Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fre
 const DAY_SHORT = ['s\u00f8n', 'man', 'tir', 'ons', 'tor', 'fre', 'l\u00f8r'];
 const MONTH_NAMES = ['januar', 'februar', 'marts', 'april', 'maj', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'december'];
 
+function _localDateStr(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 export const DemoBooking = {
   _state: {
     step: 0 as 0 | 1 | 2 | 3 | 4 | 5,
@@ -104,7 +108,7 @@ export const DemoBooking = {
       const d = new Date(dateStr + 'T00:00:00');
       const weekStart = new Date(d);
       weekStart.setDate(d.getDate() - ((d.getDay() + 6) % 7));
-      const weekKey = weekStart.toISOString().split('T')[0];
+      const weekKey = _localDateStr(weekStart);
 
       if (!weekMap.has(weekKey)) {
         const weekEnd = new Date(weekStart);
@@ -117,7 +121,7 @@ export const DemoBooking = {
 
     // Auto-skip to first week that has available dates in the future
     if (this._state.currentWeekIdx === 0 && weeks.length > 0) {
-      const today = new Date().toISOString().split('T')[0];
+      const today = _localDateStr(new Date());
       const firstWeekHasFuture = weeks[0].dates.some(ds => ds > today);
       if (!firstWeekHasFuture && weeks.length > 1) {
         this._state.currentWeekIdx = 1;
@@ -157,7 +161,7 @@ export const DemoBooking = {
         for (let i = 0; i < 5; i++) {
           const day = new Date(week.weekStart);
           day.setDate(week.weekStart.getDate() + i);
-          const ds = day.toISOString().split('T')[0];
+          const ds = _localDateStr(day);
           weekDays.push({ dateStr: ds, d: day, available: availableSet.has(ds) });
         }
         return `
@@ -269,7 +273,7 @@ export const DemoBooking = {
     for (let i = 0; i < 5; i++) {
       const day = new Date(week.weekStart);
       day.setDate(week.weekStart.getDate() + i);
-      const ds = day.toISOString().split('T')[0];
+      const ds = _localDateStr(day);
       weekDays.push({ dateStr: ds, d: day, available: availableSet.has(ds) });
     }
 
