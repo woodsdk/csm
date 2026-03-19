@@ -3908,21 +3908,39 @@
   margin: 0 0 14px;
 }
 
-.db-share-link-row {
+.db-field-hint {
+  font-size: 12px;
+  color: #5669A4;
+  margin: -2px 0 6px;
+}
+
+.db-colleague-form {
+  margin-top: 8px;
+}
+
+.db-colleague-item {
   display: flex;
+  align-items: center;
   gap: 8px;
+  padding: 8px 12px;
+  background: #f0fdf4;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #15803d;
+  margin-bottom: 6px;
 }
 
-.db-share-input {
-  flex: 1;
-  font-size: 13px !important;
-  color: #5669A4 !important;
-  background: #FAFBFE !important;
+.db-colleague-item svg { color: #22c55e; flex-shrink: 0; }
+
+.db-colleague-error {
+  background: #fef2f2;
+  color: #b91c1c;
 }
 
-.db-share-copy-btn {
-  white-space: nowrap;
-  min-width: 80px;
+.db-invite-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 /* ── Join page — info card & participants ── */

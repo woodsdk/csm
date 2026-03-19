@@ -227,17 +227,18 @@ export const DemoBooking = {
 
           <div class="db-field">
             <label class="db-label" for="db-email">Email <span class="db-required">*</span></label>
+            <p class="db-field-hint">Vi sender kalenderinvitation hertil</p>
             <input class="db-input" id="db-email" type="email" required placeholder="din@email.dk" value="${this._esc(f.email)}" oninput="DemoBooking.setField('email', this.value)">
           </div>
 
           <div class="db-field-row">
             <div class="db-field">
-              <label class="db-label" for="db-phone">Telefon</label>
-              <input class="db-input" id="db-phone" type="tel" placeholder="12 34 56 78" value="${this._esc(f.phone)}" oninput="DemoBooking.setField('phone', this.value)">
+              <label class="db-label" for="db-phone">Telefon <span class="db-required">*</span></label>
+              <input class="db-input" id="db-phone" type="tel" required placeholder="12 34 56 78" value="${this._esc(f.phone)}" oninput="DemoBooking.setField('phone', this.value)">
             </div>
             <div class="db-field">
-              <label class="db-label" for="db-clinic">Klinik/Praksis</label>
-              <input class="db-input" id="db-clinic" type="text" placeholder="Kliniknavnet" value="${this._esc(f.clinic)}" oninput="DemoBooking.setField('clinic', this.value)">
+              <label class="db-label" for="db-clinic">Klinik/Praksis <span class="db-required">*</span></label>
+              <input class="db-input" id="db-clinic" type="text" required placeholder="Kliniknavnet" value="${this._esc(f.clinic)}" oninput="DemoBooking.setField('clinic', this.value)">
             </div>
           </div>
 
@@ -248,7 +249,7 @@ export const DemoBooking = {
 
           <div class="db-actions">
             <button type="button" class="db-btn db-btn-secondary" onclick="DemoBooking.goBack()">\u2190 Tilbage</button>
-            <button type="submit" class="db-btn db-btn-primary" ${!f.name || !f.email ? 'disabled' : ''}>Book demo \u2192</button>
+            <button type="submit" class="db-btn db-btn-primary" ${!f.name || !f.email || !f.phone || !f.clinic ? 'disabled' : ''}>Book demo \u2192</button>
           </div>
         </form>
       </div>
@@ -324,12 +325,23 @@ export const DemoBooking = {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
             </svg>
-            Del med kollegaer
+            Invit\u00e9r kollegaer
           </h3>
-          <p class="db-share-desc">Har du kollegaer der ogs\u00e5 skal deltage i demoen? Del dette link \u2014 de kan tilmelde sig og modtager ${hasCalendar ? 'en kalenderinvitation' : 'video-linket'} automatisk.</p>
-          <div class="db-share-link-row">
-            <input class="db-input db-share-input" type="text" readonly value="${this._esc(joinLink)}" onclick="this.select()">
-            <button class="db-btn db-btn-primary db-share-copy-btn" onclick="DemoBooking.copyJoinLink()">Kopi\u00e9r</button>
+          <p class="db-share-desc">Har du kollegaer der ogs\u00e5 skal deltage? Tilf\u00f8j dem herunder \u2014 de modtager ${hasCalendar ? 'en kalenderinvitation' : 'video-linket'} automatisk.</p>
+          <div id="db-colleague-list"></div>
+          <div class="db-colleague-form">
+            <div class="db-field-row" style="margin-bottom: 0;">
+              <div class="db-field" style="margin-bottom: 0;">
+                <input class="db-input" id="db-colleague-name" type="text" placeholder="Navn">
+              </div>
+              <div class="db-field" style="margin-bottom: 0;">
+                <input class="db-input" id="db-colleague-email" type="email" placeholder="Email">
+              </div>
+            </div>
+            <button class="db-btn db-btn-primary db-invite-btn" onclick="DemoBooking.inviteColleague()" style="margin-top: 8px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Send invitation
+            </button>
           </div>
         </div>
 
@@ -380,13 +392,13 @@ export const DemoBooking = {
     // Update submit button state
     const btn = document.querySelector('.db-btn-primary[type="submit"]') as HTMLButtonElement;
     if (btn) {
-      btn.disabled = !this._state.form.name || !this._state.form.email;
+      btn.disabled = !this._state.form.name || !this._state.form.email || !this._state.form.phone || !this._state.form.clinic;
     }
   },
 
   async submitBooking(): Promise<void> {
     const f = this._state.form;
-    if (!f.name || !f.email || !this._state.selectedDate || !this._state.selectedSlot) return;
+    if (!f.name || !f.email || !f.phone || !f.clinic || !this._state.selectedDate || !this._state.selectedSlot) return;
 
     this._state.loading = true;
     this._state.error = null;
@@ -435,18 +447,53 @@ export const DemoBooking = {
     }
   },
 
-  async copyJoinLink(): Promise<void> {
+  async inviteColleague(): Promise<void> {
     if (!this._state.booking) return;
-    const link = `${window.location.origin}/demo/${this._state.booking.id}/join`;
+    const nameInput = document.getElementById('db-colleague-name') as HTMLInputElement;
+    const emailInput = document.getElementById('db-colleague-email') as HTMLInputElement;
+    if (!nameInput || !emailInput) return;
+
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim();
+    if (!name || !email) return;
+
+    const btn = document.querySelector('.db-invite-btn') as HTMLButtonElement;
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="vp-spinner" style="width:14px;height:14px"></span> Sender...';
+    }
+
     try {
-      await navigator.clipboard.writeText(link);
-      const btn = document.querySelector('.db-share-copy-btn');
-      if (btn) {
-        btn.textContent = 'Kopieret!';
-        setTimeout(() => { btn.textContent = 'Kopi\u00e9r'; }, 2000);
+      await DemoAPI.join(this._state.booking.id, { name, email, role: '' });
+
+      // Add to list
+      const list = document.getElementById('db-colleague-list');
+      if (list) {
+        const item = document.createElement('div');
+        item.className = 'db-colleague-item';
+        item.innerHTML = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>${this._esc(name)} (${this._esc(email)})</span>
+        `;
+        list.appendChild(item);
       }
+
+      // Clear inputs
+      nameInput.value = '';
+      emailInput.value = '';
     } catch {
-      // Fallback
+      const list = document.getElementById('db-colleague-list');
+      if (list) {
+        const item = document.createElement('div');
+        item.className = 'db-colleague-item db-colleague-error';
+        item.textContent = 'Kunne ikke sende invitation. Pr\u00f8v igen.';
+        list.appendChild(item);
+      }
+    }
+
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Send invitation';
     }
   },
 
