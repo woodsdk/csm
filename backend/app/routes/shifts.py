@@ -168,6 +168,12 @@ def create_shift(data: ShiftCreate):
     if existing:
         return {"error": "Denne vagt er allerede taget"}
 
+    # Remove any cancelled shift in this slot so it doesn't linger
+    execute(
+        "DELETE FROM shifts WHERE date = %s AND start_time = %s AND status = 'cancelled'",
+        (data.date, data.start_time),
+    )
+
     # Resolve staff_id from email
     resolved_staff_id = None
     if data.staff_email:

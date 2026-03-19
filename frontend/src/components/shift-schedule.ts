@@ -172,11 +172,18 @@ export const ShiftSchedule = {
         const cancelled = shifts.find(s => s.date === date && s.start_time === slot.start && s.status === 'cancelled');
         html += `<div class="vp-cell ${isPast ? 'vp-past' : ''} ${isToday ? 'vp-today-col' : ''}">`;
         if (shift && shift.status === 'cancelled') {
-          // Show cancelled slot
-          html += `<div class="vp-cancelled">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
-            <span>${t('vp.cancelled')}</span>
-          </div>`;
+          // Show cancelled slot with option to re-fill
+          if (!isPast) {
+            html += `<div class="vp-cancelled" onclick="ShiftSchedule.openSignup('${date}', '${slot.start}', '${slot.end}')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+              <span>${t('vp.cancelled')}</span>
+            </div>`;
+          } else {
+            html += `<div class="vp-cancelled">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+              <span>${t('vp.cancelled')}</span>
+            </div>`;
+          }
         } else if (shift) {
           const initials = getInitials(shift.staff_name);
           const avatarColor = colorMap.get(shift.staff_name) || '#94a3b8';
