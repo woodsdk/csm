@@ -85,6 +85,14 @@ export const DemoBooking = {
             <div class="db-landing-card db-landing-card-book">
               <h2 class="db-landing-title">Book personlig demo</h2>
               <p class="db-landing-subtitle">Vi gennemg\u00e5r platformen med dig p\u00e5 video. Ca. 30 min. Helt gratis.</p>
+              <div class="db-team-portraits">
+                <div class="db-team-avatars">
+                  <img src="/assets/team-morten.jpeg" alt="Morten Skov" class="db-team-avatar">
+                  <img src="/assets/team-lucas.jpeg" alt="Lucas Aarslew" class="db-team-avatar">
+                  <img src="/assets/team-lars.jpg" alt="Lars Kensmark" class="db-team-avatar">
+                </div>
+                <span class="db-team-label">Morten, Lucas & Lars</span>
+              </div>
               <div class="db-landing-booking-inline">
                 ${this._state.loading
                   ? '<div class="db-loading">Indl\u00e6ser ledige tider...</div>'

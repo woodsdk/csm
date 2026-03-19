@@ -3438,6 +3438,37 @@
   text-decoration: underline;
 }
 
+/* Team portraits in booking card */
+.db-team-portraits {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.db-team-avatars {
+  display: flex;
+}
+
+.db-team-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 1px 3px rgba(19, 16, 44, 0.1);
+}
+
+.db-team-avatar:not(:first-child) {
+  margin-left: -10px;
+}
+
+.db-team-label {
+  font-size: 13px;
+  color: #5669A4;
+  font-weight: 500;
+}
+
 .db-landing-booking-inline {
   flex: 1;
   display: flex;
