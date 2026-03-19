@@ -3399,7 +3399,7 @@
   height: 26px;
 }
 
-.db-landing-cta {
+a.db-landing-cta.db-btn {
   width: 100%;
   text-align: center;
   justify-content: center;
