@@ -41,10 +41,11 @@ def _auto_seed_simon(from_date: str, to_date: str):
 
     s = simon[0]
     existing = query(
-        "SELECT date, start_time FROM shifts WHERE date >= %s AND date <= %s AND status != 'cancelled'",
+        "SELECT date, start_time, status FROM shifts WHERE date >= %s AND date <= %s",
         (from_date, to_date),
     )
-    taken = set((r["date"], r["start_time"]) for r in existing)
+    taken = set((r["date"], r["start_time"]) for r in existing if r["status"] != 'cancelled')
+    cancelled = set((r["date"], r["start_time"]) for r in existing if r["status"] == 'cancelled')
 
     today = datetime.now().strftime("%Y-%m-%d")
     d = datetime.strptime(from_date, "%Y-%m-%d")
@@ -55,7 +56,7 @@ def _auto_seed_simon(from_date: str, to_date: str):
             date_str = d.strftime("%Y-%m-%d")
             if date_str >= today:  # Only future dates
                 for slot in SHIFT_SLOTS:
-                    if (date_str, slot["start_time"]) not in taken:
+                    if (date_str, slot["start_time"]) not in taken and (date_str, slot["start_time"]) not in cancelled:
                         shift_id = gen_id("sh_")
                         execute(
                             """INSERT INTO shifts (id, date, start_time, end_time, staff_name, staff_email, staff_id, status)
