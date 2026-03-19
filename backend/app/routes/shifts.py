@@ -69,7 +69,7 @@ def _auto_seed_simon(from_date: str, to_date: str):
 
 @router.get("")
 def list_shifts(date: Optional[str] = None, from_date: Optional[str] = None, to_date: Optional[str] = None):
-    sql = "SELECT * FROM shifts"
+    sql = "SELECT * FROM shifts WHERE 1=1"
     params = []
 
     if date:
