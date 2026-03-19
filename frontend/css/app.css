@@ -3546,8 +3546,14 @@ a.db-landing-cta.db-btn {
 
 .db-dates-row-compact {
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   margin-bottom: 6px;
+}
+
+.db-dates-row-compact .db-date-card {
+  min-width: 0;
+  flex: 1 1 0;
+  padding: 10px 8px;
 }
 
 .db-date-card.disabled {
