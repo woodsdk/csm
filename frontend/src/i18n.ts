@@ -114,6 +114,7 @@ const T: Record<string, Record<Lang, string>> = {
   'vp.shiftsFilled': { da: 'vagter besat', en: 'shifts filled' },
   'vp.time': { da: 'Tid', en: 'Time' },
   'vp.cancel': { da: 'Afmeld', en: 'Cancel shift' },
+  'vp.cancelled': { da: 'Aflyst', en: 'Cancelled' },
   'vp.listen': { da: 'lyt', en: 'listen' },
   'vp.takeShift': { da: '+ Tag vagt', en: '+ Take shift' },
   'vp.takeAShift': { da: 'Tag en vagt', en: 'Take a shift' },

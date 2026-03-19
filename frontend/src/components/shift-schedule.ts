@@ -91,7 +91,8 @@ export const ShiftSchedule = {
 
     // Stats across all 4 weeks
     const totalSlots = WEEKS_SHOWN * 20;
-    const filledSlots = shifts.length;
+    const activeShifts = shifts.filter(s => s.status !== 'cancelled');
+    const filledSlots = activeShifts.length;
     const fillPercent = Math.round((filledSlots / totalSlots) * 100);
 
     // Overall date range title
@@ -168,8 +169,15 @@ export const ShiftSchedule = {
         const isToday = date === today;
         const shift = shifts.find(s => s.date === date && s.start_time === slot.start);
 
+        const cancelled = shifts.find(s => s.date === date && s.start_time === slot.start && s.status === 'cancelled');
         html += `<div class="vp-cell ${isPast ? 'vp-past' : ''} ${isToday ? 'vp-today-col' : ''}">`;
-        if (shift) {
+        if (shift && shift.status === 'cancelled') {
+          // Show cancelled slot
+          html += `<div class="vp-cancelled">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            <span>${t('vp.cancelled')}</span>
+          </div>`;
+        } else if (shift) {
           const initials = getInitials(shift.staff_name);
           const avatarColor = colorMap.get(shift.staff_name) || '#94a3b8';
           const listeners = shift.listeners || [];

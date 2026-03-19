@@ -62,10 +62,10 @@
 }
 
 /* Language toggle */
-.lang-toggle { display: flex; gap: 4px; margin-left: var(--space-3); }
-.lang-btn { background: none; border: 2px solid transparent; border-radius: var(--radius-full); width: 28px; height: 28px; padding: 0; cursor: pointer; font-size: 15px; opacity: 0.35; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
-.lang-btn:hover { opacity: 0.7; transform: scale(1.1); }
-.lang-btn-active { opacity: 1; border-color: var(--navy-400); background: var(--bg-surface-hover); }
+.lang-toggle { display: flex; gap: 6px; margin-left: var(--space-3); align-items: center; }
+.lang-btn { background: none; border: 2px solid transparent; border-radius: var(--radius-full); width: 26px; height: 26px; padding: 3px; cursor: pointer; opacity: 0.4; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
+.lang-btn:hover { opacity: 0.8; transform: scale(1.1); }
+.lang-btn-active { opacity: 1; border-color: var(--navy-300); }
 
 .sidebar-logo {
   display: flex;
@@ -2354,6 +2354,17 @@
   background: var(--error);
   color: white;
 }
+
+.vp-cancelled {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--text-tertiary);
+  font-size: var(--text-xs);
+  opacity: 0.6;
+}
+.vp-cancelled svg { stroke: var(--error); opacity: 0.5; }
 
 /* ── Mobile cards (hidden on desktop) ── */
 .vp-mobile {

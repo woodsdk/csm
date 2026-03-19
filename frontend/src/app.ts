@@ -237,8 +237,8 @@ export const App = {
       const toggle = document.createElement('div');
       toggle.className = 'lang-toggle';
       toggle.innerHTML = `
-        <button class="lang-btn ${lang === 'da' ? 'lang-btn-active' : ''}" onclick="App.setLang('da')" title="Dansk">🇩🇰</button>
-        <button class="lang-btn ${lang === 'en' ? 'lang-btn-active' : ''}" onclick="App.setLang('en')" title="English">🇬🇧</button>
+        <button class="lang-btn ${lang === 'da' ? 'lang-btn-active' : ''}" onclick="App.setLang('da')" title="Dansk"><svg width="18" height="18" viewBox="0 0 20 20"><clipPath id="dc"><circle cx="10" cy="10" r="10"/></clipPath><g clip-path="url(#dc)"><rect width="20" height="20" fill="#C8102E"/><rect x="6" width="3" height="20" fill="#fff"/><rect y="8.5" width="20" height="3" fill="#fff"/></g></svg></button>
+        <button class="lang-btn ${lang === 'en' ? 'lang-btn-active' : ''}" onclick="App.setLang('en')" title="English"><svg width="18" height="18" viewBox="0 0 20 20"><clipPath id="ec"><circle cx="10" cy="10" r="10"/></clipPath><g clip-path="url(#ec)"><rect width="20" height="20" fill="#012169"/><path d="M0 0L20 20M20 0L0 20" stroke="#fff" stroke-width="3"/><path d="M0 0L20 20M20 0L0 20" stroke="#C8102E" stroke-width="1.5"/><rect x="8" width="4" height="20" fill="#fff"/><rect y="8" width="20" height="4" fill="#fff"/><rect x="8.7" width="2.6" height="20" fill="#C8102E"/><rect y="8.7" width="20" height="2.6" fill="#C8102E"/></g></svg></button>
       `;
       right.appendChild(toggle);
     }
