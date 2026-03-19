@@ -211,7 +211,7 @@ export const OnboardingDashboard = {
           <span class="ob-signals-badge">${signals.length}</span>
         </div>
         <div class="ob-signals-list">
-          ${signals.slice(0, 6).map(s => {
+          ${signals.slice(0, 3).map(s => {
             const icon = typeIcons[s.type] || '';
             const severityClass = s.severity === 'high' ? 'ob-signal-high' : 'ob-signal-medium';
             let onclick = '';
