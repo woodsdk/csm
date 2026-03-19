@@ -3356,7 +3356,7 @@
 
 .db-landing-title {
   font-size: 26px;
-  font-weight: 600;
+  font-weight: 500;
   font-family: 'Inter', sans-serif;
   color: #13102C;
   margin: 0 0 12px 0;
@@ -3400,7 +3400,7 @@
   text-align: center;
   justify-content: center;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.5px;
   padding: 0 24px;
   height: 50px;
@@ -3548,7 +3548,7 @@
 
 .db-title {
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 500;
   color: #26304F;
   margin: 0 0 8px;
   letter-spacing: -0.01em;
@@ -3649,7 +3649,7 @@
 
 .db-section-title {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   color: #26304F;
   margin: 0 0 16px;
 }
@@ -3952,7 +3952,7 @@
 
 .db-confirm-title {
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 500;
   color: #26304F;
   margin: 0 0 6px;
 }
@@ -4132,7 +4132,7 @@
   align-items: center;
   gap: 8px;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   color: #26304F;
   margin: 0 0 6px;
 }
