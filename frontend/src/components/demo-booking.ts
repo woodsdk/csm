@@ -95,8 +95,7 @@ export const DemoBooking = {
     `;
   },
 
-  _renderInlineDatePicker(): string {
-    // Group dates by week
+  _groupDatesByWeek(): { weekKey: string; weekNum: number; weekStart: Date; weekEnd: Date; dates: string[] }[] {
     const weeks: { weekKey: string; weekNum: number; weekStart: Date; weekEnd: Date; dates: string[] }[] = [];
     const weekMap = new Map<string, number>();
 
@@ -115,51 +114,70 @@ export const DemoBooking = {
       weeks[weekMap.get(weekKey)!].dates.push(dateStr);
     }
 
+    // Auto-skip to first week that has available dates in the future
+    if (this._state.currentWeekIdx === 0 && weeks.length > 0) {
+      const today = new Date().toISOString().split('T')[0];
+      const firstWeekHasFuture = weeks[0].dates.some(ds => ds > today);
+      if (!firstWeekHasFuture && weeks.length > 1) {
+        this._state.currentWeekIdx = 1;
+      }
+    }
+
     if (this._state.currentWeekIdx >= weeks.length) this._state.currentWeekIdx = weeks.length - 1;
     if (this._state.currentWeekIdx < 0) this._state.currentWeekIdx = 0;
 
-    const week = weeks[this._state.currentWeekIdx];
-    const availableSet = new Set(week.dates);
-    const isFirst = this._state.currentWeekIdx === 0;
-    const isLast = this._state.currentWeekIdx === weeks.length - 1;
+    return weeks;
+  },
 
-    const weekDays: { dateStr: string; d: Date; available: boolean }[] = [];
-    for (let i = 0; i < 5; i++) {
-      const day = new Date(week.weekStart);
-      day.setDate(week.weekStart.getDate() + i);
-      const ds = day.toISOString().split('T')[0];
-      weekDays.push({ dateStr: ds, d: day, available: availableSet.has(ds) });
-    }
+  _renderInlineDatePicker(): string {
+    const weeks = this._groupDatesByWeek();
+    if (weeks.length === 0) return '';
 
-    const wsLabel = `${week.weekStart.getDate()}. ${MONTH_NAMES[week.weekStart.getMonth()].slice(0, 3)}`;
-    const weLabel = `${week.weekEnd.getDate()}. ${MONTH_NAMES[week.weekEnd.getMonth()].slice(0, 3)}`;
+    // Show 2 weeks at a time
+    const startIdx = this._state.currentWeekIdx;
+    const endIdx = Math.min(startIdx + 2, weeks.length);
+    const visibleWeeks = weeks.slice(startIdx, endIdx);
+    const isFirst = startIdx === 0;
+    const isLast = endIdx >= weeks.length;
 
     return `
       <div class="db-week-nav">
         <button class="db-week-arrow ${isFirst ? 'disabled' : ''}" onclick="event.stopPropagation(); DemoBooking.prevWeek()" ${isFirst ? 'disabled' : ''}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
-        <span class="db-week-label-nav">Uge ${week.weekNum} &mdash; ${wsLabel} \u2013 ${weLabel}</span>
+        <span class="db-week-label-nav">Uge ${visibleWeeks.map(w => w.weekNum).join(' & ')}</span>
         <button class="db-week-arrow ${isLast ? 'disabled' : ''}" onclick="event.stopPropagation(); DemoBooking.nextWeek()" ${isLast ? 'disabled' : ''}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
       </div>
-      <div class="db-dates-row db-dates-row-compact">
-        ${weekDays.map(wd => {
-          if (!wd.available) {
-            return `<div class="db-date-card disabled">
-              <span class="db-date-day">${DAY_SHORT[wd.d.getDay()]}</span>
-              <span class="db-date-num">${wd.d.getDate()}</span>
-              <span class="db-date-month">${MONTH_NAMES[wd.d.getMonth()].slice(0, 3)}</span>
-            </div>`;
-          }
-          return `<button class="db-date-card" onclick="DemoBooking.selectDate('${wd.dateStr}')">
-            <span class="db-date-day">${DAY_SHORT[wd.d.getDay()]}</span>
-            <span class="db-date-num">${wd.d.getDate()}</span>
-            <span class="db-date-month">${MONTH_NAMES[wd.d.getMonth()].slice(0, 3)}</span>
-          </button>`;
-        }).join('')}
-      </div>
+      ${visibleWeeks.map(week => {
+        const availableSet = new Set(week.dates);
+        const weekDays: { dateStr: string; d: Date; available: boolean }[] = [];
+        for (let i = 0; i < 5; i++) {
+          const day = new Date(week.weekStart);
+          day.setDate(week.weekStart.getDate() + i);
+          const ds = day.toISOString().split('T')[0];
+          weekDays.push({ dateStr: ds, d: day, available: availableSet.has(ds) });
+        }
+        return `
+          <div class="db-dates-row db-dates-row-compact">
+            ${weekDays.map(wd => {
+              if (!wd.available) {
+                return `<div class="db-date-card disabled">
+                  <span class="db-date-day">${DAY_SHORT[wd.d.getDay()]}</span>
+                  <span class="db-date-num">${wd.d.getDate()}</span>
+                  <span class="db-date-month">${MONTH_NAMES[wd.d.getMonth()].slice(0, 3)}</span>
+                </div>`;
+              }
+              return `<button class="db-date-card" onclick="DemoBooking.selectDate('${wd.dateStr}')">
+                <span class="db-date-day">${DAY_SHORT[wd.d.getDay()]}</span>
+                <span class="db-date-num">${wd.d.getDate()}</span>
+                <span class="db-date-month">${MONTH_NAMES[wd.d.getMonth()].slice(0, 3)}</span>
+              </button>`;
+            }).join('')}
+          </div>
+        `;
+      }).join('')}
     `;
   },
 
@@ -230,34 +248,8 @@ export const DemoBooking = {
       `;
     }
 
-    // Group dates by week
-    const weeks: { weekKey: string; weekNum: number; weekStart: Date; weekEnd: Date; dates: string[] }[] = [];
-    const weekMap = new Map<string, number>();
-
-    for (const dateStr of this._state.availableDates) {
-      const d = new Date(dateStr + 'T00:00:00');
-      const weekStart = new Date(d);
-      weekStart.setDate(d.getDate() - ((d.getDay() + 6) % 7)); // Monday
-      const weekKey = weekStart.toISOString().split('T')[0];
-
-      if (!weekMap.has(weekKey)) {
-        const weekEnd = new Date(weekStart);
-        weekEnd.setDate(weekStart.getDate() + 4); // Friday
-        weekMap.set(weekKey, weeks.length);
-        weeks.push({
-          weekKey,
-          weekNum: this._getWeekNumber(weekStart),
-          weekStart: new Date(weekStart),
-          weekEnd,
-          dates: [],
-        });
-      }
-      weeks[weekMap.get(weekKey)!].dates.push(dateStr);
-    }
-
-    // Clamp week index
-    if (this._state.currentWeekIdx >= weeks.length) this._state.currentWeekIdx = weeks.length - 1;
-    if (this._state.currentWeekIdx < 0) this._state.currentWeekIdx = 0;
+    const weeks = this._groupDatesByWeek();
+    if (weeks.length === 0) return '<div class="db-empty"><p>Ingen ledige uger fundet.</p></div>';
 
     const week = weeks[this._state.currentWeekIdx];
     const availableSet = new Set(week.dates);
@@ -562,14 +554,19 @@ export const DemoBooking = {
   },
 
   goBack(): void {
-    if (this._state.step > 1) {
-      this._state.step = (this._state.step - 1) as 0 | 1 | 2 | 3;
-      this._state.error = null;
-      if (this._state.step === 1) {
-        this._state.selectedSlot = null;
-      }
-      this._rerender();
+    this._state.error = null;
+    if (this._state.step === 2) {
+      // From slot selection → back to landing (date picker is inline there)
+      this._state.step = 0;
+      this._state.selectedSlot = null;
+    } else if (this._state.step === 3) {
+      // From form → back to slot selection
+      this._state.step = 2;
+    } else if (this._state.step === 1) {
+      this._state.step = 0;
+      this._state.selectedSlot = null;
     }
+    this._rerender();
   },
 
   setField(field: string, value: string): void {

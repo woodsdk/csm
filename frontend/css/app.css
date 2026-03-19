@@ -3311,29 +3311,29 @@
   overflow-y: auto;
 }
 
-/* Landing — two-card choice */
+/* Landing — two-card choice (follows Design System) */
 .db-page-landing {
   align-items: center;
-  padding: 0 20px;
+  padding: 0 24px;
+  background: linear-gradient(135deg, #EBEBF4 0%, #FFFFFF 100%);
 }
 
 .db-landing-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 32px;
+  gap: 36px;
   width: 100%;
   max-width: 960px;
 }
 
 .db-landing-logo-img {
-  height: 48px;
-  margin-bottom: 8px;
+  height: 56px;
 }
 
 .db-landing-cards {
   display: flex;
-  gap: 28px;
+  gap: 24px;
   width: 100%;
   align-items: stretch;
 }
@@ -3342,28 +3342,29 @@
   flex: 1;
   background: #FFFFFF;
   border-radius: 20px;
-  box-shadow: 0 2px 4px rgba(19, 16, 44, 0.04), 0 12px 40px rgba(19, 16, 44, 0.08);
+  box-shadow: 0 2px 30px rgba(38, 48, 79, 0.10);
   padding: 40px 36px;
   display: flex;
   flex-direction: column;
 }
 
 .db-landing-card-book {
-  flex: 1.15;
+  flex: 1.2;
 }
 
 .db-landing-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: #26304F;
-  margin: 0 0 16px 0;
+  font-size: 20px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  color: #13102C;
+  margin: 0 0 12px 0;
 }
 
 .db-landing-subtitle {
-  font-size: 14px;
+  font-size: 13px;
   color: #5669A4;
   line-height: 1.5;
-  margin: 0 0 24px 0;
+  margin: 0 0 20px 0;
 }
 
 .db-landing-features {
@@ -3372,38 +3373,57 @@
   margin: 0 0 auto 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .db-landing-features li {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 15px;
+  gap: 10px;
+  font-size: 14px;
   font-weight: 500;
-  color: #26304F;
+  color: #13102C;
+  font-family: 'Inter', sans-serif;
+}
+
+.db-landing-features li svg {
+  stroke: #5669A4;
+  flex-shrink: 0;
 }
 
 .db-landing-cta {
   width: 100%;
   text-align: center;
+  justify-content: center;
   font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  padding: 16px 24px;
-  border-radius: 12px;
-  margin-top: 32px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  padding: 0 24px;
+  height: 44px;
+  border-radius: 9999px;
+  margin-top: 28px;
+  background: linear-gradient(135deg, #38456D 0%, #5669A4 100%);
+  color: #FFFFFF;
+  border: none;
+  box-shadow: 0 4px 15px rgba(56, 69, 109, 0.2);
+  transition: box-shadow 0.3s ease, background 0.2s ease;
+}
+
+.db-landing-cta:hover {
+  background: linear-gradient(135deg, #2F3D62 0%, #4A5D96 100%);
+  box-shadow: 0 8px 20px rgba(56, 69, 109, 0.25);
 }
 
 .db-landing-login {
   text-align: center;
   margin-top: 14px;
-  font-size: 13px;
-  color: #5669A4;
+  font-size: 12px;
+  color: #A3B0D9;
+  font-family: 'Inter', sans-serif;
 }
 
 .db-landing-login a {
-  color: #26304F;
+  color: #5669A4;
   text-decoration: none;
   margin-left: 4px;
 }
@@ -3422,7 +3442,7 @@
 .db-landing-booking-empty {
   text-align: center;
   color: #5669A4;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.6;
   padding: 20px 0;
 }
@@ -3438,7 +3458,7 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .db-week-arrow {
@@ -3447,18 +3467,17 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-  border: 1px solid #EDF0F7;
+  border-radius: 9999px;
+  border: 1px solid #EBEBF3;
   background: #FFFFFF;
   cursor: pointer;
   color: #38456D;
-  transition: all 0.15s;
+  transition: all 0.2s ease;
 }
 
 .db-week-arrow:hover:not(.disabled) {
-  background: #38456D;
-  color: white;
-  border-color: #38456D;
+  background: linear-gradient(135deg, #38456D 0%, #5669A4 100%);
+  border-color: transparent;
 }
 
 .db-week-arrow:hover:not(.disabled) svg {
@@ -3466,25 +3485,27 @@
 }
 
 .db-week-arrow.disabled {
-  opacity: 0.25;
+  opacity: 0.2;
   cursor: not-allowed;
 }
 
 .db-week-label-nav {
   font-size: 13px;
   font-weight: 600;
-  color: #26304F;
-  min-width: 180px;
+  color: #13102C;
+  min-width: 120px;
   text-align: center;
+  font-family: 'Inter', sans-serif;
 }
 
 .db-dates-row-compact {
   justify-content: center;
   gap: 8px;
+  margin-bottom: 6px;
 }
 
 .db-date-card.disabled {
-  opacity: 0.25;
+  opacity: 0.2;
   cursor: not-allowed;
   pointer-events: none;
 }
@@ -3849,9 +3870,9 @@
   align-items: center;
   gap: 8px;
   padding: 11px 24px;
-  border-radius: 10px;
+  border-radius: 9999px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   font-family: 'Inter', sans-serif;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -3861,15 +3882,14 @@
 }
 
 .db-btn-primary {
-  background: #38456D;
+  background: linear-gradient(135deg, #38456D 0%, #5669A4 100%);
   color: #FFFFFF;
-  box-shadow: 0 1px 3px rgba(56, 69, 109, 0.2);
+  box-shadow: 0 4px 15px rgba(56, 69, 109, 0.2);
 }
 
 .db-btn-primary:hover {
-  background: #26304F;
-  box-shadow: 0 2px 8px rgba(56, 69, 109, 0.3);
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #2F3D62 0%, #4A5D96 100%);
+  box-shadow: 0 8px 20px rgba(56, 69, 109, 0.25);
 }
 
 .db-btn-primary:disabled {
