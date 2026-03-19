@@ -5091,6 +5091,10 @@
   font-weight: var(--font-medium);
   color: var(--text-primary);
   line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 600px;
 }
 
 .hd-ticket-meta {
@@ -5104,6 +5108,11 @@
 .hd-ticket-requester {
   font-weight: var(--font-medium);
   color: var(--text-secondary);
+}
+
+.hd-ticket-email {
+  color: var(--text-secondary);
+  font-weight: var(--font-medium);
 }
 
 .hd-ticket-category {
