@@ -62,10 +62,10 @@
 }
 
 /* Language toggle */
-.lang-toggle { display: flex; gap: 2px; }
-.lang-btn { background: none; border: 1px solid transparent; border-radius: 4px; padding: 2px 4px; cursor: pointer; font-size: 16px; opacity: 0.4; transition: opacity 0.15s; }
-.lang-btn:hover { opacity: 0.7; }
-.lang-btn-active { opacity: 1; border-color: var(--border); background: var(--bg-surface-hover); }
+.lang-toggle { display: flex; gap: 4px; margin-left: var(--space-3); }
+.lang-btn { background: none; border: 2px solid transparent; border-radius: var(--radius-full); width: 28px; height: 28px; padding: 0; cursor: pointer; font-size: 15px; opacity: 0.35; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
+.lang-btn:hover { opacity: 0.7; transform: scale(1.1); }
+.lang-btn-active { opacity: 1; border-color: var(--navy-400); background: var(--bg-surface-hover); }
 
 .sidebar-logo {
   display: flex;
