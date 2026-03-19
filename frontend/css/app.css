@@ -3344,8 +3344,8 @@
   flex: 1;
   background: linear-gradient(180deg, #DADAEC 0%, #EBEBF3 100%);
   border-radius: 20px;
-  box-shadow: 0 2px 30px rgba(38, 48, 79, 0.10);
-  padding: 44px 40px;
+  box-shadow: none;
+  padding: 49px 45px;
   display: flex;
   flex-direction: column;
 }
@@ -3357,7 +3357,7 @@
 
 .db-landing-title {
   font-size: 32px;
-  font-weight: 600;
+  font-weight: 500;
   font-family: 'Inter', sans-serif;
   color: #13102C;
   margin: 0 0 12px 0;
@@ -3386,13 +3386,14 @@
   align-items: center;
   gap: 14px;
   font-size: 22px;
-  font-weight: 500;
+  font-weight: 400;
   color: #13102C;
   font-family: 'Inter', sans-serif;
 }
 
 .db-landing-features li svg {
   stroke: #38456D;
+  stroke-width: 3;
   flex-shrink: 0;
   width: 26px;
   height: 26px;
@@ -3402,8 +3403,9 @@
   width: 100%;
   text-align: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 700;
+  font-family: 'Inter', sans-serif;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   padding: 0 24px;
@@ -3413,14 +3415,14 @@
   background: linear-gradient(135deg, #38456D 0%, #5669A4 100%);
   color: #FFFFFF;
   border: none;
-  box-shadow: 0 4px 15px rgba(56, 69, 109, 0.2);
+  box-shadow: none;
   transition: box-shadow 0.3s ease, background 0.2s ease;
   cursor: pointer;
 }
 
 .db-landing-cta:hover {
   background: linear-gradient(135deg, #2F3D62 0%, #4A5D96 100%);
-  box-shadow: 0 8px 20px rgba(56, 69, 109, 0.25);
+  box-shadow: 0 4px 15px rgba(56, 69, 109, 0.2);
 }
 
 .db-landing-login {
