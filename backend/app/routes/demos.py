@@ -128,6 +128,7 @@ class DemoBookingCreate(BaseModel):
     client_email: str
     client_phone: str = ""
     client_clinic: str = ""
+    client_role: str = ""
     notes: str = ""
 
 

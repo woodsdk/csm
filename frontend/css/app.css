@@ -3648,6 +3648,28 @@
   margin: 0 0 16px;
 }
 
+.db-section-desc {
+  font-size: 13px;
+  color: #5669A4;
+  line-height: 1.5;
+  margin: -8px 0 20px;
+}
+
+.db-colleague-list { margin-bottom: 16px; }
+
+.db-confirm-colleagues { margin-top: 20px; text-align: center; }
+.db-confirm-colleagues-label { font-size: 12px; color: #5669A4; margin: 0 0 8px; }
+.db-confirm-colleague-tag {
+  display: inline-block;
+  background: #F8F8FD;
+  border: 1px solid #EBEBF3;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  font-size: 12px;
+  color: #26304F;
+  margin: 2px 4px;
+}
+
 /* ── Date selection ── */
 .db-dates-scroll {
   display: flex;

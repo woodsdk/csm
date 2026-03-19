@@ -11,13 +11,14 @@ const MONTH_NAMES = ['januar', 'februar', 'marts', 'april', 'maj', 'juni', 'juli
 
 export const DemoBooking = {
   _state: {
-    step: 0 as 0 | 1 | 2 | 3 | 4,
+    step: 0 as 0 | 1 | 2 | 3 | 4 | 5,
+    colleagues: [] as { name: string; role: string; email: string }[],
     availableDates: [] as string[],
     availableSlots: [] as DemoSlot[],
     selectedDate: null as string | null,
     selectedSlot: null as string | null,
     currentWeekIdx: 0,
-    form: { name: '', email: '', phone: '', clinic: '', notes: '' },
+    form: { name: '', email: '', phone: '', clinic: '', role: '', notes: '' },
     booking: null as DemoBookingType | null,
     loading: false,
     error: null as string | null,
@@ -213,7 +214,8 @@ export const DemoBooking = {
       { num: 1, label: 'Dato' },
       { num: 2, label: 'Tidspunkt' },
       { num: 3, label: 'Oplysninger' },
-      { num: 4, label: 'Bekr\u00e6ftelse' },
+      { num: 4, label: 'Kollegaer' },
+      { num: 5, label: 'Bekr\u00e6ftelse' },
     ];
 
     return `
@@ -223,7 +225,7 @@ export const DemoBooking = {
             <div class="db-step-num">${this._state.step > s.num ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : s.num}</div>
             <span class="db-step-label">${s.label}</span>
           </div>
-          ${s.num < 4 ? '<div class="db-step-line"></div>' : ''}
+          ${s.num < 5 ? '<div class="db-step-line"></div>' : ''}
         `).join('')}
       </div>
     `;
@@ -234,7 +236,8 @@ export const DemoBooking = {
       case 1: return this._renderDateSelection();
       case 2: return this._renderSlotSelection();
       case 3: return this._renderForm();
-      case 4: return this._renderConfirmation();
+      case 4: return this._renderColleagues();
+      case 5: return this._renderConfirmation();
       default: return '';
     }
   },
@@ -386,9 +389,15 @@ export const DemoBooking = {
         </div>
 
         <form class="db-form" onsubmit="event.preventDefault(); DemoBooking.submitBooking();">
-          <div class="db-field">
-            <label class="db-label" for="db-name">Navn <span class="db-required">*</span></label>
-            <input class="db-input" id="db-name" type="text" required placeholder="Dit fulde navn" value="${this._esc(f.name)}" oninput="DemoBooking.setField('name', this.value)">
+          <div class="db-field-row">
+            <div class="db-field">
+              <label class="db-label" for="db-name">Navn <span class="db-required">*</span></label>
+              <input class="db-input" id="db-name" type="text" required placeholder="Dit fulde navn" value="${this._esc(f.name)}" oninput="DemoBooking.setField('name', this.value)">
+            </div>
+            <div class="db-field">
+              <label class="db-label" for="db-role">Rolle/Titel</label>
+              <input class="db-input" id="db-role" type="text" placeholder="Fx praktiserende l\u00e6ge" value="${this._esc(f.role)}" oninput="DemoBooking.setField('role', this.value)">
+            </div>
           </div>
 
           <div class="db-field">
@@ -420,6 +429,98 @@ export const DemoBooking = {
         </form>
       </div>
     `;
+  },
+
+  _renderColleagues(): string {
+    const b = this._state.booking;
+    if (!b) return '';
+
+    const d = new Date(b.date + 'T00:00:00');
+    const dateLabel = `${DAY_NAMES[d.getDay()]} d. ${d.getDate()}. ${MONTH_NAMES[d.getMonth()]}`;
+
+    return `
+      <div class="db-section">
+        <h2 class="db-section-title">Invit\u00e9r kollegaer</h2>
+        <p class="db-section-desc">Har du kollegaer der ogs\u00e5 skal deltage i demoen? Tilf\u00f8j dem herunder \u2014 de modtager en kalenderinvitation automatisk.</p>
+
+        <div class="db-booking-summary">
+          <span class="db-summary-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            ${dateLabel} kl. ${b.start_time}\u2013${b.end_time}
+          </span>
+        </div>
+
+        <div id="db-colleague-list" class="db-colleague-list">
+          ${this._state.colleagues.map((c, i) => `
+            <div class="db-colleague-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>${this._esc(c.name)}</strong>${c.role ? ` \u2014 ${this._esc(c.role)}` : ''} (${this._esc(c.email)})</span>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="db-colleague-form">
+          <div class="db-field-row" style="margin-bottom: 0;">
+            <div class="db-field" style="margin-bottom: 0;">
+              <input class="db-input" id="db-col-name" type="text" placeholder="Navn">
+            </div>
+            <div class="db-field" style="margin-bottom: 0;">
+              <input class="db-input" id="db-col-role" type="text" placeholder="Rolle/stilling">
+            </div>
+          </div>
+          <div class="db-field" style="margin-bottom: 0; margin-top: 8px;">
+            <input class="db-input" id="db-col-email" type="email" placeholder="Email">
+          </div>
+          <button class="db-btn db-btn-secondary db-add-colleague-btn" onclick="DemoBooking.addColleague()" style="margin-top: 10px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Tilf\u00f8j kollega
+          </button>
+        </div>
+
+        <div class="db-actions">
+          <button class="db-btn db-btn-secondary" onclick="DemoBooking.skipColleagues()">Spring over \u2192</button>
+          <button class="db-btn db-btn-primary" onclick="DemoBooking.confirmWithColleagues()">Bekr\u00e6ft booking \u2192</button>
+        </div>
+      </div>
+    `;
+  },
+
+  async addColleague(): Promise<void> {
+    const nameEl = document.getElementById('db-col-name') as HTMLInputElement;
+    const roleEl = document.getElementById('db-col-role') as HTMLInputElement;
+    const emailEl = document.getElementById('db-col-email') as HTMLInputElement;
+    if (!nameEl || !emailEl) return;
+
+    const name = nameEl.value.trim();
+    const role = roleEl?.value.trim() || '';
+    const email = emailEl.value.trim();
+    if (!name || !email) return;
+
+    // Save to state
+    this._state.colleagues.push({ name, role, email });
+
+    // Send invitation via API
+    if (this._state.booking) {
+      try {
+        await DemoAPI.join(this._state.booking.id, { name, email, role });
+      } catch {
+        // Still keep in list even if API fails
+      }
+    }
+
+    this._rerender();
+  },
+
+  skipColleagues(): void {
+    this._state.step = 5;
+    this._rerender();
+  },
+
+  async confirmWithColleagues(): Promise<void> {
+    this._state.step = 5;
+    this._rerender();
   },
 
   _renderConfirmation(): string {
@@ -485,32 +586,16 @@ export const DemoBooking = {
           <a href="https://peoplesclinic.dk" class="db-btn db-btn-secondary">Tilbage til People's Clinic</a>
         </div>
 
-        <div class="db-share-section">
-          <h3 class="db-share-title">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-            Invit\u00e9r kollegaer
-          </h3>
-          <p class="db-share-desc">Har du kollegaer der ogs\u00e5 skal deltage? Tilf\u00f8j dem herunder \u2014 de modtager ${hasCalendar ? 'en kalenderinvitation' : 'video-linket'} automatisk.</p>
-          <div id="db-colleague-list"></div>
-          <div class="db-colleague-form">
-            <div class="db-field-row" style="margin-bottom: 0;">
-              <div class="db-field" style="margin-bottom: 0;">
-                <input class="db-input" id="db-colleague-name" type="text" placeholder="Navn">
-              </div>
-              <div class="db-field" style="margin-bottom: 0;">
-                <input class="db-input" id="db-colleague-email" type="email" placeholder="Email">
-              </div>
-            </div>
-            <button class="db-btn db-btn-primary db-invite-btn" onclick="DemoBooking.inviteColleague()" style="margin-top: 8px;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Send invitation
-            </button>
+        ${this._state.colleagues.length > 0 ? `
+          <div class="db-confirm-colleagues">
+            <p class="db-confirm-colleagues-label">Inviterede kollegaer:</p>
+            ${this._state.colleagues.map(c => `
+              <span class="db-confirm-colleague-tag">${this._esc(c.name)}${c.role ? ` (${this._esc(c.role)})` : ''}</span>
+            `).join('')}
           </div>
-        </div>
+        ` : ''}
 
-        <p class="db-confirm-note">${hasCalendar ? 'Tjek din email for kalenderinvitationen med video-linket.' : 'Brug video-linket ovenfor for at deltage i demoen p\u00e5 det aftalte tidspunkt. Linket \u00e5bner direkte i din browser \u2014 ingen installation n\u00f8dvendig.'}</p>
+        <p class="db-confirm-note">${hasCalendar ? 'Tjek din email for kalenderinvitationen med video-linket.' : 'Brug video-linket ovenfor for at deltage i demoen p\u00e5 det aftalte tidspunkt.'}</p>
       </div>
     `;
   },
@@ -556,7 +641,7 @@ export const DemoBooking = {
   goBack(): void {
     this._state.error = null;
     if (this._state.step === 2) {
-      // From slot selection → back to landing (date picker is inline there)
+      // From slot selection → back to landing (date picker is inline)
       this._state.step = 0;
       this._state.selectedSlot = null;
     } else if (this._state.step === 3) {
