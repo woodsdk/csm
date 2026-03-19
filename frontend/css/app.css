@@ -3312,77 +3312,92 @@
 }
 
 /* Landing — two-card choice */
+.db-page-landing {
+  align-items: center;
+  padding: 0 20px;
+}
+
 .db-landing-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 40px;
+  gap: 32px;
   width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  padding-top: 60px;
+  max-width: 960px;
+}
+
+.db-landing-logo-img {
+  height: 48px;
+  margin-bottom: 8px;
 }
 
 .db-landing-cards {
   display: flex;
-  gap: 24px;
+  gap: 28px;
   width: 100%;
+  align-items: stretch;
 }
 
 .db-landing-card {
   flex: 1;
   background: #FFFFFF;
-  border-radius: 16px;
-  box-shadow: 0 1px 3px rgba(19, 16, 44, 0.06), 0 8px 32px rgba(19, 16, 44, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(19, 16, 44, 0.04), 0 12px 40px rgba(19, 16, 44, 0.08);
   padding: 40px 36px;
   display: flex;
   flex-direction: column;
 }
 
+.db-landing-card-book {
+  flex: 1.15;
+}
+
 .db-landing-title {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
   color: #26304F;
-  margin: 0 0 20px 0;
+  margin: 0 0 16px 0;
+}
+
+.db-landing-subtitle {
+  font-size: 14px;
+  color: #5669A4;
+  line-height: 1.5;
+  margin: 0 0 24px 0;
 }
 
 .db-landing-features {
   list-style: none;
   padding: 0;
-  margin: 0 0 28px 0;
+  margin: 0 0 auto 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
 .db-landing-features li {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   font-size: 15px;
   font-weight: 500;
   color: #26304F;
 }
 
-.db-landing-desc {
-  font-size: 15px;
-  color: #5669A4;
-  line-height: 1.6;
-  margin: 0 0 28px 0;
-  flex: 1;
-}
-
-.db-landing-btn {
+.db-landing-cta {
   width: 100%;
   text-align: center;
   font-size: 14px;
-  letter-spacing: 0.5px;
-  padding: 14px 24px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  padding: 16px 24px;
+  border-radius: 12px;
+  margin-top: 32px;
 }
 
 .db-landing-login {
   text-align: center;
-  margin-top: 16px;
+  margin-top: 14px;
   font-size: 13px;
   color: #5669A4;
 }
@@ -3397,8 +3412,24 @@
   text-decoration: underline;
 }
 
-.db-landing-logo {
-  opacity: 0.6;
+.db-landing-booking-inline {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.db-landing-booking-empty {
+  text-align: center;
+  color: #5669A4;
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 20px 0;
+}
+
+.db-landing-booking-empty a {
+  color: #38456D;
+  font-weight: 600;
 }
 
 /* Week navigation arrows */
@@ -3406,16 +3437,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .db-week-arrow {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   border: 1px solid #EDF0F7;
   background: #FFFFFF;
@@ -3435,25 +3466,25 @@
 }
 
 .db-week-arrow.disabled {
-  opacity: 0.3;
+  opacity: 0.25;
   cursor: not-allowed;
 }
 
 .db-week-label-nav {
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
   color: #26304F;
-  min-width: 200px;
+  min-width: 180px;
   text-align: center;
 }
 
 .db-dates-row-compact {
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .db-date-card.disabled {
-  opacity: 0.3;
+  opacity: 0.25;
   cursor: not-allowed;
   pointer-events: none;
 }
@@ -3462,8 +3493,8 @@
   .db-landing-cards {
     flex-direction: column;
   }
-  .db-landing-wrapper {
-    padding-top: 20px;
+  .db-landing-card {
+    padding: 28px 24px;
   }
 }
 

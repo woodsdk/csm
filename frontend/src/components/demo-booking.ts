@@ -24,18 +24,18 @@ export const DemoBooking = {
   },
 
   async render(): Promise<string> {
-    // Landing page — no data needed
-    if (this._state.step === 0) {
-      return this._renderLanding();
-    }
-
-    // Fetch available dates on first render of step 1
-    if (this._state.availableDates.length === 0 && this._state.step === 1) {
+    // Fetch available dates for landing or step 1
+    if (this._state.availableDates.length === 0 && (this._state.step === 0 || this._state.step === 1)) {
       try {
         this._state.availableDates = await DemoAPI.getAvailableDates();
       } catch {
         this._state.error = 'Kunne ikke hente ledige datoer. Pr\u00f8v igen senere.';
       }
+    }
+
+    // Landing page with inline booking
+    if (this._state.step === 0) {
+      return this._renderLanding();
     }
 
     return `
@@ -57,55 +57,125 @@ export const DemoBooking = {
 
   _renderLanding(): string {
     return `
-      <div class="db-page">
+      <div class="db-page db-page-landing">
         <div class="db-landing-wrapper">
+          <img src="/assets/peoples-clinic.svg" alt="People's Clinic" class="db-landing-logo-img">
+
           <div class="db-landing-cards">
             <div class="db-landing-card">
               <h2 class="db-landing-title">Pr\u00f8v platformen selv</h2>
               <ul class="db-landing-features">
-                <li>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38456D" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  Gratis for alle
-                </li>
-                <li>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38456D" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  AI Act Compliant
-                </li>
-                <li>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38456D" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  GDPR Compliant
-                </li>
-                <li>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38456D" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  Kom i gang p\u00e5 5 minutter
-                </li>
+                <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38456D" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Gratis for alle</li>
+                <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38456D" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> AI Act Compliant</li>
+                <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38456D" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> GDPR Compliant</li>
+                <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38456D" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Kom i gang p\u00e5 5 minutter</li>
               </ul>
-              <a href="https://clinic.peoplesdoctor.ai/onboarding/start" class="db-btn db-btn-primary db-landing-btn">LAD MIG PR\u00d8VE SELV</a>
+              <a href="https://clinic.peoplesdoctor.ai/onboarding/start" class="db-btn db-btn-primary db-landing-cta">LAD MIG PR\u00d8VE SELV</a>
               <div class="db-landing-login">
                 <span>Har du allerede en bruger?</span>
                 <a href="https://clinic.peoplesdoctor.ai/onboarding/start"><strong>Log ind her</strong></a>
               </div>
             </div>
 
-            <div class="db-landing-card">
+            <div class="db-landing-card db-landing-card-book">
               <h2 class="db-landing-title">Book personlig demo</h2>
-              <p class="db-landing-desc">Vi gennemg\u00e5r platformen med dig p\u00e5 video. Det tager ca. 30 minutter og er helt gratis.</p>
-              <button class="db-btn db-btn-primary db-landing-btn" onclick="DemoBooking.startBooking()">BOOK DEMO</button>
+              <p class="db-landing-subtitle">Vi gennemg\u00e5r platformen med dig p\u00e5 video. Ca. 30 min. Helt gratis.</p>
+              <div class="db-landing-booking-inline">
+                ${this._state.loading
+                  ? '<div class="db-loading">Indl\u00e6ser ledige tider...</div>'
+                  : this._state.availableDates.length > 0
+                    ? this._renderInlineDatePicker()
+                    : '<div class="db-landing-booking-empty">Ingen ledige tider lige nu.<br><a href="mailto:support@peoplesdoctor.com">Kontakt os</a></div>'
+                }
+              </div>
             </div>
-          </div>
-          <div class="db-landing-logo">
-            <img src="/assets/peoples-clinic.svg" alt="People's Clinic" style="height: 28px; opacity: 0.6;">
           </div>
         </div>
       </div>
     `;
   },
 
-  startBooking(): void {
-    this._state.step = 1;
-    this._state.currentWeekIdx = 0;
-    this._state.error = null;
-    this._rerender();
+  _renderInlineDatePicker(): string {
+    // Group dates by week
+    const weeks: { weekKey: string; weekNum: number; weekStart: Date; weekEnd: Date; dates: string[] }[] = [];
+    const weekMap = new Map<string, number>();
+
+    for (const dateStr of this._state.availableDates) {
+      const d = new Date(dateStr + 'T00:00:00');
+      const weekStart = new Date(d);
+      weekStart.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+      const weekKey = weekStart.toISOString().split('T')[0];
+
+      if (!weekMap.has(weekKey)) {
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekStart.getDate() + 4);
+        weekMap.set(weekKey, weeks.length);
+        weeks.push({ weekKey, weekNum: this._getWeekNumber(weekStart), weekStart: new Date(weekStart), weekEnd, dates: [] });
+      }
+      weeks[weekMap.get(weekKey)!].dates.push(dateStr);
+    }
+
+    if (this._state.currentWeekIdx >= weeks.length) this._state.currentWeekIdx = weeks.length - 1;
+    if (this._state.currentWeekIdx < 0) this._state.currentWeekIdx = 0;
+
+    const week = weeks[this._state.currentWeekIdx];
+    const availableSet = new Set(week.dates);
+    const isFirst = this._state.currentWeekIdx === 0;
+    const isLast = this._state.currentWeekIdx === weeks.length - 1;
+
+    const weekDays: { dateStr: string; d: Date; available: boolean }[] = [];
+    for (let i = 0; i < 5; i++) {
+      const day = new Date(week.weekStart);
+      day.setDate(week.weekStart.getDate() + i);
+      const ds = day.toISOString().split('T')[0];
+      weekDays.push({ dateStr: ds, d: day, available: availableSet.has(ds) });
+    }
+
+    const wsLabel = `${week.weekStart.getDate()}. ${MONTH_NAMES[week.weekStart.getMonth()].slice(0, 3)}`;
+    const weLabel = `${week.weekEnd.getDate()}. ${MONTH_NAMES[week.weekEnd.getMonth()].slice(0, 3)}`;
+
+    return `
+      <div class="db-week-nav">
+        <button class="db-week-arrow ${isFirst ? 'disabled' : ''}" onclick="event.stopPropagation(); DemoBooking.prevWeek()" ${isFirst ? 'disabled' : ''}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <span class="db-week-label-nav">Uge ${week.weekNum} &mdash; ${wsLabel} \u2013 ${weLabel}</span>
+        <button class="db-week-arrow ${isLast ? 'disabled' : ''}" onclick="event.stopPropagation(); DemoBooking.nextWeek()" ${isLast ? 'disabled' : ''}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+      <div class="db-dates-row db-dates-row-compact">
+        ${weekDays.map(wd => {
+          if (!wd.available) {
+            return `<div class="db-date-card disabled">
+              <span class="db-date-day">${DAY_SHORT[wd.d.getDay()]}</span>
+              <span class="db-date-num">${wd.d.getDate()}</span>
+              <span class="db-date-month">${MONTH_NAMES[wd.d.getMonth()].slice(0, 3)}</span>
+            </div>`;
+          }
+          return `<button class="db-date-card" onclick="DemoBooking.selectDate('${wd.dateStr}')">
+            <span class="db-date-day">${DAY_SHORT[wd.d.getDay()]}</span>
+            <span class="db-date-num">${wd.d.getDate()}</span>
+            <span class="db-date-month">${MONTH_NAMES[wd.d.getMonth()].slice(0, 3)}</span>
+          </button>`;
+        }).join('')}
+      </div>
+    `;
+  },
+
+  async startBooking(): Promise<void> {
+    // Pre-fetch dates if not already loaded
+    if (this._state.availableDates.length === 0) {
+      this._state.loading = true;
+      this._rerender();
+      try {
+        this._state.availableDates = await DemoAPI.getAvailableDates();
+      } catch {
+        this._state.error = 'Kunne ikke hente ledige datoer.';
+      }
+      this._state.loading = false;
+      this._rerender();
+    }
   },
 
   // ─── Booking Wizard ───────────────────────────
