@@ -11,7 +11,6 @@ export const KanbanView = {
     { status: 'todo', label: 'To Do' },
     { status: 'in-progress', label: 'In Progress' },
     { status: 'blocked', label: 'Blocked' },
-    { status: 'review', label: 'Review' },
     { status: 'done', label: 'Done' }
   ] as Array<{ status: string; label: string }>,
   _wasDragging: false,

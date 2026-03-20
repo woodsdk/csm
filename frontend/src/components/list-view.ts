@@ -85,7 +85,7 @@ export const ListView = {
           <th class="col-assignee sortable ${this._sort.column === 'assignee' ? 'sort-active' : ''}" onclick="ListView.toggleSort('assignee')">
             Ansvarlig ${this._sortIcon('assignee')}
           </th>
-          <th class="col-type">Type</th>
+          <!-- type column removed -->
           <th class="col-deadline sortable ${this._sort.column === 'deadline' ? 'sort-active' : ''}" onclick="ListView.toggleSort('deadline')">
             Deadline ${this._sortIcon('deadline')}
           </th>
@@ -388,7 +388,10 @@ export const ListView = {
     TaskAPI.get(taskId).then(task => {
       if (!task) return;
       const ta = document.getElementById('desc-popup-ta') as HTMLTextAreaElement | null;
-      if (ta) ta.value = task.description || '';
+      if (ta) {
+        ta.value = task.description || '';
+        (this as any)._popupOriginalDesc = task.description || '';
+      }
       this._popupChecklist = Array.isArray(task.checklist) ? [...task.checklist] : [];
       this._renderChecklist();
 
@@ -437,8 +440,14 @@ export const ListView = {
   async _savePopup(): Promise<void> {
     const ta = document.getElementById('desc-popup-ta') as HTMLTextAreaElement | null;
     if (!ta || !this._popupTaskId) return;
+    const newDesc = ta.value;
+    const origDesc = (this as any)._popupOriginalDesc || '';
+    // Prevent accidental deletion: if description was non-empty and is now empty, don't save
+    if (origDesc.trim().length > 0 && newDesc.trim().length === 0) {
+      return;
+    }
     await TaskAPI.update(this._popupTaskId, {
-      description: ta.value,
+      description: newDesc,
       checklist: this._popupChecklist
     });
   },
@@ -486,7 +495,7 @@ export const ListView = {
   _renderRow(task: Task, members: TeamMember[], today: string, isDone: boolean = false): string {
     const member = members.find(m => m.id === task.assignee_id);
     const isOverdue = task.deadline && task.deadline < today && task.status !== 'done';
-    const statusLabels: Record<string, string> = { todo: 'To Do', 'in-progress': 'In Progress', blocked: 'Blocked', review: 'Review', done: 'Done', cancelled: 'Aflyst' };
+    const statusLabels: Record<string, string> = { todo: 'To Do', 'in-progress': 'In Progress', blocked: 'Blocked', done: 'Done', cancelled: 'Aflyst' };
     const priorityLabels: Record<string, string> = { low: 'Low', medium: 'Medium', high: 'High', critical: 'Critical' };
     const typeLabels: Record<string, string> = { onboarding: 'Onboarding', support: 'Support', bug: 'Bug', 'feature-request': 'Feature', 'cs-followup': 'CS Follow-up', internal: 'Internal' };
 
@@ -551,13 +560,7 @@ export const ListView = {
             ).join('')}
           </select>
         </td>
-        <td class="col-type" onclick="event.stopPropagation()">
-          <select class="inline-select inline-select-plain" onchange="ListView.inlineUpdate('${task.id}', 'type', this.value)">
-            ${Object.entries(typeLabels).map(([val, label]) =>
-              `<option value="${val}" ${task.type === val ? 'selected' : ''}>${label}</option>`
-            ).join('')}
-          </select>
-        </td>
+        <!-- type column removed -->
         <td class="col-deadline" onclick="event.stopPropagation()">
           <div class="deadline-cell">
             <span class="deadline-label ${isOverdue ? 'text-overdue' : ''} ${!task.deadline ? 'text-tertiary' : ''}" onclick="this.nextElementSibling.showPicker()">${task.deadline ? this._relativeDate(task.deadline, today) : 'Ingen'}</span>
