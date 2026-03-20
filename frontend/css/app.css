@@ -3406,7 +3406,7 @@ a.db-landing-cta.db-btn {
   font-size: 20px;
   font-weight: 700;
   font-family: 'Inter', sans-serif;
-  letter-spacing: 1px;
+  letter-spacing: normal;
   text-transform: uppercase;
   padding: 0 24px;
   height: 60px;
@@ -3660,7 +3660,7 @@ a.db-landing-cta.db-btn {
   }
   a.db-landing-cta.db-btn {
     font-size: 20px;
-    letter-spacing: 1px;
+    letter-spacing: normal;
     height: 52px;
     margin-top: 14px;
     border-radius: 14px;
@@ -4249,6 +4249,17 @@ h2.db-section-title,
   font-weight: 500;
 }
 
+/* ── Public booking page: allow full-page scrolling ── */
+.app-shell.db-public {
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
+}
+
+.app-shell.db-public .main-area {
+  overflow: visible;
+}
+
 /* ── Mobile responsive ── */
 @media (max-width: 640px) {
   .db-page {
@@ -4263,6 +4274,7 @@ h2.db-section-title,
     max-width: none;
     min-height: 100vh;
     box-shadow: none;
+    overflow: visible;
   }
 
   .db-header {

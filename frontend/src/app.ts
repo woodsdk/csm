@@ -299,6 +299,10 @@ export const App = {
     const overlay = document.querySelector('.sidebar-overlay') as HTMLElement;
     if (overlay) overlay.style.display = 'none';
 
+    // Allow scrolling on public booking page
+    const shell = document.querySelector('.app-shell') as HTMLElement;
+    if (shell) shell.classList.add('db-public');
+
     // Give main area full width
     mainEl.style.marginLeft = '0';
     mainEl.style.width = '100%';
