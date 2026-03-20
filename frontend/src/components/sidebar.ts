@@ -14,6 +14,7 @@ export const Sidebar = {
     const isVagtplanPage = app.state.page === 'vagtplan';
     const isTeamPage = app.state.page === 'team';
     const isTrainingPage = app.state.page === 'training';
+    const isAskPage = app.state.page === 'ask-synergyhub';
     const isSettingsPage = app.state.page === 'settings';
     return `
       <aside class="sidebar">
@@ -86,6 +87,15 @@ export const Sidebar = {
               <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
             </svg>
             ${t('sidebar.training')}
+          </button>
+
+          <button class="sidebar-nav-item ${isAskPage ? 'active' : ''}" onclick="App.navigateTo('ask-synergyhub')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              <path d="M11 8a3 3 0 0 0-3 3"/>
+            </svg>
+            ${t('app.askSynergyhub')}
           </button>
 
         </nav>
