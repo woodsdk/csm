@@ -2,10 +2,11 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "synergyhub-dev",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["/Users/mortenskov/Documents/Tech Stack - Health/frontend/node_modules/.bin/vite", "--port", "5173", "--strictPort"],
-      "port": 5173
+      "name": "frontend",
+      "runtimeExecutable": "/Users/mortenskov/Documents/Tech Stack - Health/frontend/node_modules/.bin/vite",
+      "runtimeArgs": ["--port", "5173"],
+      "port": 5173,
+      "cwd": "/Users/mortenskov/Documents/Tech Stack - Health/frontend"
     }
   ]
 }
